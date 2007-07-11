@@ -28,5 +28,16 @@ public class JSLintTest extends TestCase {
         Issue issue = problems.get(0);
         assertEquals("Missing semicolon.", issue.getReason());
     }
+    
+    public void testNullSource() throws Exception {
+        List<Issue> issues = lint.lint(null);
+        assertNotNull(issues);
+        assertEquals(0, issues.size());
+    }
 
+    public void testEmptySource() throws Exception {
+        List<Issue> issues = lint.lint("");
+        assertNotNull(issues);
+        assertEquals(0, issues.size());
+    }
 }

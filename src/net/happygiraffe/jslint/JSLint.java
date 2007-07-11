@@ -49,7 +49,7 @@ public class JSLint {
      */
     public List<Issue> lint(String javaScript) {
         List<Issue> issues = new ArrayList<Issue>();
-        scope.put("input", scope, javaScript);
+        scope.put("input", scope, javaScript == null ? "" : javaScript);
         String check = "JSLINT(input,{})";
         Boolean ok = (Boolean) ctx.evaluateString(scope, check, "lint()", 1,
                 null);
