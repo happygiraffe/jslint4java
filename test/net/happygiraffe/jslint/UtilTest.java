@@ -31,8 +31,18 @@ public class UtilTest extends TestCase {
         Context.exit();
     }
 
-    public void testIntValueOfUndefined() {
-        assertEquals(0, Util.intValue("foo", scope));
+    public void testBooleanValueFromJava() throws Exception {
+        scope.put("ok", scope, new Boolean(true));
+        assertEquals(true, Util.booleanValue("ok", scope));
+    }
+
+    public void testBooleanValueFromJavaScript() throws Exception {
+        cx.evaluateString(scope, "var ok = true", "-", 1, null);
+        assertEquals(true, Util.booleanValue("ok", scope));
+    }
+
+    public void testBooleanValueOfUndefined() throws Exception {
+        assertEquals(false, Util.booleanValue("ok", scope));
     }
 
     public void testIntValueFromJava() throws Exception {
@@ -45,18 +55,21 @@ public class UtilTest extends TestCase {
         assertEquals(42, Util.intValue("foo", scope));
     }
 
-    public void testStringValueOfUndefined() {
-        assertEquals(null, Util.stringValue("foo", scope));
+    public void testIntValueOfUndefined() {
+        assertEquals(0, Util.intValue("foo", scope));
     }
 
     public void testStringValueFromJava() throws Exception {
         scope.put("foo", scope, "bar");
         assertEquals("bar", Util.stringValue("foo", scope));
     }
-
+    
     public void testStringValueFromJavaScript() throws Exception {
         cx.evaluateString(scope, "var foo = 'bar'", "-", 1, null);
         assertEquals("bar", Util.stringValue("foo", scope));
     }
 
+    public void testStringValueOfUndefined() {
+        assertEquals(null, Util.stringValue("foo", scope));
+    }
 }

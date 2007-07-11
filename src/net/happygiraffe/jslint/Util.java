@@ -26,12 +26,29 @@ class Util {
 
     /**
      * Returns the value of a JavaScript variable, or null.
-     * @param name the JavaScript variable.
-     * @param scope the JavaScript scope to read from
+     * 
+     * @param name
+     *                the JavaScript variable.
+     * @param scope
+     *                the JavaScript scope to read from
      * @return the value of <i>name</i> or null.
      */
     static String stringValue(String name, Scriptable scope) {
         Object o = scope.get(name, scope);
         return o instanceof String ? (String) o : null;
+    }
+
+    /**
+     * Returns the value of a JavaScript variable, or false.
+     * 
+     * @param name
+     *                the JavaScript variable.
+     * @param scope
+     *                the JavaScript scope to read from.
+     * @return the value of <i>name</i> as a boolean, or false.
+     */
+    static boolean booleanValue(String name, Scriptable scope) {
+        Object o = scope.get(name, scope);
+        return o instanceof Boolean ? ((Boolean) o).booleanValue() : false;
     }
 }
