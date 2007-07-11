@@ -51,4 +51,14 @@
 		</junit>
 	</target>
 
+	<target name="dist" depends="compile">
+		<jar destfile="${dist.dir}/jslint.jar" basedir="${build.main.dir}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.main.dir}" />
+		<delete dir="${build.test.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+
 </project>
