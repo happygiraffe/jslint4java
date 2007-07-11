@@ -10,23 +10,23 @@ import org.mozilla.javascript.Scriptable;
  */
 public class Issue {
 
-    String a;
+    private String a;
 
-    String b;
+    private String b;
 
-    String c;
+    private String c;
 
-    int character;
+    private int character;
 
-    String d;
+    private String d;
 
-    String evidence;
+    private String evidence;
 
-    int line;
+    private int line;
 
-    String raw;
+    private String raw;
 
-    String reason;
+    private String reason;
 
     Issue(Scriptable err) {
         reason = Util.stringValue("reason", err);
