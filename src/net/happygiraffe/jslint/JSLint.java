@@ -11,6 +11,12 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+/**
+ * A utility class to check JavaScript source code for potential problems.
+ * 
+ * @author dom
+ * @version $Id$
+ */
 public class JSLint {
 
     private static final String JSLINT_FILE = "fulljslint.js";
@@ -19,6 +25,13 @@ public class JSLint {
 
     private ScriptableObject scope;
 
+    /**
+     * Create a new {@link JSLint} object. This reads in the jslint JavaScript
+     * source as a resource.
+     * 
+     * @throws IOException
+     *                 if something went wrong reading jslint.js.
+     */
     public JSLint() throws IOException {
         ctx = Context.enter();
         scope = ctx.initStandardObjects();
@@ -27,6 +40,13 @@ public class JSLint {
         ctx.evaluateReader(scope, reader, JSLINT_FILE, 1, null);
     }
 
+    /**
+     * Check for problems in JavaScript source.
+     * 
+     * @param javaScript
+     *                a String of JavaScript source code.
+     * @return a {@link List} of {@link Issue}s describing any problems.
+     */
     public List<Issue> lint(String javaScript) {
         List<Issue> issues = new ArrayList<Issue>();
         scope.put("input", scope, javaScript);
