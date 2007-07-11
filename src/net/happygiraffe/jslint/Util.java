@@ -1,17 +1,16 @@
 package net.happygiraffe.jslint;
 
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.Undefined;
 
 class Util {
 
     static int intValue(String name, Scriptable scope) {
         Object o = scope.get(name, scope);
-        return o instanceof Undefined ? 0 : ((Double) o).intValue(); 
+        return o instanceof Number ? ((Number) o).intValue() : 0; 
     }
 
     static String stringValue(String name, Scriptable scope) {
         Object o = scope.get(name, scope);
-        return o instanceof Undefined ? null : (String) o;
+        return o instanceof String ? (String) o : null;
     }
 }
