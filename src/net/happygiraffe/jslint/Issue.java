@@ -28,7 +28,19 @@ public class Issue {
 
     private String reason;
 
+    private String systemId;
+
+    /**
+     * Create this issue with a systemId of "-".
+     * 
+     * @param err
+     */
     Issue(Scriptable err) {
+        this("-", err);
+    }
+
+    Issue(String systemId, Scriptable err) {
+        this.systemId = systemId;
         reason = Util.stringValue("reason", err);
         line = Util.intValue("line", err);
         character = Util.intValue("character", err);
@@ -104,11 +116,19 @@ public class Issue {
     }
 
     /**
+     * @return the name of the file this issue occurred in.
+     */
+    public String getSystemId() {
+        return systemId;
+    }
+
+    /**
      * Provide three fields from this issue, separated by colons: line,
      * character, reason.
      */
     @Override
     public String toString() {
-        return getLine() + ":" + getCharacter() + ":" + getReason();
+        return getSystemId() + ":" + getLine() + ":" + getCharacter() + ":"
+                + getReason();
     }
 }

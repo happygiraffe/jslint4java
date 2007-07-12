@@ -20,8 +20,8 @@ public class IssueTest extends TestCase {
         scope.put("reason", scope, "you broke it");
         scope.put("line", scope, 1);
         scope.put("character", scope, 1);
-        Issue issue = new Issue(scope);
-        assertEquals("1:1:you broke it", issue.toString());
+        Issue issue = new Issue("foo.js", scope);
+        assertEquals("foo.js:1:1:you broke it", issue.toString());
     }
 
     @Override
