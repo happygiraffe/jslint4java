@@ -103,4 +103,12 @@ public class Issue {
         return reason;
     }
 
+    /**
+     * Provide three fields from this issue, separated by colons: line,
+     * character, reason.
+     */
+    @Override
+    public String toString() {
+        return getLine() + ":" + getCharacter() + ":" + getReason();
+    }
 }
