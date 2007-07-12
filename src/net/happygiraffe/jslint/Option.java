@@ -28,7 +28,25 @@ public enum Option {
         this.description = description;
     }
     
+    /**
+     * Return a description of what this option affects.
+     */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Return the lowercase name of this option.
+     */
+    public String getLowerName() {
+        return name().toLowerCase();
+    }
+
+    /**
+     * Provide a JavaScript form of this option.
+     */
+    @Override
+    public String toString() {
+        return getLowerName() + ":true";
     }
 }
