@@ -1,5 +1,5 @@
 // jslint.js
-// 2007-05-25
+// 2007-07-01
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -71,7 +71,7 @@ SOFTWARE.
 
 /*jslint evil: true, nomen: false */
 
-Object.prototype.beget = function () {
+Object.prototype.begetObject = function () {
     function F() {}
     F.prototype = this;
     return new F();
@@ -242,6 +242,7 @@ JSLINT = function () {
     var globals;
     var inblock;
     var indent;
+    var jsonmode;
 
 // konfab contains the global names which are provided to a Yahoo
 // (fna Konfabulator) widget.
@@ -285,6 +286,7 @@ JSLINT = function () {
         preferences             : true,
         print                   : true,
         prompt                  : true,
+        random                  : true,
         reloadWidget            : true,
         resolvePath             : true,
         resumeUpdates           : true,
@@ -306,6 +308,7 @@ JSLINT = function () {
         unescape                : true,
         updateNow               : true,
         URL                     : true,
+        widget                  : true,
         Window                  : true,
         XMLDOM                  : true,
         XMLHttpRequest          : true,
@@ -319,6 +322,7 @@ JSLINT = function () {
     var nexttoken;
     var noreach;
     var option;
+    var prereg;
     var prevtoken;
     var quit;
     var rhino = {
@@ -342,7 +346,8 @@ JSLINT = function () {
     };
     var stack;
 
-// standard contains the global names that are provided by standard JavaScript.
+// standard contains the global names that are provided by the
+// ECMAScript standard.
 
     var standard = {
         Array               : true,
@@ -480,10 +485,7 @@ JSLINT = function () {
 // lexical analysis
 
     var lex = function () {
-        var character;
-        var from;
-        var line;
-        var s;
+        var character, from, line, s;
 
 // Private lex methods
 
@@ -500,15 +502,14 @@ JSLINT = function () {
 // Produce a token object.  The token inherits from a syntax symbol.
 
         function it(type, value) {
-            var t;
+            var i, t;
             if (option.adsafe &&
                     adsafe.hasOwnProperty(value.toLowerCase())) {
                 warning("Adsafe restricted word '{a}'.",
                         {line: line, from: character}, value);
             }
             if (type === '(punctuator)' ||
-                    (type === '(identifier)' &&
-                    syntax.hasOwnProperty(value))) {
+                    (type === '(identifier)' && syntax.hasOwnProperty(value))) {
                 t = syntax[value];
 
 // Mozilla bug workaround.
@@ -519,16 +520,20 @@ JSLINT = function () {
             } else {
                 t = syntax[type];
             }
-            t = t.beget();
-            if (value || type === '(string)') {
+            t = t.begetObject();
+            if (type === '(string)') {
                 if (/(javascript|jscript|ecmascript)\s*:/i.test(value)) {
                     warningAt("JavaScript URL.", line, from);
                 }
-                t.value = value;
             }
+            t.value = value;
             t.line = line;
             t.character = character;
             t.from = from;
+            i = t.id;
+            prereg = i &&
+                    (('(,=:[!&|?{};'.indexOf(i.charAt(i.length - 1)) >= 0) ||
+                    i === 'return');
             return t;
         }
 
@@ -556,11 +561,7 @@ JSLINT = function () {
 // token -- this is called by advance to get the next token.
 
             token: function () {
-                var c;
-                var i;
-                var l;
-                var r;
-                var t;
+                var c, d, i, l, r, t;
 
                 function match(x) {
                     var r = x.exec(s), r1;
@@ -586,6 +587,11 @@ JSLINT = function () {
                 function string(x) {
                     var c, j, r = '';
 
+                    if (jsonmode && x !== '"') {
+                        warningAt("Strings must use doublequote.",
+                                line, character);
+                    }
+
                     if (xmode === x || xmode === 'string') {
                         return it('(punctuator)', x);
                     }
@@ -593,7 +599,8 @@ JSLINT = function () {
                     function esc(n) {
                         var i = parseInt(s.substr(j + 1, n), 16);
                         j += n;
-                        if (i >= 32 && i <= 127) {
+                        if (i >= 32 && i <= 127 &&
+                                i !== 34 && i !== 92 && i !== 39) {
                             warningAt("Unnecessary escapement.", line, character);
                         }
                         character += n;
@@ -605,7 +612,7 @@ JSLINT = function () {
                         if (c === x) {
                             character += 1;
                             s = s.substr(j + 1);
-                            return it('(string)', r);
+                            return it('(string)', r, x);
                         }
                         if (c < ' ') {
                             if (c === '\n' || c === '\r') {
@@ -613,8 +620,11 @@ JSLINT = function () {
                             }
                             warningAt("Control character in string: {a}.",
                                     line, character + j, s.substring(0, j));
-                        }
-                        if (c === '\\') {
+                        } else if (c === '<') {
+                            if (s.charAt(j + 1) === '/' && xmode && xmode !== 'CDATA') {
+                                warningAt("Expected '<\\/' and instead saw '</'.", line, character);
+                            }
+                        } else if (c === '\\') {
                             j += 1;
                             character += 1;
                             c = s.charAt(j);
@@ -646,6 +656,9 @@ JSLINT = function () {
                                 c = '\v';
                                 break;
                             case 'x':
+                                if (jsonmode) {
+                                    warningAt("Avoid \\x-.", line, character);
+                                }
                                 esc(2);
                                 break;
                             default:
@@ -692,9 +705,15 @@ JSLINT = function () {
                             warningAt("Missing space after '{a}'.",
                                     line, character, t);
                         }
-                        if (c === '0' && t.substr(1,1).isDigit()) {
-                            warningAt("Don't use extra leading zeros '{a}'.",
-                                    line, character, t);
+                        if (c === '0') {
+                            d = t.substr(1, 1);
+                            if (d.isDigit()) {
+                                warningAt("Don't use extra leading zeros '{a}'.",
+                                        line, character, t);
+                            } else if (jsonmode && (d === 'x' || d === 'X')) {
+                                warningAt("Avoid 0x-. '{a}'.",
+                                        line, character, t);
+                            }
                         }
                         if (t.substr(t.length - 1) === '.') {
                             warningAt(
@@ -807,6 +826,20 @@ JSLINT = function () {
 
                     case '':
                         break;
+//      /
+                    case '/':
+                        if (prereg) {
+                            r = rx.exec(s);
+                            if (r) {
+                                c = r[0];
+                                l = c.length;
+                                character += l;
+                                s = s.substr(l);
+                                return it('(regex)', c);
+                            }
+                            errorAt("Bad regular expression.", line, character);
+                        }
+                        return it('(punctuator)', t);
 
 //      punctuator
 
@@ -847,22 +880,6 @@ JSLINT = function () {
                     }
                 }
                 return false;
-            },
-
-// regex -- this is called by parse when it sees '/' being used as a prefix.
-
-            regex: function () {
-                var l;
-                var r = rx.exec(s);
-                var x;
-                if (r) {
-                    l = r[0].length;
-                    character += l;
-                    s = s.substr(l);
-                    x = r[1];
-                    return it('(regex)', x);
-                }
-                errorAt("Bad regular expression.", line, character);
             }
         };
     }();
@@ -917,11 +934,8 @@ JSLINT = function () {
 //     for ( var i = ...
 
     function peek(p) {
-        var i = p || 0, j = 0;
-        var t;
-/****        if (nexttoken === syntax['(error)']) {
-            return nexttoken;
-        }****/
+        var i = p || 0, j = 0, t;
+
         while (j <= i) {
             t = lookahead[j];
             if (!t) {
@@ -966,7 +980,7 @@ JSLINT = function () {
             anonname = token.value;
         }
 
-        if (id && nexttoken.value !== id) {
+        if (id && nexttoken.id !== id) {
             if (t) {
                 if (nexttoken.id === '(end)') {
                     warning("Unmatched '{a}'.", t, t.id);
@@ -1050,11 +1064,6 @@ JSLINT = function () {
     }
 
 
-    function advanceregex() {
-        nexttoken = lex.regex();
-    }
-
-
     function beginfunction(i) {
         var f = {
             '(name)': i,
@@ -1090,14 +1099,6 @@ JSLINT = function () {
         var l;
         var left;
         var o;
-        if (nexttoken.id && nexttoken.id === '/') {
-            if ('(=:,!?[&|'.indexOf(token.id.charAt(0)) < 0) {
-                warning(
-"Expected to see a '(' or '=' or ':' or ',' or '[' preceding a regular expression literal, and instead saw '{a}'.",
-                        token, token.value);
-            }
-            advanceregex();
-        }
         if (nexttoken.id === '(end)') {
             error("Unexpected early end of program.", token);
         }
@@ -1729,153 +1730,153 @@ JSLINT = function () {
                 return x && x.script && 'script';
             },
             tag: {
-                "about-box": {parent: ' widget '},
-                "about-image": {parent: ' about-box '},
-                "about-text": {parent: ' about-box '},
-                "about-version": {parent: ' about-box '},
-                action: {parent: ' widget ', script: true},
-                alignment: {parent: ' canvas frame image scrollbar text textarea window '},
-                anchorStyle: {parent: ' text '},
-                author: {parent: ' widget '},
-                autoHide: {parent: ' scrollbar '},
-                beget: {parent: ' canvas frame image scrollbar text window '},
-                bgColor: {parent: ' text textarea '},
-                bgColour: {parent: ' text textarea '},
-                bgOpacity: {parent: ' text textarea '},
-                canvas: {parent: ' frame window '},
-                checked: {parent: ' image menuItem '},
-                clipRect: {parent: ' image '},
-                color: {parent: ' about-text about-version shadow text textarea '},
-                colorize: {parent: ' image '},
-                colour: {parent: ' about-text about-version shadow text textarea '},
-                columns: {parent: ' textarea '},
-                company: {parent: ' widget '},
-                contextMenuItems: {parent: ' canvas frame image scrollbar text textarea window '},
-                copyright: {parent: ' widget '},
-                data: {parent: ' about-text about-version text textarea '},
-                debug: {parent: ' widget '},
-                defaultValue: {parent: ' preference '},
-                defaultTracking: {parent: ' widget '},
-                description: {parent: ' preference '},
-                directory: {parent: ' preference '},
-                editable: {parent: ' textarea '},
-                enabled: {parent: ' menuItem '},
-                extension: {parent: ' preference '},
-                file: {parent: ' action preference '},
-                fillMode: {parent: ' image '},
-                font: {parent: ' about-text about-version text textarea '},
-                fontStyle: {parent: ' textarea '},
-                frame: {parent: ' frame window '},
-                group: {parent: ' preference '},
-                hAlign: {parent: ' canvas frame image scrollbar text textarea '},
-                handleLinks: {parent: ' textArea '},
-                height: {parent: ' canvas frame image scrollbar text textarea window '},
-                hidden: {parent: ' preference '},
-                hLineSize: {parent: ' frame '},
-                hOffset: {parent: ' about-text about-version canvas frame image scrollbar shadow text textarea window '},
-                hotkey: {parent: ' widget '},
-                hRegistrationPoint: {parent: ' canvas frame image scrollbar text '},
-                hScrollBar: {parent: ' frame '},
-                hslAdjustment: {parent: ' image '},
-                hslTinting: {parent: ' image '},
-                icon: {parent: ' preferenceGroup '},
-                id: {parent: ' canvas frame hotkey image preference text textarea timer scrollbar widget window '},
-                image: {parent: ' about-box frame window widget '},
-                interval: {parent: ' action timer '},
-                key: {parent: ' hotkey '},
-                kind: {parent: ' preference '},
-                level: {parent: ' window '},
-                lines: {parent: ' textarea '},
-                loadingSrc: {parent: ' image '},
-                locked: {parent: ' window '},
-                max: {parent: ' scrollbar '},
-                maxLength: {parent: ' preference '},
-                menuItem: {parent: ' contextMenuItems '},
-                min: {parent: ' scrollbar '},
-                minimumVersion: {parent: ' widget '},
-                minLength: {parent: ' preference '},
-                missingSrc: {parent: ' image '},
-                modifier: {parent: ' hotkey '},
-                name: {parent: ' canvas frame hotkey image preference preferenceGroup scrollbar text textarea timer widget window '},
-                notSaved: {parent: ' preference '},
-                onClick: {parent: ' canvas frame image scrollbar text textarea ', script: true},
-                onContextMenu: {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onDragDrop: {parent: ' canvas frame image scrollbar text textarea ', script: true},
-                onDragEnter: {parent: ' canvas frame image scrollbar text textarea ', script: true},
-                onDragExit: {parent: ' canvas frame image scrollbar text textarea ', script: true},
-                onFirstDisplay: {parent: ' window ', script: true},
-                onGainFocus: {parent: ' textarea window ', script: true},
-                onKeyDown: {parent: ' hotkey text textarea window ', script: true},
-                onKeyPress: {parent: ' textarea window ', script: true},
-                onKeyUp: {parent: ' hotkey text textarea window ', script: true},
-                onImageLoaded: {parent: ' image ', script: true},
-                onLoseFocus: {parent: ' textarea window ', script: true},
-                onMouseDown: {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onMouseDrag: {parent: ' canvas frame image scrollbar text textArea window ', script: true},
-                onMouseEnter: {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onMouseExit: {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onMouseMove: {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onMouseUp: {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onMouseWheel: {parent: ' frame ', script: true},
-                onMultiClick: {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onSelect: {parent: ' menuItem ', script: true},
-                onTextInput: {parent: ' window ', script: true},
-                onTimerFired: {parent: ' timer ', script: true},
-                onValueChanged: {parent: ' scrollbar ', script: true},
-                opacity: {parent: ' canvas frame image scrollbar shadow text textarea window '},
-                option: {parent: ' preference widget '},
-                optionValue: {parent: ' preference '},
-                order: {parent: ' preferenceGroup '},
-                orientation: {parent: ' scrollbar '},
-                pageSize: {parent: ' scrollbar '},
-                preference: {parent: ' widget '},
-                preferenceGroup: {parent: ' widget '},
-                remoteAsync: {parent: ' image '},
-                requiredPlatform: {parent: ' widget '},
-                root: {parent: ' window '},
-                rotation: {parent: ' canvas frame image scrollbar text '},
-                scrollbar: {parent: ' frame text textarea window '},
-                scrolling: {parent: ' text '},
-                scrollX: {parent: ' frame '},
-                scrollY: {parent: ' frame '},
-                secure: {parent: ' preference textarea '},
-                shadow: {parent: ' about-text about-version text window '},
-                size: {parent: ' about-text about-version text textarea '},
-                spellcheck: {parent: ' textarea '},
-                src: {parent: ' image '},
-                srcHeight: {parent: ' image '},
-                srcWidth: {parent: ' image '},
-                style: {parent: ' about-text about-version canvas frame image preference scrollbar text textarea window '},
-                subviews: {parent: ' frame '},
-                superview: {parent: ' canvas frame image scrollbar text textarea '},
-                text: {parent: ' frame text textarea window '},
-                textarea: {parent: ' frame window '},
-                timer: {parent: ' widget '},
-                thumbColor: {parent: ' scrollbar textarea '},
-                ticking: {parent: ' timer '},
-                ticks: {parent: ' preference '},
-                tickLabel: {parent: ' preference '},
-                tileOrigin: {parent: ' image '},
-                title: {parent: ' menuItem preference preferenceGroup window '},
-                tooltip: {parent: ' image text textarea '},
-                tracking: {parent: ' canvas image '},
-                trigger: {parent: ' action '},
-                truncation: {parent: ' text '},
-                type: {parent: ' preference '},
-                url: {parent: ' about-box about-text about-version '},
-                useFileIcon: {parent: ' image '},
-                vAlign: {parent: ' canvas frame image scrollbar text textarea '},
-                value: {parent: ' preference scrollbar '},
-                version: {parent: ' widget '},
-                visible: {parent: ' canvas frame image scrollbar text textarea window '},
-                vLineSize: {parent: ' frame '},
-                vOffset: {parent: ' about-text about-version canvas frame image scrollbar shadow text textarea window '},
-                vRegistrationPoint: {parent: ' canvas frame image scrollbar text '},
-                vScrollBar: {parent: ' frame '},
-                width: {parent: ' canvas frame image scrollbar text textarea window '},
-                window: {parent: ' canvas frame image scrollbar text textarea widget '},
-                wrap: {parent: ' text '},
-                zOrder: {parent: ' canvas frame image scrollbar text textarea window '}
+                "about-box":            {parent: ' widget '},
+                "about-image":          {parent: ' about-box '},
+                "about-text":           {parent: ' about-box '},
+                "about-version":        {parent: ' about-box '},
+                action:                 {parent: ' widget ', script: true},
+                alignment:              {parent: ' canvas frame image scrollbar text textarea window '},
+                anchorStyle:            {parent: ' text '},
+                author:                 {parent: ' widget '},
+                autoHide:               {parent: ' scrollbar '},
+                beget:                  {parent: ' canvas frame image scrollbar text window '},
+                bgColor:                {parent: ' text textarea '},
+                bgColour:               {parent: ' text textarea '},
+                bgOpacity:              {parent: ' text textarea '},
+                canvas:                 {parent: ' frame window '},
+                checked:                {parent: ' image menuItem '},
+                clipRect:               {parent: ' image '},
+                color:                  {parent: ' about-text about-version shadow text textarea '},
+                colorize:               {parent: ' image '},
+                colour:                 {parent: ' about-text about-version shadow text textarea '},
+                columns:                {parent: ' textarea '},
+                company:                {parent: ' widget '},
+                contextMenuItems:       {parent: ' canvas frame image scrollbar text textarea window '},
+                copyright:              {parent: ' widget '},
+                data:                   {parent: ' about-text about-version text textarea '},
+                debug:                  {parent: ' widget '},
+                defaultValue:           {parent: ' preference '},
+                defaultTracking:        {parent: ' widget '},
+                description:            {parent: ' preference '},
+                directory:              {parent: ' preference '},
+                editable:               {parent: ' textarea '},
+                enabled:                {parent: ' menuItem '},
+                extension:              {parent: ' preference '},
+                file:                   {parent: ' action preference '},
+                fillMode:               {parent: ' image '},
+                font:                   {parent: ' about-text about-version text textarea '},
+                fontStyle:              {parent: ' textarea '},
+                frame:                  {parent: ' frame window '},
+                group:                  {parent: ' preference '},
+                hAlign:                 {parent: ' canvas frame image scrollbar text textarea '},
+                handleLinks:            {parent: ' textArea '},
+                height:                 {parent: ' canvas frame image scrollbar text textarea window '},
+                hidden:                 {parent: ' preference '},
+                hLineSize:              {parent: ' frame '},
+                hOffset:                {parent: ' about-text about-version canvas frame image scrollbar shadow text textarea window '},
+                hotkey:                 {parent: ' widget '},
+                hRegistrationPoint:     {parent: ' canvas frame image scrollbar text '},
+                hScrollBar:             {parent: ' frame '},
+                hslAdjustment:          {parent: ' image '},
+                hslTinting:             {parent: ' image '},
+                icon:                   {parent: ' preferenceGroup '},
+                id:                     {parent: ' canvas frame hotkey image preference text textarea timer scrollbar widget window '},
+                image:                  {parent: ' about-box frame window widget '},
+                interval:               {parent: ' action timer '},
+                key:                    {parent: ' hotkey '},
+                kind:                   {parent: ' preference '},
+                level:                  {parent: ' window '},
+                lines:                  {parent: ' textarea '},
+                loadingSrc:             {parent: ' image '},
+                locked:                 {parent: ' window '},
+                max:                    {parent: ' scrollbar '},
+                maxLength:              {parent: ' preference '},
+                menuItem:               {parent: ' contextMenuItems '},
+                min:                    {parent: ' scrollbar '},
+                minimumVersion:         {parent: ' widget '},
+                minLength:              {parent: ' preference '},
+                missingSrc:             {parent: ' image '},
+                modifier:               {parent: ' hotkey '},
+                name:                   {parent: ' canvas frame hotkey image preference preferenceGroup scrollbar text textarea timer widget window '},
+                notSaved:               {parent: ' preference '},
+                onClick:                {parent: ' canvas frame image scrollbar text textarea ', script: true},
+                onContextMenu:          {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onDragDrop:             {parent: ' canvas frame image scrollbar text textarea ', script: true},
+                onDragEnter:            {parent: ' canvas frame image scrollbar text textarea ', script: true},
+                onDragExit:             {parent: ' canvas frame image scrollbar text textarea ', script: true},
+                onFirstDisplay:         {parent: ' window ', script: true},
+                onGainFocus:            {parent: ' textarea window ', script: true},
+                onKeyDown:              {parent: ' hotkey text textarea window ', script: true},
+                onKeyPress:             {parent: ' textarea window ', script: true},
+                onKeyUp:                {parent: ' hotkey text textarea window ', script: true},
+                onImageLoaded:          {parent: ' image ', script: true},
+                onLoseFocus:            {parent: ' textarea window ', script: true},
+                onMouseDown:            {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onMouseDrag:            {parent: ' canvas frame image scrollbar text textArea window ', script: true},
+                onMouseEnter:           {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onMouseExit:            {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onMouseMove:            {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onMouseUp:              {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onMouseWheel:           {parent: ' frame ', script: true},
+                onMultiClick:           {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onSelect:               {parent: ' menuItem ', script: true},
+                onTextInput:            {parent: ' window ', script: true},
+                onTimerFired:           {parent: ' timer ', script: true},
+                onValueChanged:         {parent: ' scrollbar ', script: true},
+                opacity:                {parent: ' canvas frame image scrollbar shadow text textarea window '},
+                option:                 {parent: ' preference widget '},
+                optionValue:            {parent: ' preference '},
+                order:                  {parent: ' preferenceGroup '},
+                orientation:            {parent: ' scrollbar '},
+                pageSize:               {parent: ' scrollbar '},
+                preference:             {parent: ' widget '},
+                preferenceGroup:        {parent: ' widget '},
+                remoteAsync:            {parent: ' image '},
+                requiredPlatform:       {parent: ' widget '},
+                root:                   {parent: ' window '},
+                rotation:               {parent: ' canvas frame image scrollbar text '},
+                scrollbar:              {parent: ' frame text textarea window '},
+                scrolling:              {parent: ' text '},
+                scrollX:                {parent: ' frame '},
+                scrollY:                {parent: ' frame '},
+                secure:                 {parent: ' preference textarea '},
+                shadow:                 {parent: ' about-text about-version text window '},
+                size:                   {parent: ' about-text about-version text textarea '},
+                spellcheck:             {parent: ' textarea '},
+                src:                    {parent: ' image '},
+                srcHeight:              {parent: ' image '},
+                srcWidth:               {parent: ' image '},
+                style:                  {parent: ' about-text about-version canvas frame image preference scrollbar text textarea window '},
+                subviews:               {parent: ' frame '},
+                superview:              {parent: ' canvas frame image scrollbar text textarea '},
+                text:                   {parent: ' frame text textarea window '},
+                textarea:               {parent: ' frame window '},
+                timer:                  {parent: ' widget '},
+                thumbColor:             {parent: ' scrollbar textarea '},
+                ticking:                {parent: ' timer '},
+                ticks:                  {parent: ' preference '},
+                tickLabel:              {parent: ' preference '},
+                tileOrigin:             {parent: ' image '},
+                title:                  {parent: ' menuItem preference preferenceGroup window '},
+                tooltip:                {parent: ' frame image text textarea '},
+                tracking:               {parent: ' canvas image '},
+                trigger:                {parent: ' action '},
+                truncation:             {parent: ' text '},
+                type:                   {parent: ' preference '},
+                url:                    {parent: ' about-box about-text about-version '},
+                useFileIcon:            {parent: ' image '},
+                vAlign:                 {parent: ' canvas frame image scrollbar text textarea '},
+                value:                  {parent: ' preference scrollbar '},
+                version:                {parent: ' widget '},
+                visible:                {parent: ' canvas frame image scrollbar text textarea window '},
+                vLineSize:              {parent: ' frame '},
+                vOffset:                {parent: ' about-text about-version canvas frame image scrollbar shadow text textarea window '},
+                vRegistrationPoint:     {parent: ' canvas frame image scrollbar text '},
+                vScrollBar:             {parent: ' frame '},
+                width:                  {parent: ' canvas frame image scrollbar text textarea window '},
+                window:                 {parent: ' canvas frame image scrollbar text textarea widget '},
+                wrap:                   {parent: ' text '},
+                zOrder:                 {parent: ' canvas frame image scrollbar text textarea window '}
             }
         }
     };
@@ -1914,12 +1915,7 @@ JSLINT = function () {
     }
 
     function xml() {
-        var a;
-        var e;
-        var n;
-        var q;
-        var t;
-        var v;
+        var a, e, n, q, t;
         xmode = 'xml';
         stack = null;
         for (;;) {
@@ -2203,7 +2199,7 @@ JSLINT = function () {
     assignop('-=', 'assignsub', 20);
     assignop('*=', 'assignmult', 20);
     assignop('/=', 'assigndiv', 20).nud = function () {
-        warning("A regular expression literal can be confused with '/='.");
+        error("A regular expression literal can be confused with '/='.");
     };
     assignop('%=', 'assignmod', 20);
     bitwiseassignop('&=', 'assignbitand', 20);
@@ -2238,7 +2234,6 @@ JSLINT = function () {
     });
     relation('===');
     relation('!=', function (left, right) {
-        var t = nexttoken;
         if (option.eqeqeq) {
             warning("Expected '{a}' and instead saw '{b}'.",
                     this, '!==', '!=');
@@ -2389,7 +2384,7 @@ JSLINT = function () {
         if (left && left.type === '(identifier)') {
             if (left.value.match(/^[A-Z](.*[a-z].*)?$/)) {
                 if (left.value !== 'Number' && left.value !== 'String' &&
-                        left.value !== 'Date') {
+                        left.value !== 'Boolean' && left.value !== 'Date') {
                     warning("Missing 'new' prefix when invoking a constructor.",
                             left);
                 }
@@ -2403,6 +2398,7 @@ JSLINT = function () {
                     break;
                 }
                 advance(',');
+                nonadjacent(token, nexttoken);
             }
         }
         advance(')');
@@ -2506,10 +2502,6 @@ JSLINT = function () {
                         i = nexttoken.value;
                         if (ix.test(i)) {
                             s = syntax[i];
-                            if (!s || !s.reserved) {
-                                warning("'{a}' is better written without quotes.",
-                                        nexttoken, i);
-                            }
                         }
                         advance();
                     } else if (nexttoken.id === '(number)') {
@@ -2554,21 +2546,28 @@ JSLINT = function () {
 // will keep an inblock flag, which will be set when we enter a block, and
 // cleared when we enter a function.
 
-        var c, i, n, v;
         if (inblock) {
             warning("{b} {a} declared in a block.",
                     nexttoken, nexttoken.value, 'variable');
         }
         for (;;) {
             nonadjacent(token, nexttoken);
-            n = identifier();
-            addlabel(n, 'var');
+            addlabel(identifier(), 'var');
             if (nexttoken.id === '=') {
-                v = token;
-                nonadjacent(token, nexttoken);
-                advance('=');
-                nonadjacent(token, nexttoken);
-                parse(20);
+                for (;;) {
+                    nonadjacent(token, nexttoken);
+                    advance('=');
+                    nonadjacent(token, nexttoken);
+                    if (peek(0).id === '=') {
+                        warning("Variable {a} was not declared correctly.",
+                                nexttoken, nexttoken.value);
+                        advance();
+                        addlabel(token.value, 'global');
+                    } else {
+                        parse(20);
+                        break;
+                    }
+                }
             }
             if (nexttoken.id !== ',') {
                 return;
@@ -2576,7 +2575,6 @@ JSLINT = function () {
             adjacent(token, nexttoken);
             advance(',');
             nonadjacent(token, nexttoken);
-            c = true;
         }
     }
 
@@ -2599,6 +2597,7 @@ JSLINT = function () {
             addlabel(identifier(), 'parameter');
             if (nexttoken.id === ',') {
                 advance(',');
+                nonadjacent(token, nexttoken);
             } else {
                 advance(')', t);
                 return;
@@ -2936,6 +2935,89 @@ JSLINT = function () {
     reserve('volatile');
 
 
+    function jsonValue() {
+
+        function jsonObject() {
+            var t = nexttoken;
+            advance('{');
+            if (nexttoken.id !== '}') {
+                for (;;) {
+                    if (nexttoken.id === '(end)') {
+                        error("Missing '}' to match '{' from line {a}.",
+                                nexttoken, t.line + 1);
+                    } else if (nexttoken.id === '}') {
+                        warning("Unexpected comma.", token);
+                        break;
+                    } else if (nexttoken.id === ',') {
+                        error("Unexpected comma.", nexttoken);
+                    } else if (nexttoken.id !== '(string)') {
+                        warning("Expected a string and instead saw {a}.",
+                                nexttoken, nexttoken.value);
+                    }
+                    advance();
+                    advance(':');
+                    jsonValue();
+                    if (nexttoken.id !== ',') {
+                        break;
+                    }
+                    advance(',');
+                }
+            }
+            advance('}');
+        }
+
+        function jsonArray() {
+            var t = nexttoken;
+            advance('[');
+            if (nexttoken.id !== ']') {
+                for (;;) {
+                    if (nexttoken.id === '(end)') {
+                        error("Missing ']' to match '[' from line {a}.",
+                                nexttoken, t.line + 1);
+                    } else if (nexttoken.id === ']') {
+                        warning("Unexpected comma.", token);
+                        break;
+                    } else if (nexttoken.id === ',') {
+                        error("Unexpected comma.", nexttoken);
+                    }
+                    jsonValue();
+                    if (nexttoken.id !== ',') {
+                        break;
+                    }
+                    advance(',');
+                }
+            }
+            advance(']');
+        }
+
+        switch (nexttoken.id) {
+        case '{':
+            jsonObject();
+            break;
+        case '[':
+            jsonArray();
+            break;
+        case 'true':
+        case 'false':
+        case 'null':
+        case '(number)':
+        case '(string)':
+            advance();
+            break;
+        case '-':
+            advance('-');
+            if (token.character !== nexttoken.from) {
+                warning("Unexpected space after '-'.", token);
+            }
+            adjacent(token, nexttoken);
+            advance('(number)');
+            break;
+        default:
+            error("Expected a JSON value.", nexttoken);
+        }
+    }
+
+
 // The actual JSLINT function itself.
 
     var itself = function (s, o) {
@@ -2952,14 +3034,20 @@ JSLINT = function () {
         lookahead = [];
         inblock = false;
         indent = 0;
+        jsonmode = false;
         warnings = 0;
         lex.init(s);
+        prereg = true;
 
         prevtoken = token = nexttoken = syntax['(begin)'];
         try {
             advance();
             if (nexttoken.value.charAt(0) === '<') {
                 xml();
+            } else if (nexttoken.id === '{' || nexttoken.id === '[') {
+                option.laxbreak = true;
+                jsonmode = true;
+                jsonValue();
             } else {
                 statements();
             }
@@ -2981,15 +3069,7 @@ JSLINT = function () {
 // Report generator.
 
     itself.report = function (option) {
-        var a = [];
-        var c;
-        var cc;
-        var f;
-        var i;
-        var k;
-        var o = [];
-        var s;
-        var v;
+        var a = [], c, cc, f, i, k, o = [], s, v;
 
         function detail(h) {
             if (s.length) {
@@ -3030,8 +3110,12 @@ JSLINT = function () {
                 o.push(
                  '<table><tbody><tr><th>Members</th><th>Occurrences</th></tr>');
                 for (i = 0; i < a.length; i += 1) {
-                    o.push('<tr><td><tt>', a[i], '</tt></td><td>', member[a[i]],
-                            '</td></tr>');
+                    o.push('<tr><td><tt>', a[i].replace(/([\x00-\x1f\\"])/g, function (a, b) {
+                        var c = b.charCodeAt();
+                        return '\\u00' +
+                            Math.floor(c / 16).toString(16) +
+                            (c % 16).toString(16);
+                    }), '</tt></td><td>', member[a[i]], '</td></tr>');
                 }
                 o.push('</tbody></table>');
             }
