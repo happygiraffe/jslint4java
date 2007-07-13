@@ -65,8 +65,8 @@ class Util {
         StringBuffer sb = new StringBuffer();
         sb.append("{");
         for (Option o : options) {
-            sb.append(o.toString());
-            sb.append(",");
+            sb.append(o.getLowerName());
+            sb.append(":true,");
         }
         if (sb.charAt(sb.length() - 1) == ',') {
             sb.deleteCharAt(sb.length() - 1);
