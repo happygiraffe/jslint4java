@@ -74,20 +74,6 @@ public class JSLint {
         return issues;
     }
 
-    private String optionsToObjectLiteral() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("{");
-        for (Option o : options) {
-            sb.append(o.toString());
-            sb.append(",");
-        }
-        if (sb.charAt(sb.length() - 1) == ',') {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        sb.append("}");
-        return sb.toString();
-    }
-
     private void readErrors(List<Issue> issues) {
         Scriptable JSLINT = (Scriptable) scope.get("JSLINT", scope);
         Scriptable errors = (Scriptable) JSLINT.get("errors", JSLINT);
@@ -99,7 +85,8 @@ public class JSLint {
     }
 
     private void setJavaScriptOptions(String name) {
-        String js = "var " + name + " = " + optionsToObjectLiteral();
+        String js = "var " + name + " = "
+                + Util.optionSetToObjectLiteral(options);
         ctx.evaluateString(scope, js, "-", 1, null);
     }
 
