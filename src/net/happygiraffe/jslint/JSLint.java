@@ -55,6 +55,23 @@ public class JSLint {
     }
 
     /**
+     * Check for problems in a {@link Reader} which contains JavaScript source.
+     * 
+     * @param reader
+     *                a {@link Reader} over JavaScript source code.
+     * @return a {@link List} of {@link Issue}s describing any problems.
+     * @throws IOException
+     */
+    public List<Issue> lint(Reader reader) throws IOException {
+        StringBuffer sb = new StringBuffer();
+        int c;
+        while ((c = reader.read()) != -1) {
+            sb.append((char) c);
+        }
+        return lint(sb.toString());
+    }
+
+    /**
      * Check for problems in JavaScript source.
      * 
      * @param javaScript

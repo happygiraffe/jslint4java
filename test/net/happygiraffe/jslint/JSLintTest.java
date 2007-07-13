@@ -3,6 +3,8 @@
 package net.happygiraffe.jslint;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -16,29 +18,37 @@ public class JSLintTest extends TestCase {
         lint = new JSLint();
     }
     
+    public void testEmptySource() throws Exception {
+        List<Issue> issues = lint.lint("");
+        assertNotNull(issues);
+        assertEquals(0, issues.size());
+    }
+
+    public void testLintReader() throws Exception {
+        Reader reader = new StringReader("var foo = 1");
+        List<Issue> issues = lint.lint(reader);
+        assertNotNull(issues);
+        assertEquals(1, issues.size());
+        assertEquals("Missing semicolon.", issues.get(0).getReason());
+    }
+    
     public void testNoProblems() throws IOException {
         List<Issue> problems = lint.lint("var foo = 1;");
         assertEquals(0, problems.size());
     }
 
+    public void testNullSource() throws Exception {
+        List<Issue> issues = lint.lint((String)null);
+        assertNotNull(issues);
+        assertEquals(0, issues.size());
+    }
+    
     public void testOneProblem() throws IOException {
         // There is a missing semicolon here.
         List<Issue> problems = lint.lint("var foo = 1");
         assertEquals(1, problems.size());
         Issue issue = problems.get(0);
         assertEquals("Missing semicolon.", issue.getReason());
-    }
-    
-    public void testNullSource() throws Exception {
-        List<Issue> issues = lint.lint(null);
-        assertNotNull(issues);
-        assertEquals(0, issues.size());
-    }
-
-    public void testEmptySource() throws Exception {
-        List<Issue> issues = lint.lint("");
-        assertNotNull(issues);
-        assertEquals(0, issues.size());
     }
     
     public void testSetOption() throws Exception {
