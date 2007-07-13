@@ -13,7 +13,7 @@ public class OptionTest extends TestCase {
     }
     
     public void testToString() throws Exception {
-        assertEquals("evil:true", Option.EVIL.toString());
+        assertEquals("evil[if eval should be allowed]", Option.EVIL.toString());
     }
     
 }
