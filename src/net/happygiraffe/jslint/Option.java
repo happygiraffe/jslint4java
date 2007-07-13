@@ -47,6 +47,6 @@ public enum Option {
      */
     @Override
     public String toString() {
-        return getLowerName() + ":true";
+        return getLowerName() + "[" + getDescription() + "]";
     }
 }
