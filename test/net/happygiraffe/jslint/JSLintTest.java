@@ -40,4 +40,15 @@ public class JSLintTest extends TestCase {
         assertNotNull(issues);
         assertEquals(0, issues.size());
     }
+    
+    public void testSetOption() throws Exception {
+        String eval_js = "eval('1');";
+        // should be disallowed by default.
+        List<Issue> issues = lint.lint(eval_js);
+        assertEquals("evil disallowed", 1, issues.size());
+        // Now should be a problem.
+        lint.addOption(Option.EVIL);
+        issues = lint.lint(eval_js);
+        assertEquals("evil allowed", 0, issues.size());
+    }
 }

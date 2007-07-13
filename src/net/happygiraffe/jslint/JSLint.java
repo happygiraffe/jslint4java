@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -22,6 +24,8 @@ public class JSLint {
     private static final String JSLINT_FILE = "fulljslint.js";
 
     private Context ctx;
+
+    private Set<Option> options = EnumSet.noneOf(Option.class);
 
     private ScriptableObject scope;
 
@@ -41,6 +45,16 @@ public class JSLint {
     }
 
     /**
+     * Add an option to change the behaviour of the lint.
+     * 
+     * @param o
+     *                Any {@link Option}.
+     */
+    public void addOption(Option o) {
+        options.add(o);
+    }
+
+    /**
      * Check for problems in JavaScript source.
      * 
      * @param javaScript
@@ -50,13 +64,28 @@ public class JSLint {
     public List<Issue> lint(String javaScript) {
         List<Issue> issues = new ArrayList<Issue>();
         scope.put("input", scope, javaScript == null ? "" : javaScript);
-        String check = "JSLINT(input,{})";
+        setJavaScriptOptions("options");
+        String check = "JSLINT(input, options)";
         Boolean ok = (Boolean) ctx.evaluateString(scope, check, "lint()", 1,
                 null);
         if (!ok.booleanValue()) {
             readErrors(issues);
         }
         return issues;
+    }
+
+    private String optionsToObjectLiteral() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("{");
+        for (Option o : options) {
+            sb.append(o.toString());
+            sb.append(",");
+        }
+        if (sb.charAt(sb.length() - 1) == ',') {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        sb.append("}");
+        return sb.toString();
     }
 
     private void readErrors(List<Issue> issues) {
@@ -67,6 +96,11 @@ public class JSLint {
             Scriptable err = (Scriptable) errors.get(i, errors);
             issues.add(new Issue(err));
         }
+    }
+
+    private void setJavaScriptOptions(String name) {
+        String js = "var " + name + " = " + optionsToObjectLiteral();
+        ctx.evaluateString(scope, js, "-", 1, null);
     }
 
 }
