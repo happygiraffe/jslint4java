@@ -38,7 +38,7 @@
 
 	<target name="compile-tests" depends="compile">
 		<javac srcdir="${test.dir}" destdir="${build.test.dir}" debug="on">
-			<classpath refid="lib" />
+			<classpath refid="test" />
 		</javac>
 	</target>
 
@@ -71,3 +71,4 @@
 	</target>
 
 </project>
+<!-- vim: set ai noet sw=4 : -->
