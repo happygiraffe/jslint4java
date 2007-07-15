@@ -43,7 +43,7 @@
 	</target>
 
 	<target name="test" depends="compile-tests">
-		<junit printsummary="yes" haltonfailure="yes">
+		<junit printsummary="no" haltonfailure="yes">
 			<classpath refid="test" />
 			<formatter type="brief" usefile="no" />
 			<batchtest>
