@@ -30,6 +30,6 @@ The output is colon separated fields.  The fields are:
 
 If you have any comments or queries, please send them to dom [at] happygiraffe.net.
 
-This software is licenced under the BSD licence.
+This software is licenced under the BSD licence (see LICENCE.txt).
 
 @(#) $Id$
