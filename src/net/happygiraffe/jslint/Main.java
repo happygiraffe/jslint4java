@@ -23,16 +23,22 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        JSLint lint = new JSLint();
-        lint.addOption(Option.EQEQEQ);
-        lint.addOption(Option.UNDEF);
-        lint.addOption(Option.WHITE);
+        Main main = new Main();
         for (String file : args) {
-            lintFile(lint, file);
+            main.lintFile(file);
         }
     }
 
-    private static void lintFile(JSLint lint, String file) throws IOException {
+    private JSLint lint;
+
+    private Main() throws IOException {
+        lint = new JSLint();
+        lint.addOption(Option.EQEQEQ);
+        lint.addOption(Option.UNDEF);
+        lint.addOption(Option.WHITE);
+    }
+
+    private void lintFile(String file) throws IOException {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     new FileInputStream(file)));
