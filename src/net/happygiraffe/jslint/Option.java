@@ -89,6 +89,17 @@ public enum Option {
     public String getLowerName() {
         return name().toLowerCase();
     }
+    
+    public static int maximumNameLength() {
+        int maxOptLen = 0;
+        for (Option o : values()) {
+            int len = o.name().length();
+            if (len > maxOptLen) {
+                maxOptLen = len;
+            }
+        }
+        return maxOptLen;
+    }
 
     /**
      * Show this option and its description.

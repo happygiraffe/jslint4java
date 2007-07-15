@@ -16,4 +16,9 @@ public class OptionTest extends TestCase {
         assertEquals("evil[if eval should be allowed]", Option.EVIL.toString());
     }
     
+    // This is useful for formatting lists of options...
+    public void testMaximumNameLength() throws Exception {
+        assertEquals(8, Option.maximumNameLength());
+    }
+    
 }
