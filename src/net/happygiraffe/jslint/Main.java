@@ -49,8 +49,13 @@ public class Main {
         lint.addOption(o);
     }
 
+    private void die(String message) {
+        System.err.println(PROGNAME + ": " + message);
+        System.exit(1);
+    }
+
     private void err(String message) {
-        System.err.println(PROGNAME + ":" + message);
+        System.out.println(PROGNAME + ":" + message);
         setErrored(true);
     }
 
@@ -82,7 +87,7 @@ public class Main {
                 err(issue.toString());
             }
         } catch (FileNotFoundException e) {
-            err(file + ":No such file or directory.");
+            die(file + ": No such file or directory.");
         }
     }
 
@@ -108,8 +113,7 @@ public class Main {
                 try {
                     addOption(Option.valueOf(arg.substring(2).toUpperCase()));
                 } catch (IllegalArgumentException e) {
-                    err("unknown option " + arg);
-                    System.exit(2);
+                    die("unknown option " + arg);
                 }
             }
             // File
