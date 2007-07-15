@@ -53,9 +53,9 @@
 	</target>
 
 	<target name="dist" depends="compile">
-		<jar destfile="${dist.dir}/jslint.jar" basedir="${build.main.dir}" />
+		<jar destfile="${dist.dir}/jslint.jar" basedir="${build.main.dir}" manifest="${src.dir}/META-INF/MANIFEST.MF" />
 	</target>
-	
+
 	<target name="doc" depends="init">
 		<javadoc sourcepath="${src.dir}" packagenames="net.happygiraffe.jslint.*" destdir="${build.doc.dir}" charset="UTF-8" encoding="UTF-8">
 			<classpath refid="main" />
@@ -63,7 +63,7 @@
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api" />
 		</javadoc>
 	</target>
-	
+
 	<target name="clean">
 		<delete dir="${build.main.dir}" />
 		<delete dir="${build.test.dir}" />
