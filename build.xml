@@ -53,7 +53,19 @@
 	</target>
 
 	<target name="dist" depends="compile">
-		<jar destfile="${dist.dir}/jslint.jar" basedir="${build.main.dir}" manifest="${src.dir}/META-INF/MANIFEST.MF" />
+		<!-- Build a "just jslint" jar file. -->
+		<jar destfile="${dist.dir}/jslint.jar" manifest="${src.dir}/META-INF/MANIFEST.MF">
+			<fileset dir="${build.main.dir}" />
+			<manifest>
+				<attribute name="Class-Path" value="js.jar" />
+			</manifest>
+		</jar>
+
+		<!-- Build a complete runnable jslint, including rhino. -->
+		<jar destfile="${dist.dir}/jslint+rhino.jar" manifest="${src.dir}/META-INF/MANIFEST.MF">
+			<fileset dir="${build.main.dir}" />
+			<zipfileset src="${lib.dir}/js.jar" />
+		</jar>
 	</target>
 
 	<target name="doc" depends="init">
