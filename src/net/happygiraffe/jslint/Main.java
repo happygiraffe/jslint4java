@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ import java.util.List;
 public class Main {
 
     private static final String PROGNAME = "jslint";
-    
+
     /**
      * The main entry point. Try passing in "--help" for more details.
      * 
@@ -26,7 +27,11 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
         Main main = new Main();
-        for (String file : args) {
+        List<String> files = main.processOptions(args);
+        if (files.size() == 0) {
+            main.help();
+        }
+        for (String file : files) {
             main.lintFile(file);
         }
         System.exit(main.isErrored() ? 1 : 0);
@@ -38,14 +43,30 @@ public class Main {
 
     private Main() throws IOException {
         lint = new JSLint();
-        lint.addOption(Option.EQEQEQ);
-        lint.addOption(Option.UNDEF);
-        lint.addOption(Option.WHITE);
+    }
+
+    private void addOption(Option o) {
+        lint.addOption(o);
     }
 
     private void err(String message) {
         System.err.println(PROGNAME + ":" + message);
         setErrored(true);
+    }
+
+    private void help() {
+        info("usage: jslint [options] file.js ...");
+        Option[] values = Option.values();
+        int maxOptLen = Option.maximumNameLength();
+        for (Option o : values) {
+            String fmt = "  --%-" + maxOptLen + "s %s";
+            info(String.format(fmt, o.getLowerName(), o.getDescription()));
+        }
+        System.exit(0);
+    }
+
+    private void info(String message) {
+        System.out.println(message);
     }
 
     private boolean isErrored() {
@@ -63,6 +84,41 @@ public class Main {
         } catch (FileNotFoundException e) {
             err(file + ":No such file or directory.");
         }
+    }
+
+    private List<String> processOptions(String[] args) {
+        boolean inFiles = false;
+        List<String> files = new ArrayList<String>();
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            if (inFiles) {
+                files.add(arg);
+            }
+            // End of arguments.
+            else if ("--".equals(arg)) {
+                inFiles = true;
+                continue;
+            }
+            // Hayelp!
+            else if ("--help".equals(arg)) {
+                help();
+            }
+            // Longopt.
+            else if (arg.startsWith("--")) {
+                try {
+                    addOption(Option.valueOf(arg.substring(2).toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    err("unknown option " + arg);
+                    System.exit(2);
+                }
+            }
+            // File
+            else {
+                inFiles = true;
+                files.add(arg);
+            }
+        }
+        return files;
     }
 
     private void setErrored(boolean errored) {
