@@ -30,15 +30,6 @@ public class Issue {
 
     private String systemId;
 
-    /**
-     * Create this issue with a systemId of "-".
-     * 
-     * @param err
-     */
-    Issue(Scriptable err) {
-        this("-", err);
-    }
-
     Issue(String systemId, Scriptable err) {
         this.systemId = systemId;
         reason = Util.stringValue("reason", err);
