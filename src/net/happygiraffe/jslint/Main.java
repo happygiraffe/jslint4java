@@ -28,7 +28,7 @@ public class Main {
         for (String file : args) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     new FileInputStream(file)));
-            List<Issue> issues = lint.lint(reader);
+            List<Issue> issues = lint.lint(file, reader);
             for (Issue issue : issues) {
                 System.err.println(issue);
             }

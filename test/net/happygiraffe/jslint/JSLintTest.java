@@ -17,48 +17,58 @@ public class JSLintTest extends TestCase {
     protected void setUp() throws Exception {
         lint = new JSLint();
     }
-    
+
+    // small helper function.
+    private List<Issue> lint(String source) {
+        return lint.lint("-", source);
+    }
+
+    // small helper function.
+    private List<Issue> lint(Reader reader) throws IOException {
+        return lint.lint("-", reader);
+    }
+
     public void testEmptySource() throws Exception {
-        List<Issue> issues = lint.lint("");
+        List<Issue> issues = lint("");
         assertNotNull(issues);
         assertEquals(0, issues.size());
     }
 
     public void testLintReader() throws Exception {
         Reader reader = new StringReader("var foo = 1");
-        List<Issue> issues = lint.lint(reader);
+        List<Issue> issues = lint(reader);
         assertNotNull(issues);
         assertEquals(1, issues.size());
         assertEquals("Missing semicolon.", issues.get(0).getReason());
     }
-    
+
     public void testNoProblems() throws IOException {
-        List<Issue> problems = lint.lint("var foo = 1;");
+        List<Issue> problems = lint("var foo = 1;");
         assertEquals(0, problems.size());
     }
 
     public void testNullSource() throws Exception {
-        List<Issue> issues = lint.lint((String)null);
+        List<Issue> issues = lint((String) null);
         assertNotNull(issues);
         assertEquals(0, issues.size());
     }
-    
+
     public void testOneProblem() throws IOException {
         // There is a missing semicolon here.
-        List<Issue> problems = lint.lint("var foo = 1");
+        List<Issue> problems = lint("var foo = 1");
         assertEquals(1, problems.size());
         Issue issue = problems.get(0);
         assertEquals("Missing semicolon.", issue.getReason());
     }
-    
+
     public void testSetOption() throws Exception {
         String eval_js = "eval('1');";
         // should be disallowed by default.
-        List<Issue> issues = lint.lint(eval_js);
+        List<Issue> issues = lint(eval_js);
         assertEquals("evil disallowed", 1, issues.size());
         // Now should be a problem.
         lint.addOption(Option.EVIL);
-        issues = lint.lint(eval_js);
+        issues = lint(eval_js);
         assertEquals("evil allowed", 0, issues.size());
     }
 }

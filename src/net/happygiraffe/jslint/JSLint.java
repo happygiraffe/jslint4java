@@ -57,28 +57,34 @@ public class JSLint {
     /**
      * Check for problems in a {@link Reader} which contains JavaScript source.
      * 
+     * @param systemId
+     *                a filename
      * @param reader
      *                a {@link Reader} over JavaScript source code.
+     * 
      * @return a {@link List} of {@link Issue}s describing any problems.
      * @throws IOException
      */
-    public List<Issue> lint(Reader reader) throws IOException {
+    public List<Issue> lint(String systemId, Reader reader) throws IOException {
         StringBuffer sb = new StringBuffer();
         int c;
         while ((c = reader.read()) != -1) {
             sb.append((char) c);
         }
-        return lint(sb.toString());
+        return lint(systemId, sb.toString());
     }
 
     /**
      * Check for problems in JavaScript source.
      * 
+     * @param systemId
+     *                a filename
      * @param javaScript
      *                a String of JavaScript source code.
+     * 
      * @return a {@link List} of {@link Issue}s describing any problems.
      */
-    public List<Issue> lint(String javaScript) {
+    public List<Issue> lint(String systemId, String javaScript) {
         List<Issue> issues = new ArrayList<Issue>();
         scope.put("input", scope, javaScript == null ? "" : javaScript);
         setJavaScriptOptions("options");
@@ -86,18 +92,18 @@ public class JSLint {
         Boolean ok = (Boolean) ctx.evaluateString(scope, check, "lint()", 1,
                 null);
         if (!ok.booleanValue()) {
-            readErrors(issues);
+            readErrors(systemId, issues);
         }
         return issues;
     }
 
-    private void readErrors(List<Issue> issues) {
+    private void readErrors(String systemId, List<Issue> issues) {
         Scriptable JSLINT = (Scriptable) scope.get("JSLINT", scope);
         Scriptable errors = (Scriptable) JSLINT.get("errors", JSLINT);
         int count = Util.intValue("length", errors);
         for (int i = 0; i < count; i++) {
             Scriptable err = (Scriptable) errors.get(i, errors);
-            issues.add(new Issue(err));
+            issues.add(new Issue(systemId, err));
         }
     }
 
