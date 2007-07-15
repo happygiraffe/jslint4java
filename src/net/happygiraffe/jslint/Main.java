@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class Main {
 
+    private static final String PROGNAME = "jslint";
+
     /**
      * The main entry point. Try passing in "--help" for more details.
      * 
@@ -44,11 +46,15 @@ public class Main {
                     new FileInputStream(file)));
             List<Issue> issues = lint.lint(file, reader);
             for (Issue issue : issues) {
-                System.err.println(issue);
+                err(issue.toString());
             }
         } catch (FileNotFoundException e) {
-            System.err.println(file + ":no such file");
+            err(file + ":No such file or directory.");
         }
+    }
+
+    private void err(String message) {
+        System.err.println(PROGNAME + ":" + message);
     }
 
 }
