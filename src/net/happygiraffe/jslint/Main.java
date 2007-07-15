@@ -16,7 +16,7 @@ import java.util.List;
 public class Main {
 
     private static final String PROGNAME = "jslint";
-
+    
     /**
      * The main entry point. Try passing in "--help" for more details.
      * 
@@ -29,7 +29,10 @@ public class Main {
         for (String file : args) {
             main.lintFile(file);
         }
+        System.exit(main.isErrored() ? 1 : 0);
     }
+
+    private boolean errored = false;
 
     private JSLint lint;
 
@@ -38,6 +41,15 @@ public class Main {
         lint.addOption(Option.EQEQEQ);
         lint.addOption(Option.UNDEF);
         lint.addOption(Option.WHITE);
+    }
+
+    private void err(String message) {
+        System.err.println(PROGNAME + ":" + message);
+        setErrored(true);
+    }
+
+    private boolean isErrored() {
+        return errored;
     }
 
     private void lintFile(String file) throws IOException {
@@ -53,8 +65,8 @@ public class Main {
         }
     }
 
-    private void err(String message) {
-        System.err.println(PROGNAME + ":" + message);
+    private void setErrored(boolean errored) {
+        this.errored = errored;
     }
 
 }
