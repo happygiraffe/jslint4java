@@ -1,2 +1,2 @@
-Main-Class: net.happygiraffe.jslint.JSLint
+Main-Class: net.happygiraffe.jslint.Main
 Class-Path: js.jar

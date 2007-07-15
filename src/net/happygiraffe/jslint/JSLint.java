@@ -1,7 +1,6 @@
 package net.happygiraffe.jslint;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -23,21 +22,6 @@ import org.mozilla.javascript.ScriptableObject;
 public class JSLint {
 
     private static final String JSLINT_FILE = "fulljslint.js";
-
-    public static void main(String[] args) throws IOException {
-        JSLint lint = new JSLint();
-        lint.addOption(Option.EQEQEQ);
-        lint.addOption(Option.UNDEF);
-        lint.addOption(Option.WHITE);
-        for (String file : args) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file)));
-            List<Issue> issues = lint.lint(reader);
-            for (Issue issue : issues) {
-                System.err.println(issue);
-            }
-        }
-    }
 
     private Context ctx;
 
