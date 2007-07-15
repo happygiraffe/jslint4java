@@ -114,7 +114,7 @@ public class Issue {
     }
 
     /**
-     * Provide three fields from this issue, separated by colons: line,
+     * Provide four fields from this issue, separated by colons: systemId, line,
      * character, reason.
      */
     @Override
