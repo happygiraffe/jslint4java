@@ -1,5 +1,5 @@
 <!-- $Id$ -->
-<project name="jslint" default="test">
+<project name="jslint4java" default="test">
 	<property name="src.dir" location="src" />
 	<property name="test.dir" location="test" />
 	<property name="build.dir" location="build" />
