@@ -72,12 +72,11 @@ public class JSLintTask extends MatchingTask {
             throw new BuildException("dir must be specified");
         }
 
-        log("dir = " + dir, Project.MSG_DEBUG);
-
         DirectoryScanner ds = getDirectoryScanner(dir);
         for (String fileName : ds.getIncludedFiles()) {
             try {
                 File file = new File(dir, fileName);
+                log("check " + file, Project.MSG_DEBUG);
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(new FileInputStream(file)));
                 List<Issue> issues = lint.lint(file.toString(), reader);
