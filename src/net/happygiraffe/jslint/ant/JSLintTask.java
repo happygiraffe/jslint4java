@@ -38,6 +38,11 @@ public class JSLintTask extends MatchingTask {
 
     private JSLint lint;
 
+    /**
+     * Specify a directory to scan for JavaScript problems.
+     * 
+     * @param dir
+     */
     public void setDir(File dir) {
         this.dir = dir;
     }
