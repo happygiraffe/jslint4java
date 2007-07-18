@@ -1,5 +1,10 @@
 <!-- $Id$ -->
 <project name="jslint4java" default="test">
+  
+  <property name="project.name" value="${ant.project.name}" />
+  <property name="project.version" value="1.0" />
+  <property name="project.namever" value="${project.name}-${project.version}" />
+
 	<property name="src.dir" location="src" />
 	<property name="test.dir" location="test" />
 	<property name="build.dir" location="build" />
@@ -9,27 +14,28 @@
 	<property name="build.test.dir" location="${build.dir}/test" />
 	<property name="build.doc.dir" location="${build.dir}/doc" />
 
-	<path id="main">
+	<path id="main.classpath">
 		<pathelement location="${build.main.dir}" />
 		<fileset dir="${lib.dir}">
 			<include name="*.jar" />
 		</fileset>
 	</path>
 
-	<path id="test">
-		<path refid="main" />
+	<path id="test.classpath">
+		<path refid="main.classpath" />
 		<pathelement location="${build.test.dir}" />
 	</path>
 
 	<target name="init">
 		<mkdir dir="${build.main.dir}" />
 		<mkdir dir="${build.test.dir}" />
+		<mkdir dir="${build.doc.dir}" />
 		<mkdir dir="${dist.dir}" />
 	</target>
 
 	<target name="compile" depends="init">
 		<javac srcdir="src" destdir="${build.main.dir}" debug="on">
-			<classpath refid="main" />
+			<classpath refid="main.classpath" />
 		</javac>
 		<copy todir="${build.main.dir}">
 			<fileset excludes="**/*.java" dir="${src.dir}" />
@@ -38,13 +44,13 @@
 
 	<target name="compile-tests" depends="compile">
 		<javac srcdir="${test.dir}" destdir="${build.test.dir}" debug="on">
-			<classpath refid="test" />
+			<classpath refid="test.classpath" />
 		</javac>
 	</target>
 
 	<target name="test" depends="compile-tests">
 		<junit printsummary="no" haltonfailure="yes">
-			<classpath refid="test" />
+			<classpath refid="test.classpath" />
 			<formatter type="brief" usefile="no" />
 			<batchtest>
 				<fileset dir="${build.test.dir}" includes="**/*Test.class" />
@@ -52,25 +58,49 @@
 		</junit>
 	</target>
 
-	<target name="dist" depends="compile">
+	<target name="jar" depends="compile">
 		<!-- Build a "just jslint" jar file. -->
-		<jar destfile="${dist.dir}/jslint.jar" manifest="${src.dir}/META-INF/MANIFEST.MF">
+		<jar destfile="${dist.dir}/${project.namever}.jar" manifest="${src.dir}/META-INF/MANIFEST.MF">
 			<fileset dir="${build.main.dir}" />
 			<manifest>
 				<attribute name="Class-Path" value="js.jar" />
 			</manifest>
 		</jar>
+	</target>
 
+	<target name="bigjar" depends="compile">
 		<!-- Build a complete runnable jslint, including rhino. -->
-		<jar destfile="${dist.dir}/jslint+rhino.jar" manifest="${src.dir}/META-INF/MANIFEST.MF">
+		<jar destfile="${dist.dir}/${project.namever}+rhino.jar" manifest="${src.dir}/META-INF/MANIFEST.MF">
 			<fileset dir="${build.main.dir}" />
 			<zipfileset src="${lib.dir}/js.jar" />
 		</jar>
 	</target>
+	
+	<target name="alljars" depends="jar, bigjar" />
+	
+	<target name="create-bin-dist" depends="alljars,doc">
+		<zip destfile="${dist.dir}/${project.namever}.zip">
+			<zipfileset dir="." prefix="${project.namever}" includes="*.txt" />
+			<zipfileset dir="${dist.dir}" prefix="${project.namever}" includes="*.jar" />
+			<zipfileset dir="lib" prefix="${project.namever}/lib" includes="*.jar" />
+			<zipfileset dir="${build.doc.dir}" prefix="${project.namever}/doc" />
+		</zip>
+	</target>
+	
+	<target name="create-src-dist">
+		<zip destfile="${dist.dir}/${project.namever}-src.zip">
+			<zipfileset dir="." prefix="${project.namever}" includes="*.txt,build.xml" />
+			<zipfileset dir="lib" prefix="${project.namever}/lib" includes="*.jar" />
+			<zipfileset dir="src" prefix="${project.namever}/src" />
+			<zipfileset dir="test" prefix="${project.namever}/test" />
+		</zip>
+	</target>
+
+	<target name="dist" depends="create-bin-dist, create-src-dist" />
 
 	<target name="doc" depends="init">
 		<javadoc sourcepath="${src.dir}" packagenames="net.happygiraffe.jslint.*" destdir="${build.doc.dir}" charset="UTF-8" encoding="UTF-8">
-			<classpath refid="main" />
+			<classpath refid="main.classpath" />
 			<!-- Java docs. -->
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api" />
 		</javadoc>
@@ -79,6 +109,7 @@
 	<target name="clean">
 		<delete dir="${build.main.dir}" />
 		<delete dir="${build.test.dir}" />
+		<delete dir="${build.doc.dir}" />
 		<delete dir="${dist.dir}" />
 	</target>
 
