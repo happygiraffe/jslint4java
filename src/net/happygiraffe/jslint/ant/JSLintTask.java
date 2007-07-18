@@ -16,7 +16,7 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 
-public class JsLintTask extends MatchingTask {
+public class JSLintTask extends MatchingTask {
 
     private File dir;
 
