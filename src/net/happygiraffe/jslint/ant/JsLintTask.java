@@ -33,6 +33,9 @@ public class JsLintTask extends MatchingTask {
         } catch (IOException e) {
             throw new BuildException(e);
         }
+
+        // Default to "*.js" anywhere in dir.
+        setIncludes("**/*.js");
     }
 
     @Override
