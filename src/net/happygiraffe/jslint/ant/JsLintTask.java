@@ -53,6 +53,8 @@ public class JsLintTask extends MatchingTask {
                 if (issues.size() > 0) {
                     for (Issue issue : issues) {
                         log(issue.toString());
+                        log(issue.getEvidence());
+                        log(spaces(issue.getCharacter()) + "^");
                     }
                 }
             } catch (FileNotFoundException e) {
@@ -64,5 +66,13 @@ public class JsLintTask extends MatchingTask {
 
         // Clear out for next time.
         setDir(null);
+    }
+
+    private String spaces(int howmany) {
+        StringBuffer sb = new StringBuffer(howmany);
+        for (int i = 0; i < howmany; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 }
