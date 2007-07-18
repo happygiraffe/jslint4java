@@ -10,6 +10,7 @@ import java.util.List;
 
 import net.happygiraffe.jslint.Issue;
 import net.happygiraffe.jslint.JSLint;
+import net.happygiraffe.jslint.Option;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -96,6 +97,21 @@ public class JSLintTask extends MatchingTask {
 
         // Clear out for next time.
         setDir(null);
+        lint.resetOptions();
+    }
+
+    /**
+     * Set the options for running JSLint.
+     */
+    public void setOptions(String optionList) throws BuildException {
+        for (String name : optionList.split("\\s*,\\s*")) {
+            try {
+                // The Option constants are upper case…
+                lint.addOption(Option.valueOf(name.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new BuildException("Unknown option " + name);
+            }
+        }
     }
 
     private String spaces(int howmany) {
