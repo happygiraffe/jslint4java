@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Ant"/>
 	<classpathentry kind="lib" path="lib/js.jar" sourcepath="/Users/dom/Desktop/rhino1_6R5/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
