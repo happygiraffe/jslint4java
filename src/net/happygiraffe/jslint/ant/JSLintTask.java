@@ -16,6 +16,22 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 
+/**
+ * Run {@link JSLint} over a tree of files in order to pick holes in your
+ * JavaScript. This task defaults to reading *.js files.
+ * 
+ * <p>
+ * Example build.xml usage:
+ * 
+ * <pre>
+ * &lt;taskdef name=&quot;jslint&quot; classname=&quot;net.happygiraffe.jslint.ant.JSLintTask&quot; /&gt;
+ * &lt;jslint dir=&quot;web/js&quot; /&gt;
+ * </pre>
+ * 
+ * @author dom
+ * @version $Id$
+ * @see <a href="http://jslint.com/">jslint.com</a>
+ */
 public class JSLintTask extends MatchingTask {
 
     private File dir;
@@ -26,6 +42,10 @@ public class JSLintTask extends MatchingTask {
         this.dir = dir;
     }
 
+    /**
+     * Create a new {@link JSLint} object. Set the default includes parameter to
+     * <code>**<span>/</span>*.js</code>.
+     */
     @Override
     public void init() throws BuildException {
         try {
@@ -38,6 +58,9 @@ public class JSLintTask extends MatchingTask {
         setIncludes("**/*.js");
     }
 
+    /**
+     * Scan the specified directory for JavaScript files and lint them.
+     */
     @Override
     public void execute() throws BuildException {
         if (dir == null) {
