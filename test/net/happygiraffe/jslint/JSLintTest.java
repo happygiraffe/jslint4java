@@ -1,3 +1,4 @@
+
 // @(#) $Id$
 
 package net.happygiraffe.jslint;
@@ -13,9 +14,9 @@ public class JSLintTest extends TestCase {
 
     private JSLint lint;
 
-    @Override
-    protected void setUp() throws Exception {
-        lint = new JSLint();
+    // small helper function.
+    private List<Issue> lint(Reader reader) throws IOException {
+        return lint.lint("-", reader);
     }
 
     // small helper function.
@@ -23,9 +24,9 @@ public class JSLintTest extends TestCase {
         return lint.lint("-", source);
     }
 
-    // small helper function.
-    private List<Issue> lint(Reader reader) throws IOException {
-        return lint.lint("-", reader);
+    @Override
+    protected void setUp() throws Exception {
+        lint = new JSLint();
     }
 
     public void testEmptySource() throws Exception {
@@ -61,6 +62,15 @@ public class JSLintTest extends TestCase {
         assertEquals("Missing semicolon.", issue.getReason());
     }
 
+    public void testResetOptions() throws Exception {
+        String eval_js = "eval('1');";
+        lint.addOption(Option.EVIL);
+        lint.resetOptions();
+        List<Issue> issues = lint(eval_js);
+        assertEquals(1, issues.size());
+        assertEquals("eval is evil.", issues.get(0).getReason());
+    }
+    
     public void testSetOption() throws Exception {
         String eval_js = "eval('1');";
         // should be disallowed by default.

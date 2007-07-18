@@ -107,6 +107,13 @@ public class JSLint {
         }
     }
 
+    /**
+     * Clear out all options that have been set with {@link #addOption(Option)}.
+     */
+    public void resetOptions() {
+        options = EnumSet.noneOf(Option.class);
+    }
+
     private void setJavaScriptOptions(String name) {
         String js = "var " + name + " = "
                 + Util.optionSetToObjectLiteral(options);
