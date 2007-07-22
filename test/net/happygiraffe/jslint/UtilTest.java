@@ -1,13 +1,11 @@
 package net.happygiraffe.jslint;
 
 import java.io.StringReader;
-import java.util.EnumSet;
-import java.util.Set;
+
+import junit.framework.TestCase;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
-
-import junit.framework.TestCase;
 
 /**
  * @author dom
@@ -61,25 +59,6 @@ public class UtilTest extends TestCase {
 
     public void testIntValueOfUndefined() {
         assertEquals(0, Util.intValue("foo", scope));
-    }
-
-    public void testOptionSetToObjectLiteralWithNoOptions() throws Exception {
-        Set<Option> opts = EnumSet.noneOf(Option.class);
-        assertEquals("{}", Util.optionSetToObjectLiteral(opts));
-    }
-
-    public void testOptionSetToObjectLiteralWithOneOption() throws Exception {
-        Set<Option> opts = EnumSet.of(Option.EVIL);
-        assertEquals("{evil:true}", Util.optionSetToObjectLiteral(opts));
-    }
-
-    public void testOptionSetToObjectLiteralWithTwoOptions() throws Exception {
-        Set<Option> opts = EnumSet.of(Option.EVIL, Option.ADSAFE);
-        // NB: This test may break if not using EnumSet. That guarantees that
-        // everything comes out in ordinal order, which we defined as
-        // alphabetic...
-        assertEquals("{adsafe:true,evil:true}", Util
-                .optionSetToObjectLiteral(opts));
     }
 
     public void testStringValueFromJava() throws Exception {

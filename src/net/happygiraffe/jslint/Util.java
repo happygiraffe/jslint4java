@@ -2,7 +2,6 @@ package net.happygiraffe.jslint;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Set;
 
 import org.mozilla.javascript.Scriptable;
 
@@ -54,27 +53,6 @@ class Util {
     static boolean booleanValue(String name, Scriptable scope) {
         Object o = scope.get(name, scope);
         return o instanceof Boolean ? ((Boolean) o).booleanValue() : false;
-    }
-
-    /**
-     * Convert a set of options into a JavaScript Object literal. Each option
-     * will have a value of <i>true</i>.
-     * 
-     * @param options
-     * @return A JavaScript object literal.
-     */
-    static String optionSetToObjectLiteral(Set<Option> options) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("{");
-        for (Option o : options) {
-            sb.append(o.getLowerName());
-            sb.append(":true,");
-        }
-        if (sb.charAt(sb.length() - 1) == ',') {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        sb.append("}");
-        return sb.toString();
     }
 
     /**
