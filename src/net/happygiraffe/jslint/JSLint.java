@@ -24,6 +24,11 @@ public class JSLint {
 
     private static final String JSLINT_FILE = "fulljslint.js";
 
+    // Uncomment to enable the rhino debugger.
+    // static {
+    // org.mozilla.javascript.tools.debugger.Main.mainEmbedded(null);
+    // }
+
     private Context ctx;
 
     private Set<Option> options = EnumSet.noneOf(Option.class);
