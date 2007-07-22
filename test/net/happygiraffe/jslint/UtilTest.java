@@ -33,20 +33,6 @@ public class UtilTest extends TestCase {
         Context.exit();
     }
 
-    public void testBooleanValueFromJava() throws Exception {
-        scope.put("ok", scope, new Boolean(true));
-        assertEquals(true, Util.booleanValue("ok", scope));
-    }
-
-    public void testBooleanValueFromJavaScript() throws Exception {
-        cx.evaluateString(scope, "var ok = true", "-", 1, null);
-        assertEquals(true, Util.booleanValue("ok", scope));
-    }
-
-    public void testBooleanValueOfUndefined() throws Exception {
-        assertEquals(false, Util.booleanValue("ok", scope));
-    }
-
     public void testIntValueFromJava() throws Exception {
         scope.put("foo", scope, new Integer(42));
         assertEquals(42, Util.intValue("foo", scope));

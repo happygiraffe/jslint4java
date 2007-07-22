@@ -42,20 +42,6 @@ class Util {
     }
 
     /**
-     * Returns the value of a JavaScript variable, or false.
-     * 
-     * @param name
-     *                the JavaScript variable.
-     * @param scope
-     *                the JavaScript scope to read from.
-     * @return the value of <i>name</i> as a boolean, or false.
-     */
-    static boolean booleanValue(String name, Scriptable scope) {
-        Object o = scope.get(name, scope);
-        return o instanceof Boolean ? ((Boolean) o).booleanValue() : false;
-    }
-
-    /**
      * Read all of a {@link Reader} into memory as a {@link String}.
      * 
      * @param reader
