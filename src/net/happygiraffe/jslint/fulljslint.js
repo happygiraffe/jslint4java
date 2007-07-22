@@ -935,6 +935,10 @@ JSLINT = function () {
 
     function peek(p) {
         var i = p || 0, j = 0, t;
+        // XXX DM Hack for Rhino 1.6.0
+        if (!p) {
+            i = 0;
+        }
 
         while (j <= i) {
             t = lookahead[j];
