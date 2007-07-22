@@ -3,6 +3,7 @@ package net.happygiraffe.jslint;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 
 /**
@@ -24,7 +25,7 @@ class Util {
      */
     static int intValue(String name, Scriptable scope) {
         Object o = scope.get(name, scope);
-        return o instanceof Number ? ((Number) o).intValue() : 0;
+        return o == Scriptable.NOT_FOUND ? 0 : (int) Context.toNumber(o);
     }
 
     /**
