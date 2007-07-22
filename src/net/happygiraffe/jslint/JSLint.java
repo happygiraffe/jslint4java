@@ -66,12 +66,7 @@ public class JSLint {
      * @throws IOException
      */
     public List<Issue> lint(String systemId, Reader reader) throws IOException {
-        StringBuffer sb = new StringBuffer();
-        int c;
-        while ((c = reader.read()) != -1) {
-            sb.append((char) c);
-        }
-        return lint(systemId, sb.toString());
+        return lint(systemId, Util.readerToString(reader));
     }
 
     /**
