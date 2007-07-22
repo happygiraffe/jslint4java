@@ -1,5 +1,7 @@
 package net.happygiraffe.jslint;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Set;
 
 import org.mozilla.javascript.Scriptable;
@@ -72,6 +74,22 @@ class Util {
             sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Read all of a {@link Reader} into memory as a {@link String}.
+     * 
+     * @param reader
+     * @return
+     * @throws IOException
+     */
+    static String readerToString(Reader reader) throws IOException {
+        StringBuffer sb = new StringBuffer();
+        int c;
+        while ((c = reader.read()) != -1) {
+            sb.append((char) c);
+        }
         return sb.toString();
     }
 

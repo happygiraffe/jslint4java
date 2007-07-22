@@ -1,5 +1,6 @@
 package net.happygiraffe.jslint;
 
+import java.io.StringReader;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -93,5 +94,10 @@ public class UtilTest extends TestCase {
 
     public void testStringValueOfUndefined() {
         assertEquals(null, Util.stringValue("foo", scope));
+    }
+    
+    public void testReaderToString() throws Exception {
+        StringReader reader = new StringReader("foo bar");
+        assertEquals("foo bar", Util.readerToString(reader));
     }
 }
