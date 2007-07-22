@@ -84,11 +84,11 @@ public class JSLint {
         String src = javaScript == null ? "" : javaScript;
         Object[] args = new Object[] { src, optionsAsJavaScriptObject() };
         Function lintFunc = (Function) scope.get("JSLINT", scope);
-        Boolean ok = (Boolean) lintFunc.call(ctx, scope, scope, args);
+        // JSLINT actually returns a boolean, but we ignore it as we always go
+        // and look at the errors in more detail.
+        lintFunc.call(ctx, scope, scope, args);
         List<Issue> issues = new ArrayList<Issue>();
-        if (!ok.booleanValue()) {
-            readErrors(systemId, issues);
-        }
+        readErrors(systemId, issues);
         return issues;
     }
 
