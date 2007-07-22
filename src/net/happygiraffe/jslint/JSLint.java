@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -80,16 +81,27 @@ public class JSLint {
      * @return a {@link List} of {@link Issue}s describing any problems.
      */
     public List<Issue> lint(String systemId, String javaScript) {
+        String src = javaScript == null ? "" : javaScript;
+        Object[] args = new Object[] { src, optionsAsJavaScriptObject() };
+        Function lintFunc = (Function) scope.get("JSLINT", scope);
+        Boolean ok = (Boolean) lintFunc.call(ctx, scope, scope, args);
         List<Issue> issues = new ArrayList<Issue>();
-        scope.put("input", scope, javaScript == null ? "" : javaScript);
-        setJavaScriptOptions("options");
-        String check = "JSLINT(input, options)";
-        Boolean ok = (Boolean) ctx.evaluateString(scope, check, "lint()", 1,
-                null);
         if (!ok.booleanValue()) {
             readErrors(systemId, issues);
         }
         return issues;
+    }
+
+    /**
+     * Turn the set of options into a JavaScript object, where the key is the
+     * name of the option and the value is true.
+     */
+    private Scriptable optionsAsJavaScriptObject() {
+        Scriptable opts = ctx.newObject(scope);
+        for (Option o : options) {
+            opts.put(o.getLowerName(), opts, true);
+        }
+        return opts;
     }
 
     private void readErrors(String systemId, List<Issue> issues) {
@@ -107,12 +119,6 @@ public class JSLint {
      */
     public void resetOptions() {
         options = EnumSet.noneOf(Option.class);
-    }
-
-    private void setJavaScriptOptions(String name) {
-        String js = "var " + name + " = "
-                + Util.optionSetToObjectLiteral(options);
-        ctx.evaluateString(scope, js, "-", 1, null);
     }
 
 }
