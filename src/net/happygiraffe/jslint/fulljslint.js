@@ -1,5 +1,5 @@
 // jslint.js
-// 2007-07-01
+// 2007-07-15
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -1154,6 +1154,8 @@ JSLINT = function () {
 // Functions for conformance of style.
 
     function adjacent(left, right) {
+        left = left || token;
+        right = right || nexttoken;
         if (option.white) {
             if (left.character !== right.from) {
                 warning("Unexpected space after '{a}'.",
@@ -1163,7 +1165,20 @@ JSLINT = function () {
     }
 
 
+    function nospace(left, right) {
+        left = left || token;
+        right = right || nexttoken;
+        if (option.white) {
+            if (left.line === right.line) {
+                adjacent(left, right);
+            }
+        }
+    }
+
+
     function nonadjacent(left, right) {
+        left = left || token;
+        right = right || nexttoken;
         if (option.white) {
             if (left.character === right.from) {
                 warning("Missing space after '{a}'.",
@@ -1723,7 +1738,10 @@ JSLINT = function () {
                 if (x.indexOf(' ' + n + ' ') < 0) {
                     error("Attribute '{a}' does not belong in '<{b}>'.", nexttoken, a, n);
                 }
-                return t.script ? 'script' : a === 'name' ? 'define' : 'string';
+                return t.script ?
+                        'script' :
+                        a === 'name' && n !== 'setting' ?
+                            'define' : 'string';
             },
             doIt: function (n) {
                 var x = xmltype.widget.tag[n];
@@ -1797,7 +1815,7 @@ JSLINT = function () {
                 minLength:              {parent: ' preference '},
                 missingSrc:             {parent: ' image '},
                 modifier:               {parent: ' hotkey '},
-                name:                   {parent: ' canvas frame hotkey image preference preferenceGroup scrollbar text textarea timer widget window '},
+                name:                   {parent: ' canvas frame hotkey image preference preferenceGroup scrollbar setting text textarea timer widget window '},
                 notSaved:               {parent: ' preference '},
                 onClick:                {parent: ' canvas frame image scrollbar text textarea ', script: true},
                 onContextMenu:          {parent: ' canvas frame image scrollbar text textarea window ', script: true},
@@ -1840,6 +1858,8 @@ JSLINT = function () {
                 scrollX:                {parent: ' frame '},
                 scrollY:                {parent: ' frame '},
                 secure:                 {parent: ' preference textarea '},
+                setting:                {parent: ' settings '},
+                settings:               {parent: ' widget '},
                 shadow:                 {parent: ' about-text about-version text window '},
                 size:                   {parent: ' about-text about-version text textarea '},
                 spellcheck:             {parent: ' textarea '},
@@ -1866,7 +1886,7 @@ JSLINT = function () {
                 url:                    {parent: ' about-box about-text about-version '},
                 useFileIcon:            {parent: ' image '},
                 vAlign:                 {parent: ' canvas frame image scrollbar text textarea '},
-                value:                  {parent: ' preference scrollbar '},
+                value:                  {parent: ' preference scrollbar setting '},
                 version:                {parent: ' widget '},
                 visible:                {parent: ' canvas frame image scrollbar text textarea window '},
                 vLineSize:              {parent: ' frame '},
@@ -2345,6 +2365,7 @@ JSLINT = function () {
         adjacent(token, nexttoken);
         if (nexttoken.id === '(') {
             advance('(');
+            nospace();
             if (nexttoken.id !== ')') {
                 for (;;) {
                     parse(10);
@@ -2355,6 +2376,7 @@ JSLINT = function () {
                 }
             }
             advance(')');
+            nospace(prevtoken, token);
         } else {
             warning("Missing '()' invoking a constructor.");
         }
@@ -2379,6 +2401,7 @@ JSLINT = function () {
 
     infix('(', function (left) {
         adjacent(prevtoken, token);
+        nospace();
         var n = 0;
         var p = [];
         if (left && left.type === '(identifier)') {
@@ -2402,6 +2425,7 @@ JSLINT = function () {
             }
         }
         advance(')');
+        nospace(prevtoken, token);
         if (typeof left === 'object') {
             if (left.value === 'parseInt' && n === 1) {
                 warning("Missing radix parameter.", left);
@@ -2426,12 +2450,15 @@ JSLINT = function () {
     }, 155).exps = true;
 
     prefix('(', function () {
+        nospace();
         var v = parse(0);
         advance(')', this);
+        nospace(prevtoken, token);
         return v;
     });
 
     infix('[', function (left) {
+        nospace();
         var e = parse(0), s;
         if (e && e.type === '(string)') {
             countMember(e.value);
@@ -2444,6 +2471,7 @@ JSLINT = function () {
             }
         }
         advance(']', this);
+        nospace(prevtoken, token);
         this.left = left;
         this.right = e;
         return this;
@@ -2589,8 +2617,10 @@ JSLINT = function () {
     function functionparams() {
         var t = nexttoken;
         advance('(');
+        nospace();
         if (nexttoken.id === ')') {
             advance(')');
+            nospace(prevtoken, token);
             return;
         }
         for (;;) {
@@ -2600,6 +2630,7 @@ JSLINT = function () {
                 nonadjacent(token, nexttoken);
             } else {
                 advance(')', t);
+                nospace(prevtoken, token);
                 return;
             }
         }
@@ -2643,6 +2674,7 @@ JSLINT = function () {
         var t = nexttoken;
         advance('(');
         nonadjacent(this, t);
+        nospace();
         parse(20);
         if (nexttoken.id === '=') {
             warning("Assignment in control part.");
@@ -2650,6 +2682,7 @@ JSLINT = function () {
             parse(20);
         }
         advance(')', t);
+        nospace(prevtoken, token);
         block(true);
         if (nexttoken.id === 'else') {
             nonadjacent(token, nexttoken);
@@ -2689,6 +2722,7 @@ JSLINT = function () {
         var t = nexttoken;
         advance('(');
         nonadjacent(this, t);
+        nospace();
         parse(20);
         if (nexttoken.id === '=') {
             warning("Assignment in control part.");
@@ -2696,6 +2730,7 @@ JSLINT = function () {
             parse(20);
         }
         advance(')', t);
+        nospace(prevtoken, token);
         block(true);
     }).labelled = true;
 
@@ -2706,8 +2741,10 @@ JSLINT = function () {
         var g = false;
         advance('(');
         nonadjacent(this, t);
+        nospace();
         this.condition = parse(20);
         advance(')', t);
+        nospace(prevtoken, token);
         nonadjacent(token, nexttoken);
         t = nexttoken;
         advance('{');
@@ -2798,14 +2835,17 @@ JSLINT = function () {
         var t = nexttoken;
         nonadjacent(token, t);
         advance('(');
+        nospace();
         parse(20);
         advance(')', t);
+        nospace(prevtoken, token);
     }).labelled = true;
 
     blockstmt('for', function () {
         var t = nexttoken;
         advance('(');
         nonadjacent(this, t);
+        nospace();
         if (peek(nexttoken.id === 'var' ? 1 : 0).id === 'in') {
             if (nexttoken.id === 'var') {
                 advance('var');
@@ -2852,6 +2892,7 @@ JSLINT = function () {
                 }
             }
             advance(')', t);
+            nospace(prevtoken, token);
             block(true);
         }
     }).labelled = true;
