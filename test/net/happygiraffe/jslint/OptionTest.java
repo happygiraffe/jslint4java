@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 public class OptionTest extends TestCase {
 
     public void testGetDescription() {
-        assertEquals("if eval should be allowed", Option.EVIL.getDescription());
+        assertEquals("If eval should be allowed", Option.EVIL.getDescription());
     }
     
     public void testGetLowerName() {
@@ -13,7 +13,7 @@ public class OptionTest extends TestCase {
     }
     
     public void testToString() throws Exception {
-        assertEquals("evil[if eval should be allowed]", Option.EVIL.toString());
+        assertEquals("evil[If eval should be allowed]", Option.EVIL.toString());
     }
     
     // This is useful for formatting lists of options...
