@@ -1,0 +1,18 @@
+Revision history for jslint4java.
+
+1.1 2007-07-30
+    - Update to JSLint 2007-07-29.
+    - Fixed Issue 1, a NullPointerException when encountering a fatal error.
+      Many thanks to Rod McChesney for pointing this out.
+    - Added an Ant task to run JSLint as part of the build.  See the javadoc
+      for details.
+    - Added a Ruby script to automatically extract options & descriptions
+      from JSLint.
+    - All option descriptions now start with upper case.
+    - Added a proper distribution (& src dist) to the build script.
+    - Added a resetOptions() call to JSLint.
+    - Switch to a more normal Rhino function call in JSLint.lint().
+
+1.0 2007-07-16
+    - original version
+
