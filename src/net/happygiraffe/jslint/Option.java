@@ -5,7 +5,7 @@ package net.happygiraffe.jslint;
  * @version $Id$
  */
 public enum Option {
-    //BEGIN-OPTIONS
+    // BEGIN-OPTIONS
     /** If use of some browser features should be restricted */
     ADSAFE("If use of some browser features should be restricted"),
     /** If bitwise operators should not be allowed */
@@ -38,7 +38,7 @@ public enum Option {
     WHITE("If strict whitespace rules apply"),
     /** If the yahoo widgets globals should be predefined */
     WIDGET("If the yahoo widgets globals should be predefined");
-    //END-OPTIONS
+    // END-OPTIONS
 
     private String description;
 
@@ -59,7 +59,12 @@ public enum Option {
     public String getLowerName() {
         return name().toLowerCase();
     }
-    
+
+    /**
+     * Calculate the maximum length of all of the {@link Option} names.
+     * 
+     * @return the length of the largest name.
+     */
     public static int maximumNameLength() {
         int maxOptLen = 0;
         for (Option o : values()) {
