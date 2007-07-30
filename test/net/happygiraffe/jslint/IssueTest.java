@@ -5,6 +5,10 @@ import org.mozilla.javascript.ScriptableObject;
 
 import junit.framework.TestCase;
 
+/**
+ * @author dom
+ * @version $Id$
+ */
 public class IssueTest extends TestCase {
 
     private Context cx;

@@ -9,6 +9,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+/**
+ * @author dom
+ * @version $Id$
+ */
 public class JSLintTest extends TestCase {
 
     private JSLint lint;

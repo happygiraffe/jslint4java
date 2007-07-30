@@ -2,6 +2,10 @@ package net.happygiraffe.jslint;
 
 import junit.framework.TestCase;
 
+/**
+ * @author dom
+ * @version $Id$
+ */
 public class OptionTest extends TestCase {
 
     public void testGetDescription() {
