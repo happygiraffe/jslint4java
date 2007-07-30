@@ -1,6 +1,7 @@
 Things to implement:
 
-* A code generator for Option.java.  There is too much repetition in there.
-
 * An eclipse plugin, to flag up anything it finds as a warning in the Problems
   view.
+  
+  Work has started on this, see:
+  http://jslint4java.googlecode.com/svn/eclipse/net.happygiraffe.jslint/
