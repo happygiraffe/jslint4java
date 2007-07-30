@@ -28,6 +28,9 @@ The output is colon separated fields.  The fields are:
 * the character number (starting at zero)
 * the problem that was found
 
+There is also an ant task available.  See JSLintTask in the javadoc for more
+details.
+
 If you have any comments or queries, please send them to dom [at] happygiraffe.net.
 
 This software is licenced under the BSD licence (see LICENCE.txt).
