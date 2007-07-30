@@ -43,8 +43,17 @@ public class UtilTest extends TestCase {
         assertEquals(42, Util.intValue("foo", scope));
     }
 
+    public void testIntValueNullScope() throws Exception {
+        assertEquals(0, Util.intValue("foo", null));
+    }
+    
     public void testIntValueOfUndefined() {
         assertEquals(0, Util.intValue("foo", scope));
+    }
+
+    public void testReaderToString() throws Exception {
+        StringReader reader = new StringReader("foo bar");
+        assertEquals("foo bar", Util.readerToString(reader));
     }
 
     public void testStringValueFromJava() throws Exception {
@@ -57,12 +66,11 @@ public class UtilTest extends TestCase {
         assertEquals("bar", Util.stringValue("foo", scope));
     }
 
+    public void testStringValueNullScope() throws Exception {
+        assertEquals(null, Util.stringValue("foo", null));
+    }
+
     public void testStringValueOfUndefined() {
         assertEquals(null, Util.stringValue("foo", scope));
-    }
-    
-    public void testReaderToString() throws Exception {
-        StringReader reader = new StringReader("foo bar");
-        assertEquals("foo bar", Util.readerToString(reader));
     }
 }

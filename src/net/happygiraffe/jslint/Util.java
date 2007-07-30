@@ -24,6 +24,8 @@ class Util {
      * @return the value of <i>name</i> as an integer, or zero.
      */
     static int intValue(String name, Scriptable scope) {
+        if (scope == null)
+            return 0;
         Object o = scope.get(name, scope);
         return o == Scriptable.NOT_FOUND ? 0 : (int) Context.toNumber(o);
     }
@@ -38,6 +40,8 @@ class Util {
      * @return the value of <i>name</i> or null.
      */
     static String stringValue(String name, Scriptable scope) {
+        if (scope == null)
+            return null;
         Object o = scope.get(name, scope);
         return o instanceof String ? (String) o : null;
     }
