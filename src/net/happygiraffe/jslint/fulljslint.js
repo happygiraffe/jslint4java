@@ -1,5 +1,5 @@
 // jslint.js
-// 2007-07-15
+// 2007-07-29
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -1446,7 +1446,7 @@ JSLINT = function () {
 
 
     function statement() {
-        var t = nexttoken;
+        var i = indent, t = nexttoken;
         if (t.id === ';') {
             warning("Unnecessary semicolon.", t);
             advance(';');
@@ -1478,6 +1478,7 @@ JSLINT = function () {
                 nonadjacent(token, nexttoken);
             }
         }
+        indent = i;
     }
 
 
@@ -1498,6 +1499,9 @@ JSLINT = function () {
             advance('{');
             if (nexttoken.id !== '}' || token.line !== nexttoken.line) {
                 indent += 4;
+                if (!f && nexttoken.from === indent + 4) {
+                    indent += 4;
+                }
                 statements();
                 indent -= 4;
                 indentation();
