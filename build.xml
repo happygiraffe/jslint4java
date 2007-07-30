@@ -14,6 +14,8 @@
 	<property name="build.test.dir" location="${build.dir}/test" />
 	<property name="build.doc.dir" location="${build.dir}/doc" />
 
+	<property name="jslint.pkg.dir" location="${src.dir}/net/happygiraffe/jslint"/>
+
 	<path id="main.classpath">
 		<pathelement location="${build.main.dir}" />
 		<fileset dir="${lib.dir}">
@@ -107,14 +109,16 @@
 	</target>
 	
 	<target name="make-option-enum">
-		<property name="jslint.pkg.dir" location="${src.dir}/net/happygiraffe/jslint"/>
-
 		<exec executable="ruby" outputproperty="option.java" failonerror="yes">
 			<arg file="etc/extract-options.rb" />
 			<arg file="${jslint.pkg.dir}/fulljslint.js" />
 			<arg file="${jslint.pkg.dir}/Option.java" />
 		</exec>
 		<echo file="${jslint.pkg.dir}/Option.java" message="${option.java}" />
+	</target>
+	
+	<target name="fetch-latest-jslint">
+		<get dest="${jslint.pkg.dir}/fulljslint.js" src="http://www.jslint.com/fulljslint.js"/>
 	</target>
 
 	<target name="clean">
