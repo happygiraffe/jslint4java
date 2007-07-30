@@ -5,6 +5,7 @@ package net.happygiraffe.jslint;
  * @version $Id$
  */
 public enum Option {
+    //BEGIN-OPTIONS
     /**
      * If use of some browser features should be restricted.
      */
@@ -69,6 +70,7 @@ public enum Option {
      * If the Yahoo Widgets globals should be predefined.
      */
     WIDGET("if the Yahoo Widgets globals should be predefined");
+    //END-OPTIONS
 
     private String description;
 
