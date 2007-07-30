@@ -105,6 +105,17 @@
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api" />
 		</javadoc>
 	</target>
+	
+	<target name="make-option-enum">
+		<property name="jslint.pkg.dir" location="${src.dir}/net/happygiraffe/jslint"/>
+
+		<exec executable="ruby" outputproperty="option.java" failonerror="yes">
+			<arg file="etc/extract-options.rb" />
+			<arg file="${jslint.pkg.dir}/fulljslint.js" />
+			<arg file="${jslint.pkg.dir}/Option.java" />
+		</exec>
+		<echo file="${jslint.pkg.dir}/Option.java" message="${option.java}" />
+	</target>
 
 	<target name="clean">
 		<delete dir="${build.main.dir}" />
