@@ -115,7 +115,11 @@ public class JSLint {
         int count = Util.intValue("length", errors);
         for (int i = 0; i < count; i++) {
             Scriptable err = (Scriptable) errors.get(i, errors);
-            issues.add(new Issue(systemId, err));
+            // JSLINT spits out a null when it cannot proceed.
+            // TODO Should probably turn i-1th issue into a "fatal".
+            if (err != null) {
+                issues.add(new Issue(systemId, err));
+            }
         }
     }
 

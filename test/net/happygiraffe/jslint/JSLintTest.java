@@ -1,4 +1,3 @@
-
 // @(#) $Id$
 
 package net.happygiraffe.jslint;
@@ -70,7 +69,7 @@ public class JSLintTest extends TestCase {
         assertEquals(1, issues.size());
         assertEquals("eval is evil.", issues.get(0).getReason());
     }
-    
+
     public void testSetOption() throws Exception {
         String eval_js = "eval('1');";
         // should be disallowed by default.
@@ -80,5 +79,15 @@ public class JSLintTest extends TestCase {
         lint.addOption(Option.EVIL);
         issues = lint(eval_js);
         assertEquals("evil allowed", 0, issues.size());
+    }
+
+    // http://code.google.com/p/jslint4java/issues/detail?id=1
+    public void testUnableToContinue() throws Exception {
+        List<Issue> issues = lint("new Number();");
+        assertEquals(2, issues.size());
+        assertEquals("'new' should not be used as a statement.", issues.get(0)
+                .getReason());
+        assertEquals("Stopping, unable to continue. (0% scanned).", issues.get(
+                1).getReason());
     }
 }
