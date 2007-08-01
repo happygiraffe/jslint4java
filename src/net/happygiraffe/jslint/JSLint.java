@@ -60,6 +60,15 @@ public class JSLint {
         options.add(o);
     }
 
+    private void doLint(String javaScript) {
+        String src = javaScript == null ? "" : javaScript;
+        Object[] args = new Object[] { src, optionsAsJavaScriptObject() };
+        Function lintFunc = (Function) scope.get("JSLINT", scope);
+        // JSLINT actually returns a boolean, but we ignore it as we always go
+        // and look at the errors in more detail.
+        lintFunc.call(ctx, scope, scope, args);
+    }
+
     /**
      * Check for problems in a {@link Reader} which contains JavaScript source.
      * 
@@ -86,12 +95,7 @@ public class JSLint {
      * @return a {@link List} of {@link Issue}s describing any problems.
      */
     public List<Issue> lint(String systemId, String javaScript) {
-        String src = javaScript == null ? "" : javaScript;
-        Object[] args = new Object[] { src, optionsAsJavaScriptObject() };
-        Function lintFunc = (Function) scope.get("JSLINT", scope);
-        // JSLINT actually returns a boolean, but we ignore it as we always go
-        // and look at the errors in more detail.
-        lintFunc.call(ctx, scope, scope, args);
+        doLint(javaScript);
         List<Issue> issues = new ArrayList<Issue>();
         readErrors(systemId, issues);
         return issues;
@@ -121,6 +125,37 @@ public class JSLint {
                 issues.add(new Issue(systemId, err));
             }
         }
+    }
+
+    /**
+     * Report on what variables / functions are in use by this code.
+     * 
+     * @param javaScript
+     * @return an HTML report.
+     */
+    public String report(String javaScript) {
+        return report(javaScript, false);
+    }
+
+    /**
+     * Report on what variables / functions are in use by this code.
+     * 
+     * @param javaScript
+     * @param errorsOnly
+     *                If a report consisting solely of the problems is desired.
+     * @return an HTML report.
+     */
+    public String report(String javaScript, boolean errorsOnly) {
+        // Run the lint function itself as prep.
+        doLint(javaScript);
+
+        // The run the reporter.
+        Object[] args = new Object[] { new Boolean(errorsOnly) };
+        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
+        Function reportFunc = (Function) lintScope.get("report", lintScope);
+        // JSLINT actually returns a boolean, but we ignore it as we always go
+        // and look at the errors in more detail.
+        return (String) reportFunc.call(ctx, scope, scope, args);
     }
 
     /**

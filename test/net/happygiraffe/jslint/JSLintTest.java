@@ -65,6 +65,17 @@ public class JSLintTest extends TestCase {
         assertEquals("Missing semicolon.", issue.getReason());
     }
 
+    public void testReportErrorsOnly() throws Exception {
+        String html = lint.report("var foo = 42", true);
+        assertTrue(html.contains("<div id=errors"));
+        assertTrue(html.contains("Missing semicolon"));
+    }
+    
+    public void testReportFull() throws Exception {
+        String html = lint.report("var foo = 42;");
+        assertTrue(html.contains("<div>"));
+    }
+
     public void testResetOptions() throws Exception {
         String eval_js = "eval('1');";
         lint.addOption(Option.EVIL);
@@ -73,7 +84,6 @@ public class JSLintTest extends TestCase {
         assertEquals(1, issues.size());
         assertEquals("eval is evil.", issues.get(0).getReason());
     }
-
     public void testSetOption() throws Exception {
         String eval_js = "eval('1');";
         // should be disallowed by default.

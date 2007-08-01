@@ -1,5 +1,8 @@
 Revision history for jslint4java.
 
+1.2
+    - Add a report() call to get at JSLINT.report().
+
 1.1 2007-07-30
     - Update to JSLint 2007-07-29.
     - Fixed Issue 1, a NullPointerException when encountering a fatal error.
