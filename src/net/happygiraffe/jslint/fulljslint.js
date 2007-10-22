@@ -1,5 +1,5 @@
 // jslint.js
-// 2007-08-17
+// 2007-10-20
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -82,51 +82,20 @@ JSLINT = function () {
 // These are words that should not be permitted in third party ads.
 
     var adsafe = {
-        activexobject   : true,
-        alert           : true,
-        back            : true,
-        body            : true,
-        close           : true,
-        confirm         : true,
-        cookie          : true,
+        apply           : true,
+        call            : true,
+        callee          : true,
+        caller          : true,
+        clone           : true,
         constructor     : true,
-        createpopup     : true,
-        defaultstatus   : true,
-        defaultview     : true,
-        document        : true,
-        documentelement : true,
-        domain          : true,
         'eval'          : true,
-        execScript      : true,
-        external        : true,
-        forms           : true,
-        forward         : true,
-        frameelement    : true,
-        fromcharcode    : true,
-        history         : true,
-        home            : true,
-        location        : true,
-        moveby          : true,
-        moveto          : true,
-        navigate        : true,
-        opener          : true,
-        parent          : true,
-        print           : true,
-        prompt          : true,
+        'new'           : true,
         prototype       : true,
-        referrer        : true,
-        resizeby        : true,
-        resizeto        : true,
-        self            : true,
-        showhelp        : true,
-        showmodaldialog : true,
-        status          : true,
-        stop            : true,
-        top             : true,
-        window          : true,
-        write           : true,
-        writeln         : true,
-        __proto__       : true
+        source          : true,
+        'this'          : true,
+        toSource        : true,
+        toString        : true,
+        watch           : true
     },
 
 // These are all of the JSLint options.
@@ -139,6 +108,7 @@ JSLINT = function () {
             debug      : true, // if debugger statements should be allowed
             eqeqeq     : true, // if === should be required
             evil       : true, // if eval should be allowed
+            forin      : true, // if for in statements must filter
             fragment   : true, // if HTML fragments should be allowed
             laxbreak   : true, // if line breaks should not be checked
             nomen      : true, // if names should be checked
@@ -216,6 +186,18 @@ JSLINT = function () {
         },
         funct,          // The current function
         functions,      // All of the functions
+        href = {
+            background  : true,
+            content     : true,
+            data        : true,
+            dynsrc      : true,
+            href        : true,
+            lowsrc      : true,
+            value       : true,
+            src         : true,
+            style       : true
+        },
+        global,         // The global object
         globals,        // The current globals
         implied,        // Implied globals
         inblock,
@@ -250,6 +232,7 @@ JSLINT = function () {
             version     : true
         },
         scope,      // The current scope
+        src,
         stack,
 
 // standard contains the global names that are provided by the
@@ -381,29 +364,31 @@ JSLINT = function () {
 
         xtype,
 
+// unsafe comment
+        ax = /@cc|<\/?script|\]\]|&/i,
+// unsafe character
+        cx = /[\u0000-\u0008\u000a-\u001f\u007f-\u009f\u2028\u2029\ufff0-\uffff]/,
 // token
-        tx = /^\s*([(){}[.,:;'"~]|\](\]>)?|\?>?|==?=?|\/(\*(global|extern|jslint|member|members)?|=|\/)?|\*[\/=]?|\+[+=]?|-[-=]?|%[=>]?|&[&=]?|\|[|=]?|>>?>?=?|<([\/=%\?]|\!(\[|--)?|<=?)?|\^=?|\!=?=?|[a-zA-Z_$][a-zA-Z0-9_$]*|[0-9]+([xX][0-9a-fA-F]+|\.[0-9]*)?([eE][+-]?[0-9]+)?)/,
-// regular expression
-        rx = /^(\\[^\x00-\x1f]|\[(\\[^\x00-\x1f]|[^\x00-\x1f\\\/])*\]|[^\x00-\x1f\\\/\[])+\/[gim]*/,
+        tx = /^\s*([(){}\[.,:;'"~]|\](\]>)?|\?>?|==?=?|\/(\*(global|extern|jslint|member|members)?|=|\/)?|\*[\/=]?|\+[+=]?|-[\-=]?|%[=>]?|&[&=]?|\|[|=]?|>>?>?=?|<([\/=%\?]|\!(\[|--)?|<=?)?|\^=?|\!=?=?|[a-zA-Z_$][a-zA-Z0-9_$]*|[0-9]+([xX][0-9a-fA-F]+|\.[0-9]*)?([eE][+\-]?[0-9]+)?)/,
 // star slash
         lx = /\*\/|\/\*/,
 // identifier
-        ix = /^([a-zA-Z_$][a-zA-Z0-9_$]*$)/,
+        ix = /^([a-zA-Z_$][a-zA-Z0-9_$]*)$/,
 // javascript url
-        jx = /(javascript|jscript|ecmascript)\s*:/i;
+        jx = /(?:javascript|jscript|ecmascript|vbscript|mocha|livescript)\s*:/i,
+// url badness
+        ux = /&|\+|\u00AD|\.\.|\/\*|%[^;]|base64|url|expression|data|mailto/i;
 
-    Object.prototype.begetObject = function () {
+    function object(o) {
         function F() {}
-        F.prototype = this;
+        F.prototype = o;
         return new F();
-    };
+    }
 
     Object.prototype.combine = function (o) {
         var n;
-        for (n in o) {
-            if (o.hasOwnProperty(n)) {
-                this[n] = o[n];
-            }
+        for (n in o) if (o.hasOwnProperty(n)) {
+            this[n] = o[n];
         }
     };
 
@@ -426,7 +411,7 @@ JSLINT = function () {
 
 
     String.prototype.supplant = function (o) {
-        return this.replace(/{([^{}]*)}/g, function (a, b) {
+        return this.replace(/\{([^{}]*)\}/g, function (a, b) {
             var r = o[b];
             return typeof r === 'string' || typeof r === 'number' ? r : a;
         });
@@ -461,14 +446,18 @@ JSLINT = function () {
 
 
     function populateGlobals() {
-        if (option.rhino) {
-            globals.combine(rhino);
-        }
-        if (option.browser) {
-            globals.combine(browser);
-        }
-        if (option.widget) {
-            globals.combine(widget);
+        if (option.adsafe) {
+            globals.combine({ADSAFE: true});
+        } else {
+            if (option.rhino) {
+                globals.combine(rhino);
+            }
+            if (option.browser) {
+                globals.combine(browser);
+            }
+            if (option.widget) {
+                globals.combine(widget);
+            }
         }
     }
 
@@ -545,12 +534,17 @@ JSLINT = function () {
 // Private lex methods
 
         function nextLine() {
+            var at;
             line += 1;
             if (line >= lines.length) {
                 return false;
             }
             character = 0;
             s = lines[line];
+            at = s.search(cx);
+            if (at >= 0) {
+                warningAt("Unsafe character.", line, at);
+            }
             return true;
         }
 
@@ -558,10 +552,6 @@ JSLINT = function () {
 
         function it(type, value) {
             var i, t;
-            if (option.adsafe && adsafe[value.toLowerCase()] === true) {
-                warning("Adsafe restricted word '{a}'.",
-                        {line: line, from: character}, value);
-            }
             if (type === '(punctuator)' ||
                     (type === '(identifier)' && syntax.hasOwnProperty(value))) {
                 t = syntax[value];
@@ -574,10 +564,18 @@ JSLINT = function () {
             } else {
                 t = syntax[type];
             }
-            t = t.begetObject();
+            t = object(t);
             if (type === '(string)') {
-                if (/(javascript|jscript|ecmascript)\s*:/i.test(value)) {
-                    warningAt("JavaScript URL.", line, from);
+                if (jx.test(value)) {
+                    warningAt("Script URL.", line, from);
+                }
+            } else if (type === '(identifier)') {
+                if (option.nomen && value.charAt(0) === '_') {
+                    warningAt("Unexpected '_' in '{a}'.", line, from, value);
+                } else if (option.adsafe &&
+                        (adsafe[value] === true || value.slice(-2) === '__')) {
+                    warning("ADsafe restricted word '{a}'.",
+                            {line: line, from: character}, value);
                 }
             }
             t.value = value;
@@ -585,9 +583,11 @@ JSLINT = function () {
             t.character = character;
             t.from = from;
             i = t.id;
-            prereg = i &&
-                    (('(,=:[!&|?{};'.indexOf(i.charAt(i.length - 1)) >= 0) ||
-                    i === 'return');
+            if (i !== '(endline)') {
+                prereg = i &&
+                        (('(,=:[!&|?{};'.indexOf(i.charAt(i.length - 1)) >= 0) ||
+                        i === 'return');
+            }
             return t;
         }
 
@@ -603,16 +603,15 @@ JSLINT = function () {
                 } else {
                     lines = source;
                 }
-                line = 0;
-                character = 0;
+                line = -1;
+                nextLine();
                 from = 0;
-                s = lines[0];
             },
 
 // token -- this is called by advance to get the next token.
 
             token: function () {
-                var c, d, i, l, r, t;
+                var b, c, captures, d, depth, high, i, l, low, q, t;
 
                 function match(x) {
                     var r = x.exec(s), r1;
@@ -662,12 +661,19 @@ JSLINT = function () {
                                 break;
                             }
                             warningAt("Control character in string: {a}.",
-                                    line, character + j, s.substring(0, j));
+                                    line, character + j, s.slice(0, j));
                         } else if (c === '<') {
-                            if (s.charAt(j + 1) === '/' && xmode && xmode !== 'CDATA') {
+                            if (option.adsafe && xmode === 'xml') {
+                                warningAt("ADsafe string violation.",
+                                        line, character + j);
+                            } else if (s.charAt(j + 1) === '/' && ((xmode && xmode !== 'CDATA') || option.adsafe)) {
                                 warningAt("Expected '<\\/' and instead saw '</'.", line, character);
                             }
                         } else if (c === '\\') {
+                            if (option.adsafe && xmode === 'xml') {
+                                warningAt("ADsafe string violation.",
+                                        line, character + j);
+                            }
                             j += 1;
                             character += 1;
                             c = s.charAt(j);
@@ -776,12 +782,24 @@ JSLINT = function () {
 //      // comment
 
                     case '//':
+                        if (src || xmode && xmode !== 'script') {
+                            warningAt("Unexpected comment.", line, character);
+                        }
+                        if (option.adsafe && ax.test(s)) {
+                            warningAt("ADsafe comment violation.", line, character);
+                        }
                         s = '';
                         break;
 
 //      /* comment
 
                     case '/*':
+                        if (src || xmode && xmode !== 'script') {
+                            warningAt("Unexpected comment.", line, character);
+                        }
+                        if (option.adsafe && ax.test(s)) {
+                            warningAt("ADsafe comment violation.", line, character);
+                        }
                         for (;;) {
                             i = s.search(lx);
                             if (i >= 0) {
@@ -789,6 +807,10 @@ JSLINT = function () {
                             }
                             if (!nextLine()) {
                                 errorAt("Unclosed comment.", line, character);
+                            } else {
+                                if (option.adsafe && ax.test(s)) {
+                                    warningAt("ADsafe comment violation.", line, character);
+                                }
                             }
                         }
                         character += i + 2;
@@ -819,15 +841,187 @@ JSLINT = function () {
 //      /
                     case '/':
                         if (prereg) {
-                            r = rx.exec(s);
-                            if (r) {
-                                c = r[0];
-                                l = c.length;
-                                character += l;
-                                s = s.substr(l);
-                                return it('(regex)', c);
+                            depth = 0;
+                            captures = 0;
+                            l = 0;
+                            for (;;) {
+                                b = true;
+                                c = s.charAt(l);
+                                l += 1;
+                                switch (c) {
+                                case '':
+                                    errorAt("Unclosed regular expression.", line, from);
+                                    return;
+                                case '/':
+                                    if (depth > 0) {
+                                        warningAt("Unescaped '{a}'.", line, from + l, '/');
+                                    }
+                                    c = s.substr(0, l - 1);
+                                    if (s.charAt(l) === 'g') {
+                                        l += 1;
+                                    }
+                                    if (s.charAt(l) === 'i') {
+                                        l += 1;
+                                    }
+                                    if (s.charAt(l) === 'm') {
+                                        l += 1;
+                                    }
+                                    character += l;
+                                    s = s.substr(l);
+                                    return it('(regex)', c);
+                                case '\\':
+                                    l += 1;
+                                    break;
+                                case '(':
+                                    depth += 1;
+                                    b = false;
+                                    if (s.charAt(l) === '?') {
+                                        l += 1;
+                                        switch (s.charAt(l)) {
+                                        case ':':
+                                        case '=':
+                                        case '!':
+                                            l += 1;
+                                            break;
+                                        default:
+                                            warningAt("Expected '{a}' and instead saw '{b}'.", line, from + l, ':', s.charAt(l));
+                                        }
+                                    } else {
+                                        captures += 1;
+                                    }
+                                    break;
+                                case ')':
+                                    if (depth === 0) {
+                                        warningAt("Unescaped '{a}'.", line, from + l, ')');
+                                    } else {
+                                        depth -= 1;
+                                    }
+                                    break;
+                                case ' ':
+                                    q = 1;
+                                    while (s.charAt(l) === ' ') {
+                                        l += 1;
+                                        q += 1;
+                                    }
+                                    if (q > 1) {
+                                        warningAt("Spaces are hard to count. Use {{a}}.", line, from + l, q);
+                                    }
+                                    break;
+                                case '[':
+                                    if (s.charAt(l) === '^') {
+                                        l += 1;
+                                    }
+                                    q = false;
+klass:                              for (;;) {
+                                        c = s.charAt(l);
+                                        l += 1;
+                                        switch (c) {
+                                        case '[':
+                                        case '^':
+                                            warningAt("Unescaped '{a}'.", line, from + l, c);
+                                            q = true;
+                                            break;
+                                        case '-':
+                                            if (q) {
+                                                q = false;
+                                            } else {
+                                                warningAt("Unescaped '{a}'.", line, from + l, '-');
+                                                q = true;
+                                            }
+                                            break;
+                                        case ']':
+                                            if (!q) {
+                                                warningAt("Unescaped '{a}'.", line, from + l - 1, '-');
+                                            }
+                                            break klass;
+                                        case '\\':
+                                            l += 1;
+                                            q = true;
+                                            break;
+                                        default:
+                                            if (c < ' ') {
+                                                errorAt(c ? "Control character in a regular expression" :
+                                                    "Unclosed regular expression.", line, from + l);
+                                            }
+                                            q = true;
+                                        }
+                                    }
+                                    break;
+                                case ']':
+                                case '?':
+                                case '{':
+                                case '}':
+                                case '+':
+                                case '*':
+                                    warningAt("Unescaped '{a}'.", line, from + l, c);
+                                    break;
+                                default:
+                                    if (c < ' ') {
+                                        warningAt("Control character in a regular expression", line, from + l);
+                                    }
+                                }
+                                if (b) {
+                                    switch (s.charAt(l)) {
+                                    case '?':
+                                    case '+':
+                                    case '*':
+                                        l += 1;
+                                        if (s.charAt(l) === '?') {
+                                            l += 1;
+                                        }
+                                        break;
+                                    case '{':
+                                        l += 1;
+                                        c = s.charAt(l);
+                                        if (c < '0' || c > '9') {
+                                            warningAt("Expected a number and instead saw '{a}'.", line, from + l, c);
+                                        }
+                                        l += 1;
+                                        low = +c;
+                                        for (;;) {
+                                            c = s.charAt(l);
+                                            if (c < '0' || c > '9') {
+                                                break;
+                                            }
+                                            l += 1;
+                                            low = +c + (low * 10);
+                                        }
+                                        high = low;
+                                        if (c === ',') {
+                                            l += 1;
+                                            high = Infinity;
+                                            c = s.charAt(l);
+                                            if (c >= '0' && c <= '9') {
+                                                l += 1;
+                                                high = +c;
+                                                for (;;) {
+                                                    c = s.charAt(l);
+                                                    if (c < '0' || c > '9') {
+                                                        break;
+                                                    }
+                                                    l += 1;
+                                                    high = +c + (high * 10);
+                                                }
+                                            }
+                                        }
+                                        if (s.charAt(l) !== '}') {
+                                            warningAt("Expected '{a}' and instead saw '{b}'.", line, from + l, '}', c);
+                                        } else {
+                                            l += 1;
+                                        }
+                                        if (s.charAt(l) === '?') {
+                                            l += 1;
+                                        }
+                                        if (low > high) {
+                                            warningAt("'{a}' should not be greater than '{b}'.", line, from + l, low, high);
+                                        }
+                                    }
+                                }
                             }
-                            errorAt("Bad regular expression.", line, character);
+                            c = s.substr(0, l - 1);
+                            character += l;
+                            s = s.substr(l);
+                            return it('(regex)', c);
                         }
                         return it('(punctuator)', t);
 
@@ -880,6 +1074,9 @@ JSLINT = function () {
         if (t === 'hasOwnProperty') {
             error("'hasOwnProperty' is a really bad name.");
         }
+        if (option.adsafe && scope === global) {
+            warning('ADsafe global: ' + t + '.', token);
+        }
 
 // Define t in the current function in the current scope.
 
@@ -892,7 +1089,6 @@ JSLINT = function () {
                     "'{a}' is already defined.",
                     nexttoken, t);
             }
-
             scope[t] = funct;
             funct[t] = type;
         }
@@ -907,6 +1103,9 @@ JSLINT = function () {
             break;
         case '/*extern':
         case '/*global':
+            if (option.adsafe) {
+                warning("ADsafe restriction.");
+            }
             obj = globals;
             break;
         case '/*members':
@@ -918,7 +1117,7 @@ JSLINT = function () {
             break;
         case '/*jslint':
             if (option.adsafe) {
-                error("Adsafe restriction.");
+                warning("ADsafe restriction.");
             }
             obj = option;
             filter = allOptions;
@@ -1040,6 +1239,9 @@ JSLINT = function () {
                 doOption();
             } else {
                 if (nexttoken.id === '<![') {
+                    if (option.adsafe) {
+                        error("ADsafe violation.", nexttoken);
+                    }
                     if (xtype === 'html') {
                         error("Unexpected '{a}'.", nexttoken, '<![');
                     }
@@ -1128,12 +1330,17 @@ JSLINT = function () {
             error("Unexpected early end of program.", token);
         }
         advance();
+        if (option.adsafe && token.value === 'ADSAFE') {
+            if (nexttoken.id !== '.' || !(peek(0).identifier) || peek(1).id !== '(') {
+                warning('ADsafe violation.', token);
+            }
+        }
         if (initial) {
             anonname = 'anonymous';
             verb = token.value;
         }
         if (initial && token.fud) {
-            token.fud();
+            left = token.fud();
         } else {
             if (token.nud) {
                 o = token.exps;
@@ -1220,17 +1427,26 @@ JSLINT = function () {
         }
     }
 
+    function nolinebreak(t) {
+        if (t.line !== nexttoken.line) {
+            warning("Line breaking error '{a}'.", t, t.id);
+        }
+    }
 
 
 // Parasitic constructors for making the symbols that will be inherited by
 // tokens.
 
     function symbol(s, p) {
-        return syntax[s] || (syntax[s] = {
-            id: s,
-            lbp: p,
-            value: s
-        });
+        var x = syntax[s];
+        if (!x || typeof x !== 'object') {
+            syntax[s] = x = {
+                id: s,
+                lbp: p,
+                value: s
+            };
+        }
+        return x;
     }
 
 
@@ -1341,8 +1557,18 @@ JSLINT = function () {
     function assignop(s, f) {
         symbol(s, 20).exps = true;
         return infix(s, function (left) {
+            var l;
             nonadjacent(prevtoken, token);
             nonadjacent(token, nexttoken);
+            if (adsafe) {
+                l = left;
+                do {
+                    if (l.value === 'ADSAFE') {
+                        warning('ADsafe violation.', l);
+                    }
+                    l = l.left;
+                } while (l);
+            }
             if (left) {
                 if (left.id === '.' || left.id === '[' ||
                         (left.identifier && !left.reserved)) {
@@ -1416,13 +1642,6 @@ JSLINT = function () {
                     nexttoken, nexttoken.id);
         }
         if (nexttoken.identifier) {
-            if (option.nomen) {
-                if (nexttoken.value.charAt(0) === '_' ||
-                        nexttoken.value.indexOf('$') >= 0) {
-                    warning("Unexpected characters in '{a}'.",
-                            nexttoken, nexttoken.value);
-                }
-            }
             advance();
             return token.value;
         }
@@ -1443,8 +1662,7 @@ JSLINT = function () {
     }
 
     function reachable(s) {
-        var i = 0;
-        var t;
+        var i = 0, t;
         if (nexttoken.id !== ';' || noreach) {
             return;
         }
@@ -1467,8 +1685,8 @@ JSLINT = function () {
     }
 
 
-    function statement() {
-        var i = indent, s = scope, t = nexttoken;
+    function statement(noindent) {
+        var i = indent, r, s = scope, t = nexttoken;
 
 // We don't like the empty statement.
 
@@ -1483,7 +1701,7 @@ JSLINT = function () {
         if (t.identifier && !t.reserved && peek().id === ':') {
             advance();
             advance(':');
-            scope = s.begetObject();
+            scope = object(s);
             addlabel(t.value, 'label');
             if (!nexttoken.labelled) {
                 warning("Label '{a}' on {b} statement.",
@@ -1499,7 +1717,10 @@ JSLINT = function () {
 
 // Parse the statement.
 
-        parse(0, true);
+        if (!noindent) {
+            indentation();
+        }
+        r = parse(0, true);
 
 // Look for the final semicolon.
 
@@ -1518,26 +1739,29 @@ JSLINT = function () {
 
         indent = i;
         scope = s;
+        return r;
     }
 
 
     function statements() {
+        var a = [];
         while (!nexttoken.reach && nexttoken.id !== '(end)') {
             if (nexttoken.id === ';') {
                 warning("Unnecessary semicolon.");
                 advance(';');
+            } else {
+                a.push(statement());
             }
-            indentation();
-            statement();
         }
+        return a;
     }
 
 
     function block(f) {
-        var b = inblock, s = scope;
+        var a, b = inblock, s = scope;
         inblock = f;
         if (f) {
-            scope = scope.begetObject();
+            scope = object(scope);
         }
         nonadjacent(token, nexttoken);
         var t = nexttoken;
@@ -1548,7 +1772,7 @@ JSLINT = function () {
                 if (!f && nexttoken.from === indent + 4) {
                     indent += 4;
                 }
-                statements();
+                a = statements();
                 indent -= 4;
                 indentation();
             }
@@ -1557,12 +1781,13 @@ JSLINT = function () {
             warning("Expected '{a}' and instead saw '{b}'.",
                     nexttoken, '{', nexttoken.value);
             noreach = true;
-            statement();
+            a = [statement()];
             noreach = false;
         }
         verb = null;
         scope = s;
         inblock = b;
+        return a;
     }
 
 
@@ -1585,52 +1810,18 @@ JSLINT = function () {
     }
 
 
-// Common HTML attributes that carry scripts.
-
-    var scriptstring = {
-        onblur:      true,
-        onchange:    true,
-        onclick:     true,
-        ondblclick:  true,
-        onfocus:     true,
-        onkeydown:   true,
-        onkeypress:  true,
-        onkeyup:     true,
-        onload:      true,
-        onmousedown: true,
-        onmousemove: true,
-        onmouseout:  true,
-        onmouseover: true,
-        onmouseup:   true,
-        onreset:     true,
-        onselect:    true,
-        onsubmit:    true,
-        onunload:    true
-    };
-
-
 // XML types. Currently we support html and widget.
 
     var xmltype = {
-        HTML: {
-            doBegin: function (n) {
-                if (!option.cap) {
-                    warning("HTML case error.");
-                }
-                xmltype.html.doBegin();
-            }
-        },
         html: {
             doBegin: function (n) {
                 xtype = 'html';
-                xmltype.html.script = false;
                 option.browser = true;
                 populateGlobals();
             },
             doTagName: function (n, p) {
-                var i;
-                var t = xmltype.html.tag[n];
-                var x;
+                var i, t = xmltype.html.tag[n], x;
+                src = false;
                 if (!t) {
                     error("Unrecognized tag '<{a}>'.",
                             nexttoken,
@@ -1638,42 +1829,58 @@ JSLINT = function () {
                                 n + ' (capitalization error)');
                 }
                 x = t.parent;
-                if (x) {
-                    if (x.indexOf(' ' + p + ' ') < 0) {
-                        error("A '<{a}>' must be within '<{b}>'.",
-                                token, n, x);
-                    }
-                } else {
-                    i = stack.length;
-                    do {
-                        if (i <= 0) {
+                if (!option.fragment || stack.length !== 1 || !stack[0].fragment) {
+                    if (x) {
+                        if (x.indexOf(' ' + p + ' ') < 0) {
                             error("A '<{a}>' must be within '<{b}>'.",
-                                    token, n, 'body');
+                                    token, n, x);
                         }
-                        i -= 1;
-                    } while (stack[i].name !== 'body');
+                    } else {
+                        i = stack.length;
+                        do {
+                            if (i <= 0) {
+                                error("A '<{a}>' must be within '<{b}>'.",
+                                        token, n, 'body');
+                            }
+                            i -= 1;
+                        } while (stack[i].name !== 'body');
+                    }
                 }
-                xmltype.html.script = n === 'script';
                 return t.empty;
             },
             doAttribute: function (n, a) {
+                if (!a) {
+                    warning("Missing attribute name.", token);
+                }
+                a = a.toLowerCase();
                 if (n === 'script') {
                     if (a === 'src') {
-                        xmltype.html.script = false;
-                        return 'string';
+                        src = true;
+                        return 'href';
                     } else if (a === 'language') {
                         warning("The 'language' attribute is deprecated.",
                                 token);
                         return false;
                     }
+                } else if (n === 'style') {
+                    if (a === 'type') {
+                        warning("Don't bother with 'type'.", token);
+                    }
                 }
-                if (a === 'href') {
+                if (href[a] === true) {
                     return 'href';
                 }
-                return scriptstring[a] && 'script';
+                if (a.slice(0, 2) === 'on') {
+                    if (!option.on) {
+                        warning("Avoid HTML event handlers.");
+                    }
+                    return 'script';
+                } else {
+                    return 'value';
+                }
             },
             doIt: function (n) {
-                return xmltype.html.script ? 'script' : n !== 'html' &&
+                return n === 'script' ? 'script' : n !== 'html' &&
                         xmltype.html.tag[n].special && 'special';
             },
             tag: {
@@ -1733,10 +1940,9 @@ JSLINT = function () {
                 link:     {empty: true, parent: ' head '},
                 map:      {},
                 menu:     {},
-                meta:     {empty: true, parent: ' head noscript '},
+                meta:     {empty: true, parent: ' head noframes noscript '},
                 noframes: {parent: ' html body '},
-                noscript: {parent:
-' applet blockquote body button center dd del div fieldset form frameset head html iframe ins li map noframes noscript object td th '},
+                noscript: {parent: ' head html noframes '},
                 object:   {},
                 ol:       {},
                 optgroup: {parent: ' select '},
@@ -1746,8 +1952,7 @@ JSLINT = function () {
                 pre:      {},
                 q:        {},
                 samp:     {},
-                script:   {parent:
-' head body p div span abbr acronym address bdo blockquote cite code del dfn em ins kbd pre samp strong table tbody td th tr var '},
+                script:   {parent: ' body div frame head iframe p pre span '},
                 select:   {},
                 small:    {},
                 span:     {},
@@ -1985,6 +2190,9 @@ JSLINT = function () {
             w += nexttoken.value;
             advance();
         }
+        if (option.cap) {
+            w = w.toLowerCase();
+        }
         return w;
     }
 
@@ -2007,6 +2215,10 @@ JSLINT = function () {
                 n = xmlword(true);
                 t.name = n;
                 if (!xtype) {
+                    if (option.fragment && option.adsafe &&
+                            n !== 'div' && n !== 'iframe') {
+                        error("ADsafe HTML fragment violation.", token);
+                    }
                     if (xmltype[n]) {
                         xmltype[n].doBegin();
                         n = xtype;
@@ -2014,16 +2226,11 @@ JSLINT = function () {
                     } else {
                         if (option.fragment) {
                             xmltype.html.doBegin();
-                            stack = [{name: 'body'}];
-                            e = xmltype[xtype].doTagName(n, 'body');
                         } else {
                             error("Unrecognized tag '<{a}>'.", nexttoken, n);
                         }
                     }
                 } else {
-                    if (option.cap && xtype === 'html') {
-                        n = n.toLowerCase();
-                    }
                     if (stack.length === 0) {
                         error("What the hell is this?");
                     }
@@ -2034,6 +2241,10 @@ JSLINT = function () {
                 for (;;) {
                     if (nexttoken.id === '/') {
                         advance('/');
+                        if (nexttoken.id !== '>') {
+                            warning("Expected '{a}' and instead saw '{b}'.",
+                                    nexttoken, '>', nexttoken.value);
+                        }
                         e = true;
                         break;
                     }
@@ -2072,11 +2283,21 @@ JSLINT = function () {
                         advance();
                         break;
                     case 'string':
+                        advance('=');
+                        if (nexttoken.type !== '(string)') {
+                            error("Bad value '{a}'.",
+                                    nexttoken, nexttoken.value);
+                        }
+                        advance();
+                        break;
                     case 'href':
                         advance('=');
                         if (nexttoken.type !== '(string)') {
                             error("Bad value '{a}'.",
                                     nexttoken, nexttoken.value);
+                        }
+                        if (option.adsafe && ux.test(nexttoken.value)) {
+                            error("ADsafe URL violation.");
                         }
                         advance();
                         break;
@@ -2095,6 +2316,8 @@ JSLINT = function () {
                             if (!nexttoken.identifier &&
                                     nexttoken.type !== '(string)' &&
                                     nexttoken.type !== '(number)') {
+                                error("Bad value '{a}'.",
+                                        nexttoken, nexttoken.value);
                             }
                             advance();
                         }
@@ -2105,9 +2328,16 @@ JSLINT = function () {
                     xmode = 'script';
                     advance('>');
                     indent = nexttoken.from;
-                    statements();
+                    if (src) {
+                        if (option.fragment && option.adsafe) {
+                            warning("ADsafe script violation.", token);
+                        }
+                    } else {
+                        statements();
+                    }
                     if (nexttoken.id !== '</' && nexttoken.id !== '(end)') {
-                        warning("Unexpected '{a}'.", nexttoken, nexttoken.id);
+                        warning("Expected '{a}' and instead saw '{b}'.",
+                                nexttoken, '<\/script>', nexttoken.value);
                     }
                     xmode = 'xml';
                     break;
@@ -2146,6 +2376,9 @@ JSLINT = function () {
                 }
                 break;
             case '<!':
+                if (option.adsafe) {
+                    error("ADsafe HTML violation.");
+                }
                 for (;;) {
                     advance();
                     if (nexttoken.id === '>') {
@@ -2158,12 +2391,21 @@ JSLINT = function () {
                 lex.skip('>');
                 break;
             case '<!--':
+                if (option.adsafe) {
+                    error("ADsafe comment violation.");
+                }
                 lex.skip('-->');
                 break;
             case '<%':
+                if (option.adsafe) {
+                    error("ADsafe HTML violation.");
+                }
                 lex.skip('%>');
                 break;
             case '<?':
+                if (option.adsafe) {
+                    error("ADsafe HTML violation.");
+                }
                 for (;;) {
                     advance();
                     if (nexttoken.id === '?>') {
@@ -2188,6 +2430,9 @@ JSLINT = function () {
                 return;
             }
             if (!lex.skip('')) {
+                if (!stack) {
+                    error("Bad XML.");
+                }
                 t = stack.pop();
                 if (t.value) {
                     error("Missing '{a}'.", t, closetag(t.name));
@@ -2408,9 +2653,6 @@ JSLINT = function () {
         if (left && right && left.id === '(string)' && right.id === '(string)') {
             left.value += right.value;
             left.character = right.character;
-            if (option.adsafe && adsafe[left.value.toLowerCase()] === true) {
-                warning("Adsafe restricted word '{a}'.", left, left.value);
-            }
             if (jx.test(left.value)) {
                 warning("JavaScript URL.", left);
             }
@@ -2587,6 +2829,9 @@ JSLINT = function () {
     });
 
     infix('[', function (left) {
+        if (option.adsafe) {
+            warning('ADsafe subscripting.');
+        }
         nospace();
         var e = parse(0), s;
         if (e && e.type === '(string)') {
@@ -2697,7 +2942,7 @@ JSLINT = function () {
             }
         };
         x.fud = function () {
-            error("Expected to see a statement and instead saw a block.");
+            error("Expected to see a statement and instead saw a block.", token);
         };
     })(delim('{'));
 
@@ -2763,7 +3008,7 @@ JSLINT = function () {
 
     function doFunction(i) {
         var s = scope;
-        scope = s.begetObject();
+        scope = object(s);
         funct = {
             '(name)'    : i || '"' + anonname + '"',
             '(line)'    : nexttoken.line + 1,
@@ -2825,20 +3070,23 @@ JSLINT = function () {
             nonadjacent(token, nexttoken);
             advance('else');
             if (nexttoken.id === 'if' || nexttoken.id === 'switch') {
-                statement();
+                statement(true);
             } else {
                 block(true);
             }
         }
+        return this;
     });
 
     blockstmt('try', function () {
-        var b, e;
-        block(true);
+        var b, e, s;
+        block(false);
         if (nexttoken.id === 'catch') {
             advance('catch');
             nonadjacent(token, nexttoken);
             advance('(');
+            s = scope;
+            scope = object(s);
             e = nexttoken.value;
             if (nexttoken.type !== '(identifier)') {
                 warning("Expected an identifier and instead saw '{a}'.",
@@ -2850,6 +3098,7 @@ JSLINT = function () {
             advance(')');
             block(false);
             b = true;
+            scope = s;
         }
         if (nexttoken.id === 'finally') {
             advance('finally');
@@ -2985,7 +3234,7 @@ JSLINT = function () {
     }).labelled = true;
 
     blockstmt('for', function () {
-        var t = nexttoken;
+        var s, t = nexttoken;
         advance('(');
         nonadjacent(this, t);
         nospace();
@@ -2999,8 +3248,17 @@ JSLINT = function () {
             advance('in');
             parse(20);
             advance(')', t);
-            block(true);
-            return;
+            if (nexttoken.id === 'if') {
+                nolinebreak(token);
+                statement(true);
+            } else {
+                s = block(true);
+                if (!option.forin && (s.length > 1 || typeof s[0] !== 'object' ||
+                        s[0].value !== 'if')) {
+                    warning("The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype.", this);
+                }
+            }
+            return this;
         } else {
             if (nexttoken.id !== ';') {
                 if (nexttoken.id === 'var') {
@@ -3039,13 +3297,6 @@ JSLINT = function () {
             block(true);
         }
     }).labelled = true;
-
-
-    function nolinebreak(t) {
-        if (t.line !== nexttoken.line) {
-            warning("Line breaking error '{a}'.", t, t.id);
-        }
-    }
 
 
     stmt('break', function () {
@@ -3223,10 +3474,26 @@ JSLINT = function () {
 // The actual JSLINT function itself.
 
     var itself = function (s, o) {
-        option = o || {};
+        if (o) {
+            if (o.adsafe) {
+                o.browser = false;
+                o.debug   = false;
+                o.eqeqeq  = true;
+                o.evil    = false;
+                o.forin   = false;
+                o.on      = false;
+                o.rhino   = false;
+                o.undef   = true;
+                o.widget  = false;
+            }
+            option = o;
+        } else {
+            option = {};
+        }
+        globals = option.adsafe ? {} : object(standard);
         JSLINT.errors = [];
-        globals = standard.begetObject();
-        scope = globals.begetObject();
+        global = object(globals);
+        scope = global;
         funct = true;
         functions = [];
         xmode = false;
@@ -3284,10 +3551,8 @@ JSLINT = function () {
         }
 
         s = [];
-        for (k in implied) {
-            if (implied.hasOwnProperty(k)) {
-                s.push(k);
-            }
+        for (k in implied) if (implied.hasOwnProperty(k)) {
+            s.push(k);
         }
 
         k = JSLINT.errors.length;
@@ -3305,7 +3570,7 @@ JSLINT = function () {
                             ' character ' + (c.character + 1) +
                             ': ' + c.reason.entityify() +
                             '</p><p class=evidence>' +
-                            (e && (e.length > 80 ? e.substring(0, 77) + '...' :
+                            (e && (e.length > 80 ? e.slice(0, 77) + '...' :
                             e).entityify()) + '</p>');
                 }
             }
@@ -3320,10 +3585,8 @@ JSLINT = function () {
             o.push('<div id=functions>');
 
             s = [];
-            for (k in scope) {
-                if (scope.hasOwnProperty(k)) {
-                    s.push(k);
-                }
+            for (k in scope) if (scope.hasOwnProperty(k)) {
+                s.push(k);
             }
             if (s.length === 0) {
                 o.push('<div><i>No new global variables introduced.</i></div>');
@@ -3339,31 +3602,29 @@ JSLINT = function () {
                 ou = [];
                 gl = [];
                 la = [];
-                for (k in f) {
-                    if (f.hasOwnProperty(k)) {
-                        v = f[k];
-                        switch (v) {
-                        case 'closure':
-                            cl.push(k);
-                            break;
-                        case 'var':
-                            va.push(k);
-                            break;
-                        case 'unused':
-                            un.push(k);
-                            break;
-                        case 'label':
-                            la.push(k);
-                            break;
-                        case 'outer':
-                            ou.push(k);
-                            break;
-                        case true:
-                            if (k !== '(context)') {
-                                gl.push(k);
-                            }
-                            break;
+                for (k in f) if (f.hasOwnProperty(k)) {
+                    v = f[k];
+                    switch (v) {
+                    case 'closure':
+                        cl.push(k);
+                        break;
+                    case 'var':
+                        va.push(k);
+                        break;
+                    case 'unused':
+                        un.push(k);
+                        break;
+                    case 'label':
+                        la.push(k);
+                        break;
+                    case 'outer':
+                        ou.push(k);
+                        break;
+                    case true:
+                        if (k !== '(context)') {
+                            gl.push(k);
                         }
+                        break;
                     }
                 }
                 o.push('<br><div class=function><i>' + f['(line)'] + '</i> ' +

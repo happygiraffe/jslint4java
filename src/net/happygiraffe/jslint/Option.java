@@ -20,6 +20,8 @@ public enum Option {
     EQEQEQ("If === should be required"),
     /** If eval should be allowed */
     EVIL("If eval should be allowed"),
+    /** If for in statements must filter */
+    FORIN("If for in statements must filter"),
     /** If html fragments should be allowed */
     FRAGMENT("If html fragments should be allowed"),
     /** If line breaks should not be checked */
@@ -32,8 +34,8 @@ public enum Option {
     PLUSPLUS("If increment/decrement should not be allowed"),
     /** If the rhino environment globals should be predefined */
     RHINO("If the rhino environment globals should be predefined"),
-    /** If undefined variables are errors */
-    UNDEF("If undefined variables are errors"),
+    /** If variables should be declared before used */
+    UNDEF("If variables should be declared before used"),
     /** If strict whitespace rules apply */
     WHITE("If strict whitespace rules apply"),
     /** If the yahoo widgets globals should be predefined */
@@ -62,7 +64,7 @@ public enum Option {
 
     /**
      * Calculate the maximum length of all of the {@link Option} names.
-     * 
+     *
      * @return the length of the largest name.
      */
     public static int maximumNameLength() {
