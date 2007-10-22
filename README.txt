@@ -1,5 +1,5 @@
-jslint for java
-===============
+jslint for java <http://code.google.com/p/jslint4java/>
+=======================================================
 
 This is a java wrapper around the fabulous tool by Douglas Crockford, jslint
 (See <http://jslint.com/>). It provides a simple interface for detecting
