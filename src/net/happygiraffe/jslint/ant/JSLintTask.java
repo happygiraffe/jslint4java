@@ -85,7 +85,7 @@ public class JSLintTask extends Task {
 
     private void lintFile(File file) {
         try {
-            log("check " + file, Project.MSG_DEBUG);
+            log("check " + file, Project.MSG_VERBOSE);
             // XXX We should allow specifying the encoding here.
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     new FileInputStream(file)));
