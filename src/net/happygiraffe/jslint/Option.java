@@ -1,6 +1,8 @@
 package net.happygiraffe.jslint;
 
 /**
+ * All available options for tuning the behaviour of JSLint.
+ *
  * @author dom
  * @version $Id$
  */
