@@ -36,6 +36,10 @@ import org.apache.tools.ant.types.FileSet;
  * &lt;/project
  * </pre>
  *
+ * <p>You have to specify one or more nested fileset elements.
+ *
+ * <p><code>options</code> is a comma separated list of {@link Option} names.
+ *
  * @author dom
  * @version $Id$
  * @see <a href="http://jslint.com/">jslint.com</a>
@@ -68,7 +72,7 @@ public class JSLintTask extends Task {
     }
 
     /**
-     * Scan the specified directory for JavaScript files and lint them.
+     * Scan the specified directories for JavaScript files and lint them.
      */
     @Override
     public void execute() throws BuildException {
@@ -105,7 +109,8 @@ public class JSLintTask extends Task {
     }
 
     /**
-     * Set the options for running JSLint.
+     * Set the options for running JSLint. This is a comma separated list of
+     * {@link Option} names. The names are case-insensitive.
      */
     public void setOptions(String optionList) throws BuildException {
         for (String name : optionList.split("\\s*,\\s*")) {
