@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.happygiraffe.jslint.Issue;
@@ -15,42 +16,47 @@ import net.happygiraffe.jslint.Option;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.MatchingTask;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.FileSet;
 
 /**
  * Run {@link JSLint} over a tree of files in order to pick holes in your
- * JavaScript. This task defaults to reading *.js files.
+ * JavaScript.
  *
  * <p>
  * Example build.xml usage:
  *
  * <pre>
- * &lt;taskdef name=&quot;jslint&quot; classname=&quot;net.happygiraffe.jslint.ant.JSLintTask&quot; /&gt;
- * &lt;jslint dir=&quot;web/js&quot; /&gt;
+ * &lt;project name=&quot;build-test&quot; xmlns:jsl=&quot;antlib:net.happygiraffe.jslint&quot;&gt;
+ *   &lt;target name=&quot;jslint&quot;&gt;
+ *     &lt;jsl:jslint options=&quot;undef&quot;&gt;
+ *       &lt;fileset dir=&quot;.&quot; includes=&quot;*.js&quot; excludes=&quot;*.pack.js&quot; /&gt;
+ *     &lt;/jsl:jslint&gt;
+ *   &lt;/target&gt;
+ * &lt;/project
  * </pre>
  *
  * @author dom
  * @version $Id$
  * @see <a href="http://jslint.com/">jslint.com</a>
  */
-public class JSLintTask extends MatchingTask {
+public class JSLintTask extends Task {
 
-    private File dir;
+    private List<FileSet> filesets = new ArrayList<FileSet>();
 
     private JSLint lint;
 
     /**
-     * Specify a directory to scan for JavaScript problems.
+     * Check the contents of this {@link FileSet}.
      *
-     * @param dir
+     * @param fileset
      */
-    public void setDir(File dir) {
-        this.dir = dir;
+    public void add(FileSet fileset) {
+        filesets.add(fileset);
     }
 
     /**
-     * Create a new {@link JSLint} object. Set the default includes parameter to
-     * <code>**<span>/</span>*.js</code>.
+     * Create a new {@link JSLint} object.
      */
     @Override
     public void init() throws BuildException {
@@ -59,9 +65,6 @@ public class JSLintTask extends MatchingTask {
         } catch (IOException e) {
             throw new BuildException(e);
         }
-
-        // Default to "*.js" anywhere in dir.
-        setIncludes("**/*.js");
     }
 
     /**
@@ -69,26 +72,23 @@ public class JSLintTask extends MatchingTask {
      */
     @Override
     public void execute() throws BuildException {
-        if (dir == null)
-            throw new BuildException("dir must be specified");
+        if (filesets.size() == 0)
+            throw new BuildException("no filesets specified");
 
-        DirectoryScanner ds = getDirectoryScanner(dir);
-        for (String fileName : ds.getIncludedFiles()) {
-            lintFile(fileName);
+        for (FileSet fs : filesets) {
+            DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+            for (String fileName : ds.getIncludedFiles()) {
+                lintFile(new File(ds.getBasedir(), fileName));
+            }
         }
-
-        // Clear out for next time.
-        setDir(null);
-        lint.resetOptions();
     }
 
-    private void lintFile(String fileName) {
+    private void lintFile(File file) {
         try {
-            File file = new File(dir, fileName);
             log("check " + file, Project.MSG_DEBUG);
             // XXX We should allow specifying the encoding here.
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(file)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(file)));
             List<Issue> issues = lint.lint(file.toString(), reader);
             if (issues.size() > 0) {
                 for (Issue issue : issues) {

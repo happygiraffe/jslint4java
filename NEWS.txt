@@ -1,7 +1,8 @@
 Revision history for jslint4java.
 
 1.2
-    - Move antlib to be antlib:net.happygiraffe.jslint.
+    - [INCOMPATIBILITY] Rewrite the ant task so that it always uses filesets.
+    - [INCOMPATIBILITY] Move antlib to be antlib:net.happygiraffe.jslint.
     - Update to Jslint 2007-10-20.
     - Add a report() call to get at JSLINT.report().
 
