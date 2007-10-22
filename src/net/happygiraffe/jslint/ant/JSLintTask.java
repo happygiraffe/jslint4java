@@ -20,15 +20,15 @@ import org.apache.tools.ant.taskdefs.MatchingTask;
 /**
  * Run {@link JSLint} over a tree of files in order to pick holes in your
  * JavaScript. This task defaults to reading *.js files.
- * 
+ *
  * <p>
  * Example build.xml usage:
- * 
+ *
  * <pre>
  * &lt;taskdef name=&quot;jslint&quot; classname=&quot;net.happygiraffe.jslint.ant.JSLintTask&quot; /&gt;
  * &lt;jslint dir=&quot;web/js&quot; /&gt;
  * </pre>
- * 
+ *
  * @author dom
  * @version $Id$
  * @see <a href="http://jslint.com/">jslint.com</a>
@@ -41,7 +41,7 @@ public class JSLintTask extends MatchingTask {
 
     /**
      * Specify a directory to scan for JavaScript problems.
-     * 
+     *
      * @param dir
      */
     public void setDir(File dir) {
@@ -69,9 +69,8 @@ public class JSLintTask extends MatchingTask {
      */
     @Override
     public void execute() throws BuildException {
-        if (dir == null) {
+        if (dir == null)
             throw new BuildException("dir must be specified");
-        }
 
         DirectoryScanner ds = getDirectoryScanner(dir);
         for (String fileName : ds.getIncludedFiles()) {
@@ -87,6 +86,7 @@ public class JSLintTask extends MatchingTask {
         try {
             File file = new File(dir, fileName);
             log("check " + file, Project.MSG_DEBUG);
+            // XXX We should allow specifying the encoding here.
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(new FileInputStream(file)));
             List<Issue> issues = lint.lint(file.toString(), reader);
