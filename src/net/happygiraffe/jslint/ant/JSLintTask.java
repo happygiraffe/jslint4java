@@ -55,7 +55,7 @@ public class JSLintTask extends Task {
      *
      * @param fileset
      */
-    public void add(FileSet fileset) {
+    public void addFileset(FileSet fileset) {
         filesets.add(fileset);
     }
 
