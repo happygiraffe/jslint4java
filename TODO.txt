@@ -1,5 +1,7 @@
 Things to implement:
 
+* Provide an examples directory for the ant task.
+
 * An eclipse plugin, to flag up anything it finds as a warning in the Problems
   view.
   
