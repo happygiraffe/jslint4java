@@ -1,7 +1,7 @@
 Revision history for jslint4java.
 
 1.2
-    - Update to Jslint 2007-08-17.
+    - Update to Jslint 2007-10-20.
     - Add a report() call to get at JSLINT.report().
 
 1.1 2007-07-30
