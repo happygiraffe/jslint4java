@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.taskdefs.LogOutputStream;
 import org.apache.tools.ant.types.FileSet;
 
 /**
@@ -36,9 +38,11 @@ import org.apache.tools.ant.types.FileSet;
  * &lt;/project
  * </pre>
  *
- * <p>You have to specify one or more nested fileset elements.
+ * <p>
+ * You have to specify one or more nested fileset elements.
  *
- * <p><code>options</code> is a comma separated list of {@link Option} names.
+ * <p>
+ * <code>options</code> is a comma separated list of {@link Option} names.
  *
  * @author dom
  * @version $Id$
@@ -50,6 +54,19 @@ public class JSLintTask extends Task {
 
     private JSLint lint;
 
+    private List<ResultFormatter> formatters = new ArrayList<ResultFormatter>();
+
+    /**
+     * Add in a {@link ResultFormatter} through the medium of a
+     * {@link FormatterElement}.
+     *
+     * @param fe
+     */
+    public void addConfiguredFormatter(FormatterElement fe) {
+        fe.setDefaultOutputStream(getDefaultOutput());
+        formatters.add(fe.getResultFormatter());
+    }
+
     /**
      * Check the contents of this {@link FileSet}.
      *
@@ -57,6 +74,40 @@ public class JSLintTask extends Task {
      */
     public void addFileset(FileSet fileset) {
         filesets.add(fileset);
+    }
+
+    /**
+     * Scan the specified directories for JavaScript files and lint them.
+     */
+    @Override
+    public void execute() throws BuildException {
+        if (filesets.size() == 0)
+            throw new BuildException("no filesets specified");
+
+        for (ResultFormatter rf : formatters) {
+            rf.begin();
+        }
+
+        for (FileSet fs : filesets) {
+            DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+            for (String fileName : ds.getIncludedFiles()) {
+                lintFile(new File(ds.getBasedir(), fileName));
+            }
+        }
+
+        for (ResultFormatter rf : formatters) {
+            rf.end();
+        }
+
+    }
+
+    /**
+     * Return a logging {@link OutputStream} that can be passed to formatters.
+     *
+     * @return
+     */
+    private OutputStream getDefaultOutput() {
+        return new LogOutputStream(this, Project.MSG_INFO);
     }
 
     /**
@@ -71,44 +122,21 @@ public class JSLintTask extends Task {
         }
     }
 
-    /**
-     * Scan the specified directories for JavaScript files and lint them.
-     */
-    @Override
-    public void execute() throws BuildException {
-        if (filesets.size() == 0)
-            throw new BuildException("no filesets specified");
-
-        for (FileSet fs : filesets) {
-            DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-            for (String fileName : ds.getIncludedFiles()) {
-                lintFile(new File(ds.getBasedir(), fileName));
-            }
-        }
-    }
-
     private void lintFile(File file) {
         try {
-            log("check " + file, Project.MSG_VERBOSE);
             // XXX We should allow specifying the encoding here.
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     new FileInputStream(file)));
             List<Issue> issues = lint.lint(file.toString(), reader);
-            output(issues);
+            log("Found " + issues.size() + " issues in " + file,
+                    Project.MSG_VERBOSE);
+            for (ResultFormatter rf : formatters) {
+                rf.output(issues);
+            }
         } catch (FileNotFoundException e) {
             throw new BuildException(e);
         } catch (IOException e) {
             throw new BuildException(e);
-        }
-    }
-
-    private void output(List<Issue> issues) {
-        if (issues.size() > 0) {
-            for (Issue issue : issues) {
-                log(issue.toString());
-                log(issue.getEvidence());
-                log(spaces(issue.getCharacter()) + "^");
-            }
         }
     }
 
@@ -127,11 +155,4 @@ public class JSLintTask extends Task {
         }
     }
 
-    private String spaces(int howmany) {
-        StringBuffer sb = new StringBuffer(howmany);
-        for (int i = 0; i < howmany; i++) {
-            sb.append(" ");
-        }
-        return sb.toString();
-    }
 }
