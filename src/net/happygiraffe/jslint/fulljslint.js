@@ -1,5 +1,5 @@
 // jslint.js
-// 2007-10-20
+// 2007-12-11
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -70,7 +70,73 @@ SOFTWARE.
 
 /*jslint evil: true, nomen: false */
 
-
+/*members "\b", "\t", "\n", "\f", "\r", "\"", "(begin)", "(context)",
+    "(end)", "(global)", "(identifier)", "(line)", "(name)", "(params)",
+    "(scope)", "(verb)", ")", "++", "--", "\/", ADSAFE, Array, Boolean, COM,
+    Canvas, CustomAnimation, Date, Debug, Error, EvalError, FadeAnimation,
+    Frame, Function, HotKey, Image, Math, MenuItem, MoveAnimation, Number,
+    Object, Point, RangeError, ReferenceError, RegExp, RotateAnimation,
+    ScrollBar, String, SyntaxError, Text, TextArea, TypeError, URIError,
+    URL, Window, XMLDOM, XMLHttpRequest, "\\", "]", a, abbr, "about-box",
+    "about-image", "about-text", "about-version", acronym, action, address,
+    adsafe, alert, alignment, anchorstyle, animator, appleScript, applet,
+    apply, area, author, autohide, b, background, base, bdo, beep, beget,
+    bgcolor, bgcolour, bgopacity, big, bitwise, block, blockquote, blur,
+    body, br, browser, button, bytesToUIString, c, call, callee, caller,
+    canvas, cap, caption, cases, center, charAt, charCodeAt, character,
+    charset, checked, chooseColor, chooseFile, chooseFolder, cite,
+    clearInterval, clearTimeout, cliprect, clone, close, closeWidget,
+    closed, code, col, colgroup, color, colorize, colour, columns, combine,
+    company, condition, confirm, console, constructor, content,
+    contextmenuitems, convertPathToHFS, convertPathToPlatform, copyright, d,
+    data, dd, debug, decodeURI, decodeURIComponent, defaultStatus,
+    defaulttracking, defaultvalue, defineClass, del, description,
+    deserialize, dfn, dir, directory, div, dl, doAttribute, doBegin, doIt,
+    doTagName, document, dt, dynsrc, editable, em, embed, empty, enabled,
+    encodeURI, encodeURIComponent, entityify, eqeqeq, errors, escape, eval,
+    event, evidence, evil, exec, exps, extension, fieldset, file,
+    filesystem, fillmode, flags, floor, focus, focusWidget, font, fontstyle,
+    forin, form, fragment, frame, frames, frameset, from, fromCharCode, fud,
+    function, gc, getComputedStyle, group, h1, h2, h3, h4, h5, h6, halign,
+    handlelinks, hasOwnProperty, head, height, help, hidden, history,
+    hlinesize, hoffset, hotkey, hr, href, hregistrationpoint, hscrollbar,
+    hsladjustment, hsltinting, html, i, iTunes, icon, id, identifier,
+    iframe, image, img, include, indexOf, init, input, ins, interval,
+    isAlpha, isApplicationRunning, isDigit, isFinite, isNaN, join, kbd, key,
+    kind, konfabulatorVersion, label, labelled, laxbreak, lbp, led, left,
+    legend, length, level, li, line, lines, link, load, loadClass,
+    loadingsrc, location, locked, log, lowsrc, map, match, max, maxlength,
+    menu, menuitem, message, meta, min, minimumversion, minlength,
+    missingsrc, modifier, moveBy, moveTo, name, navigator, new, noframes,
+    nomen, noscript, notsaved, nud, object, ol, on, onblur, onclick,
+    oncontextmenu, ondragdrop, ondragenter, ondragexit, onerror,
+    onfirstdisplay, onfocus, ongainfocus, onimageloaded, onkeydown,
+    onkeypress, onkeyup, onload, onlosefocus, onmousedown, onmousedrag,
+    onmouseenter, onmouseexit, onmousemove, onmouseup, onmousewheel,
+    onmulticlick, onresize, onselect, ontextinput, ontimerfired, onunload,
+    onvaluechanged, opacity, open, openURL, opener, opera, optgroup, option,
+    optionvalue, order, orientation, p, pagesize, param, parent, parseFloat,
+    parseInt, passfail, play, plusplus, pop, popupMenu, pre, preference,
+    preferenceGroups, preferencegroup, preferences, print, prompt,
+    prototype, push, q, quit, random, raw, reach, readFile, readUrl, reason,
+    reloadWidget, remoteasync, replace, report, requiredplatform, reserved,
+    resizeBy, resizeTo, resolvePath, resumeUpdates, rhino, right, root,
+    rotation, runCommand, runCommandInBg, samp, saveAs, savePreferences,
+    screen, script, scroll, scrollBy, scrollTo, scrollbar, scrolling,
+    scrollx, scrolly, seal, search, secure, select, self, serialize,
+    setInterval, setTimeout, setting, settings, shadow, shift,
+    showWidgetPreferences, size, skip, sleep, slice, small, sort, source,
+    span, spawn, speak, special, spellcheck, split, src, srcheight,
+    srcwidth, status, strong, style, sub, substr, subviews, sup, superview,
+    supplant, suppressUpdates, sync, system, table, tag, tbody, td,
+    tellWidget, test, text, textarea, tfoot, th, thead, this, thumbcolor,
+    ticking, ticklabel, ticks, tileorigin, timer, title, toLowerCase,
+    toSource, toString, toint32, token, tooltip, top, tr, tracking, trigger,
+    truncation, tt, type, u, ul, undef, unescape, unwatch, updateNow, url,
+    usefileicon, valign, value, valueOf, var, version, visible, vlinesize,
+    voffset, vregistrationpoint, vscrollbar, watch, white, widget, width,
+    window, wrap, yahooCheckLogin, yahooLogin, yahooLogout, zorder
+*/
 
 // We build the application inside a function so that we produce only a single
 // global variable. The function will be invoked, its return value is the JSLINT
@@ -95,6 +161,8 @@ JSLINT = function () {
         'this'          : true,
         toSource        : true,
         toString        : true,
+        unwatch         : true,
+        valueOf         : true,
         watch           : true
     },
 
@@ -112,6 +180,7 @@ JSLINT = function () {
             fragment   : true, // if HTML fragments should be allowed
             laxbreak   : true, // if line breaks should not be checked
             nomen      : true, // if names should be checked
+            on         : true, // if HTML event handlers should be allowed
             passfail   : true, // if the scan should stop on first error
             plusplus   : true, // if increment/decrement should not be allowed
             rhino      : true, // if the Rhino environment globals should be predefined
@@ -175,6 +244,7 @@ JSLINT = function () {
             window          : true,
             XMLHttpRequest  : true
         },
+
         escapes = {
             '\b': '\\b',
             '\t': '\\t',
@@ -182,10 +252,13 @@ JSLINT = function () {
             '\f': '\\f',
             '\r': '\\r',
             '"' : '\\"',
+            '/' : '\\/',
             '\\': '\\\\'
         },
+
         funct,          // The current function
         functions,      // All of the functions
+
         href = {
             background  : true,
             content     : true,
@@ -197,6 +270,7 @@ JSLINT = function () {
             src         : true,
             style       : true
         },
+
         global,         // The global object
         globals,        // The current globals
         implied,        // Implied globals
@@ -212,6 +286,7 @@ JSLINT = function () {
         option,
         prereg,
         prevtoken,
+
         rhino = {
             defineClass : true,
             deserialize : true,
@@ -231,6 +306,7 @@ JSLINT = function () {
             toint32     : true,
             version     : true
         },
+
         scope,      // The current scope
         src,
         stack,
@@ -267,9 +343,9 @@ JSLINT = function () {
             unescape            : true,
             URIError            : true
         },
+
         syntax = {},
         token,
-        verb,
         warnings,
 
 // widget contains the global names which are provided to a Yahoo
@@ -344,7 +420,6 @@ JSLINT = function () {
             yahooLogin              : true,
             yahooLogout             : true
         },
-        wmode,
 
 //  xmode is used to adapt to the exceptions in XML parsing.
 //  It can have these states:
@@ -429,8 +504,8 @@ JSLINT = function () {
         if (ix.test(this)) {
             return this;
         }
-        if (/[&<"\\\x00-\x1f]/.test(this)) {
-            return '"' + this.replace(/[&<"\\\x00-\x1f]/g, function (a) {
+        if (/[&<"\/\\\x00-\x1f]/.test(this)) {
+            return '"' + this.replace(/[&<"\/\\\x00-\x1f]/g, function (a) {
                 var c = escapes[a];
                 if (c) {
                     return c;
@@ -648,8 +723,14 @@ JSLINT = function () {
                         character += n;
                         c = String.fromCharCode(i);
                     }
-
-                    for (j = 0; j < s.length; j += 1) {
+                    j = 0;
+                    for (;;) {
+                        while (j >= s.length) {
+                            j = 0;
+                            if (xmode !== 'xml' || !nextLine()) {
+                                errorAt("Unclosed string.", line, from);
+                            }
+                        }
                         c = s.charAt(j);
                         if (c === x) {
                             character += 1;
@@ -716,8 +797,8 @@ JSLINT = function () {
                         }
                         r += c;
                         character += 1;
+                        j += 1;
                     }
-                    errorAt("Unclosed string.", line, from);
                 }
 
                 for (;;) {
@@ -782,7 +863,7 @@ JSLINT = function () {
 //      // comment
 
                     case '//':
-                        if (src || xmode && xmode !== 'script') {
+                        if (src || (xmode && !(xmode === 'script' || xmode === 'CDATA'))) {
                             warningAt("Unexpected comment.", line, character);
                         }
                         if (option.adsafe && ax.test(s)) {
@@ -794,7 +875,7 @@ JSLINT = function () {
 //      /* comment
 
                     case '/*':
-                        if (src || xmode && xmode !== 'script') {
+                        if (src || (xmode && !(xmode === 'script' || xmode === 'CDATA'))) {
                             warningAt("Unexpected comment.", line, character);
                         }
                         if (option.adsafe && ax.test(s)) {
@@ -820,10 +901,10 @@ JSLINT = function () {
                         s = s.substr(i + 2);
                         break;
 
-//      /*extern /*global /*members /*jslint */
+//      /*global /*extern /*members /*jslint */
 
-                    case '/*extern':
                     case '/*global':
+                    case '/*extern':
                     case '/*members':
                     case '/*member':
                     case '/*jslint':
@@ -1080,29 +1161,30 @@ klass:                              for (;;) {
 
 // Define t in the current function in the current scope.
 
-        if (funct === true) {
-            scope[t] = true;
-        } else {
-            if (funct.hasOwnProperty(t)) {
-                warning(funct[t] === true ?
-                    "'{a}' was used before it was defined." :
-                    "'{a}' is already defined.",
-                    nexttoken, t);
-            }
-            scope[t] = funct;
-            funct[t] = type;
+        if (funct.hasOwnProperty(t)) {
+            warning(funct[t] === true ?
+                "'{a}' was used before it was defined." :
+                "'{a}' is already defined.",
+                nexttoken, t);
+        }
+        scope[t] = funct;
+        funct[t] = type;
+        if (funct['(global)'] && implied.hasOwnProperty(t)) {
+            warning("'{a}' was used before it was defined.",
+                nexttoken, t);
+            delete implied[t];
         }
     }
 
 
     function doOption() {
-        var b, obj, filter, t, v;
-        switch (nexttoken.value) {
+        var b, obj, filter, o = nexttoken.value, t, v;
+        switch (o) {
         case '*/':
             error("Unbegun comment.");
             break;
-        case '/*extern':
         case '/*global':
+        case '/*extern':
             if (option.adsafe) {
                 warning("ADsafe restriction.");
             }
@@ -1110,6 +1192,7 @@ klass:                              for (;;) {
             break;
         case '/*members':
         case '/*member':
+            o = '/*members';
             if (!membersOnly) {
                 membersOnly = {};
             }
@@ -1133,7 +1216,8 @@ klass:                              for (;;) {
             if (t.type === 'special' && t.value === '*/') {
                 break;
             }
-            if (t.type !== '(string)' && t.type !== '(identifier)') {
+            if (t.type !== '(string)' && t.type !== '(identifier)' &&
+                    o !== '/*members') {
                 error("Bad option.", t);
             }
             if (filter) {
@@ -1331,15 +1415,16 @@ klass:                              for (;;) {
         }
         advance();
         if (option.adsafe && token.value === 'ADSAFE') {
-            if (nexttoken.id !== '.' || !(peek(0).identifier) || peek(1).id !== '(') {
+            if (nexttoken.id !== '.' || !(peek(0).identifier) ||
+                    peek(1).id !== '(') {
                 warning('ADsafe violation.', token);
             }
         }
         if (initial) {
             anonname = 'anonymous';
-            verb = token.value;
+            funct['(verb)'] = token.value;
         }
-        if (initial && token.fud) {
+        if (initial === true && token.fud) {
             left = token.fud();
         } else {
             if (token.nud) {
@@ -1784,7 +1869,7 @@ klass:                              for (;;) {
             a = [statement()];
             noreach = false;
         }
-        verb = null;
+        funct['(verb)'] = null;
         scope = s;
         inblock = b;
         return a;
@@ -1800,12 +1885,22 @@ klass:                              for (;;) {
 
     function countMember(m) {
         if (membersOnly && membersOnly[m] !== true) {
-            warning("Unexpected member '{a}'.", nexttoken, m);
+            warning("Unexpected /*member '{a}'.", nexttoken, m);
         }
         if (typeof member[m] === 'number') {
             member[m] += 1;
         } else {
             member[m] = 1;
+        }
+    }
+
+    function note_implied(token) {
+        var name = token.value, line = token.line + 1, a = implied[name];
+        if (!a) {
+            a = [line];
+            implied[name] = a;
+        } else if (a[a.length - 1] !== line) {
+            a.push(line);
         }
     }
 
@@ -1863,7 +1958,7 @@ klass:                              for (;;) {
                         return false;
                     }
                 } else if (n === 'style') {
-                    if (a === 'type') {
+                    if (a === 'type' && option.adsafe) {
                         warning("Don't bother with 'type'.", token);
                     }
                 }
@@ -1979,6 +2074,7 @@ klass:                              for (;;) {
             doBegin: function (n) {
                 xtype = 'widget';
                 option.widget = true;
+                option.cap = true;
                 populateGlobals();
             },
             doTagName: function (n, p) {
@@ -2017,50 +2113,51 @@ klass:                              for (;;) {
                 "about-version":        {parent: ' about-box '},
                 action:                 {parent: ' widget ', script: true},
                 alignment:              {parent: ' canvas frame image scrollbar text textarea window '},
-                anchorStyle:            {parent: ' text '},
+                anchorstyle:            {parent: ' text '},
                 author:                 {parent: ' widget '},
-                autoHide:               {parent: ' scrollbar '},
+                autohide:               {parent: ' scrollbar '},
                 beget:                  {parent: ' canvas frame image scrollbar text window '},
-                bgColor:                {parent: ' text textarea '},
-                bgColour:               {parent: ' text textarea '},
-                bgOpacity:              {parent: ' text textarea '},
+                bgcolor:                {parent: ' text textarea '},
+                bgcolour:               {parent: ' text textarea '},
+                bgopacity:              {parent: ' text textarea '},
                 canvas:                 {parent: ' frame window '},
-                checked:                {parent: ' image menuItem '},
-                clipRect:               {parent: ' image '},
+                charset:                {parent: ' script '},
+                checked:                {parent: ' image menuitem '},
+                cliprect:               {parent: ' image '},
                 color:                  {parent: ' about-text about-version shadow text textarea '},
                 colorize:               {parent: ' image '},
                 colour:                 {parent: ' about-text about-version shadow text textarea '},
                 columns:                {parent: ' textarea '},
                 company:                {parent: ' widget '},
-                contextMenuItems:       {parent: ' canvas frame image scrollbar text textarea window '},
+                contextmenuitems:       {parent: ' canvas frame image scrollbar text textarea window '},
                 copyright:              {parent: ' widget '},
                 data:                   {parent: ' about-text about-version text textarea '},
                 debug:                  {parent: ' widget '},
-                defaultValue:           {parent: ' preference '},
-                defaultTracking:        {parent: ' widget '},
+                defaultvalue:           {parent: ' preference '},
+                defaulttracking:        {parent: ' widget '},
                 description:            {parent: ' preference '},
                 directory:              {parent: ' preference '},
                 editable:               {parent: ' textarea '},
-                enabled:                {parent: ' menuItem '},
+                enabled:                {parent: ' menuitem '},
                 extension:              {parent: ' preference '},
                 file:                   {parent: ' action preference '},
-                fillMode:               {parent: ' image '},
+                fillmode:               {parent: ' image '},
                 font:                   {parent: ' about-text about-version text textarea '},
-                fontStyle:              {parent: ' textarea '},
+                fontstyle:              {parent: ' textarea '},
                 frame:                  {parent: ' frame window '},
                 group:                  {parent: ' preference '},
-                hAlign:                 {parent: ' canvas frame image scrollbar text textarea '},
-                handleLinks:            {parent: ' textArea '},
+                halign:                 {parent: ' canvas frame image scrollbar text textarea '},
+                handlelinks:            {parent: ' textarea '},
                 height:                 {parent: ' canvas frame image scrollbar text textarea window '},
                 hidden:                 {parent: ' preference '},
-                hLineSize:              {parent: ' frame '},
-                hOffset:                {parent: ' about-text about-version canvas frame image scrollbar shadow text textarea window '},
+                hlinesize:              {parent: ' frame '},
+                hoffset:                {parent: ' about-text about-version canvas frame image scrollbar shadow text textarea window '},
                 hotkey:                 {parent: ' widget '},
-                hRegistrationPoint:     {parent: ' canvas frame image scrollbar text '},
-                hScrollBar:             {parent: ' frame '},
-                hslAdjustment:          {parent: ' image '},
-                hslTinting:             {parent: ' image '},
-                icon:                   {parent: ' preferenceGroup '},
+                hregistrationpoint:     {parent: ' canvas frame image scrollbar text '},
+                hscrollbar:             {parent: ' frame '},
+                hsladjustment:          {parent: ' image '},
+                hsltinting:             {parent: ' image '},
+                icon:                   {parent: ' preferencegroup '},
                 id:                     {parent: ' canvas frame hotkey image preference text textarea timer scrollbar widget window '},
                 image:                  {parent: ' about-box frame window widget '},
                 interval:               {parent: ' action timer '},
@@ -2068,98 +2165,99 @@ klass:                              for (;;) {
                 kind:                   {parent: ' preference '},
                 level:                  {parent: ' window '},
                 lines:                  {parent: ' textarea '},
-                loadingSrc:             {parent: ' image '},
+                loadingsrc:             {parent: ' image '},
                 locked:                 {parent: ' window '},
                 max:                    {parent: ' scrollbar '},
-                maxLength:              {parent: ' preference '},
-                menuItem:               {parent: ' contextMenuItems '},
+                maxlength:              {parent: ' preference '},
+                menuitem:               {parent: ' contextmenuitems '},
                 min:                    {parent: ' scrollbar '},
-                minimumVersion:         {parent: ' widget '},
-                minLength:              {parent: ' preference '},
-                missingSrc:             {parent: ' image '},
+                minimumversion:         {parent: ' widget '},
+                minlength:              {parent: ' preference '},
+                missingsrc:             {parent: ' image '},
                 modifier:               {parent: ' hotkey '},
-                name:                   {parent: ' canvas frame hotkey image preference preferenceGroup scrollbar setting text textarea timer widget window '},
-                notSaved:               {parent: ' preference '},
-                onClick:                {parent: ' canvas frame image scrollbar text textarea ', script: true},
-                onContextMenu:          {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onDragDrop:             {parent: ' canvas frame image scrollbar text textarea ', script: true},
-                onDragEnter:            {parent: ' canvas frame image scrollbar text textarea ', script: true},
-                onDragExit:             {parent: ' canvas frame image scrollbar text textarea ', script: true},
-                onFirstDisplay:         {parent: ' window ', script: true},
-                onGainFocus:            {parent: ' textarea window ', script: true},
-                onKeyDown:              {parent: ' hotkey text textarea window ', script: true},
-                onKeyPress:             {parent: ' textarea window ', script: true},
-                onKeyUp:                {parent: ' hotkey text textarea window ', script: true},
-                onImageLoaded:          {parent: ' image ', script: true},
-                onLoseFocus:            {parent: ' textarea window ', script: true},
-                onMouseDown:            {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onMouseDrag:            {parent: ' canvas frame image scrollbar text textArea window ', script: true},
-                onMouseEnter:           {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onMouseExit:            {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onMouseMove:            {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onMouseUp:              {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onMouseWheel:           {parent: ' frame ', script: true},
-                onMultiClick:           {parent: ' canvas frame image scrollbar text textarea window ', script: true},
-                onSelect:               {parent: ' menuItem ', script: true},
-                onTextInput:            {parent: ' window ', script: true},
-                onTimerFired:           {parent: ' timer ', script: true},
-                onValueChanged:         {parent: ' scrollbar ', script: true},
+                name:                   {parent: ' canvas frame hotkey image preference preferencegroup scrollbar setting text textarea timer widget window '},
+                notsaved:               {parent: ' preference '},
+                onclick:                {parent: ' canvas frame image scrollbar text textarea ', script: true},
+                oncontextmenu:          {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                ondragdrop:             {parent: ' canvas frame image scrollbar text textarea ', script: true},
+                ondragenter:            {parent: ' canvas frame image scrollbar text textarea ', script: true},
+                ondragexit:             {parent: ' canvas frame image scrollbar text textarea ', script: true},
+                onfirstdisplay:         {parent: ' window ', script: true},
+                ongainfocus:            {parent: ' textarea window ', script: true},
+                onkeydown:              {parent: ' hotkey text textarea window ', script: true},
+                onkeypress:             {parent: ' textarea window ', script: true},
+                onkeyup:                {parent: ' hotkey text textarea window ', script: true},
+                onimageloaded:          {parent: ' image ', script: true},
+                onlosefocus:            {parent: ' textarea window ', script: true},
+                onmousedown:            {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onmousedrag:            {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onmouseenter:           {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onmouseexit:            {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onmousemove:            {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onmouseup:              {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onmousewheel:           {parent: ' frame ', script: true},
+                onmulticlick:           {parent: ' canvas frame image scrollbar text textarea window ', script: true},
+                onselect:               {parent: ' menuitem ', script: true},
+                ontextinput:            {parent: ' window ', script: true},
+                ontimerfired:           {parent: ' timer ', script: true},
+                onvaluechanged:         {parent: ' scrollbar ', script: true},
                 opacity:                {parent: ' canvas frame image scrollbar shadow text textarea window '},
                 option:                 {parent: ' preference widget '},
-                optionValue:            {parent: ' preference '},
-                order:                  {parent: ' preferenceGroup '},
+                optionvalue:            {parent: ' preference '},
+                order:                  {parent: ' preferencegroup '},
                 orientation:            {parent: ' scrollbar '},
-                pageSize:               {parent: ' scrollbar '},
+                pagesize:               {parent: ' scrollbar '},
                 preference:             {parent: ' widget '},
-                preferenceGroup:        {parent: ' widget '},
-                remoteAsync:            {parent: ' image '},
-                requiredPlatform:       {parent: ' widget '},
+                preferencegroup:        {parent: ' widget '},
+                remoteasync:            {parent: ' image '},
+                requiredplatform:       {parent: ' widget '},
                 root:                   {parent: ' window '},
                 rotation:               {parent: ' canvas frame image scrollbar text '},
+                script:                 {parent: ' widget ', script: true},
                 scrollbar:              {parent: ' frame text textarea window '},
                 scrolling:              {parent: ' text '},
-                scrollX:                {parent: ' frame '},
-                scrollY:                {parent: ' frame '},
+                scrollx:                {parent: ' frame '},
+                scrolly:                {parent: ' frame '},
                 secure:                 {parent: ' preference textarea '},
                 setting:                {parent: ' settings '},
                 settings:               {parent: ' widget '},
                 shadow:                 {parent: ' about-text about-version text window '},
                 size:                   {parent: ' about-text about-version text textarea '},
                 spellcheck:             {parent: ' textarea '},
-                src:                    {parent: ' image '},
-                srcHeight:              {parent: ' image '},
-                srcWidth:               {parent: ' image '},
+                src:                    {parent: ' image script '},
+                srcheight:              {parent: ' image '},
+                srcwidth:               {parent: ' image '},
                 style:                  {parent: ' about-text about-version canvas frame image preference scrollbar text textarea window '},
                 subviews:               {parent: ' frame '},
                 superview:              {parent: ' canvas frame image scrollbar text textarea '},
                 text:                   {parent: ' frame text textarea window '},
                 textarea:               {parent: ' frame window '},
                 timer:                  {parent: ' widget '},
-                thumbColor:             {parent: ' scrollbar textarea '},
+                thumbcolor:             {parent: ' scrollbar textarea '},
                 ticking:                {parent: ' timer '},
                 ticks:                  {parent: ' preference '},
-                tickLabel:              {parent: ' preference '},
-                tileOrigin:             {parent: ' image '},
-                title:                  {parent: ' menuItem preference preferenceGroup window '},
+                ticklabel:              {parent: ' preference '},
+                tileorigin:             {parent: ' image '},
+                title:                  {parent: ' menuitem preference preferencegroup window '},
                 tooltip:                {parent: ' frame image text textarea '},
                 tracking:               {parent: ' canvas image '},
                 trigger:                {parent: ' action '},
                 truncation:             {parent: ' text '},
                 type:                   {parent: ' preference '},
                 url:                    {parent: ' about-box about-text about-version '},
-                useFileIcon:            {parent: ' image '},
-                vAlign:                 {parent: ' canvas frame image scrollbar text textarea '},
+                usefileicon:            {parent: ' image '},
+                valign:                 {parent: ' canvas frame image scrollbar text textarea '},
                 value:                  {parent: ' preference scrollbar setting '},
                 version:                {parent: ' widget '},
                 visible:                {parent: ' canvas frame image scrollbar text textarea window '},
-                vLineSize:              {parent: ' frame '},
-                vOffset:                {parent: ' about-text about-version canvas frame image scrollbar shadow text textarea window '},
-                vRegistrationPoint:     {parent: ' canvas frame image scrollbar text '},
-                vScrollBar:             {parent: ' frame '},
+                vlinesize:              {parent: ' frame '},
+                voffset:                {parent: ' about-text about-version canvas frame image scrollbar shadow text textarea window '},
+                vregistrationpoint:     {parent: ' canvas frame image scrollbar text '},
+                vscrollbar:             {parent: ' frame '},
                 width:                  {parent: ' canvas frame image scrollbar text textarea window '},
                 window:                 {parent: ' canvas frame image scrollbar text textarea widget '},
                 wrap:                   {parent: ' text '},
-                zOrder:                 {parent: ' canvas frame image scrollbar text textarea window '}
+                zorder:                 {parent: ' canvas frame image scrollbar text textarea window '}
             }
         }
     };
@@ -2201,7 +2299,7 @@ klass:                              for (;;) {
     }
 
     function xml() {
-        var a, e, n, q, t;
+        var a, e, n, q, t, wmode;
         xmode = 'xml';
         stack = null;
         for (;;) {
@@ -2460,12 +2558,12 @@ klass:                              for (;;) {
 
 // The name is in scope and defined in the current function.
 
-            if (s === funct) {
+            if (s && (s === funct || s === funct['(global)'])) {
 
 //      If we are not also in the global scope, change 'unused' to 'var',
 //      and reject labels.
 
-                if (funct !== true) {
+                if (!funct['(global)']) {
                     switch (funct[v]) {
                     case 'unused':
                         funct[v] = 'var';
@@ -2479,13 +2577,11 @@ klass:                              for (;;) {
 // The name is not defined in the function.  If we are in the global scope,
 // then we have an undefined variable.
 
-            } else if (funct === true) {
+            } else if (funct['(global)']) {
                 if (option.undef) {
                     warning("'{a}' is undefined.", token, v);
-                } else {
-                    implied[v] = true;
-                    globals[v] = true;
                 }
+                note_implied(token);
 
 // If the name is already defined in the current
 // function, but not as outer, then there is a scope error.
@@ -2515,10 +2611,9 @@ klass:                              for (;;) {
                         if (option.undef) {
                             warning("'{a}' is undefined.", token, v);
                         } else {
-                            implied[v] = true;
-                            globals[v] = true;
                             funct[v] = true;
                         }
+                        note_implied(token);
                     } else {
                         switch (s[v]) {
                         case 'function':
@@ -3012,7 +3107,8 @@ klass:                              for (;;) {
         funct = {
             '(name)'    : i || '"' + anonname + '"',
             '(line)'    : nexttoken.line + 1,
-            '(context)' : funct
+            '(context)' : funct,
+            '(scope)'   : scope
         };
         functions.push(funct);
         if (i) {
@@ -3146,7 +3242,7 @@ klass:                              for (;;) {
         for (;;) {
             switch (nexttoken.id) {
             case 'case':
-                switch (verb) {
+                switch (funct['(verb)']) {
                 case 'break':
                 case 'case':
                 case 'continue':
@@ -3164,10 +3260,10 @@ klass:                              for (;;) {
                 this.cases.push(parse(20));
                 g = true;
                 advance(':');
-                verb = 'case';
+                funct['(verb)'] = 'case';
                 break;
             case 'default':
-                switch (verb) {
+                switch (funct['(verb)']) {
                 case 'break':
                 case 'continue':
                 case 'return':
@@ -3266,7 +3362,7 @@ klass:                              for (;;) {
                     varstatement();
                 } else {
                     for (;;) {
-                        parse(0);
+                        parse(0, 'for');
                         if (nexttoken.id !== ',') {
                             break;
                         }
@@ -3285,7 +3381,7 @@ klass:                              for (;;) {
             }
             if (nexttoken.id !== ')') {
                 for (;;) {
-                    parse(0);
+                    parse(0, 'for');
                     if (nexttoken.id !== ',') {
                         break;
                     }
@@ -3303,10 +3399,7 @@ klass:                              for (;;) {
         var v = nexttoken.value;
         nolinebreak(this);
         if (nexttoken.id !== ';') {
-            if (funct === true) {
-                warning("Put '{a}' and the statement it labels in a function.",
-                        nexttoken, v);
-            } else if (funct[v] !== 'label') {
+            if (funct[v] !== 'label') {
                 warning("'{a}' is not a statement label.", nexttoken, v);
             } else if (scope[v] !== funct) {
                 warning("'{a}' is out of scope.", nexttoken, v);
@@ -3321,10 +3414,7 @@ klass:                              for (;;) {
         var v = nexttoken.value;
         nolinebreak(this);
         if (nexttoken.id !== ';') {
-            if (funct === true) {
-                warning("Put '{a}' and the statement it labels in a function.",
-                        nexttoken, v);
-            } else if (funct[v] !== 'label') {
+            if (funct[v] !== 'label') {
                 warning("'{a}' is not a statement label.", nexttoken, v);
             } else if (scope[v] !== funct) {
                 warning("'{a}' is out of scope.", nexttoken, v);
@@ -3494,8 +3584,9 @@ klass:                              for (;;) {
         JSLINT.errors = [];
         global = object(globals);
         scope = global;
-        funct = true;
+        funct = {'(global)': true, '(name)': '(global)', '(scope)': scope};
         functions = [];
+        src = false;
         xmode = false;
         xtype = '';
         stack = null;
@@ -3537,6 +3628,13 @@ klass:                              for (;;) {
         return JSLINT.errors.length === 0;
     };
 
+    function to_array(o) {
+        var a = [], k;
+        for (k in o) if (o.hasOwnProperty(k)) {
+            a.push(k);
+        }
+        return a;
+    }
 
 // Report generator.
 
@@ -3550,24 +3648,27 @@ klass:                              for (;;) {
             }
         }
 
-        s = [];
-        for (k in implied) if (implied.hasOwnProperty(k)) {
-            s.push(k);
-        }
+        s = to_array(implied);
 
         k = JSLINT.errors.length;
         if (k || s.length > 0) {
             o.push('<div id=errors><i>Error:</i>');
             if (s.length > 0) {
-                o.push('<p><i>Implied global:</i> ' + s.sort().join(', ') + '</p>');
+                s.sort();
+                for (i = 0; i < s.length; i += 1) {
+                    s[i] = '<code>' + s[i] + '</code>&nbsp;<i>' +
+                        implied[s[i]].join(' ') +
+                        '</i>';
+                }
+                o.push('<p><i>Implied global:</i> ' + s.join(', ') + '</p>');
                 c = true;
             }
             for (i = 0; i < k; i += 1) {
                 c = JSLINT.errors[i];
                 if (c) {
                     e = c.evidence || '';
-                    o.push('<p>Problem at line ' + (c.line + 1) +
-                            ' character ' + (c.character + 1) +
+                    o.push('<p>Problem' + (isFinite(c.line) ? ' at line ' + (c.line + 1) +
+                            ' character ' + (c.character + 1) : '') +
                             ': ' + c.reason.entityify() +
                             '</p><p class=evidence>' +
                             (e && (e.length > 80 ? e.slice(0, 77) + '...' :
@@ -3584,14 +3685,11 @@ klass:                              for (;;) {
 
             o.push('<div id=functions>');
 
-            s = [];
-            for (k in scope) if (scope.hasOwnProperty(k)) {
-                s.push(k);
-            }
+            s = to_array(scope);
             if (s.length === 0) {
                 o.push('<div><i>No new global variables introduced.</i></div>');
             } else {
-                o.push('<div><i>Global</i> ' + s.join(', ') + '</div>');
+                o.push('<div><i>Global</i> ' + s.sort().join(', ') + '</div>');
             }
 
             for (i = 0; i < functions.length; i += 1) {
@@ -3637,6 +3735,7 @@ klass:                              for (;;) {
                 detail('Outer', ou);
                 detail('Global', gl);
             }
+            a = [];
             for (k in member) {
                 if (typeof member[k] === 'number') {
                     a.push(k);
@@ -3644,14 +3743,14 @@ klass:                              for (;;) {
             }
             if (a.length) {
                 a = a.sort();
-                m = '<br><div class=function>/*members ';
+                m = '<br><pre>/*members ';
                 l = 10;
                 for (i = 0; i < a.length; i += 1) {
                     k = a[i];
                     n = k.name();
                     if (l + n.length > 72) {
-                        o.push(m + '</div>');
-                        m = '<div> ';
+                        o.push(m + '<br>');
+                        m = '    ';
                         l = 1;
                     }
                     l += n.length + 2;
@@ -3663,7 +3762,7 @@ klass:                              for (;;) {
                     }
                     m += n;
                 }
-                o.push(m + ' */</div>');
+                o.push(m + '<br>*/</pre>');
             }
             o.push('</div>');
         }

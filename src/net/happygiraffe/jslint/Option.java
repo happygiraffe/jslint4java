@@ -7,7 +7,7 @@ package net.happygiraffe.jslint;
  * @version $Id$
  */
 public enum Option {
-    // BEGIN-OPTIONS
+    //BEGIN-OPTIONS
     /** If use of some browser features should be restricted */
     ADSAFE("If use of some browser features should be restricted"),
     /** If bitwise operators should not be allowed */
@@ -30,6 +30,8 @@ public enum Option {
     LAXBREAK("If line breaks should not be checked"),
     /** If names should be checked */
     NOMEN("If names should be checked"),
+    /** If html event handlers should be allowed */
+    ON("If html event handlers should be allowed"),
     /** If the scan should stop on first error */
     PASSFAIL("If the scan should stop on first error"),
     /** If increment/decrement should not be allowed */
@@ -42,7 +44,7 @@ public enum Option {
     WHITE("If strict whitespace rules apply"),
     /** If the yahoo widgets globals should be predefined */
     WIDGET("If the yahoo widgets globals should be predefined");
-    // END-OPTIONS
+    //END-OPTIONS
 
     private String description;
 
