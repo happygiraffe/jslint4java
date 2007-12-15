@@ -94,17 +94,21 @@ public class JSLintTask extends Task {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     new FileInputStream(file)));
             List<Issue> issues = lint.lint(file.toString(), reader);
-            if (issues.size() > 0) {
-                for (Issue issue : issues) {
-                    log(issue.toString());
-                    log(issue.getEvidence());
-                    log(spaces(issue.getCharacter()) + "^");
-                }
-            }
+            output(issues);
         } catch (FileNotFoundException e) {
             throw new BuildException(e);
         } catch (IOException e) {
             throw new BuildException(e);
+        }
+    }
+
+    private void output(List<Issue> issues) {
+        if (issues.size() > 0) {
+            for (Issue issue : issues) {
+                log(issue.toString());
+                log(issue.getEvidence());
+                log(spaces(issue.getCharacter()) + "^");
+            }
         }
     }
 
