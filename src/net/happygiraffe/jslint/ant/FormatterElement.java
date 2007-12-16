@@ -60,7 +60,8 @@ public class FormatterElement {
             rf = new PlainResultFormatter();
             break;
         case xml:
-            throw new RuntimeException("Unimplemented");
+            rf = new XmlResultFormatter();
+            break;
         }
         if (destFile != null) {
             rf.setOut(getFileOutputStream());
