@@ -37,7 +37,6 @@ public class FormatterElement {
      */
     private OutputStream getFileOutputStream() {
         try {
-            System.out.println("Writing errors to " + destFile);
             // XXX encoding?
             return new FileOutputStream(destFile);
         } catch (FileNotFoundException e) {
