@@ -56,6 +56,8 @@ public class JSLintTask extends Task {
 
     private List<ResultFormatter> formatters = new ArrayList<ResultFormatter>();
 
+    private boolean haltOnFailure = true;
+
     /**
      * Add in a {@link ResultFormatter} through the medium of a
      * {@link FormatterElement}.
@@ -88,10 +90,13 @@ public class JSLintTask extends Task {
             rf.begin();
         }
 
+        int failedCount = 0;
         for (FileSet fs : filesets) {
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
             for (String fileName : ds.getIncludedFiles()) {
-                lintFile(new File(ds.getBasedir(), fileName));
+                if (!lintFile(new File(ds.getBasedir(), fileName))) {
+                    failedCount++;
+                }
             }
         }
 
@@ -99,6 +104,14 @@ public class JSLintTask extends Task {
             rf.end();
         }
 
+        if (failedCount != 0) {
+            String files = failedCount == 1 ? "file" : "files";
+            String msg = failedCount + " " + files + " did not pass JSLint";
+            if (haltOnFailure)
+                throw new BuildException(msg);
+            else
+                log(msg);
+        }
     }
 
     /**
@@ -122,7 +135,7 @@ public class JSLintTask extends Task {
         }
     }
 
-    private void lintFile(File file) {
+    private boolean lintFile(File file) {
         try {
             // XXX We should allow specifying the encoding here.
             BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -133,11 +146,16 @@ public class JSLintTask extends Task {
             for (ResultFormatter rf : formatters) {
                 rf.output(issues);
             }
+            return issues.size() == 0;
         } catch (FileNotFoundException e) {
             throw new BuildException(e);
         } catch (IOException e) {
             throw new BuildException(e);
         }
+    }
+
+    public void setHaltOnFailure(boolean haltOnFailure) {
+        this.haltOnFailure = haltOnFailure;
     }
 
     /**
