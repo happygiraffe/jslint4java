@@ -144,7 +144,7 @@ public class JSLintTask extends Task {
             log("Found " + issues.size() + " issues in " + file,
                     Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
-                rf.output(issues);
+                rf.output(file, issues);
             }
             return issues.size() == 0;
         } catch (FileNotFoundException e) {

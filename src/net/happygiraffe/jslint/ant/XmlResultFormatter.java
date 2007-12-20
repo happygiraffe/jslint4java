@@ -1,6 +1,7 @@
 package net.happygiraffe.jslint.ant;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -72,20 +73,18 @@ public class XmlResultFormatter implements ResultFormatter {
     /**
      * Create a "file" element, containing nested "issue" elements. Each issue
      * will have <i>line</i>, <i>char</i>, <i>reason</i> and <i>evidence</i>
-     * attributes.
+     * attributes. An element will be created for all files, regardless of any
+     * issues being uncovered.
      *
      * @see net.happygiraffe.jslint.ant.ResultFormatter#output(java.util.List)
      */
-    public void output(List<Issue> issues) {
-        if (issues.size() == 0)
-            return;
-
-        Element file = doc.createElement("file");
-        file.setAttribute("name", issues.get(0).getSystemId());
+    public void output(File file, List<Issue> issues) {
+        Element f = doc.createElement("file");
+        f.setAttribute("name", file.toString());
         for (Issue issue : issues) {
-            file.appendChild(issueToElement(issue));
+            f.appendChild(issueToElement(issue));
         }
-        rootElement.appendChild(file);
+        rootElement.appendChild(f);
     }
 
     private Element issueToElement(Issue issue) {

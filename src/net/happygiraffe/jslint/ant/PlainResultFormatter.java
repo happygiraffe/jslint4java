@@ -1,6 +1,7 @@
 package net.happygiraffe.jslint.ant;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -43,7 +44,7 @@ public class PlainResultFormatter implements ResultFormatter {
      *
      * @see net.happygiraffe.jslint.ant.ResultFormatter#output(java.util.List)
      */
-    public void output(List<Issue> issues) {
+    public void output(File file, List<Issue> issues) {
         if (issues.size() == 0)
             return;
 

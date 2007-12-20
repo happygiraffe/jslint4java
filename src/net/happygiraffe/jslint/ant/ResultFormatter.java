@@ -1,5 +1,6 @@
 package net.happygiraffe.jslint.ant;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -33,10 +34,11 @@ public interface ResultFormatter {
     /**
      * Called for each file that is checked by {@link JSLintTask}. There may be
      * zero issues.
+     * @param file The file just examined.
      *
      * @param issues
      */
-    public abstract void output(List<Issue> issues);
+    public abstract void output(File file, List<Issue> issues);
 
     /**
      * Called during initialization.
