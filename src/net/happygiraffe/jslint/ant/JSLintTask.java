@@ -59,6 +59,8 @@ public class JSLintTask extends Task {
 
     private boolean haltOnFailure = true;
 
+    private String encoding = System.getProperty("file.encoding", "UTF-8");
+
     /**
      * Add in a {@link ResultFormatter} through the medium of a
      * {@link FormatterElement}.
@@ -138,9 +140,8 @@ public class JSLintTask extends Task {
 
     private boolean lintFile(File file) {
         try {
-            // XXX We should allow specifying the encoding here.
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file)));
+                    new FileInputStream(file), encoding));
             List<Issue> issues = lint.lint(file.toString(), reader);
             log("Found " + issues.size() + " issues in " + file,
                     Project.MSG_VERBOSE);
@@ -157,6 +158,19 @@ public class JSLintTask extends Task {
 
     public void setHaltOnFailure(boolean haltOnFailure) {
         this.haltOnFailure = haltOnFailure;
+    }
+
+    /**
+     * Set the encoding of the source files that JSLint will read. If not
+     * specified, the default is the system encoding (via the
+     * <code>file.encoding</code> property). If that isn't present, default to
+     * <code>UTF-8</code>.
+     *
+     * @param encoding
+     *                a valid charset identifier.
+     */
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     /**
