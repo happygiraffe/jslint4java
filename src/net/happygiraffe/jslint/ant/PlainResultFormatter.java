@@ -24,6 +24,8 @@ public class PlainResultFormatter implements ResultFormatter {
     private PrintWriter w;
 
     public void begin() {
+        // Use the default system encoding, as that's likely what the console is
+        // set to...
         w = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
     }
 

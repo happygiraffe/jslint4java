@@ -46,7 +46,7 @@ public class FormatterElement {
      */
     private OutputStream getFileOutputStream() {
         try {
-            // XXX encoding?
+            // NB: The encoding will be determined by the ResultFormatter.
             return new FileOutputStream(destFile);
         } catch (FileNotFoundException e) {
             throw new BuildException(e);
