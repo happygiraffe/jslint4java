@@ -83,7 +83,7 @@ public class FormatterElement {
      *
      * @param defaultOutputStream
      */
-    public void setDefaultOutputStream(OutputStream defaultOutputStream) {
+    void setDefaultOutputStream(OutputStream defaultOutputStream) {
         this.defaultOutputStream = defaultOutputStream;
     }
 
