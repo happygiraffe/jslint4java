@@ -12,20 +12,30 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.happygiraffe.jslint.Issue;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.util.DOMElementWriter;
 import org.apache.tools.ant.util.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import net.happygiraffe.jslint.Issue;
-
 /**
  * Write out JSLint problems to an XML file. This may be easily transformed into
- * a nice report.
+ * a nice report. Sample output:
+ *
+ * <pre>
+ *  &lt;jslint&gt;
+ *    &lt;file name=&quot;bad.js&quot;&gt;
+ *      &lt;issue line=&quot;0&quot; char=&quot;0&quot; reason=&quot;Insufficient Llamas&quot; evidence=&quot;var sheep;&quot;/&gt;
+ *    &lt;/file&gt;
+ *    &lt;file name=&quot;good.js&quot;/&gt;
+ *  &lt;/jslint&gt;
+ * </pre>
  *
  * @author dom
- * @version $Id$
+ * @version $Id: XmlResultFormatter.java 141 2007-12-20 08:39:30Z
+ *          happygiraffe.net $
  */
 public class XmlResultFormatter implements ResultFormatter {
 
@@ -34,11 +44,6 @@ public class XmlResultFormatter implements ResultFormatter {
     private Document doc;
     private Element rootElement;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see net.happygiraffe.jslint.ant.ResultFormatter#begin()
-     */
     public void begin() {
         try {
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -50,7 +55,7 @@ public class XmlResultFormatter implements ResultFormatter {
     }
 
     /**
-     * Create a root "jslint" element.
+     * Write out the XML file containing the issues for all files.
      *
      * @see net.happygiraffe.jslint.ant.ResultFormatter#end()
      */
@@ -76,7 +81,7 @@ public class XmlResultFormatter implements ResultFormatter {
      * attributes. An element will be created for all files, regardless of any
      * issues being uncovered.
      *
-     * @see net.happygiraffe.jslint.ant.ResultFormatter#output(java.util.List)
+     * @see ResultFormatter#output(File, List)
      */
     public void output(File file, List<Issue> issues) {
         Element f = doc.createElement("file");
@@ -96,11 +101,6 @@ public class XmlResultFormatter implements ResultFormatter {
         return iel;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see net.happygiraffe.jslint.ant.ResultFormatter#setOut(java.io.OutputStream)
-     */
     public void setOut(OutputStream os) {
         out = os;
     }

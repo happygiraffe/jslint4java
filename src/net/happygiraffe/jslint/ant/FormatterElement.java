@@ -11,6 +11,15 @@ import org.apache.tools.ant.BuildException;
  * A sub element of {@link JSLintTask}. Used to specify where the output should
  * go. Handles creation of a {@link ResultFormatter}.
  *
+ * <h3>Attributes</h3>
+ *
+ * <dl>
+ * <dt><code>type</code></dt>
+ * <dd>Either "plain" or "xml".</dd>
+ * <dt><code>destfile</code></dt>
+ * <dd>Optional.  A file to write the formatters' output to.</dd>
+ * </dl>
+ *
  * @author dom
  * @version $Id$
  */
@@ -47,8 +56,6 @@ public class FormatterElement {
     /**
      * Return a configured {@link ResultFormatter} corresponding to this
      * element.
-     *
-     * @return
      */
     public ResultFormatter getResultFormatter() {
         if (type == null)

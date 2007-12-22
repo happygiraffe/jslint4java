@@ -12,7 +12,7 @@ import net.happygiraffe.jslint.Issue;
  * <ul>
  * <li>{@link #setOut(OutputStream)}
  * <li>{@link #begin()}
- * <li>{@link #output(List)}
+ * <li>{@link #output(File, List)}
  * <li>{@link #end()}
  * </ul>
  *
@@ -32,11 +32,13 @@ public interface ResultFormatter {
     public abstract void end();
 
     /**
-     * Called for each file that is checked by {@link JSLintTask}. There may be
-     * zero issues.
-     * @param file The file just examined.
+     * Called for each file that is checked by {@link JSLintTask}.
+     *
+     * @param file
+     *                The file just examined.
      *
      * @param issues
+     *                A list of issues fond with this file. May be empty.
      */
     public abstract void output(File file, List<Issue> issues);
 

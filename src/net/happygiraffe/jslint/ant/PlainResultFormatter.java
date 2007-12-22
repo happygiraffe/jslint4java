@@ -12,6 +12,9 @@ import net.happygiraffe.jslint.Issue;
 import org.apache.tools.ant.util.FileUtils;
 
 /**
+ * Output all JSLint errors to the console. Shows the error, the line on which
+ * it occurred and a pointer to the character at which it occurred.
+ *
  * @author dom
  * @version $Id$
  */
@@ -20,29 +23,19 @@ public class PlainResultFormatter implements ResultFormatter {
     private OutputStream out;
     private PrintWriter w;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see net.happygiraffe.jslint.ant.ResultFormatter#begin()
-     */
     public void begin() {
         w = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see net.happygiraffe.jslint.ant.ResultFormatter#end()
-     */
     public void end() {
         FileUtils.close(w);
         w = null;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Emit all issues to the console.
      *
-     * @see net.happygiraffe.jslint.ant.ResultFormatter#output(java.util.List)
+     * @see ResultFormatter#output(File, List)
      */
     public void output(File file, List<Issue> issues) {
         if (issues.size() == 0)
@@ -55,11 +48,6 @@ public class PlainResultFormatter implements ResultFormatter {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see net.happygiraffe.jslint.ant.ResultFormatter#setOut(java.io.OutputStream)
-     */
     public void setOut(OutputStream os) {
         out = os;
     }
@@ -68,7 +56,6 @@ public class PlainResultFormatter implements ResultFormatter {
      * Return a string of <i>howmany</i> spaces.
      *
      * @param howmany
-     * @return
      */
     private String spaces(int howmany) {
         StringBuffer sb = new StringBuffer(howmany);

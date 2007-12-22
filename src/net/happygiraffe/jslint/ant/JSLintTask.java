@@ -40,14 +40,29 @@ import org.apache.tools.ant.types.FileSet;
  * </pre>
  *
  * <p>
- * You have to specify one or more nested fileset elements.
+ * You have to specify one or more nested <i>fileset</i> elements. You may
+ * optionally specify a <i>formatter</i> element in order to generate output
+ * (as opposed to just a build failed message). Usually, you will want the plain
+ * formatter, but in case you want to generate a report, the xml formatter
+ * mighht be useful.
  *
- * <p>
- * <code>options</code> is a comma separated list of {@link Option} names.
+ * <h3>Attributes</h3>
+ *
+ * <dl>
+ * <dt><code>encoding</code></dt>
+ * <dd>Optional. The encoding of the JavaScript files. Defaults to system
+ * encoding.</dd>
+ * <dt><code>haltOnFailure</code></dt>
+ * <dd>Optional. Specify if the build should fail if there are files which do
+ * not pass JSLint. Defaults to true.</dd>
+ * <dt><code>options</code></dt>
+ * <dd>Optional. A comma separated list of {@link Option} names. No default.</dd>
+ * </dl>
  *
  * @author dom
  * @version $Id$
  * @see <a href="http://jslint.com/">jslint.com</a>
+ * @see FormatterElement
  */
 public class JSLintTask extends Task {
 
@@ -156,6 +171,11 @@ public class JSLintTask extends Task {
         }
     }
 
+    /**
+     * Should the build stop if JSLint fails? Defaults to true.
+     *
+     * @param haltOnFailure
+     */
     public void setHaltOnFailure(boolean haltOnFailure) {
         this.haltOnFailure = haltOnFailure;
     }
