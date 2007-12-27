@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id$ -->
+<project name="jslint-antunit"
+         xmlns:au="antlib:org.apache.ant.antunit"
+         xmlns:jsl="antlib:net.happygiraffe.jslint">
+	<description>
+Tests for the JSLint ant task.
+	</description>
+
+	<target name="testFailsOnError">
+		<au:expectfailure expectedmessage="1 file did not pass JSLint">
+			<jsl:jslint>
+				<fileset dir="." includes="*.js" />
+			</jsl:jslint>
+		</au:expectfailure>
+	</target>
+
+	<target name="testSuccess">
+		<jsl:jslint>
+			<fileset dir="." includes="good.js" />
+		</jsl:jslint>
+	</target>
+</project>

@@ -60,6 +60,19 @@
 		</junit>
 	</target>
 
+	<target name="test-antunit" depends="bigjar">
+		<typedef uri="antlib:org.apache.ant.antunit"
+		         resource="org/apache/ant/antunit/antlib.xml"
+		         classpath="antunit/ant-antunit-1.0.jar" />
+		<typedef uri="antlib:net.happygiraffe.jslint"
+		         resource="net/happygiraffe/jslint/antlib.xml"
+		         classpath="${dist.dir}/${project.namever}+rhino.jar" />
+		<au:antunit xmlns:au="antlib:org.apache.ant.antunit">
+			<file file="antunit/build.xml" />
+			<au:plainlistener />
+		</au:antunit>
+	</target>
+
 	<target name="jar" depends="compile">
 		<!-- Build a "just jslint" jar file. -->
 		<jar destfile="${dist.dir}/${project.namever}.jar" manifest="${src.dir}/META-INF/MANIFEST.MF">
@@ -77,9 +90,9 @@
 			<zipfileset src="${lib.dir}/js.jar" />
 		</jar>
 	</target>
-	
+
 	<target name="alljars" depends="jar, bigjar" />
-	
+
 	<target name="create-bin-dist" depends="alljars,doc">
 		<zip destfile="${dist.dir}/${project.namever}.zip">
 			<zipfileset dir="." prefix="${project.namever}" includes="*.txt" />
@@ -88,7 +101,7 @@
 			<zipfileset dir="${build.doc.dir}" prefix="${project.namever}/doc" />
 		</zip>
 	</target>
-	
+
 	<target name="create-src-dist">
 		<zip destfile="${dist.dir}/${project.namever}-src.zip">
 			<zipfileset dir="." prefix="${project.namever}" includes="*.txt,build.xml" />
@@ -107,7 +120,7 @@
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api" />
 		</javadoc>
 	</target>
-	
+
 	<target name="make-option-enum">
 		<exec executable="ruby" outputproperty="option.java" failonerror="yes">
 			<arg file="etc/extract-options.rb" />
@@ -116,7 +129,7 @@
 		</exec>
 		<echo file="${jslint.pkg.dir}/Option.java" message="${option.java}" />
 	</target>
-	
+
 	<target name="fetch-latest-jslint">
 		<get dest="${jslint.pkg.dir}/fulljslint.js" src="http://www.jslint.com/fulljslint.js"/>
 	</target>
