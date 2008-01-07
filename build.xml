@@ -108,6 +108,7 @@
 			<zipfileset dir="lib" prefix="${project.namever}/lib" includes="*.jar" />
 			<zipfileset dir="src" prefix="${project.namever}/src" />
 			<zipfileset dir="test" prefix="${project.namever}/test" />
+			<zipfileset dir="antunit" prefix="${project.namever}/antunit" />
 		</zip>
 	</target>
 
