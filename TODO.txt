@@ -1,5 +1,7 @@
 Things to implement:
 
+* Add support for new "ADsafe" parameter to JSLint.
+
 * Allow Main.java to operate on stdin.
 
 * Provide an examples directory for the ant task.
