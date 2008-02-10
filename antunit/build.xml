@@ -10,14 +10,15 @@ Tests for the JSLint ant task.
 	<target name="testFailsOnError">
 		<au:expectfailure expectedmessage="1 file did not pass JSLint">
 			<jsl:jslint>
-				<fileset dir="." includes="*.js" />
+                <fileset file="good.js" />
+                <fileset file="bad.js" />
 			</jsl:jslint>
 		</au:expectfailure>
 	</target>
 
 	<target name="testSuccess">
 		<jsl:jslint>
-			<fileset dir="." includes="good.js" />
+			<fileset file="good.js" />
 		</jsl:jslint>
 	</target>
 </project>
