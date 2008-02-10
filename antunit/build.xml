@@ -10,8 +10,8 @@ Tests for the JSLint ant task.
 	<target name="testFailsOnError">
 		<au:expectfailure expectedmessage="1 file did not pass JSLint">
 			<jsl:jslint>
-                <fileset file="good.js" />
-                <fileset file="bad.js" />
+				<fileset file="good.js" />
+				<fileset file="bad.js" />
 			</jsl:jslint>
 		</au:expectfailure>
 	</target>
@@ -20,5 +20,18 @@ Tests for the JSLint ant task.
 		<jsl:jslint>
 			<fileset file="good.js" />
 		</jsl:jslint>
+	</target>
+
+	<!-- http://code.google.com/p/jslint4java/issues/detail?id=6 -->
+	<target name="testIssue6">
+		<au:expectfailure expectedmessage="1 file did not pass JSLint">
+			<jsl:jslint options="browser,undef,passfail">
+				<formatter type="plain" />
+				<fileset file="issue6.js" />
+			</jsl:jslint>
+		</au:expectfailure>
+		<!-- This is not the exact same message reported, but was how I was
+             able to trigger the same condition. -->
+		<au:assertLogContains text="Missing semicolon." />
 	</target>
 </project>
