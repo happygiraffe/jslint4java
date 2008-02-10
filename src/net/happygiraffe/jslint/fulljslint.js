@@ -1,5 +1,5 @@
 // jslint.js
-// 2007-12-11
+// 2008-01-29
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -27,7 +27,7 @@ SOFTWARE.
 /*
     JSLINT is a global function. It takes two parameters.
 
-        var myResult = JSLINT(source, option);
+        var myResult = JSLINT(source, option, adsafe);
 
     The first parameter is either a string or an array of strings. If it is a
     string, it will be split on '\n' or '\r'. If it is an array of strings, it
@@ -37,6 +37,14 @@ SOFTWARE.
     The second parameter is an optional object of options which control the
     operation of JSLINT. All of the options are booleans. All are optional and
     have a default value of false.
+
+    The third parameter is an optional object that names the global objects
+    that are allowed under ADsafe. The default is {
+        ADSAFE: true,
+        Math:   true
+    }. Each member must have a true value. These names will deliver methods
+    to the guest code. The guest will be allowed to call the methods, but not
+    to retrieve or set members.
 
     If it checks out, JSLINT returns true. Otherwise, it returns false.
 
@@ -147,24 +155,25 @@ JSLINT = function () {
 
 // These are words that should not be permitted in third party ads.
 
-    var adsafe = {
-        apply           : true,
-        call            : true,
-        callee          : true,
-        caller          : true,
-        clone           : true,
-        constructor     : true,
-        'eval'          : true,
-        'new'           : true,
-        prototype       : true,
-        source          : true,
-        'this'          : true,
-        toSource        : true,
-        toString        : true,
-        unwatch         : true,
-        valueOf         : true,
-        watch           : true
-    },
+    var adsafe = {              // the names that ADsafe prohibits.
+            apply           : true,
+            call            : true,
+            callee          : true,
+            caller          : true,
+            clone           : true,
+            constructor     : true,
+            'eval'          : true,
+            'new'           : true,
+            prototype       : true,
+            source          : true,
+            'this'          : true,
+            toSource        : true,
+            toString        : true,
+            unwatch         : true,
+            valueOf         : true,
+            watch           : true
+        },
+        adsafe_allow,           // the global objects that ADsafe allows.
 
 // These are all of the JSLint options.
 
@@ -442,7 +451,7 @@ JSLINT = function () {
 // unsafe comment
         ax = /@cc|<\/?script|\]\]|&/i,
 // unsafe character
-        cx = /[\u0000-\u0008\u000a-\u001f\u007f-\u009f\u2028\u2029\ufff0-\uffff]/,
+        cx = /[\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/,
 // token
         tx = /^\s*([(){}\[.,:;'"~]|\](\]>)?|\?>?|==?=?|\/(\*(global|extern|jslint|member|members)?|=|\/)?|\*[\/=]?|\+[+=]?|-[\-=]?|%[=>]?|&[&=]?|\|[|=]?|>>?>?=?|<([\/=%\?]|\!(\[|--)?|<=?)?|\^=?|\!=?=?|[a-zA-Z_$][a-zA-Z0-9_$]*|[0-9]+([xX][0-9a-fA-F]+|\.[0-9]*)?([eE][+\-]?[0-9]+)?)/,
 // star slash
@@ -522,7 +531,7 @@ JSLINT = function () {
 
     function populateGlobals() {
         if (option.adsafe) {
-            globals.combine({ADSAFE: true});
+            globals.combine(adsafe_allow);
         } else {
             if (option.rhino) {
                 globals.combine(rhino);
@@ -615,7 +624,7 @@ JSLINT = function () {
                 return false;
             }
             character = 0;
-            s = lines[line];
+            s = lines[line].replace(/\t/g, '    ');
             at = s.search(cx);
             if (at >= 0) {
                 warningAt("Unsafe character.", line, at);
@@ -647,8 +656,7 @@ JSLINT = function () {
             } else if (type === '(identifier)') {
                 if (option.nomen && value.charAt(0) === '_') {
                     warningAt("Unexpected '_' in '{a}'.", line, from, value);
-                } else if (option.adsafe &&
-                        (adsafe[value] === true || value.slice(-2) === '__')) {
+                } else if (option.adsafe && adsafe[value] === true) {
                     warning("ADsafe restricted word '{a}'.",
                             {line: line, from: character}, value);
                 }
@@ -1020,10 +1028,6 @@ klass:                              for (;;) {
                                             q = true;
                                             break;
                                         default:
-                                            if (c < ' ') {
-                                                errorAt(c ? "Control character in a regular expression" :
-                                                    "Unclosed regular expression.", line, from + l);
-                                            }
                                             q = true;
                                         }
                                     }
@@ -1036,10 +1040,6 @@ klass:                              for (;;) {
                                 case '*':
                                     warningAt("Unescaped '{a}'.", line, from + l, c);
                                     break;
-                                default:
-                                    if (c < ' ') {
-                                        warningAt("Control character in a regular expression", line, from + l);
-                                    }
                                 }
                                 if (b) {
                                     switch (s.charAt(l)) {
@@ -1414,7 +1414,7 @@ klass:                              for (;;) {
             error("Unexpected early end of program.", token);
         }
         advance();
-        if (option.adsafe && token.value === 'ADSAFE') {
+        if (option.adsafe && adsafe_allow[token.value] === true) {
             if (nexttoken.id !== '.' || !(peek(0).identifier) ||
                     peek(1).id !== '(') {
                 warning('ADsafe violation.', token);
@@ -1648,7 +1648,7 @@ klass:                              for (;;) {
             if (adsafe) {
                 l = left;
                 do {
-                    if (l.value === 'ADSAFE') {
+                    if (adsafe_allow[l.value] === true) {
                         warning('ADsafe violation.', l);
                     }
                     l = l.left;
@@ -2037,7 +2037,7 @@ klass:                              for (;;) {
                 menu:     {},
                 meta:     {empty: true, parent: ' head noframes noscript '},
                 noframes: {parent: ' html body '},
-                noscript: {parent: ' head html noframes '},
+                noscript: {parent: ' body head noframes '},
                 object:   {},
                 ol:       {},
                 optgroup: {parent: ' select '},
@@ -3563,7 +3563,7 @@ klass:                              for (;;) {
 
 // The actual JSLINT function itself.
 
-    var itself = function (s, o) {
+    var itself = function (s, o, a) {
         if (o) {
             if (o.adsafe) {
                 o.browser = false;
@@ -3571,6 +3571,7 @@ klass:                              for (;;) {
                 o.eqeqeq  = true;
                 o.evil    = false;
                 o.forin   = false;
+                o.nomen   = true;
                 o.on      = false;
                 o.rhino   = false;
                 o.undef   = true;
@@ -3580,6 +3581,10 @@ klass:                              for (;;) {
         } else {
             option = {};
         }
+        adsafe_allow = a || {
+            ADSAFE: true,
+            Math: true
+        };
         globals = option.adsafe ? {} : object(standard);
         JSLINT.errors = [];
         global = object(globals);

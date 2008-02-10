@@ -3,7 +3,7 @@ Revision history for jslint4java.
 1.2
     - [INCOMPATIBILITY] Rewrite the ant task so that it always uses filesets.
     - [INCOMPATIBILITY] Move antlib to be antlib:net.happygiraffe.jslint.
-    - Update to Jslint 2007-12-11.
+    - Update to JSLint 2008-01-29.
     - Add a report() call to get at JSLINT.report().
     - Add in a formatter subelement to the jslint ant task.  Reports can now be
       in either XML or plain text and may be written to a file.
