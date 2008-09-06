@@ -6,6 +6,8 @@ Things to implement:
 
 * Allow Main.java to operate on stdin.
 
+* Add a ReportFormatter to output the HTML reports that JSLint can generate.
+
 * Provide an examples directory for the ant task.
 
 * An eclipse plugin, to flag up anything it finds as a warning in the Problems
