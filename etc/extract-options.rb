@@ -9,7 +9,7 @@ opts = {}
 File.open(ARGV[0]) do |fh|
   while line = fh.gets do
     # puts ">> #{line}"
-    if (line =~ /\s+allOptions\s*=\s*\{/) ... (line =~ /\}/)
+    if (line =~ /\s+boolOptions\s*=\s*\{/) ... (line =~ /\}/)
       if md = line.match(/(\w+).*\/\/ (.*)/)
         opts[ md[1] ] = md[2].capitalize
       end
@@ -29,7 +29,9 @@ File.open(ARGV[1]) do |fh|
       # And start rewriting.
       puts "#{indent}//BEGIN-OPTIONS"
       allopts =  opts.keys.sort.map do |k|
-        "#{indent}/** #{opts[k]} */\n#{indent}#{k.upcase}(\"#{opts[k]}\")"
+        desc = opts[k]
+        descEscaped = desc.gsub(/"/, '\\"')
+        "#{indent}/** #{desc} */\n#{indent}#{k.upcase}(\"#{descEscaped}\")"
       end.join(",\n")
       puts "#{allopts};"
       puts "#{indent}//END-OPTIONS"

@@ -8,8 +8,8 @@ package net.happygiraffe.jslint;
  */
 public enum Option {
     //BEGIN-OPTIONS
-    /** If use of some browser features should be restricted */
-    ADSAFE("If use of some browser features should be restricted"),
+    /** If adsafe should be enforced */
+    ADSAFE("If adsafe should be enforced"),
     /** If bitwise operators should not be allowed */
     BITWISE("If bitwise operators should not be allowed"),
     /** If the standard browser globals should be predefined */
@@ -32,12 +32,24 @@ public enum Option {
     NOMEN("If names should be checked"),
     /** If html event handlers should be allowed */
     ON("If html event handlers should be allowed"),
+    /** If only one var statement per function should be allowed */
+    ONEVAR("If only one var statement per function should be allowed"),
     /** If the scan should stop on first error */
     PASSFAIL("If the scan should stop on first error"),
     /** If increment/decrement should not be allowed */
     PLUSPLUS("If increment/decrement should not be allowed"),
+    /** If the . should not be allowed in regexp literals */
+    REGEXP("If the . should not be allowed in regexp literals"),
     /** If the rhino environment globals should be predefined */
     RHINO("If the rhino environment globals should be predefined"),
+    /** If use of some browser features should be restricted */
+    SAFE("If use of some browser features should be restricted"),
+    /** If the system object should be predefined */
+    SIDEBAR("If the system object should be predefined"),
+    /** Require the "use strict"; pragma */
+    STRICT("Require the \"use strict\"; pragma"),
+    /** If all forms of subscript notation are tolerated */
+    SUB("If all forms of subscript notation are tolerated"),
     /** If variables should be declared before used */
     UNDEF("If variables should be declared before used"),
     /** If strict whitespace rules apply */
