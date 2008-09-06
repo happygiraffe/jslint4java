@@ -5,7 +5,7 @@ Revision history for jslint4java.
     - [INCOMPATIBILITY] Move antlib to be antlib:net.happygiraffe.jslint.
     - Update to JSLint 2008-09-04.
     - Add a report() call to get at JSLINT.report().
-    - Add in a formatter subelement to the jslint ant task.  Reports can now be
+    - Add in a formatter subelement to the jslint ant task.  Output can now be
       in either XML or plain text and may be written to a file.
     - [INCOMPATIBILITY] Default to failing the build if all files do not pass
       JSLint.  Add a haltonfailure attribute to disable this.
