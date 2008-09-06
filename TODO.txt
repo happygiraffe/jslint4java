@@ -1,6 +1,8 @@
 Things to implement:
 
-* Add support for new "ADsafe" parameter to JSLint.
+* Add a maven2 plugin.
+
+* Add support for non-boolean parameters.
 
 * Allow Main.java to operate on stdin.
 
