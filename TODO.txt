@@ -3,8 +3,8 @@ Things to implement:
 * Add a maven2 plugin.
 ** And then add a hudson plugin.
 ** Maven2 TODO:
-*** Add a module build.
 *** Add back antunit tests.
+*** Create proper bin/src dists.
 
 * Add support for non-boolean parameters.
 
