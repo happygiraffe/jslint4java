@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.happygiraffe</groupId>
   <artifactId>jslint4java-parent</artifactId>
-  <version>1</version>
+  <version>1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>jslint4java parent</name>
   <modules>
