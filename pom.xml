@@ -7,6 +7,34 @@
   <version>1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>jslint4java parent</name>
+  <url>http://code.google.com/p/jslint4java/</url>
+  <description>The parent POM for jslint4java.</description>
+  <inceptionYear>2007</inceptionYear>
+  <licenses>
+    <license>
+      <name>New BSD License</name>
+      <url>http://jslint4java.googlecode.com/svn/trunk/LICENCE.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>dom</id>
+      <name>Dominic Mitchell</name>
+      <email>dom@happygiraffe.net</email>
+      <url>http://happygiraffe.net/blog/</url>
+    </developer>
+  </developers>
+  <issueManagement>
+    <system>Google Code</system>
+    <!-- http://code.google.com/p/jslint4java/issues/list?q=label%3A -->
+    <url>http://code.google.com/p/jslint4java/issues/list</url>
+  </issueManagement>
+  <scm>
+    <url>http://code.google.com/p/jslint4java/source/browse/trunk</url>
+    <connection>scm:svn:http://jslint4java.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://jslint4java.googlecode.com/svn/trunk</developerConnection>
+  </scm>
   <modules>
     <module>jslint4java</module>
     <module>jslint4java-ant</module>

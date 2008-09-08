@@ -5,8 +5,15 @@
   <groupId>net.happygiraffe</groupId>
   <artifactId>jslint4java</artifactId>
   <version>1.3-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <name>jslint4java</name>
+  <url>http://code.google.com/p/jslint4java/</url>
   <description>A Java wrapper for Douglas Crockford's wonderful JSLint tool.</description>
+  <parent>
+    <groupId>net.happygiraffe</groupId>
+    <artifactId>jslint4java-parent</artifactId>
+    <version>1-SNAPSHOT</version>
+  </parent>
   <dependencies>
     <dependency>
       <groupId>rhino</groupId>
