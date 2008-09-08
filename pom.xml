@@ -1,0 +1,14 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+    http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.happygiraffe</groupId>
+  <artifactId>jslint4java-parent</artifactId>
+  <version>1</version>
+  <packaging>pom</packaging>
+  <name>jslint4java parent</name>
+  <modules>
+    <module>jslint4java</module>
+    <module>jslint4java-ant</module>
+  </modules>
+</project>
