@@ -151,7 +151,7 @@ public class JSLint {
         doLint(javaScript);
 
         // The run the reporter.
-        Object[] args = new Object[] { new Boolean(errorsOnly) };
+        Object[] args = new Object[] { Boolean.valueOf(errorsOnly) };
         Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
         Function reportFunc = (Function) lintScope.get("report", lintScope);
         // JSLINT actually returns a boolean, but we ignore it as we always go
