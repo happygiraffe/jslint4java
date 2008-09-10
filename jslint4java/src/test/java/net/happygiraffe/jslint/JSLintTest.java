@@ -2,20 +2,28 @@
 
 package net.happygiraffe.jslint;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author dom
  * @version $Id$
  */
-public class JSLintTest extends TestCase {
+public class JSLintTest {
 
     private JSLint lint;
+
+    @Before
+    public void setUp() throws IOException {
+        lint = new JSLint();
+    }
 
     // small helper function.
     private List<Issue> lint(Reader reader) throws IOException {
@@ -27,17 +35,14 @@ public class JSLintTest extends TestCase {
         return lint.lint("-", source);
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        lint = new JSLint();
-    }
-
+    @Test
     public void testEmptySource() throws Exception {
         List<Issue> issues = lint("");
         assertNotNull(issues);
         assertEquals(0, issues.size());
     }
 
+    @Test
     public void testLintReader() throws Exception {
         Reader reader = new StringReader("var foo = 1");
         List<Issue> issues = lint(reader);
@@ -46,17 +51,20 @@ public class JSLintTest extends TestCase {
         assertEquals("Missing semicolon.", issues.get(0).getReason());
     }
 
+    @Test
     public void testNoProblems() throws IOException {
         List<Issue> problems = lint("var foo = 1;");
         assertEquals(0, problems.size());
     }
 
+    @Test
     public void testNullSource() throws Exception {
         List<Issue> issues = lint((String) null);
         assertNotNull(issues);
         assertEquals(0, issues.size());
     }
 
+    @Test
     public void testOneProblem() throws IOException {
         // There is a missing semicolon here.
         List<Issue> problems = lint("var foo = 1");
@@ -65,12 +73,14 @@ public class JSLintTest extends TestCase {
         assertEquals("Missing semicolon.", issue.getReason());
     }
 
+    @Test
     public void testReportErrorsOnly() throws Exception {
         String html = lint.report("var foo = 42", true);
         assertTrue(html.contains("<div id=errors"));
         assertTrue(html.contains("Missing semicolon"));
     }
-    
+
+    @Test
     public void testReportFull() throws Exception {
         String html = lint.report("var foo = 42;");
         assertTrue(html.contains("<div>"));
