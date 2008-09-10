@@ -10,13 +10,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 /**
  * A utility class to check JavaScript source code for potential problems.
- * 
+ *
  * @author dom
  * @version $Id$
  */
@@ -29,21 +30,21 @@ public class JSLint {
     // org.mozilla.javascript.tools.debugger.Main.mainEmbedded(null);
     // }
 
-    private Context ctx;
+    private static ContextFactory contextFactory = new ContextFactory();
 
     private Set<Option> options = EnumSet.noneOf(Option.class);
 
-    private ScriptableObject scope;
+    private final ScriptableObject scope;
 
     /**
      * Create a new {@link JSLint} object. This reads in the jslint JavaScript
      * source as a resource.
-     * 
+     *
      * @throws IOException
-     *                 if something went wrong reading jslint.js.
+     *             if something went wrong reading jslint.js.
      */
     public JSLint() throws IOException {
-        ctx = Context.enter();
+        Context ctx = contextFactory.enterContext();
         scope = ctx.initStandardObjects();
         Reader reader = new BufferedReader(new InputStreamReader(getClass()
                 .getResourceAsStream(JSLINT_FILE)));
@@ -52,9 +53,9 @@ public class JSLint {
 
     /**
      * Add an option to change the behaviour of the lint.
-     * 
+     *
      * @param o
-     *                Any {@link Option}.
+     *            Any {@link Option}.
      */
     public void addOption(Option o) {
         options.add(o);
@@ -66,17 +67,17 @@ public class JSLint {
         Function lintFunc = (Function) scope.get("JSLINT", scope);
         // JSLINT actually returns a boolean, but we ignore it as we always go
         // and look at the errors in more detail.
-        lintFunc.call(ctx, scope, scope, args);
+        lintFunc.call(Context.getCurrentContext(), scope, scope, args);
     }
 
     /**
      * Check for problems in a {@link Reader} which contains JavaScript source.
-     * 
+     *
      * @param systemId
-     *                a filename
+     *            a filename
      * @param reader
-     *                a {@link Reader} over JavaScript source code.
-     * 
+     *            a {@link Reader} over JavaScript source code.
+     *
      * @return a {@link List} of {@link Issue}s describing any problems.
      * @throws IOException
      */
@@ -86,12 +87,12 @@ public class JSLint {
 
     /**
      * Check for problems in JavaScript source.
-     * 
+     *
      * @param systemId
-     *                a filename
+     *            a filename
      * @param javaScript
-     *                a String of JavaScript source code.
-     * 
+     *            a String of JavaScript source code.
+     *
      * @return a {@link List} of {@link Issue}s describing any problems.
      */
     public List<Issue> lint(String systemId, String javaScript) {
@@ -106,7 +107,7 @@ public class JSLint {
      * name of the option and the value is true.
      */
     private Scriptable optionsAsJavaScriptObject() {
-        Scriptable opts = ctx.newObject(scope);
+        Scriptable opts = Context.getCurrentContext().newObject(scope);
         for (Option o : options) {
             opts.put(o.getLowerName(), opts, true);
         }
@@ -129,7 +130,7 @@ public class JSLint {
 
     /**
      * Report on what variables / functions are in use by this code.
-     * 
+     *
      * @param javaScript
      * @return an HTML report.
      */
@@ -139,10 +140,10 @@ public class JSLint {
 
     /**
      * Report on what variables / functions are in use by this code.
-     * 
+     *
      * @param javaScript
      * @param errorsOnly
-     *                If a report consisting solely of the problems is desired.
+     *            If a report consisting solely of the problems is desired.
      * @return an HTML report.
      */
     public String report(String javaScript, boolean errorsOnly) {
@@ -155,7 +156,8 @@ public class JSLint {
         Function reportFunc = (Function) lintScope.get("report", lintScope);
         // JSLINT actually returns a boolean, but we ignore it as we always go
         // and look at the errors in more detail.
-        return (String) reportFunc.call(ctx, scope, scope, args);
+        return (String) reportFunc.call(Context.getCurrentContext(), scope,
+                scope, args);
     }
 
     /**

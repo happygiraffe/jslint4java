@@ -5,6 +5,7 @@ import java.io.StringReader;
 import junit.framework.TestCase;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ScriptableObject;
 
 /**
@@ -13,15 +14,14 @@ import org.mozilla.javascript.ScriptableObject;
  */
 public class UtilTest extends TestCase {
 
-    private Context cx;
-
+    private final ContextFactory contextFactory = new ContextFactory();
+    private final Context cx = contextFactory.enterContext();
     private ScriptableObject scope;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        cx = Context.enter();
         cx.setLanguageVersion(Context.VERSION_1_5);
         scope = cx.initStandardObjects();
     }
@@ -46,7 +46,7 @@ public class UtilTest extends TestCase {
     public void testIntValueNullScope() throws Exception {
         assertEquals(0, Util.intValue("foo", null));
     }
-    
+
     public void testIntValueOfUndefined() {
         assertEquals(0, Util.intValue("foo", scope));
     }

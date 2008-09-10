@@ -1,9 +1,10 @@
 package net.happygiraffe.jslint;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ScriptableObject;
-
 import junit.framework.TestCase;
+
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.ScriptableObject;
 
 /**
  * @author dom
@@ -11,14 +12,9 @@ import junit.framework.TestCase;
  */
 public class IssueTest extends TestCase {
 
-    private Context cx;
-    private ScriptableObject scope;
-
-    @Override
-    protected void setUp() throws Exception {
-        cx = Context.enter();
-        scope = cx.initStandardObjects();
-    }
+    private final ContextFactory contextFactory = new ContextFactory();
+    private final Context cx = contextFactory.enterContext();
+    private final ScriptableObject scope = cx.initStandardObjects();
 
     @Override
     protected void tearDown() throws Exception {
