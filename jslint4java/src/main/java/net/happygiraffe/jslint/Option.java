@@ -1,5 +1,7 @@
 package net.happygiraffe.jslint;
 
+import java.util.Locale;
+
 /**
  * All available options for tuning the behaviour of JSLint.
  *
@@ -75,7 +77,7 @@ public enum Option {
      * Return the lowercase name of this option.
      */
     public String getLowerName() {
-        return name().toLowerCase();
+        return name().toLowerCase(Locale.getDefault());
     }
 
     /**

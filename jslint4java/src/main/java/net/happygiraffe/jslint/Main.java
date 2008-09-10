@@ -7,10 +7,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A command line interface to {@link JSLint}.
- * 
+ *
  * @author dom
  * @version $Id$
  */
@@ -20,9 +21,9 @@ public class Main {
 
     /**
      * The main entry point. Try passing in "--help" for more details.
-     * 
+     *
      * @param args
-     *                One or more JavaScript files.
+     *            One or more JavaScript files.
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
@@ -39,7 +40,7 @@ public class Main {
 
     private boolean errored = false;
 
-    private JSLint lint;
+    private final JSLint lint;
 
     private Main() throws IOException {
         lint = new JSLint();
@@ -94,8 +95,7 @@ public class Main {
     private List<String> processOptions(String[] args) {
         boolean inFiles = false;
         List<String> files = new ArrayList<String>();
-        for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
+        for (String arg : args) {
             if (inFiles) {
                 files.add(arg);
             }
@@ -111,7 +111,9 @@ public class Main {
             // Longopt.
             else if (arg.startsWith("--")) {
                 try {
-                    addOption(Option.valueOf(arg.substring(2).toUpperCase()));
+                    String opt = arg.substring(2).toUpperCase(
+                            Locale.getDefault());
+                    addOption(Option.valueOf(opt));
                 } catch (IllegalArgumentException e) {
                     die("unknown option " + arg);
                 }
