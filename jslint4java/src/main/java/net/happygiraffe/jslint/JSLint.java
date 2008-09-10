@@ -46,7 +46,7 @@ public class JSLint {
     public JSLint() throws IOException {
         Context ctx = contextFactory.enterContext();
         scope = ctx.initStandardObjects();
-        Reader reader = new BufferedReader(new InputStreamReader(getClass()
+        Reader reader = new BufferedReader(new InputStreamReader(JSLint.class
                 .getResourceAsStream(JSLINT_FILE)));
         ctx.evaluateReader(scope, reader, JSLINT_FILE, 1, null);
     }
