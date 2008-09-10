@@ -1,5 +1,6 @@
 package net.happygiraffe.jslint;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.StringReader;
@@ -35,50 +36,50 @@ public class UtilTest {
     @Test
     public void testIntValueFromJava() throws Exception {
         scope.put("foo", scope, new Integer(42));
-        assertEquals(42, Util.intValue("foo", scope));
+        assertThat(Util.intValue("foo", scope), is(42));
     }
 
     @Test
     public void testIntValueFromJavaScript() throws Exception {
         cx.evaluateString(scope, "var foo = 42", "-", 1, null);
-        assertEquals(42, Util.intValue("foo", scope));
+        assertThat(Util.intValue("foo", scope), is(42));
     }
 
     @Test
     public void testIntValueNullScope() throws Exception {
-        assertEquals(0, Util.intValue("foo", null));
+        assertThat(Util.intValue("foo", null), is(0));
     }
 
     @Test
     public void testIntValueOfUndefined() {
-        assertEquals(0, Util.intValue("foo", scope));
+        assertThat(Util.intValue("foo", scope), is(0));
     }
 
     @Test
     public void testReaderToString() throws Exception {
         StringReader reader = new StringReader("foo bar");
-        assertEquals("foo bar", Util.readerToString(reader));
+        assertThat(Util.readerToString(reader), is("foo bar"));
     }
 
     @Test
     public void testStringValueFromJava() throws Exception {
         scope.put("foo", scope, "bar");
-        assertEquals("bar", Util.stringValue("foo", scope));
+        assertThat(Util.stringValue("foo", scope), is("bar"));
     }
 
     @Test
     public void testStringValueFromJavaScript() throws Exception {
         cx.evaluateString(scope, "var foo = 'bar'", "-", 1, null);
-        assertEquals("bar", Util.stringValue("foo", scope));
+        assertThat(Util.stringValue("foo", scope), is("bar"));
     }
 
     @Test
     public void testStringValueNullScope() throws Exception {
-        assertEquals(null, Util.stringValue("foo", null));
+        assertThat(Util.stringValue("foo", null), is(nullValue()));
     }
 
     @Test
     public void testStringValueOfUndefined() {
-        assertEquals(null, Util.stringValue("foo", scope));
+        assertThat(Util.stringValue("foo", scope), is(nullValue()));
     }
 }

@@ -1,5 +1,6 @@
 package net.happygiraffe.jslint;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -12,23 +13,24 @@ public class OptionTest {
 
     @Test
     public void testGetDescription() {
-        assertEquals("If eval should be allowed", Option.EVIL.getDescription());
+        assertThat(Option.EVIL.getDescription(),
+                is("If eval should be allowed"));
     }
 
     @Test
     public void testGetLowerName() {
-        assertEquals("evil", Option.EVIL.getLowerName());
+        assertThat(Option.EVIL.getLowerName(), is("evil"));
     }
 
     @Test
     public void testToString() throws Exception {
-        assertEquals("evil[If eval should be allowed]", Option.EVIL.toString());
+        assertThat(Option.EVIL.toString(), is("evil[If eval should be allowed]"));
     }
 
     // This is useful for formatting lists of options...
     @Test
     public void testMaximumNameLength() throws Exception {
-        assertEquals(8, Option.maximumNameLength());
+        assertThat(Option.maximumNameLength(), is(8));
     }
 
 }

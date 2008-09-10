@@ -1,5 +1,6 @@
 package net.happygiraffe.jslint;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -26,17 +27,17 @@ public class IssueTest {
     @Test
     public void testEmptyError() throws Exception {
         Issue issue = new Issue("foo.js", scope);
-        assertEquals(null, issue.getReason());
-        assertEquals(0, issue.getLine());
-        assertEquals(0, issue.getCharacter());
+        assertThat(issue.getReason(), is(nullValue()));
+        assertThat(issue.getLine(), is(0));
+        assertThat(issue.getCharacter(), is(0));
     }
 
     @Test
     public void testNullError() throws Exception {
         Issue issue = new Issue("foo.js", null);
-        assertEquals(null, issue.getReason());
-        assertEquals(0, issue.getLine());
-        assertEquals(0, issue.getCharacter());
+        assertThat(issue.getReason(), is(nullValue()));
+        assertThat(issue.getLine(), is(0));
+        assertThat(issue.getCharacter(), is(0));
     }
 
     @Test
@@ -45,6 +46,6 @@ public class IssueTest {
         scope.put("line", scope, 1);
         scope.put("character", scope, 1);
         Issue issue = new Issue("foo.js", scope);
-        assertEquals("foo.js:1:1:you broke it", issue.toString());
+        assertThat(issue.toString(), is("foo.js:1:1:you broke it"));
     }
 }
