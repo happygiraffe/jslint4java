@@ -1,0 +1,47 @@
+<project name="antunit" default="all">
+  <condition property="skipping">
+    <istrue value="${test.skipped}"/>
+  </condition>
+
+  <condition property="running.windows">
+    <os family="windows"/>
+  </condition>
+
+  <target name="runAntWin" if="running.windows">
+    <macrodef name="runAnt">
+      <attribute name="buildfile"/>
+      <sequential>
+        <exec executable="cmd">
+          <arg value="/c"/>
+          <arg file="${ant.home}/bin/ant.bat"/>
+          <arg value="-buildfile"/>
+          <arg value="@{buildfile}"/>
+          <arg value="-lib"/>
+          <arg value="${test.classpath}"/>
+          <arg value="-Dbasedir"/>
+          <arg value="${baseDir}"/>
+        </exec>
+      </sequential>
+    </macrodef>
+  </target>
+
+  <target name="runAntNonWin" unless="running.windows">
+    <macrodef name="runAnt">
+      <attribute name="buildfile"/>
+      <sequential>
+        <exec executable="ant">
+          <arg value="-buildfile"/>
+          <arg value="@{buildfile}"/>
+          <arg value="-Dbasedir"/>
+          <arg value="${base.dir}"/>
+          <arg value="-lib"/>
+          <arg value="${test.classpath}"/>
+        </exec>
+      </sequential>
+    </macrodef>
+  </target>
+
+  <target name="all" depends="runAntWin,runAntNonWin" unless="skipping">
+    <runAnt buildfile="tests.xml"/>
+  </target>
+</project>

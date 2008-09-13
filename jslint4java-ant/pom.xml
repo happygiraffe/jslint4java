@@ -25,6 +25,12 @@
       <version>1.7.0</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-antunit</artifactId>
+      <version>1.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -47,6 +53,27 @@
             <goals>
               <goal>attached</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <ant antfile="src/test/resources/antunit/build.xml"
+                  inheritAll="false" inheritRefs="false">
+                  <property name="test.classpath" refid="maven.test.classpath" />
+                  <property name="base.dir" location="${basedir}" />
+                  <property name="test.skipped" value="${maven.test.skip}" />
+                </ant>
+              </tasks>
+            </configuration>
           </execution>
         </executions>
       </plugin>
