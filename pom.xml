@@ -151,6 +151,10 @@
       <name>HappyGiraffe Internal Repository</name>
       <url>scpexe://happygiraffe.net/local/maven/snapshots-2</url>
     </snapshotRepository>
+    <site>
+      <id>happygiraffe</id>
+      <url>scpexe://happygiraffe.net/local/maven/site</url>
+    </site>
   </distributionManagement>
   <profiles>
     <profile>
