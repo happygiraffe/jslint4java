@@ -66,7 +66,7 @@
             </goals>
             <configuration>
               <tasks>
-                <ant antfile="src/test/resources/antunit/tests.xml"
+                <ant antfile="${build.testOutputDirectory}/antunit/tests.xml"
                   inheritAll="false" inheritRefs="false">
                   <property name="test.classpath" refid="maven.test.classpath" />
                   <property name="test.skipped" value="${maven.test.skip}" />
