@@ -8,8 +8,7 @@ Tests for the JSLint ant task.
 	</description>
 
 	<target name="allTests">
-		<au:antunit failonerror="false"
-		            errorproperty="antunit.failed">
+		<au:antunit failonerror="true">
 			<file file="${ant.file}" />
 			<au:plainlistener />
 		</au:antunit>

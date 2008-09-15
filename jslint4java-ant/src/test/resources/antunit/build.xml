@@ -11,7 +11,7 @@
     <macrodef name="runAnt">
       <attribute name="buildfile"/>
       <sequential>
-        <exec executable="cmd">
+        <exec executable="cmd" failonerror="true">
           <arg value="/c"/>
           <arg file="${ant.home}/bin/ant.bat"/>
           <arg value="-buildfile"/>
@@ -29,7 +29,7 @@
     <macrodef name="runAnt">
       <attribute name="buildfile"/>
       <sequential>
-        <exec executable="ant">
+        <exec executable="ant" failonerror="true">
           <arg value="-buildfile"/>
           <arg value="@{buildfile}"/>
           <arg value="-Dbasedir"/>
