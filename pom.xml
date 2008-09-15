@@ -140,6 +140,19 @@
       </plugin>
     </plugins>
   </reporting>
+  <distributionManagement>
+    <repository>
+      <id>happygiraffe</id>
+      <id>happygiraffe</id>
+      <name>HappyGiraffe Internal Repository</name>
+      <url>scpexe://happygiraffe.net/local/maven/2</url>
+    </repository>
+    <snapshotRepository>
+      <id>happygiraffe</id>
+      <name>HappyGiraffe Internal Repository</name>
+      <url>scpexe://happygiraffe.net/local/maven/snapshots-2</url>
+    </snapshotRepository>
+  </distributionManagement>
   <profiles>
     <profile>
       <id>release</id>
