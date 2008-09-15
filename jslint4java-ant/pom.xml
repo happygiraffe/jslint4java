@@ -66,16 +66,23 @@
             </goals>
             <configuration>
               <tasks>
-                <ant antfile="src/test/resources/antunit/build.xml"
+                <ant antfile="src/test/resources/antunit/tests.xml"
                   inheritAll="false" inheritRefs="false">
                   <property name="test.classpath" refid="maven.test.classpath" />
-                  <property name="base.dir" location="${basedir}" />
                   <property name="test.skipped" value="${maven.test.skip}" />
                 </ant>
               </tasks>
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <!-- Force an upgrade to a newer ant version.  Required by antunit. -->
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.7.0</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>

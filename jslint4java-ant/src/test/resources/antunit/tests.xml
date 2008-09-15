@@ -1,44 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
-<project name="jslint-antunit" default="allTests"
+<project name="jslint-antunit"
+         default="allTests"
          xmlns:au="antlib:org.apache.ant.antunit"
          xmlns:jsl="antlib:net.happygiraffe.jslint">
-	<description>
+    <description>
 Tests for the JSLint ant task.
 	</description>
 
-	<target name="allTests">
-		<au:antunit failonerror="true">
-			<file file="${ant.file}" />
-			<au:plainlistener />
-		</au:antunit>
-	</target>
+    <taskdef uri="antlib:org.apache.ant.antunit"
+             resource="org/apache/ant/antunit/antlib.xml"
+             classpath="${test.classpath}" />
+    <taskdef uri="antlib:net.happygiraffe.jslint"
+             resource="net/happygiraffe/jslint/antlib.xml"
+             classpath="${test.classpath}" />
 
-	<target name="testFailsOnError">
-		<au:expectfailure expectedmessage="1 file did not pass JSLint">
-			<jsl:jslint>
-				<fileset file="good.js" />
-				<fileset file="bad.js" />
-			</jsl:jslint>
-		</au:expectfailure>
-	</target>
+    <!-- Have to convert from boolean for use in target/@unless. -->
+    <condition property="skipping">
+      <istrue value="${test.skipped}" />
+    </condition>
 
-	<target name="testSuccess">
-		<jsl:jslint>
-			<fileset file="good.js" />
-		</jsl:jslint>
-	</target>
+    <target name="allTests" unless="skipping">
+        <au:antunit failonerror="true">
+            <file file="${ant.file}" />
+            <au:plainlistener />
+        </au:antunit>
+    </target>
 
-	<!-- http://code.google.com/p/jslint4java/issues/detail?id=6 -->
-	<target name="testIssue6">
-		<au:expectfailure expectedmessage="1 file did not pass JSLint">
-			<jsl:jslint options="browser,undef,passfail">
-				<formatter type="plain" />
-				<fileset file="issue6.js" />
-			</jsl:jslint>
-		</au:expectfailure>
-		<!-- This is not the exact same message reported, but was how I was
+    <target name="testFailsOnError">
+        <au:expectfailure expectedmessage="1 file did not pass JSLint">
+            <jsl:jslint>
+                <fileset file="good.js" />
+                <fileset file="bad.js" />
+            </jsl:jslint>
+        </au:expectfailure>
+    </target>
+
+    <target name="testSuccess">
+        <jsl:jslint>
+            <fileset file="good.js" />
+        </jsl:jslint>
+    </target>
+
+    <!-- http://code.google.com/p/jslint4java/issues/detail?id=6 -->
+    <target name="testIssue6">
+        <au:expectfailure expectedmessage="1 file did not pass JSLint">
+            <jsl:jslint options="browser,undef,passfail">
+                <formatter type="plain" />
+                <fileset file="issue6.js" />
+            </jsl:jslint>
+        </au:expectfailure>
+        <!-- This is not the exact same message reported, but was how I was
              able to trigger the same condition. -->
-		<au:assertLogContains text="Missing semicolon." />
-	</target>
+        <au:assertLogContains text="Missing semicolon." />
+    </target>
 </project>
