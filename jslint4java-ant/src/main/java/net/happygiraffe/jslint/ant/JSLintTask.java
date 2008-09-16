@@ -41,8 +41,8 @@ import org.apache.tools.ant.types.FileSet;
  *
  * <p>
  * You have to specify one or more nested <i>fileset</i> elements. You may
- * optionally specify a <i>formatter</i> element in order to generate output
- * (as opposed to just a build failed message). Usually, you will want the plain
+ * optionally specify a <i>formatter</i> element in order to generate output (as
+ * opposed to just a build failed message). Usually, you will want the plain
  * formatter, but in case you want to generate a report, the xml formatter
  * mighht be useful.
  *
@@ -61,16 +61,16 @@ import org.apache.tools.ant.types.FileSet;
  *
  * @author dom
  * @version $Id$
- * @see <a href="http://jslint.com/">jslint.com</a>
+ * @see <a href="http://jslint.com/">jslint.com< /a>
  * @see FormatterElement
  */
 public class JSLintTask extends Task {
 
-    private List<FileSet> filesets = new ArrayList<FileSet>();
+    private final List<FileSet> filesets = new ArrayList<FileSet>();
 
     private JSLint lint;
 
-    private List<ResultFormatter> formatters = new ArrayList<ResultFormatter>();
+    private final List<ResultFormatter> formatters = new ArrayList<ResultFormatter>();
 
     private boolean haltOnFailure = true;
 
@@ -101,8 +101,9 @@ public class JSLintTask extends Task {
      */
     @Override
     public void execute() throws BuildException {
-        if (filesets.size() == 0)
+        if (filesets.size() == 0) {
             throw new BuildException("no filesets specified");
+        }
 
         for (ResultFormatter rf : formatters) {
             rf.begin();
@@ -125,10 +126,11 @@ public class JSLintTask extends Task {
         if (failedCount != 0) {
             String files = failedCount == 1 ? "file" : "files";
             String msg = failedCount + " " + files + " did not pass JSLint";
-            if (haltOnFailure)
+            if (haltOnFailure) {
                 throw new BuildException(msg);
-            else
+            } else {
                 log(msg);
+            }
         }
     }
 
@@ -154,8 +156,9 @@ public class JSLintTask extends Task {
     }
 
     private boolean lintFile(File file) {
+        BufferedReader reader = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
+            reader = new BufferedReader(new InputStreamReader(
                     new FileInputStream(file), encoding));
             List<Issue> issues = lint.lint(file.toString(), reader);
             log("Found " + issues.size() + " issues in " + file,
@@ -168,6 +171,13 @@ public class JSLintTask extends Task {
             throw new BuildException(e);
         } catch (IOException e) {
             throw new BuildException(e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                }
+            }
         }
     }
 
@@ -187,7 +197,7 @@ public class JSLintTask extends Task {
      * <code>UTF-8</code>.
      *
      * @param encoding
-     *                a valid charset identifier.
+     *            a valid charset identifier.
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;

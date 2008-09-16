@@ -80,8 +80,9 @@ public class Main {
     }
 
     private void lintFile(String file) throws IOException {
+        BufferedReader reader = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
+            reader = new BufferedReader(new InputStreamReader(
                     new FileInputStream(file)));
             List<Issue> issues = lint.lint(file, reader);
             for (Issue issue : issues) {
@@ -89,6 +90,10 @@ public class Main {
             }
         } catch (FileNotFoundException e) {
             die(file + ": No such file or directory.");
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
         }
     }
 
