@@ -35,7 +35,7 @@ public class UtilTest {
 
     @Test
     public void testIntValueFromJava() throws Exception {
-        scope.put("foo", scope, new Integer(42));
+        scope.put("foo", scope, 42);
         assertThat(Util.intValue("foo", scope), is(42));
     }
 
