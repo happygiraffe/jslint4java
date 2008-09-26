@@ -5,6 +5,8 @@ import java.util.Locale;
 /**
  * All available options for tuning the behaviour of JSLint.
  *
+ * TODO Add a "Handler" class for each type, which knows whether it needs an arg, how to parse it, etc.
+ *
  * @author dom
  * @version $Id$
  */
