@@ -6,16 +6,10 @@ package net.happygiraffe.jslint;
  * @author dom
  * @version $Id$
  */
-public class BooleanOptionInstance implements OptionInstance {
-
-    private final Option option;
+public class BooleanOptionInstance extends AbstractOptionInstance implements OptionInstance {
 
     public BooleanOptionInstance(Option option) {
-        this.option = option;
-    }
-
-    public Option getOption() {
-        return option;
+        super(option);
     }
 
     /**
