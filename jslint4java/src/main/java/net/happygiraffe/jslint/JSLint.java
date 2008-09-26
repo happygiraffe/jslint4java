@@ -32,7 +32,7 @@ public class JSLint {
 
     private static ContextFactory contextFactory = new ContextFactory();
 
-    private Set<Option> options = EnumSet.noneOf(Option.class);
+    private final Set<Option> options = EnumSet.noneOf(Option.class);
 
     private final ScriptableObject scope;
 
@@ -164,7 +164,7 @@ public class JSLint {
      * Clear out all options that have been set with {@link #addOption(Option)}.
      */
     public void resetOptions() {
-        options = EnumSet.noneOf(Option.class);
+        options.clear();
     }
 
 }
