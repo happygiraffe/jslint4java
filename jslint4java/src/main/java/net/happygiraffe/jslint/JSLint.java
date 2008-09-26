@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -32,7 +34,7 @@ public class JSLint {
 
     private static ContextFactory contextFactory = new ContextFactory();
 
-    private final Set<OptionInstance> options = new HashSet<OptionInstance>();
+    private final Map<Option, OptionInstance> options = new HashMap<Option, OptionInstance>();
 
     private final ScriptableObject scope;
 
@@ -58,7 +60,7 @@ public class JSLint {
      *            Any {@link OptionInstance}.
      */
     public void addOption(OptionInstance o) {
-        options.add(o);
+        options.put(o.getOption(), o);
     }
 
     private void doLint(String javaScript) {
@@ -108,8 +110,10 @@ public class JSLint {
      */
     private Scriptable optionsAsJavaScriptObject() {
         Scriptable opts = Context.getCurrentContext().newObject(scope);
-        for (OptionInstance o : options) {
-            opts.put(o.getOption().getLowerName(), opts, o.getValue());
+        for (Entry<Option, OptionInstance> entry : options.entrySet()) {
+            Option option = entry.getKey();
+            OptionInstance oi = entry.getValue();
+            opts.put(option.getLowerName(), opts, oi.getValue());
         }
         return opts;
     }
