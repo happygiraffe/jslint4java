@@ -11,7 +11,6 @@ import java.util.Locale;
  * @version $Id$
  */
 public enum Option {
-    INDENT("How many spaces to indent by", int.class),
     //BEGIN-OPTIONS
     /** If adsafe should be enforced */
     ADSAFE("If adsafe should be enforced", boolean.class),
