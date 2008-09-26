@@ -211,7 +211,8 @@ public class JSLintTask extends Task {
         for (String name : optionList.split("\\s*,\\s*")) {
             try {
                 // The Option constants are upper case…
-                lint.addOption(Option.valueOf(name.toUpperCase()));
+                Option o = Option.valueOf(name.toUpperCase());
+                lint.addOption(o.getInstance());
             } catch (IllegalArgumentException e) {
                 throw new BuildException("Unknown option " + name);
             }

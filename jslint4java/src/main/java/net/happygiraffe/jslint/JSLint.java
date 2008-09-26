@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +32,7 @@ public class JSLint {
 
     private static ContextFactory contextFactory = new ContextFactory();
 
-    private final Set<Option> options = EnumSet.noneOf(Option.class);
+    private final Set<OptionInstance> options = new HashSet<OptionInstance>();
 
     private final ScriptableObject scope;
 
@@ -55,9 +55,9 @@ public class JSLint {
      * Add an option to change the behaviour of the lint.
      *
      * @param o
-     *            Any {@link Option}.
+     *            Any {@link OptionInstance}.
      */
-    public void addOption(Option o) {
+    public void addOption(OptionInstance o) {
         options.add(o);
     }
 
@@ -108,8 +108,8 @@ public class JSLint {
      */
     private Scriptable optionsAsJavaScriptObject() {
         Scriptable opts = Context.getCurrentContext().newObject(scope);
-        for (Option o : options) {
-            opts.put(o.getLowerName(), opts, true);
+        for (OptionInstance o : options) {
+            opts.put(o.getOption().getLowerName(), opts, o.getValue());
         }
         return opts;
     }

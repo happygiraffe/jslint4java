@@ -21,7 +21,16 @@ public class OptionTest {
     public void testGetType() throws Exception {
         Class<?> type = Option.EVIL.getType();
         assertThat(type, is(Class.class));
-        assertThat(type.getName(), is("boolean"));
+        assertThat(type.getName(),
+                is("net.happygiraffe.jslint.BooleanOptionInstance"));
+    }
+
+    @Test
+    public void testGetInstance() throws Exception {
+        OptionInstance oi = Option.EVIL.getInstance();
+        assertThat(oi, is(notNullValue()));
+        assertThat(oi.getOption(), is(Option.EVIL));
+        assertThat(oi.getValue(), is((Object)true));
     }
 
     @Test
@@ -31,7 +40,8 @@ public class OptionTest {
 
     @Test
     public void testToString() throws Exception {
-        assertThat(Option.EVIL.toString(), is("evil[If eval should be allowed]"));
+        assertThat(Option.EVIL.toString(),
+                is("evil[If eval should be allowed]"));
     }
 
     // This is useful for formatting lists of options...
