@@ -18,6 +18,8 @@ public enum Option {
     BROWSER("If the standard browser globals should be predefined"),
     /** If upper case html should be allowed */
     CAP("If upper case html should be allowed"),
+    /** If css workarounds should be tolerated */
+    CSS("If css workarounds should be tolerated"),
     /** If debugger statements should be allowed */
     DEBUG("If debugger statements should be allowed"),
     /** If === should be required */

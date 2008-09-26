@@ -1,7 +1,6 @@
 // jslint.js
-// 2008-09-04
+// 2008-09-19
 
-// look at ADsafe restrictions on css styles //////////////////////////////////
 
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
@@ -89,6 +88,13 @@ JSLINT = function () {
         anonname,       // The guessed name for anonymous functions.
         approved,       // ADsafe approved urls.
 
+        atrule = {
+            'import'   : true,
+            media      : true,
+            'font-face': true,
+            page       : true
+        },
+
         badbreak = {
             ')': true,
             ']': true,
@@ -120,6 +126,7 @@ JSLINT = function () {
             bitwise    : true, // if bitwise operators should not be allowed
             browser    : true, // if the standard browser globals should be predefined
             cap        : true, // if upper case HTML should be allowed
+            css        : true, // if CSS workarounds should be tolerated
             debug      : true, // if debugger statements should be allowed
             eqeqeq     : true, // if === should be required
             evil       : true, // if eval should be allowed
@@ -320,6 +327,20 @@ JSLINT = function () {
         prereg,
         prevtoken,
 
+        pseudorule = {
+            'first-child': true,
+            link         : true,
+            visited      : true,
+            hover        : true,
+            active       : true,
+            focus        : true,
+            lang         : true,
+            'first-letter' : true,
+            'first-line' : true,
+            before       : true,
+            after        : true
+        },
+
         rhino = {
             defineClass : true,
             deserialize : true,
@@ -495,7 +516,7 @@ JSLINT = function () {
 // unsafe character
         cx = /[\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/,
 // token
-        tx = /^\s*([(){}\[.,:;'"~\?\]#]|==?=?|\/(\*(global|extern|jslint|member|members)?|=|\/)?|\*[\/=]?|\+[+=]?|-[\-=]?|%=?|&[&=]?|\|[|=]?|>>?>?=?|<([\/=]|\!(\[|--)?|<=?)?|\^=?|\!=?=?|[a-zA-Z_$][a-zA-Z0-9_$]*|[0-9]+([xX][0-9a-fA-F]+|\.[0-9]*)?([eE][+\-]?[0-9]+)?)/,
+        tx = /^\s*([(){}\[.,:;'"~\?\]#@]|==?=?|\/(\*(global|extern|jslint|member|members)?|=|\/)?|\*[\/=]?|\+[+=]?|-[\-=]?|%=?|&[&=]?|\|[|=]?|>>?>?=?|<([\/=]|\!(\[|--)?|<=?)?|\^=?|\!=?=?|[a-zA-Z_$][a-zA-Z0-9_$]*|[0-9]+([xX][0-9a-fA-F]+|\.[0-9]*)?([eE][+\-]?[0-9]+)?)/,
 // html token
         hx = /^\s*(['"=>\/&]|<[\/!]?|[a-zA-Z][a-zA-Z0-9_\-]*|--)/,
 // outer html token
@@ -509,8 +530,8 @@ JSLINT = function () {
 // url badness
         ux = /&|\+|\u00AD|\.\.|\/\*|%[^;]|base64|url|expression|data|mailto/i,
 // style
-        sx = /^\s*([{:#*%.=,>+\[\]@()"';]|[a-zA-Z0-9_][a-zA-Z0-9_\-]*|<\/|\/\*|\*\/)/,
-        ssx = /^\s*([@#!"'};:\-%.=,+\[\]()]|[a-zA-Z_][a-zA-Z0-9_\-]*|\d+(?:\.\d+)?|<\/|\/\*?|\*\/?)/,
+        sx = /^\s*([{:#*%.=,>+\[\]@()"';*]|[a-zA-Z0-9_][a-zA-Z0-9_\-]*|<\/|\/\*)/,
+        ssx = /^\s*([@#!"'};:\-\/%.=,+\[\]()*]|[a-zA-Z_][a-zA-Z0-9._\-]*|\d+(?:\.\d+)?|<\/)/,
 
         rx = {
             outer: hx,
@@ -716,8 +737,7 @@ JSLINT = function () {
                 }
             } else if (type === '(identifier)') {
                 t.identifier = true;
-                if (option.nomen && (value.charAt(0) === '_' ||
-                                     value.charAt(value.length - 1) === '_')) {
+                if (option.nomen && value.charAt(0) === '_') {
                     warningAt("Unexpected '_' in '{a}'.", line, from, value);
                 }
             }
@@ -1132,7 +1152,7 @@ JSLINT = function () {
                                                 }
                                                 break klass;
                                             case '\\':
-                                                c = s.charAt(0);
+                                                c = s.charAt(l);
                                                 if (c < ' ') {
                                                     warningAt("Unexpected control character in regular expression.", line, from + l);
                                                 } else if (c === '<') {
@@ -2085,44 +2105,164 @@ JSLINT = function () {
 
 // CSS parsing.
 
-    function substyle() {
-        for (;;) {
-            if (nexttoken.id === '}' || xquote && nexttoken.id === xquote) {
-                return;
-            }
-            if (nexttoken.id === '*') {
-                advance('*');
-            }
-            if (!nexttoken.identifier) {
-                error("Excepted a style attribute, and instead saw '{a}'.",
-                    nexttoken, nexttoken.value);
+    function styleAttribute() {
+        if (nexttoken.id === '*' || nexttoken.id === '#' || nexttoken.value === '_') {
+            if (!option.css) {
+                warning("Unexpected '{a}'.", nexttoken, nexttoken.value);
             }
             advance();
-            advance(':');
-            for (;;) {
-                if (nexttoken.id === ';' || nexttoken.id === ':') {
+        }
+        if (nexttoken.id === '-') {
+            if (!option.css) {
+                warning("Unexpected '{a}'.", nexttoken, nexttoken.value);
+            }
+            advance('-');
+        }
+        var v = nexttoken.value.toLowerCase();
+        if (!nexttoken.identifier) {
+            error("Excepted a style attribute, and instead saw '{a}'.",
+                nexttoken, v);
+        }
+        advance();
+        return v;
+    }
+
+    function styleValue() {
+        var v;
+        for (;;) {
+            v = nexttoken.value.toLowerCase();
+            if (option.adsafe) {
+                switch (v) {
+                case 'url':
+                    warning("ADsafe style url violation.");
                     break;
-                }
-                if (nexttoken.id === '(end)' || nexttoken.id === '}' || nexttoken.id === '{') {
-                    return;
-                }
-                if (option.adsafe && nexttoken.value.toLowerCase() === 'url') {
+                case 'expression':
                     warning("ADsafe style url violation.");
                 }
-                advance();
             }
+            if (nexttoken.id === '(end)' || nexttoken.id === '}' ||
+                    nexttoken.id === '{') {
+                error("Excepted a style value, and instead saw '{a}'.",
+                    nexttoken, v);
+            }
+            advance();
+            if (nexttoken.id === ';' || nexttoken.id === ':') {
+                break;
+            }
+        }
+    }
+
+    function substyle() {
+        for (;;) {
+            if (nexttoken.id === '}' || nexttoken.id === '(end)' ||
+                    xquote && nexttoken.id === xquote) {
+                return;
+            }
+            styleAttribute();
+            advance(':');
+            styleValue();
             advance(';');
         }
     }
 
     function stylePattern() {
+        var name;
         if (nexttoken.id === '{') {
             warning("Expected a style pattern, and instead saw '{a}'.", nexttoken,
                 nexttoken.id);
+        } else if (nexttoken.id === '@') {
+            advance('@');
+            name = nexttoken.value;
+            if (nexttoken.identifier && atrule[name] === true) {
+                advance();
+                return name;
+            }
+            warning("Expected an at-rule, and instead saw @{a}.", nexttoken, name);
         }
-        while (nexttoken.id !== '</' && nexttoken.id !== '{' && nexttoken.id !== ';' &&
-                nexttoken.id !== '(end)') {
-            advance();
+        for (;;) {
+            if (nexttoken.identifier) {
+                if (!htmltag.hasOwnProperty(nexttoken.value)) {
+                    warning("Expected a tagName, and instead saw {a}.",
+                        nexttoken, nexttoken.value);
+                }
+                advance();
+            } else {
+                switch (nexttoken.id) {
+                case '>':
+                case '+':
+                    advance();
+                    if (!nexttoken.identifier ||
+                            !htmltag.hasOwnProperty(nexttoken.value)) {
+                        warning("Expected a tagName, and instead saw {a}.",
+                            nexttoken, nexttoken.value);
+                    }
+                    advance();
+                    break;
+                case ':':
+                    advance(':');
+                    if (pseudorule[nexttoken.value] !== true) {
+                        warning("Expected a pseudo, and instead saw :{a}.",
+                            nexttoken, nexttoken.value);
+                    }
+                    advance();
+                    if (nexttoken.value === 'lang') {
+                        advance('(');
+                        if (!nexttoken.identifier) {
+                            warning("Expected a lang code, and instead saw :{a}.",
+                                nexttoken, nexttoken.value);
+                        }
+                        advance(')');
+                    }
+                    break;
+                case '#':
+                    advance('#');
+                    if (!nexttoken.identifier) {
+                        warning("Expected an id, and instead saw #{a}.",
+                            nexttoken, nexttoken.value);
+                    }
+                    advance();
+                    break;
+                case '*':
+                    advance('*');
+                    break;
+                case '.':
+                    advance('.');
+                    if (!nexttoken.identifier) {
+                        warning("Expected a class, and instead saw #.{a}.",
+                            nexttoken, nexttoken.value);
+                    }
+                    advance();
+                    break;
+                case '[':
+                    advance('[');
+                    if (!nexttoken.identifier) {
+                        warning("Expected an attribute, and instead saw [{a}].",
+                            nexttoken, nexttoken.value);
+                    }
+                    advance();
+                    if (nexttoken.id === '=' || nexttoken.id === '~=' ||
+                            nexttoken.id === '|=') {
+                        advance();
+                        if (nexttoken.type !== '(string)') {
+                            warning("Expected a string, and instead saw {a}.",
+                                nexttoken, nexttoken.value);
+                        }
+                        advance();
+                    }
+                    advance(']');
+                    break;
+                default:
+                    error("Expected a CSS selector, and instead saw {a}.",
+                        nexttoken, nexttoken.value);
+                }
+            }
+            if (nexttoken.id === '</' || nexttoken.id === '{' ||
+                    nexttoken.id === '(end)') {
+                return '';
+            }
+            if (nexttoken.id === ',') {
+                advance(',');
+            }
         }
     }
 
@@ -2134,7 +2274,6 @@ JSLINT = function () {
                 advance(';');
             } else {
                 advance('{');
-
                 substyle();
                 xmode = 'style';
                 advance('}');
@@ -3729,15 +3868,41 @@ JSLINT = function () {
                 if (option.adsafe && !adsafe_went) {
                     warning("ADsafe violation: Missing ADSAFE.go.", this);
                 }
-            } else if (nexttoken.id === '{' || nexttoken.id === '[') {
-                option.laxbreak = true;
-                jsonmode = true;
-                jsonValue();
             } else {
-                if (option.adsafe && option.fragment) {
-                    warning("ADsafe violation.", this);
+                switch (nexttoken.id) {
+                case '{':
+                case '[':
+                    option.laxbreak = true;
+                    jsonmode = true;
+                    jsonValue();
+                    break;
+                case '@':
+                case '*':
+                case '#':
+                case '.':
+                case ':':
+                    xmode = 'style';
+                    advance();
+                    if (token.id !== '@' || !nexttoken.identifier ||
+                            nexttoken.value !== 'charset') {
+                        error('A css file should begin with @charset "UTF-8";');
+                    }
+                    advance();
+                    if (nexttoken.type !== '(string)' &&
+                            nexttoken.value !== 'UTF-8') {
+                        error('A css file should begin with @charset "UTF-8";');
+                    }
+                    advance();
+                    advance(';');
+                    styles();
+                    break;
+
+                default:
+                    if (option.adsafe && option.fragment) {
+                        warning("ADsafe violation.", this);
+                    }
+                    statements('lib');
                 }
-                statements('lib');
             }
             advance('(end)');
         } catch (e) {
