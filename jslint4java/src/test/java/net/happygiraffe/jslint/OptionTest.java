@@ -18,6 +18,13 @@ public class OptionTest {
     }
 
     @Test
+    public void testGetType() throws Exception {
+        Class<?> type = Option.EVIL.getType();
+        assertThat(type, is(Class.class));
+        assertThat(type.getName(), is("boolean"));
+    }
+
+    @Test
     public void testGetLowerName() {
         assertThat(Option.EVIL.getLowerName(), is("evil"));
     }

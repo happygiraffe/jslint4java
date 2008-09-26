@@ -31,7 +31,7 @@ File.open(ARGV[1]) do |fh|
       allopts =  opts.keys.sort.map do |k|
         desc = opts[k]
         descEscaped = desc.gsub(/"/, '\\"')
-        "#{indent}/** #{desc} */\n#{indent}#{k.upcase}(\"#{descEscaped}\")"
+        "#{indent}/** #{desc} */\n#{indent}#{k.upcase}(\"#{descEscaped}\", boolean.class)"
       end.join(",\n")
       puts "#{allopts};"
       puts "#{indent}//END-OPTIONS"
