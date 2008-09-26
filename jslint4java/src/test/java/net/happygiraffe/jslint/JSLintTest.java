@@ -89,6 +89,7 @@ public class JSLintTest {
         assertThat(html, containsString("<div>"));
     }
 
+    @Test
     public void testResetOptions() throws Exception {
         String eval_js = "eval('1');";
         lint.addOption(Option.EVIL);
@@ -99,6 +100,7 @@ public class JSLintTest {
         assertThat(issues.get(0).getReason(), is("eval is evil."));
     }
 
+    @Test
     public void testSetOption() throws Exception {
         String eval_js = "eval('1');";
         // should be disallowed by default.
@@ -111,6 +113,7 @@ public class JSLintTest {
     }
 
     // http://code.google.com/p/jslint4java/issues/detail?id=1
+    @Test
     public void testUnableToContinue() throws Exception {
         List<Issue> issues = lint("new Number();");
         assertThat(issues.size(), is(2));
