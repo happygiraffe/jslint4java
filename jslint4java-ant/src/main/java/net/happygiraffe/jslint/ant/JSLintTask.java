@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import net.happygiraffe.jslint.Issue;
 import net.happygiraffe.jslint.JSLint;
@@ -211,7 +212,7 @@ public class JSLintTask extends Task {
         for (String name : optionList.split("\\s*,\\s*")) {
             try {
                 // The Option constants are upper case…
-                Option o = Option.valueOf(name.toUpperCase());
+                Option o = Option.valueOf(name.toUpperCase(Locale.getDefault()));
                 lint.addOption(o.getInstance());
             } catch (IllegalArgumentException e) {
                 throw new BuildException("Unknown option " + name);
