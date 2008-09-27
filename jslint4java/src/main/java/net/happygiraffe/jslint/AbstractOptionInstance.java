@@ -24,4 +24,9 @@ public abstract class AbstractOptionInstance implements OptionInstance {
         return option;
     }
 
+    @Override
+    public String toString() {
+        return option.getLowerName() + "=" + getValue();
+    }
+
 }
