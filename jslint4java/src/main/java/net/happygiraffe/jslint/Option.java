@@ -70,7 +70,7 @@ public enum Option {
     private String description;
     private Class<? extends OptionInstance> type;
 
-    Option(String description, Class<? extends OptionInstance> type) {
+    private Option(String description, Class<? extends OptionInstance> type) {
         this.description = description;
         this.type = type;
     }
