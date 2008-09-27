@@ -6,7 +6,7 @@ package net.happygiraffe.jslint;
  * @author dom
  * @version $Id$
  */
-public class AbstractOptionInstance {
+public abstract class AbstractOptionInstance implements OptionInstance {
 
     private final Option option;
 
