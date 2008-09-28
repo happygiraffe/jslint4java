@@ -7,7 +7,7 @@ package net.happygiraffe.jslint;
  * @author dom
  * @version $Id$
  */
-public interface OptionInstance {
+public interface OptionBinding {
 
     /**
      * The option that this instance refers to.

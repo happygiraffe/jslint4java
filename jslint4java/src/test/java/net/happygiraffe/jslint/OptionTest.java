@@ -19,10 +19,10 @@ public class OptionTest {
 
     @Test
     public void testGetInstance() throws Exception {
-        OptionInstance oi = Option.EVIL.getInstance();
-        assertThat(oi, is(notNullValue()));
-        assertThat(oi.getOption(), is(Option.EVIL));
-        assertThat(oi.getValue(), is((Object)Boolean.TRUE));
+        OptionBinding ob = Option.EVIL.getInstance();
+        assertThat(ob, is(notNullValue()));
+        assertThat(ob.getOption(), is(Option.EVIL));
+        assertThat(ob.getValue(), is((Object)Boolean.TRUE));
     }
 
     @Test

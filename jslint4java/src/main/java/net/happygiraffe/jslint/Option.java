@@ -83,7 +83,7 @@ public enum Option {
     /**
      * Bind an option to a value.
      */
-    public OptionInstance getInstance() {
+    public OptionBinding getInstance() {
         return binder.bind(this, null);
     }
 

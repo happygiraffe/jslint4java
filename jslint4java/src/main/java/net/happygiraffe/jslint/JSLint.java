@@ -33,7 +33,7 @@ public class JSLint {
 
     private static ContextFactory contextFactory = new ContextFactory();
 
-    private final Map<Option, OptionInstance> options = new HashMap<Option, OptionInstance>();
+    private final Map<Option, OptionBinding> options = new HashMap<Option, OptionBinding>();
 
     private final ScriptableObject scope;
 
@@ -56,9 +56,9 @@ public class JSLint {
      * Add an option to change the behaviour of the lint.
      *
      * @param o
-     *            Any {@link OptionInstance}.
+     *            Any {@link OptionBinding}.
      */
-    public void addOption(OptionInstance o) {
+    public void addOption(OptionBinding o) {
         options.put(o.getOption(), o);
     }
 
@@ -109,10 +109,10 @@ public class JSLint {
      */
     private Scriptable optionsAsJavaScriptObject() {
         Scriptable opts = Context.getCurrentContext().newObject(scope);
-        for (Entry<Option, OptionInstance> entry : options.entrySet()) {
+        for (Entry<Option, OptionBinding> entry : options.entrySet()) {
             Option option = entry.getKey();
-            OptionInstance oi = entry.getValue();
-            opts.put(option.getLowerName(), opts, oi.getValue());
+            OptionBinding ob = entry.getValue();
+            opts.put(option.getLowerName(), opts, ob.getValue());
         }
         return opts;
     }

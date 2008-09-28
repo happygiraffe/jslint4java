@@ -1,7 +1,7 @@
 package net.happygiraffe.jslint;
 
 /**
- * Provide a way of creating an {@link OptionInstance}.
+ * Provide a way of creating an {@link OptionBinding}.
  *
  * @author dom
  * @version $Id$
@@ -19,12 +19,12 @@ public enum OptionBinder {
     };
 
     /**
-     * Turn a String source into an {@link OptionInstance} by parsing it
+     * Turn a String source into an {@link OptionBinding} by parsing it
      * appropriately.
      */
-    public OptionInstance bind(final Option option, String source) {
+    public OptionBinding bind(final Option option, String source) {
         final Object value = parse(source);
-        return new OptionInstance() {
+        return new OptionBinding() {
             public Option getOption() {
                 return option;
             }
