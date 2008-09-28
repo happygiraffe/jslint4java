@@ -7,6 +7,10 @@ package net.happygiraffe.jslint;
  * @version $Id$
  */
 public enum OptionBinder {
+    /**
+     * An option with a boolean value. We count null as a true value because the
+     * presence of the option implies it.
+     */
     BOOLEAN {
         @Override
         protected Object parse(String source) {
@@ -19,7 +23,7 @@ public enum OptionBinder {
     };
 
     /**
-     * Turn a String source into an {@link OptionBinding} by parsing it
+     * Turn a String <i>source</i> into an {@link OptionBinding} by parsing it
      * appropriately.
      */
     public OptionBinding bind(Option option, String source) {
