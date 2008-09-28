@@ -7,15 +7,27 @@ package net.happygiraffe.jslint;
  * @author dom
  * @version $Id$
  */
-public interface OptionBinding {
+public class OptionBinding {
+
+    private final Option option;
+    private final Object value;
+
+    public OptionBinding(Option option, Object value) {
+        this.option = option;
+        this.value = value;
+    }
 
     /**
      * The option that this instance refers to.
      */
-    Option getOption();
+    public Option getOption() {
+        return option;
+    }
 
     /**
      * The value of the option.
      */
-    Object getValue();
+    public Object getValue() {
+        return value;
+    }
 }

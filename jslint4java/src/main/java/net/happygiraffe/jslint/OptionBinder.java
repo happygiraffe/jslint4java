@@ -22,17 +22,8 @@ public enum OptionBinder {
      * Turn a String source into an {@link OptionBinding} by parsing it
      * appropriately.
      */
-    public OptionBinding bind(final Option option, String source) {
-        final Object value = parse(source);
-        return new OptionBinding() {
-            public Option getOption() {
-                return option;
-            }
-
-            public Object getValue() {
-                return value;
-            }
-        };
+    public OptionBinding bind(Option option, String source) {
+        return new OptionBinding(option, parse(source));
     }
 
     protected abstract Object parse(String source);
