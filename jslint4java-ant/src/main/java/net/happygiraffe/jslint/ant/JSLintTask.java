@@ -210,12 +210,18 @@ public class JSLintTask extends Task {
      */
     public void setOptions(String optionList) throws BuildException {
         for (String name : optionList.split("\\s*,\\s*")) {
+            String[] parts = name.split("=", 2);
+            String optName = parts[0];
             try {
+                String value = null;
+                if (parts.length == 2) {
+                    value = parts[1];
+                }
                 // The Option constants are upper case…
-                Option o = Option.valueOf(name.toUpperCase(Locale.getDefault()));
-                lint.addOption(o.getInstance(null));
+                Option o = Option.valueOf(optName.toUpperCase(Locale.getDefault()));
+                lint.addOption(o.getInstance(value));
             } catch (IllegalArgumentException e) {
-                throw new BuildException("Unknown option " + name);
+                throw new BuildException("Unknown option " + optName);
             }
         }
     }
