@@ -47,7 +47,7 @@ public class Main {
     }
 
     private void addOption(Option o) {
-        lint.addOption(o.getInstance(null));
+        lint.addOption(o.getBinding(null));
     }
 
     private void die(String message) {
