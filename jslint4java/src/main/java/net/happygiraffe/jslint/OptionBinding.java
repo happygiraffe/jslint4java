@@ -32,4 +32,9 @@ public class OptionBinding {
     public Object getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return option.getLowerName() + "=" + value;
+    }
 }
