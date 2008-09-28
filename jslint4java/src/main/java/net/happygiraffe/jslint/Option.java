@@ -1,7 +1,5 @@
 package net.happygiraffe.jslint;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
 /**
@@ -16,63 +14,63 @@ import java.util.Locale;
 public enum Option {
     // BEGIN-OPTIONS
     /** If adsafe should be enforced */
-    ADSAFE("If adsafe should be enforced", BooleanOptionInstance.class),
+    ADSAFE("If adsafe should be enforced", OptionBinder.BOOLEAN),
     /** If bitwise operators should not be allowed */
-    BITWISE("If bitwise operators should not be allowed", BooleanOptionInstance.class),
+    BITWISE("If bitwise operators should not be allowed", OptionBinder.BOOLEAN),
     /** If the standard browser globals should be predefined */
-    BROWSER("If the standard browser globals should be predefined", BooleanOptionInstance.class),
+    BROWSER("If the standard browser globals should be predefined", OptionBinder.BOOLEAN),
     /** If upper case html should be allowed */
-    CAP("If upper case html should be allowed", BooleanOptionInstance.class),
+    CAP("If upper case html should be allowed", OptionBinder.BOOLEAN),
     /** If css workarounds should be tolerated */
-    CSS("If css workarounds should be tolerated", BooleanOptionInstance.class),
+    CSS("If css workarounds should be tolerated", OptionBinder.BOOLEAN),
     /** If debugger statements should be allowed */
-    DEBUG("If debugger statements should be allowed", BooleanOptionInstance.class),
+    DEBUG("If debugger statements should be allowed", OptionBinder.BOOLEAN),
     /** If === should be required */
-    EQEQEQ("If === should be required", BooleanOptionInstance.class),
+    EQEQEQ("If === should be required", OptionBinder.BOOLEAN),
     /** If eval should be allowed */
-    EVIL("If eval should be allowed", BooleanOptionInstance.class),
+    EVIL("If eval should be allowed", OptionBinder.BOOLEAN),
     /** If for in statements must filter */
-    FORIN("If for in statements must filter", BooleanOptionInstance.class),
+    FORIN("If for in statements must filter", OptionBinder.BOOLEAN),
     /** If html fragments should be allowed */
-    FRAGMENT("If html fragments should be allowed", BooleanOptionInstance.class),
+    FRAGMENT("If html fragments should be allowed", OptionBinder.BOOLEAN),
     /** If line breaks should not be checked */
-    LAXBREAK("If line breaks should not be checked", BooleanOptionInstance.class),
+    LAXBREAK("If line breaks should not be checked", OptionBinder.BOOLEAN),
     /** If names should be checked */
-    NOMEN("If names should be checked", BooleanOptionInstance.class),
+    NOMEN("If names should be checked", OptionBinder.BOOLEAN),
     /** If html event handlers should be allowed */
-    ON("If html event handlers should be allowed", BooleanOptionInstance.class),
+    ON("If html event handlers should be allowed", OptionBinder.BOOLEAN),
     /** If only one var statement per function should be allowed */
-    ONEVAR("If only one var statement per function should be allowed", BooleanOptionInstance.class),
+    ONEVAR("If only one var statement per function should be allowed", OptionBinder.BOOLEAN),
     /** If the scan should stop on first error */
-    PASSFAIL("If the scan should stop on first error", BooleanOptionInstance.class),
+    PASSFAIL("If the scan should stop on first error", OptionBinder.BOOLEAN),
     /** If increment/decrement should not be allowed */
-    PLUSPLUS("If increment/decrement should not be allowed", BooleanOptionInstance.class),
+    PLUSPLUS("If increment/decrement should not be allowed", OptionBinder.BOOLEAN),
     /** If the . should not be allowed in regexp literals */
-    REGEXP("If the . should not be allowed in regexp literals", BooleanOptionInstance.class),
+    REGEXP("If the . should not be allowed in regexp literals", OptionBinder.BOOLEAN),
     /** If the rhino environment globals should be predefined */
-    RHINO("If the rhino environment globals should be predefined", BooleanOptionInstance.class),
+    RHINO("If the rhino environment globals should be predefined", OptionBinder.BOOLEAN),
     /** If use of some browser features should be restricted */
-    SAFE("If use of some browser features should be restricted", BooleanOptionInstance.class),
+    SAFE("If use of some browser features should be restricted", OptionBinder.BOOLEAN),
     /** If the system object should be predefined */
-    SIDEBAR("If the system object should be predefined", BooleanOptionInstance.class),
+    SIDEBAR("If the system object should be predefined", OptionBinder.BOOLEAN),
     /** Require the "use strict"; pragma */
-    STRICT("Require the \"use strict\"; pragma", BooleanOptionInstance.class),
+    STRICT("Require the \"use strict\"; pragma", OptionBinder.BOOLEAN),
     /** If all forms of subscript notation are tolerated */
-    SUB("If all forms of subscript notation are tolerated", BooleanOptionInstance.class),
+    SUB("If all forms of subscript notation are tolerated", OptionBinder.BOOLEAN),
     /** If variables should be declared before used */
-    UNDEF("If variables should be declared before used", BooleanOptionInstance.class),
+    UNDEF("If variables should be declared before used", OptionBinder.BOOLEAN),
     /** If strict whitespace rules apply */
-    WHITE("If strict whitespace rules apply", BooleanOptionInstance.class),
+    WHITE("If strict whitespace rules apply", OptionBinder.BOOLEAN),
     /** If the yahoo widgets globals should be predefined */
-    WIDGET("If the yahoo widgets globals should be predefined", BooleanOptionInstance.class);
+    WIDGET("If the yahoo widgets globals should be predefined", OptionBinder.BOOLEAN);
     // END-OPTIONS
 
     private String description;
-    private Class<? extends OptionInstance> type;
+    private OptionBinder binder;
 
-    private Option(String description, Class<? extends OptionInstance> type) {
+    private Option(String description, OptionBinder binder) {
         this.description = description;
-        this.type = type;
+        this.binder = binder;
     }
 
     /**
@@ -83,30 +81,10 @@ public enum Option {
     }
 
     /**
-     * What kind of value does this option have?
+     * Bind an option to a value.
      */
-    public Class<? extends OptionInstance> getType() {
-        return type;
-    }
-
     public OptionInstance getInstance() {
-        try {
-            Constructor<? extends OptionInstance> ctor = type
-                    .getConstructor(Option.class);
-            return ctor.newInstance(this);
-        } catch (SecurityException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        return binder.bind(this, null);
     }
 
     /**

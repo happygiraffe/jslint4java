@@ -18,19 +18,11 @@ public class OptionTest {
     }
 
     @Test
-    public void testGetType() throws Exception {
-        Class<?> type = Option.EVIL.getType();
-        assertThat(type, is(Class.class));
-        assertThat(type.getName(),
-                is("net.happygiraffe.jslint.BooleanOptionInstance"));
-    }
-
-    @Test
     public void testGetInstance() throws Exception {
         OptionInstance oi = Option.EVIL.getInstance();
         assertThat(oi, is(notNullValue()));
         assertThat(oi.getOption(), is(Option.EVIL));
-        assertThat(oi.getValue(), is((Object)true));
+        assertThat(oi.getValue(), is((Object)Boolean.TRUE));
     }
 
     @Test
