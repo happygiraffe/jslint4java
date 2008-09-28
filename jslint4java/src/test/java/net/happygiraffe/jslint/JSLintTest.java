@@ -92,7 +92,7 @@ public class JSLintTest {
     @Test
     public void testResetOptions() throws Exception {
         String eval_js = "eval('1');";
-        lint.addOption(Option.EVIL.getInstance());
+        lint.addOption(Option.EVIL.getInstance(null));
         lint.resetOptions();
         List<Issue> issues = lint(eval_js);
         assertThat(issues, is(not(nullValue())));
@@ -107,7 +107,7 @@ public class JSLintTest {
         List<Issue> issues = lint(eval_js);
         assertThat("evil disallowed", issues.size(), is(1));
         // Now should be a problem.
-        lint.addOption(Option.EVIL.getInstance());
+        lint.addOption(Option.EVIL.getInstance(null));
         issues = lint(eval_js);
         assertThat("evil allowed", issues.size(), is(0));
     }

@@ -213,7 +213,7 @@ public class JSLintTask extends Task {
             try {
                 // The Option constants are upper case…
                 Option o = Option.valueOf(name.toUpperCase(Locale.getDefault()));
-                lint.addOption(o.getInstance());
+                lint.addOption(o.getInstance(null));
             } catch (IllegalArgumentException e) {
                 throw new BuildException("Unknown option " + name);
             }
