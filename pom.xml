@@ -13,7 +13,7 @@
   <licenses>
     <license>
       <name>New BSD License</name>
-      <url>http://jslint4java.googlecode.com/svn/trunk/LICENCE.txt</url>
+      <url>http://github.com/happygiraffe/jslint4java/raw/e896fd359de70814b190c63a937bbbf9aa0c37e2/LICENCE.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -31,9 +31,9 @@
     <url>http://code.google.com/p/jslint4java/issues/list</url>
   </issueManagement>
   <scm>
-    <url>http://code.google.com/p/jslint4java/source/browse/trunk</url>
-    <connection>scm:svn:http://jslint4java.googlecode.com/svn/trunk</connection>
-    <developerConnection>scm:svn:https://jslint4java.googlecode.com/svn/trunk</developerConnection>
+    <url>http://github.com/happygiraffe/jslint4java/tree/master</url>
+    <connection>scm:git:git://github.com/happygiraffe/jslint4java.git</connection>
+    <developerConnection>scm:git:git@github.com:happygiraffe/jslint4java.git</developerConnection>
   </scm>
   <modules>
     <module>jslint4java</module>
