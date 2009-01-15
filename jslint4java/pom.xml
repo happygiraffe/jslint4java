@@ -3,9 +3,7 @@
     http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jslint4java</artifactId>
-  <packaging>jar</packaging>
   <name>jslint4java</name>
-  <url>http://code.google.com/p/jslint4java/</url>
   <description>A Java wrapper for Douglas Crockford's wonderful JSLint tool.</description>
   <parent>
     <groupId>net.happygiraffe</groupId>

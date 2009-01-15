@@ -4,7 +4,6 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jslint4java-ant</artifactId>
   <name>jslint4java ant task</name>
-  <url>http://code.google.com/p/jslint4java/</url>
   <description>An ant task to run JSLint.</description>
   <parent>
     <groupId>net.happygiraffe</groupId>
