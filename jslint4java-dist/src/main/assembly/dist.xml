@@ -18,4 +18,14 @@
       </includes>
     </fileSet>
   </fileSets>
+
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>*:jar-with-dependencies</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+    </dependencySet>
+  </dependencySets>
+
 </assembly>
