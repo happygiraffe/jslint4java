@@ -84,6 +84,11 @@
                   <descriptorRefs>
                     <descriptorRef>jar-with-dependencies</descriptorRef>
                   </descriptorRefs>
+                  <archive>
+                    <manifest>
+                      <mainClass>net.happygiraffe.jslint.Main</mainClass>
+                    </manifest>
+                  </archive>
                 </configuration>
               </execution>
             </executions>
