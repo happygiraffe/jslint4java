@@ -77,6 +77,12 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <!-- Avoid beta-3 for now, because of MASSEMBLY-384 -->
+          <version>2.2-beta-2</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -173,6 +179,12 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>dist</id>
+      <modules>
+        <module>jslint4java-dist</module>
+      </modules>
     </profile>
   </profiles>
 </project>
