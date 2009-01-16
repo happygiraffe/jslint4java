@@ -8,6 +8,9 @@
     <format>zip</format>
   </formats>
 
+  <!-- Get rid of the "dist" in the artifactId -->
+  <baseDirectory>jslint4java-${project.version}</baseDirectory>
+
   <fileSets>
     <fileSet>
       <directory>${basedir}/..</directory>

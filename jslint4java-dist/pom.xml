@@ -36,6 +36,8 @@
               <descriptors>
                 <descriptor>${basedir}/src/main/assembly/dist.xml</descriptor>
               </descriptors>
+              <!-- Pretend it's the main artifact and lose the "dist" -->
+              <finalName>jslint4java-${project.version}</finalName>
             </configuration>
           </execution>
         </executions>
