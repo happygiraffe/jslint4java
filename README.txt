@@ -5,16 +5,11 @@ This is a java wrapper around the fabulous tool by Douglas Crockford, jslint
 (See <http://jslint.com/>). It provides a simple interface for detecting
 potential problems in JavaScript code.
 
-The output of this project is two jar files:
+The output of this project is a jar file, which can be used in two ways.
 
-* dist/jslint.jar (just the jslint code)
-* dist/jslint+rhino.jar (jslint and the rhino JavaScript engine)
+You can run it on the command line:
 
-If you want a tool to run at the command line, you'll want the latter.
-
-The usage is simple:
-
-  % java -jar jslint+rhino.jar application.js
+  % java -jar jslint4java-ant-${project.version}-jar-with-dependencies.jar application.js
   jslint:application.js:11:9:Line breaking error ')'.
   jslint:application.js:11:10:Missing semicolon.
 
@@ -28,8 +23,20 @@ The output is colon separated fields.  The fields are:
 * the character number (starting at zero)
 * the problem that was found
 
-There is also an ant task available.  See JSLintTask in the javadoc for more
-details.
+You may also use the jar as an ant task.  The quickest way to get started is
+to drop it in ~/.ant/lib.  See JSLintTask in the javadoc for more details.
+
+NB: The packaged jar file includes a builtin version of rhino (a JavaScript
+engine).  If this causes trouble, you may wish to download standalone versions
+through the maven repository.
+
+If you wish to use jslint4java from within Java, please use a maven dependency:
+
+    <dependency>
+      <groupId>net.happygiraffe</groupId>
+      <artifactId>jslint4java</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
 If you have any comments or queries, please send them to dom [at] happygiraffe.net.
 

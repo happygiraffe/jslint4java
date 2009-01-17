@@ -19,6 +19,7 @@
         <include>README.txt</include>
         <include>LICENCE.txt</include>
       </includes>
+      <filtered>true</filtered>
     </fileSet>
   </fileSets>
 
