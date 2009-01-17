@@ -2,8 +2,10 @@ Things to implement:
 
 * Add a maven2 plugin.
 ** And then add a hudson plugin.
-** Maven2 TODO:
-*** Create proper bin/src dists.
+
+* Distribution: separate CLI & ant tasks into diff jars.
+
+* Make a maven site with documentation for ant task & cli usage.
 
 * Add support for non-boolean parameters.
 
