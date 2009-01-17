@@ -12,7 +12,7 @@ import java.util.Locale;
  * @version $Id$
  */
 public enum Option {
-    // BEGIN-OPTIONS
+    //BEGIN-OPTIONS
     /** If adsafe should be enforced */
     ADSAFE("If adsafe should be enforced", OptionBinder.BOOLEAN),
     /** If bitwise operators should not be allowed */
@@ -35,6 +35,8 @@ public enum Option {
     FRAGMENT("If html fragments should be allowed", OptionBinder.BOOLEAN),
     /** If line breaks should not be checked */
     LAXBREAK("If line breaks should not be checked", OptionBinder.BOOLEAN),
+    /** If constructor names must be capitalized */
+    NEWCAP("If constructor names must be capitalized", OptionBinder.BOOLEAN),
     /** If names should be checked */
     NOMEN("If names should be checked", OptionBinder.BOOLEAN),
     /** If html event handlers should be allowed */
@@ -63,7 +65,7 @@ public enum Option {
     WHITE("If strict whitespace rules apply", OptionBinder.BOOLEAN),
     /** If the yahoo widgets globals should be predefined */
     WIDGET("If the yahoo widgets globals should be predefined", OptionBinder.BOOLEAN);
-    // END-OPTIONS
+    //END-OPTIONS
 
     private String description;
     private OptionBinder binder;
