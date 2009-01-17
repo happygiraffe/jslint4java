@@ -13,7 +13,7 @@
   <licenses>
     <license>
       <name>New BSD License</name>
-      <url>http://github.com/happygiraffe/jslint4java/raw/e896fd359de70814b190c63a937bbbf9aa0c37e2/LICENCE.txt</url>
+      <url>file://${project.basedir}/LICENCE.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
