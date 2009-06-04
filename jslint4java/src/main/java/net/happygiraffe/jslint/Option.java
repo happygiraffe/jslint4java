@@ -33,6 +33,8 @@ public enum Option {
     FORIN("If for in statements must filter", OptionBinder.BOOLEAN),
     /** If html fragments should be allowed */
     FRAGMENT("If html fragments should be allowed", OptionBinder.BOOLEAN),
+    /** If immediate invocations must be wrapped in parens */
+    IMMED("If immediate invocations must be wrapped in parens", OptionBinder.BOOLEAN),
     /** If line breaks should not be checked */
     LAXBREAK("If line breaks should not be checked", OptionBinder.BOOLEAN),
     /** If constructor names must be capitalized */

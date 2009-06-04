@@ -115,10 +115,11 @@ public class JSLintTest {
     // http://code.google.com/p/jslint4java/issues/detail?id=1
     @Test
     public void testUnableToContinue() throws Exception {
-        List<Issue> issues = lint("new Number();");
+        // This isn't the originally reported problem, but it tickles the
+        // "can't continue" message.
+        List<Issue> issues = lint("\"");
         assertThat(issues.size(), is(2));
-        assertThat(issues.get(0).getReason(),
-                is("'new' should not be used as a statement."));
+        assertThat(issues.get(0).getReason(), is("Unclosed string."));
         assertThat(issues.get(1).getReason(),
                 is("Stopping, unable to continue. (0% scanned)."));
     }
