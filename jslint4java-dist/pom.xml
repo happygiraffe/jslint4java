@@ -14,9 +14,8 @@
   </parent>
   <dependencies>
     <dependency>
-      <groupId>net.happygiraffe</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jslint4java-ant</artifactId>
-      <version>${project.version}</version>
       <classifier>jar-with-dependencies</classifier>
     </dependency>
   </dependencies>
