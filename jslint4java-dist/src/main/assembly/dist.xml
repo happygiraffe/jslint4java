@@ -27,7 +27,7 @@
   <dependencySets>
     <dependencySet>
       <includes>
-        <include>*:jar-with-dependencies</include>
+        <include>*:shaded</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>

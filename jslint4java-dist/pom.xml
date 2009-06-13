@@ -16,7 +16,7 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jslint4java-ant</artifactId>
-      <classifier>jar-with-dependencies</classifier>
+      <classifier>shaded</classifier>
     </dependency>
   </dependencies>
   <build>
