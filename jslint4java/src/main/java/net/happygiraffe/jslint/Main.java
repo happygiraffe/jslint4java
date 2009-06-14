@@ -46,10 +46,6 @@ public class Main {
         lint = new JSLint();
     }
 
-    private void addOption(Option o) {
-        lint.addOption(o);
-    }
-
     private void die(String message) {
         System.err.println(PROGNAME + ": " + message);
         System.exit(1);
