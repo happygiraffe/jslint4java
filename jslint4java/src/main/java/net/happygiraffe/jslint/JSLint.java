@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -32,7 +33,7 @@ public class JSLint {
 
     private static ContextFactory contextFactory = new ContextFactory();
 
-    private final Set<Option> options = EnumSet.noneOf(Option.class);
+    private final Map<Option, Object> options = new EnumMap<Option, Object>(Option.class);
 
     private final ScriptableObject scope;
 
@@ -58,7 +59,7 @@ public class JSLint {
      *            Any {@link Option}.
      */
     public void addOption(Option o) {
-        options.add(o);
+        options.put(o, Boolean.TRUE);
     }
 
     private void doLint(String javaScript) {
@@ -108,8 +109,10 @@ public class JSLint {
      */
     private Scriptable optionsAsJavaScriptObject() {
         Scriptable opts = Context.getCurrentContext().newObject(scope);
-        for (Option option : options) {
-            opts.put(option.getLowerName(), opts, Boolean.TRUE);
+        for (Entry<Option, Object> entry : options.entrySet()) {
+            String key = entry.getKey().getLowerName();
+            Object value = entry.getValue();
+            opts.put(key, opts, value);
         }
         return opts;
     }
