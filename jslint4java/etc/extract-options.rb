@@ -4,14 +4,17 @@
 #
 # @(#) $Id$
 
-opts = {}
+opts = {
+  # Hard-code this, as it's not part of the boolean options.
+  "indent" => ["The number of spaces used for indentation (default is 4)", true]
+}
 
 File.open(ARGV[0]) do |fh|
   while line = fh.gets do
     # puts ">> #{line}"
     if (line =~ /\s+boolOptions\s*=\s*\{/) ... (line =~ /\}/)
       if md = line.match(/(\w+).*\/\/ (.*)/)
-        opts[ md[1] ] = md[2].capitalize
+        opts[ md[1] ] = [md[2].capitalize, false]
       end
     end
   end
@@ -29,9 +32,10 @@ File.open(ARGV[1]) do |fh|
       # And start rewriting.
       puts "#{indent}//BEGIN-OPTIONS"
       allopts =  opts.keys.sort.map do |k|
-        desc = opts[k]
+        desc = opts[k][0]
         descEscaped = desc.gsub(/"/, '\\"')
-        "#{indent}/** #{desc} */\n#{indent}#{k.upcase}(\"#{descEscaped}\")"
+        "#{indent}/** #{desc} */\n" +
+        "#{indent}#{k.upcase}(\"#{descEscaped}\", #{opts[k][1]})"
       end.join(",\n")
       puts "#{allopts};"
       puts "#{indent}//END-OPTIONS"
