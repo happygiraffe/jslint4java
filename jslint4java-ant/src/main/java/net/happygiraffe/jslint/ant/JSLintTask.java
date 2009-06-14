@@ -102,9 +102,8 @@ public class JSLintTask extends Task {
      */
     @Override
     public void execute() throws BuildException {
-        if (filesets.size() == 0) {
+        if (filesets.size() == 0)
             throw new BuildException("no filesets specified");
-        }
 
         for (ResultFormatter rf : formatters) {
             rf.begin();
@@ -127,9 +126,9 @@ public class JSLintTask extends Task {
         if (failedCount != 0) {
             String files = failedCount == 1 ? "file" : "files";
             String msg = failedCount + " " + files + " did not pass JSLint";
-            if (haltOnFailure) {
+            if (haltOnFailure)
                 throw new BuildException(msg);
-            } else {
+            else {
                 log(msg);
             }
         }
@@ -213,13 +212,16 @@ public class JSLintTask extends Task {
             String[] parts = name.split("=", 2);
             String optName = parts[0];
             try {
-                String value = null;
-                if (parts.length == 2) {
-                    value = parts[1];
-                }
+                // TODO This should be put back when we support arguments to
+                // options.
+                // String value = null;
+                // if (parts.length == 2) {
+                // value = parts[1];
+                // }
                 // The Option constants are upper case…
-                Option o = Option.valueOf(optName.toUpperCase(Locale.getDefault()));
-                lint.addOption(o.getBinding(value));
+                Option o = Option.valueOf(optName.toUpperCase(Locale
+                        .getDefault()));
+                lint.addOption(o);
             } catch (IllegalArgumentException e) {
                 throw new BuildException("Unknown option " + optName);
             }

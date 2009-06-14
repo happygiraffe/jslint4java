@@ -5,10 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -33,7 +32,7 @@ public class JSLint {
 
     private static ContextFactory contextFactory = new ContextFactory();
 
-    private final Map<Option, OptionBinding> options = new HashMap<Option, OptionBinding>();
+    private final Set<Option> options = EnumSet.noneOf(Option.class);
 
     private final ScriptableObject scope;
 
@@ -56,10 +55,10 @@ public class JSLint {
      * Add an option to change the behaviour of the lint.
      *
      * @param o
-     *            Any {@link OptionBinding}.
+     *            Any {@link Option}.
      */
-    public void addOption(OptionBinding o) {
-        options.put(o.getOption(), o);
+    public void addOption(Option o) {
+        options.add(o);
     }
 
     private void doLint(String javaScript) {
@@ -109,10 +108,8 @@ public class JSLint {
      */
     private Scriptable optionsAsJavaScriptObject() {
         Scriptable opts = Context.getCurrentContext().newObject(scope);
-        for (Entry<Option, OptionBinding> entry : options.entrySet()) {
-            Option option = entry.getKey();
-            OptionBinding ob = entry.getValue();
-            opts.put(option.getLowerName(), opts, ob.getValue());
+        for (Option option : options) {
+            opts.put(option.getLowerName(), opts, Boolean.TRUE);
         }
         return opts;
     }
