@@ -18,11 +18,6 @@ public class OptionTest {
     }
 
     @Test
-    public void testHasArgument() throws Exception {
-        assertThat(Option.EVIL.hasArgument(), is(false));
-    }
-
-    @Test
     public void testGetLowerName() {
         assertThat(Option.EVIL.getLowerName(), is("evil"));
     }

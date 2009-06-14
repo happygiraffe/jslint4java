@@ -6,7 +6,7 @@
 
 opts = {
   # Hard-code this, as it's not part of the boolean options.
-  "indent" => ["The number of spaces used for indentation (default is 4)", true]
+  "indent" => ["The number of spaces used for indentation (default is 4)", 'Integer']
 }
 
 File.open(ARGV[0]) do |fh|
@@ -14,7 +14,7 @@ File.open(ARGV[0]) do |fh|
     # puts ">> #{line}"
     if (line =~ /\s+boolOptions\s*=\s*\{/) ... (line =~ /\}/)
       if md = line.match(/(\w+).*\/\/ (.*)/)
-        opts[ md[1] ] = [md[2].capitalize, false]
+        opts[ md[1] ] = [md[2].capitalize, 'Boolean']
       end
     end
   end
@@ -35,7 +35,7 @@ File.open(ARGV[1]) do |fh|
         desc = opts[k][0]
         descEscaped = desc.gsub(/"/, '\\"')
         "#{indent}/** #{desc} */\n" +
-        "#{indent}#{k.upcase}(\"#{descEscaped}\", #{opts[k][1]})"
+        "#{indent}#{k.upcase}(\"#{descEscaped}\", #{opts[k][1]}.class)"
       end.join(",\n")
       puts "#{allopts};"
       puts "#{indent}//END-OPTIONS"

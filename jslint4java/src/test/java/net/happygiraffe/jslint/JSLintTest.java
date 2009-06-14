@@ -118,7 +118,7 @@ public class JSLintTest {
         // This should only pass when indent=2.
         String js = "var x = 0;\nif (true) {\n  x = 1;\n}";
         lint.addOption(Option.WHITE);
-        lint.addOption(Option.INDENT, 2);
+        lint.addOption(Option.INDENT, "2");
         List<Issue> issues = lint(js);
         assertIssues(issues);
     }

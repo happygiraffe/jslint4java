@@ -33,7 +33,8 @@ public class JSLint {
 
     private static ContextFactory contextFactory = new ContextFactory();
 
-    private final Map<Option, Object> options = new EnumMap<Option, Object>(Option.class);
+    private final Map<Option, Object> options = new EnumMap<Option, Object>(
+            Option.class);
 
     private final ScriptableObject scope;
 
@@ -54,26 +55,27 @@ public class JSLint {
 
     /**
      * Add an option to change the behaviour of the lint. This will be passed in
-     * with a value of {@link Boolean#TRUE}.
+     * with a value of "true".
      *
      * @param o
      *            Any {@link Option}.
      */
     public void addOption(Option o) {
-        addOption(o, Boolean.TRUE);
+        addOption(o, "true");
     }
 
     /**
-     * Add an option to change the behaviour of the lint. You can pass in any
-     * object for the value of the option.
+     * Add an option to change the behaviour of the lint. The option will be
+     * parsed as appropriate using an {@link OptionParser}.
      *
      * @param o
      *            Any {@link Option}.
      * @param arg
      *            The value to associate with <i>o</i>.
      */
-    public void addOption(Option o, Object arg) {
-        options.put(o, arg);
+    public void addOption(Option o, String arg) {
+        OptionParser optionParser = new OptionParser();
+        options.put(o, optionParser.parse(o.getType(), arg));
     }
 
     private void doLint(String javaScript) {
