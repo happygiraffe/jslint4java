@@ -1,6 +1,5 @@
 // jslint.js
-// 2009-06-02
-
+// 2009-06-12
 
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
@@ -71,7 +70,7 @@ SOFTWARE.
 */
 
 /*jslint
-    evil: true, nomen: false, onevar: false, regexp: false , strict: true
+    evil: true, nomen: false, onevar: false, regexp: false, strict: true
 */
 
 /*members "\b", "\t", "\n", "\f", "\r", "\"", "%", "(begin)",
@@ -243,54 +242,54 @@ var JSLINT = (function () {
 // web browser environment.
 
         browser = {
-            addEventListener: true,
-            alert           : true,
-            blur            : true,
-            clearInterval   : true,
-            clearTimeout    : true,
-            close           : true,
-            closed          : true,
-            confirm         : true,
-            console         : true,
-            Debug           : true,
-            defaultStatus   : true,
-            document        : true,
-            event           : true,
-            focus           : true,
-            frames          : true,
-            getComputedStyle: true,
-            history         : true,
-            Image           : true,
-            length          : true,
-            location        : true,
-            moveBy          : true,
-            moveTo          : true,
-            name            : true,
-            navigator       : true,
+            addEventListener: false,
+            alert           : false,
+            blur            : false,
+            clearInterval   : false,
+            clearTimeout    : false,
+            close           : false,
+            closed          : false,
+            confirm         : false,
+            console         : false,
+            Debug           : false,
+            defaultStatus   : false,
+            document        : false,
+            event           : false,
+            focus           : false,
+            frames          : false,
+            getComputedStyle: false,
+            history         : false,
+            Image           : false,
+            length          : false,
+            location        : false,
+            moveBy          : false,
+            moveTo          : false,
+            name            : false,
+            navigator       : false,
             onblur          : true,
             onerror         : true,
             onfocus         : true,
             onload          : true,
             onresize        : true,
             onunload        : true,
-            open            : true,
-            opener          : true,
-            opera           : true,
-            Option          : true,
-            parent          : true,
-            print           : true,
-            prompt          : true,
-            resizeBy        : true,
-            resizeTo        : true,
-            screen          : true,
-            scroll          : true,
-            scrollBy        : true,
-            scrollTo        : true,
-            setInterval     : true,
-            setTimeout      : true,
-            status          : true,
-            top             : true,
-            XMLHttpRequest  : true
+            open            : false,
+            opener          : false,
+            opera           : false,
+            Option          : false,
+            parent          : false,
+            print           : false,
+            prompt          : false,
+            resizeBy        : false,
+            resizeTo        : false,
+            screen          : false,
+            scroll          : false,
+            scrollBy        : false,
+            scrollTo        : false,
+            setInterval     : false,
+            setTimeout      : false,
+            status          : false,
+            top             : false,
+            XMLHttpRequest  : false
         },
 
         cssAttributeData,
@@ -590,29 +589,29 @@ var JSLINT = (function () {
         },
 
         rhino = {
-            defineClass : true,
-            deserialize : true,
-            gc          : true,
-            help        : true,
-            load        : true,
-            loadClass   : true,
-            print       : true,
-            quit        : true,
-            readFile    : true,
-            readUrl     : true,
-            runCommand  : true,
-            seal        : true,
-            serialize   : true,
-            spawn       : true,
-            sync        : true,
-            toint32     : true,
-            version     : true
+            defineClass : false,
+            deserialize : false,
+            gc          : false,
+            help        : false,
+            load        : false,
+            loadClass   : false,
+            print       : false,
+            quit        : false,
+            readFile    : false,
+            readUrl     : false,
+            runCommand  : false,
+            seal        : false,
+            serialize   : false,
+            spawn       : false,
+            sync        : false,
+            toint32     : false,
+            version     : false
         },
 
         scope,      // The current scope
 
         sidebar = {
-            System      : true
+            System      : false
         },
 
         src,
@@ -622,32 +621,32 @@ var JSLINT = (function () {
 // ECMAScript standard.
 
         standard = {
-            Array               : true,
-            Boolean             : true,
-            Date                : true,
-            decodeURI           : true,
-            decodeURIComponent  : true,
-            encodeURI           : true,
-            encodeURIComponent  : true,
-            Error               : true,
-            'eval'              : true,
-            EvalError           : true,
-            Function            : true,
-            isFinite            : true,
-            isNaN               : true,
-            JSON                : true,
-            Math                : true,
-            Number              : true,
-            Object              : true,
-            parseInt            : true,
-            parseFloat          : true,
-            RangeError          : true,
-            ReferenceError      : true,
-            RegExp              : true,
-            String              : true,
-            SyntaxError         : true,
-            TypeError           : true,
-            URIError            : true
+            Array               : false,
+            Boolean             : false,
+            Date                : false,
+            decodeURI           : false,
+            decodeURIComponent  : false,
+            encodeURI           : false,
+            encodeURIComponent  : false,
+            Error               : false,
+            'eval'              : false,
+            EvalError           : false,
+            Function            : false,
+            isFinite            : false,
+            isNaN               : false,
+            JSON                : false,
+            Math                : false,
+            Number              : false,
+            Object              : false,
+            parseInt            : false,
+            parseFloat          : false,
+            RangeError          : false,
+            ReferenceError      : false,
+            RegExp              : false,
+            String              : false,
+            SyntaxError         : false,
+            TypeError           : false,
+            URIError            : false
         },
 
         standard_member = {
@@ -1604,7 +1603,7 @@ var JSLINT = (function () {
         if (t === 'hasOwnProperty') {
             error("'hasOwnProperty' is a really bad name.");
         }
-        if (option.safe && funct['(global)']) {
+        if (option.safe && funct['(global)'] && typeof predefined[t] !== 'boolean') {
             warning('ADsafe global: ' + t + '.', token);
         }
 
@@ -1658,33 +1657,31 @@ var JSLINT = (function () {
             }
             obj = predefined;
             break;
+        default:
         }
-        for (;;) {
-            t = lex.token();
-            if (t.id === ',') {
+        t = lex.token();
+loop:   for (;;) {
+            for (;;) {
+                if (t.type === 'special' && t.value === '*/') {
+                    break loop;
+                }
+                if (t.id !== '(endline)' && t.id !== ',') {
+                    break;
+                }
                 t = lex.token();
-            }
-            while (t.id === '(endline)') {
-                t = lex.token();
-            }
-            if (t.type === 'special' && t.value === '*/') {
-                break;
             }
             if (t.type !== '(string)' && t.type !== '(identifier)' &&
                     o !== '/*members') {
                 error("Bad option.", t);
             }
-            if (filter) {
-                if (filter[t.value] !== true && t.value !== 'indent') {
-                    error("Bad option.", t);
-                }
+            v = lex.token();
+            if (v.id === ':') {
                 v = lex.token();
-                if (v.id !== ':') {
+                if (obj === membersOnly) {
                     error("Expected '{a}' and instead saw '{b}'.",
-                            t, ':', t.value);
+                            t, '*/', ':');
                 }
-                v = lex.token();
-                if (t.value === 'indent') {
+                if (t.value === 'indent' && o === '/*jslint') {
                     b = +v.value;
                     if (typeof b !== 'number' || !isFinite(b) || b <= 0 ||
                             Math.floor(b) !== b) {
@@ -1692,18 +1689,22 @@ var JSLINT = (function () {
                                 v, v.value);
                     }
                     obj.white = true;
+                    obj.indent = b;
                 } else if (v.value === 'true') {
-                    b = true;
+                    obj[t.value] = true;
                 } else if (v.value === 'false') {
-                    b = false;
+                    obj[t.value] = false;
                 } else {
-                    error("Expected '{a}' and instead saw '{b}'.",
-                            t, 'true', t.value);
+                    error("Bad option value.", v);
                 }
+                t = lex.token();
             } else {
-                b = true;
+                if (o === '/*jslint') {
+                    error("Missing option value.", t);
+                }
+                obj[t.value] = false;
+                t = v;
             }
-            obj[t.value] = b;
         }
         if (filter) {
             assume();
@@ -1809,7 +1810,7 @@ var JSLINT = (function () {
             error("Unexpected early end of program.", token);
         }
         advance();
-        if (option.safe && predefined[token.value] === true &&
+        if (option.safe && typeof predefined[token.value] === 'boolean' &&
                 (nexttoken.id !== '(' && nexttoken.id !== '.')) {
             warning('ADsafe violation.', token);
         }
@@ -2085,13 +2086,14 @@ var JSLINT = (function () {
         return infix(s, function (left, that) {
             var l;
             that.left = left;
-            if (predefined[left.value] === true && scope[left.value] === true) {
-                warning('Global violation.', left);
+            if (predefined[left.value] === false &&
+                    scope[left.value]['(global)'] === true) {
+                warning('Read only.', left);
             }
             if (option.safe) {
                 l = left;
                 do {
-                    if (predefined[l.value] === true) {
+                    if (typeof predefined[l.value] === 'boolean') {
                         warning('ADsafe violation.', l);
                     }
                     l = l.left;
@@ -2174,7 +2176,7 @@ var JSLINT = (function () {
 
 
     function optionalidentifier() {
-        if (nexttoken.reserved && nexttoken.value !== 'arguments') {
+        if (nexttoken.reserved) {
             warning("Expected an identifier and instead saw '{a}' (a reserved word).",
                     nexttoken, nexttoken.id);
         }
@@ -2409,7 +2411,7 @@ var JSLINT = (function () {
 
 
     function countMember(m) {
-        if (membersOnly && membersOnly[m] !== true) {
+        if (membersOnly && typeof membersOnly[m] !== 'boolean') {
             warning("Unexpected /*member '{a}'.", nexttoken, m);
         }
         if (typeof member[m] === 'number') {
@@ -3562,34 +3564,38 @@ var JSLINT = (function () {
         identifier: true,
         nud: function () {
             var v = this.value,
-                s = scope[v];
+                s = scope[v],
+                f;
             if (typeof s === 'function') {
-                s = false;
+                s = undefined;
+            } else if (typeof s === 'boolean') {
+                f = funct;
+                funct = functions[0];
+                addlabel(v, 'var');
+                s = funct;
+                funct = f;
             }
 
 // The name is in scope and defined in the current function.
 
-            if (s && (s === funct || s === funct['(global)'])) {
+            if (funct === s) {
 
-//      If we are not also in the global scope, change 'unused' to 'var',
-//      and reject labels.
+//      Change 'unused' to 'var', and reject labels.
 
-                if (!funct['(global)']) {
-                    switch (funct[v]) {
-                    case 'unused':
-                        funct[v] = 'var';
-                        break;
-                    case 'label':
-                        warning("'{a}' is a statement label.", token, v);
-                        break;
-                    }
+                switch (funct[v]) {
+                case 'unused':
+                    funct[v] = 'var';
+                    break;
+                case 'label':
+                    warning("'{a}' is a statement label.", token, v);
+                    break;
                 }
 
 // The name is not defined in the function.  If we are in the global scope,
 // then we have an undefined variable.
 
             } else if (funct['(global)']) {
-                if (option.undef) {
+                if (option.undef && predefined[v] !== 'boolean') {
                     warning("'{a}' is not defined.", token, v);
                 }
                 note_implied(token);
@@ -3609,7 +3615,7 @@ var JSLINT = (function () {
                     warning("'{a}' is a statement label.", token, v);
                     break;
                 case 'outer':
-                case true:
+                case 'global':
                     break;
                 default:
 
@@ -3631,7 +3637,7 @@ var JSLINT = (function () {
                         case 'var':
                         case 'unused':
                             s[v] = 'closure';
-                            funct[v] = 'outer';
+                            funct[v] = s['(global)'] ? 'global' : 'outer';
                             break;
                         case 'closure':
                         case 'parameter':
@@ -3902,14 +3908,15 @@ var JSLINT = (function () {
                     adsafe_may = false;
                 }
             }
-        } else if (!option.evil && (m === 'eval' || m === 'execScript')) {
+        }
+        if (!option.evil && (m === 'eval' || m === 'execScript')) {
             warning('eval is evil.');
         } else if (option.safe) {
             for (;;) {
                 if (banned[m] === true) {
                     warning("ADsafe restricted word '{a}'.", token, m);
                 }
-                if (predefined[left.value] !== true ||
+                if (typeof predefined[left.value] !== 'boolean' ||
                         nexttoken.id === '(') {
                     break;
                 }
@@ -4769,12 +4776,12 @@ var JSLINT = (function () {
                 o.sub     = false;
                 o.undef   = true;
                 o.widget  = false;
-                predefined.Date = false;
-                predefined['eval'] = false;
-                predefined.Function = false;
-                predefined.Object = false;
-                predefined.ADSAFE = true;
-                predefined.lib = true;
+                predefined.Date = null;
+                predefined['eval'] = null;
+                predefined.Function = null;
+                predefined.Object = null;
+                predefined.ADSAFE = false;
+                predefined.lib = false;
             }
             option = o;
         } else {
@@ -4806,7 +4813,7 @@ var JSLINT = (function () {
             '(breakage)': 0,
             '(loopage)': 0
         };
-        functions = [];
+        functions = [funct];
         ids = {};
         urls = [];
         src = false;
@@ -4961,7 +4968,7 @@ var JSLINT = (function () {
                 o.push('<div><i>Global</i> ' + s.sort().join(', ') + '</div>');
             }
 
-            for (i = 0; i < functions.length; i += 1) {
+            for (i = 1; i < functions.length; i += 1) {
                 f = functions[i];
                 cl = [];
                 ex = [];
@@ -4977,23 +4984,23 @@ var JSLINT = (function () {
                         case 'closure':
                             cl.push(k);
                             break;
-                        case 'exception':
-                            ex.push(k);
-                            break;
                         case 'var':
                             va.push(k);
                             break;
-                        case 'unused':
-                            un.push(k);
-                            break;
-                        case 'label':
-                            la.push(k);
+                        case 'exception':
+                            ex.push(k);
                             break;
                         case 'outer':
                             ou.push(k);
                             break;
-                        case true:
+                        case 'global':
                             gl.push(k);
+                            break;
+                        case 'label':
+                            la.push(k);
+                            break;
+                        case 'unused':
+                            un.push(k);
                             break;
                         }
                     }
@@ -5006,8 +5013,8 @@ var JSLINT = (function () {
                 detail('Exception', ex);
                 detail('Outer', ou);
                 detail('Global', gl);
-                detail('<big><b>Unused</b></big>', un);
                 detail('Label', la);
+                detail('<big><b>Unused</b></big>', un);
             }
             a = [];
             for (k in member) {
@@ -5043,7 +5050,7 @@ var JSLINT = (function () {
         return o.join('');
     };
 
-    itself.edition = '2009-06-02';
+    itself.edition = '2009-06-12';
 
     return itself;
 
