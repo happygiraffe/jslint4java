@@ -119,7 +119,6 @@ public class JSLintTest {
         lint.addOption(Option.WHITE);
         lint.addOption(Option.INDENT, 2);
         List<Issue> issues = lint(js);
-        System.out.println(issues);
         assertThat(issues.size(), is(0));
     }
 
