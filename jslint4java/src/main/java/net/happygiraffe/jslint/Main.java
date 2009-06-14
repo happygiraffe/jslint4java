@@ -116,9 +116,14 @@ public class Main {
             // Longopt.
             else if (arg.startsWith("--")) {
                 try {
-                    String opt = arg.substring(2).toUpperCase(
-                            Locale.getDefault());
-                    addOption(Option.valueOf(opt));
+                    String[] bits = arg.substring(2).split("=", 2);
+                    Option o = Option.valueOf(bits[0].toUpperCase(Locale
+                            .getDefault()));
+                    if (bits.length == 2) {
+                        lint.addOption(o, bits[1]);
+                    } else {
+                        lint.addOption(o);
+                    }
                 } catch (IllegalArgumentException e) {
                     die("unknown option " + arg);
                 }
