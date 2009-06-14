@@ -212,16 +212,15 @@ public class JSLintTask extends Task {
             String[] parts = name.split("=", 2);
             String optName = parts[0];
             try {
-                // TODO This should be put back when we support arguments to
-                // options.
-                // String value = null;
-                // if (parts.length == 2) {
-                // value = parts[1];
-                // }
                 // The Option constants are upper case…
                 Option o = Option.valueOf(optName.toUpperCase(Locale
                         .getDefault()));
-                lint.addOption(o);
+                // If an argument has been specified, use it.
+                if (parts.length == 2) {
+                    lint.addOption(o, parts[1]);
+                } else {
+                    lint.addOption(o);
+                }
             } catch (IllegalArgumentException e) {
                 throw new BuildException("Unknown option " + optName);
             }
