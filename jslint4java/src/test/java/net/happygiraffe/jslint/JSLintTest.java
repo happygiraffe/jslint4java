@@ -112,6 +112,17 @@ public class JSLintTest {
         assertThat("evil allowed", issues.size(), is(0));
     }
 
+    @Test
+    public void testSetOptionWithArgument() throws Exception {
+        // This should only pass when indent=2.
+        String js = "var x = 0;\nif (true) {\n  x = 1;\n}";
+        lint.addOption(Option.WHITE);
+        lint.addOption(Option.INDENT, 2);
+        List<Issue> issues = lint(js);
+        System.out.println(issues);
+        assertThat(issues.size(), is(0));
+    }
+
     // http://code.google.com/p/jslint4java/issues/detail?id=1
     @Test
     public void testUnableToContinue() throws Exception {

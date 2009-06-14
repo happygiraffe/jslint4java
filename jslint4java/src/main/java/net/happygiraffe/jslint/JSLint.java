@@ -53,13 +53,27 @@ public class JSLint {
     }
 
     /**
-     * Add an option to change the behaviour of the lint.
+     * Add an option to change the behaviour of the lint. This will be passed in
+     * with a value of {@link Boolean#TRUE}.
      *
      * @param o
      *            Any {@link Option}.
      */
     public void addOption(Option o) {
-        options.put(o, Boolean.TRUE);
+        addOption(o, Boolean.TRUE);
+    }
+
+    /**
+     * Add an option to change the behaviour of the lint. You can pass in any
+     * object for the value of the option.
+     *
+     * @param o
+     *            Any {@link Option}.
+     * @param arg
+     *            The value to associate with <i>o</i>.
+     */
+    public void addOption(Option o, Object arg) {
+        options.put(o, arg);
     }
 
     private void doLint(String javaScript) {
