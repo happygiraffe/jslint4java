@@ -22,9 +22,13 @@ public class JSLintTest {
 
     private JSLint lint;
 
-    @Before
-    public void setUp() throws IOException {
-        lint = new JSLint();
+    // Check that the issues list matches zero or more reasons.
+    private void assertIssues(List<Issue> issues, String... reasons) {
+        assertThat(issues, is(notNullValue()));
+        assertThat(issues.size(), is(reasons.length));
+        for (int i = 0; i < reasons.length; i++) {
+            assertThat(issues.get(i).getReason(), is(reasons[i]));
+        }
     }
 
     // small helper function.
@@ -37,43 +41,41 @@ public class JSLintTest {
         return lint.lint("-", source);
     }
 
+    @Before
+    public void setUp() throws IOException {
+        lint = new JSLint();
+    }
+
     @Test
     public void testEmptySource() throws Exception {
         List<Issue> issues = lint("");
-        assertThat(issues, is(not(nullValue())));
-        assertThat(issues.size(), is(0));
+        assertIssues(issues);
     }
 
     @Test
     public void testLintReader() throws Exception {
         Reader reader = new StringReader("var foo = 1");
         List<Issue> issues = lint(reader);
-        assertThat(issues, is(not(nullValue())));
-        assertThat(issues.size(), is(1));
-        assertThat(issues.get(0).getReason(), is("Missing semicolon."));
+        assertIssues(issues, "Missing semicolon.");
     }
 
     @Test
     public void testNoProblems() throws IOException {
         List<Issue> problems = lint("var foo = 1;");
-        assertThat(problems, is(not(nullValue())));
-        assertThat(problems.size(), is(0));
+        assertIssues(problems);
     }
 
     @Test
     public void testNullSource() throws Exception {
         List<Issue> issues = lint((String) null);
-        assertThat(issues, is(not(nullValue())));
-        assertThat(issues.size(), is(0));
+        assertIssues(issues);
     }
 
     @Test
     public void testOneProblem() throws IOException {
         // There is a missing semicolon here.
         List<Issue> problems = lint("var foo = 1");
-        assertThat(problems, is(not(nullValue())));
-        assertThat(problems.size(), is(1));
-        assertThat(problems.get(0).getReason(), is("Missing semicolon."));
+        assertIssues(problems, "Missing semicolon.");
     }
 
     @Test
@@ -95,9 +97,8 @@ public class JSLintTest {
         lint.addOption(Option.EVIL);
         lint.resetOptions();
         List<Issue> issues = lint(eval_js);
-        assertThat(issues, is(not(nullValue())));
-        assertThat(issues.size(), is(1));
-        assertThat(issues.get(0).getReason(), is("eval is evil."));
+        assertIssues(issues, "eval is evil.");
+
     }
 
     @Test
@@ -105,11 +106,11 @@ public class JSLintTest {
         String eval_js = "eval('1');";
         // should be disallowed by default.
         List<Issue> issues = lint(eval_js);
-        assertThat("evil disallowed", issues.size(), is(1));
+        assertIssues(issues, "eval is evil.");
         // Now should be a problem.
         lint.addOption(Option.EVIL);
         issues = lint(eval_js);
-        assertThat("evil allowed", issues.size(), is(0));
+        assertIssues(issues);
     }
 
     @Test
@@ -119,7 +120,7 @@ public class JSLintTest {
         lint.addOption(Option.WHITE);
         lint.addOption(Option.INDENT, 2);
         List<Issue> issues = lint(js);
-        assertThat(issues.size(), is(0));
+        assertIssues(issues);
     }
 
     // http://code.google.com/p/jslint4java/issues/detail?id=1
@@ -128,9 +129,7 @@ public class JSLintTest {
         // This isn't the originally reported problem, but it tickles the
         // "can't continue" message.
         List<Issue> issues = lint("\"");
-        assertThat(issues.size(), is(2));
-        assertThat(issues.get(0).getReason(), is("Unclosed string."));
-        assertThat(issues.get(1).getReason(),
-                is("Stopping, unable to continue. (0% scanned)."));
+        assertIssues(issues, "Unclosed string.",
+                "Stopping, unable to continue. (0% scanned).");
     }
 }
