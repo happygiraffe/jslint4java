@@ -61,7 +61,7 @@ public class JSLint {
      *            Any {@link Option}.
      */
     public void addOption(Option o) {
-        addOption(o, "true");
+        options.put(o, Boolean.TRUE);
     }
 
     /**
