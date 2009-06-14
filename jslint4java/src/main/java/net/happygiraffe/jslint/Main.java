@@ -62,10 +62,8 @@ public class Main {
 
     private void help() {
         info("usage: jslint [options] file.js ...");
-        Option[] values = Option.values();
-        int maxOptLen = Option.maximumNameLength();
-        for (Option o : values) {
-            String fmt = "  --%-" + maxOptLen + "s %s";
+        String fmt = "  --%-" + Option.maximumNameLength() + "s %s";
+        for (Option o : Option.values()) {
             info(String.format(fmt, o.getLowerName(), o.getDescription()));
         }
         System.exit(0);
