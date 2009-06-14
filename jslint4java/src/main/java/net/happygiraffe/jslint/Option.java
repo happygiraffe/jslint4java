@@ -70,9 +70,16 @@ public enum Option {
     //END-OPTIONS
 
     private String description;
+    private boolean hasArgument;
 
-    private Option(String description) {
+    private Option(String description, boolean hasArgument) {
         this.description = description;
+        this.hasArgument = hasArgument;
+    }
+
+    // Default to "no argument".
+    private Option(String description) {
+        this(description, false);
     }
 
     /**
@@ -111,5 +118,9 @@ public enum Option {
     @Override
     public String toString() {
         return getLowerName() + "[" + getDescription() + "]";
+    }
+
+    public boolean hasArgument() {
+        return hasArgument;
     }
 }
