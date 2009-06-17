@@ -186,4 +186,12 @@ public class JSLint {
         options.clear();
     }
 
+    /**
+     * Return the version of jslint in use.
+     */
+    public String getEdition() {
+        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
+        return (String) lintScope.get("edition", lintScope);
+    }
+
 }
