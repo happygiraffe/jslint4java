@@ -1,7 +1,6 @@
 package net.happygiraffe.jslint.ant;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -64,7 +63,7 @@ public class XmlResultFormatter implements ResultFormatter {
         try {
             w = new BufferedWriter(new OutputStreamWriter(out, "UTF8"));
             w.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-            (new DOMElementWriter()).write(rootElement, w, 0, "  ");
+            new DOMElementWriter().write(rootElement, w, 0, "  ");
             w.flush();
         } catch (IOException exc) {
             throw new BuildException("Unable to write log file", exc);
@@ -81,11 +80,11 @@ public class XmlResultFormatter implements ResultFormatter {
      * attributes. An element will be created for all files, regardless of any
      * issues being uncovered.
      *
-     * @see ResultFormatter#output(File, List)
+     * @see ResultFormatter#output(String, List)
      */
-    public void output(File file, List<Issue> issues) {
+    public void output(String name, List<Issue> issues) {
         Element f = doc.createElement("file");
-        f.setAttribute("name", file.toString());
+        f.setAttribute("name", name);
         for (Issue issue : issues) {
             f.appendChild(issueToElement(issue));
         }

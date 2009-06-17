@@ -1,6 +1,5 @@
 package net.happygiraffe.jslint.ant;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import net.happygiraffe.jslint.Issue;
  * <ul>
  * <li>{@link #setOut(OutputStream)}
  * <li>{@link #begin()}
- * <li>{@link #output(File, List)}
+ * <li>{@link #output(String, List)}
  * <li>{@link #end()}
  * </ul>
  *
@@ -34,13 +33,13 @@ public interface ResultFormatter {
     /**
      * Called for each file that is checked by {@link JSLintTask}.
      *
-     * @param file
+     * @param name
      *                The file just examined.
      *
      * @param issues
      *                A list of issues fond with this file. May be empty.
      */
-    public abstract void output(File file, List<Issue> issues);
+    public abstract void output(String name, List<Issue> issues);
 
     /**
      * Called during initialization.

@@ -1,12 +1,11 @@
 package net.happygiraffe.jslint.ant;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -16,11 +15,12 @@ import net.happygiraffe.jslint.JSLint;
 import net.happygiraffe.jslint.Option;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
-import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Resource;
+import org.apache.tools.ant.types.ResourceCollection;
+import org.apache.tools.ant.types.resources.Union;
 
 /**
  * Run {@link JSLint} over a tree of files in order to pick holes in your
@@ -67,7 +67,7 @@ import org.apache.tools.ant.types.FileSet;
  */
 public class JSLintTask extends Task {
 
-    private final List<FileSet> filesets = new ArrayList<FileSet>();
+    private final Union resources = new Union();
 
     private JSLint lint;
 
@@ -89,12 +89,13 @@ public class JSLintTask extends Task {
     }
 
     /**
-     * Check the contents of this {@link FileSet}.
+     * Check the contents of this {@link ResourceCollection}.
      *
-     * @param fileset
+     * @param rc
+     *            Any kind of resource collection, e.g. fileset.
      */
-    public void addFileset(FileSet fileset) {
-        filesets.add(fileset);
+    public void add(ResourceCollection rc) {
+        resources.add(rc);
     }
 
     /**
@@ -102,20 +103,22 @@ public class JSLintTask extends Task {
      */
     @Override
     public void execute() throws BuildException {
-        if (filesets.size() == 0)
-            throw new BuildException("no filesets specified");
+        if (resources.size() == 0) {
+            throw new BuildException("no resources specified");
+        }
 
         for (ResultFormatter rf : formatters) {
             rf.begin();
         }
 
         int failedCount = 0;
-        for (FileSet fs : filesets) {
-            DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-            for (String fileName : ds.getIncludedFiles()) {
-                if (!lintFile(new File(ds.getBasedir(), fileName))) {
+        for (Resource resource : resources.listResources()) {
+            try {
+                if (!lintStream(resource.getName(), resource.getInputStream())) {
                     failedCount++;
                 }
+            } catch (IOException e) {
+                throw new BuildException(e);
             }
         }
 
@@ -126,9 +129,9 @@ public class JSLintTask extends Task {
         if (failedCount != 0) {
             String files = failedCount == 1 ? "file" : "files";
             String msg = failedCount + " " + files + " did not pass JSLint";
-            if (haltOnFailure)
+            if (haltOnFailure) {
                 throw new BuildException(msg);
-            else {
+            } else {
                 log(msg);
             }
         }
@@ -155,28 +158,25 @@ public class JSLintTask extends Task {
         }
     }
 
-    private boolean lintFile(File file) {
-        BufferedReader reader = null;
+    /**
+     * Lint a given stream. Closes the stream after use.
+     *
+     * @throws IOException
+     */
+    private boolean lintStream(String name, InputStream stream)
+            throws UnsupportedEncodingException, IOException {
         try {
-            reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file), encoding));
-            List<Issue> issues = lint.lint(file.toString(), reader);
-            log("Found " + issues.size() + " issues in " + file,
+            List<Issue> issues = lint.lint(name, new BufferedReader(
+                    new InputStreamReader(stream, encoding)));
+            log("Found " + issues.size() + " issues in " + name,
                     Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
-                rf.output(file, issues);
+                rf.output(name, issues);
             }
             return issues.size() == 0;
-        } catch (FileNotFoundException e) {
-            throw new BuildException(e);
-        } catch (IOException e) {
-            throw new BuildException(e);
         } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                }
+            if (stream != null) {
+                stream.close();
             }
         }
     }
