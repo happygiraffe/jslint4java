@@ -67,4 +67,13 @@ Tests for the JSLint ant task.
              able to trigger the same condition. -->
         <au:assertLogContains text="Missing semicolon." />
     </target>
+
+	<target name="testArbitraryResource">
+		<au:expectfailure expectedmessage="1 file did not pass JSLint">
+			<jsl:jslint>
+				<formatter type="plain" />
+				<string value="eval(42);" />
+			</jsl:jslint>
+		</au:expectfailure>
+	</target>
 </project>
