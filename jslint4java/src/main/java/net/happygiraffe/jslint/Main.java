@@ -62,6 +62,8 @@ public class Main {
         for (Option o : Option.values()) {
             info(String.format(fmt, o.getLowerName(), o.getDescription()));
         }
+        info("");
+        info("using jslint version " + lint.getEdition());
         System.exit(0);
     }
 
