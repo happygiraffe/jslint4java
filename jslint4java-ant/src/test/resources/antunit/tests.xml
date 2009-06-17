@@ -27,6 +27,12 @@ Tests for the JSLint ant task.
         </au:antunit>
     </target>
 
+	<target name="testNoResources">
+		<au:expectfailure expectedmessage="no resources specified">
+			<jsl:jslint />
+		</au:expectfailure>
+	</target>
+
     <target name="testFailsOnError">
         <au:expectfailure expectedmessage="1 file did not pass JSLint">
             <jsl:jslint>
