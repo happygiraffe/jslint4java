@@ -6,7 +6,7 @@
          xmlns:jsl="antlib:net.happygiraffe.jslint">
     <description>
 Tests for the JSLint ant task.
-	</description>
+    </description>
 
     <taskdef uri="antlib:org.apache.ant.antunit"
              resource="org/apache/ant/antunit/antlib.xml"
@@ -17,7 +17,7 @@ Tests for the JSLint ant task.
 
     <!-- Have to convert from boolean for use in target/@unless. -->
     <condition property="skipping">
-      <istrue value="${test.skipped}" />
+        <istrue value="${test.skipped}" />
     </condition>
 
     <target name="allTests" unless="skipping">
@@ -27,11 +27,11 @@ Tests for the JSLint ant task.
         </au:antunit>
     </target>
 
-	<target name="testNoResources">
-		<au:expectfailure expectedmessage="no resources specified">
-			<jsl:jslint />
-		</au:expectfailure>
-	</target>
+    <target name="testNoResources">
+        <au:expectfailure expectedmessage="no resources specified">
+            <jsl:jslint />
+        </au:expectfailure>
+    </target>
 
     <target name="testFailsOnError">
         <au:expectfailure expectedmessage="1 file did not pass JSLint">
@@ -68,12 +68,12 @@ Tests for the JSLint ant task.
         <au:assertLogContains text="Missing semicolon." />
     </target>
 
-	<target name="testArbitraryResource">
-		<au:expectfailure expectedmessage="1 file did not pass JSLint">
-			<jsl:jslint>
-				<formatter type="plain" />
-				<string value="eval(42);" />
-			</jsl:jslint>
-		</au:expectfailure>
-	</target>
+    <target name="testArbitraryResource">
+        <au:expectfailure expectedmessage="1 file did not pass JSLint">
+            <jsl:jslint>
+                <formatter type="plain" />
+                <string value="eval(42);" />
+            </jsl:jslint>
+        </au:expectfailure>
+    </target>
 </project>
