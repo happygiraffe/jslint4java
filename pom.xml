@@ -224,6 +224,14 @@
           <linkXRef>false</linkXRef>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+          <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
+        </configuration>
+      </plugin>
     </plugins>
   </reporting>
   <distributionManagement>
