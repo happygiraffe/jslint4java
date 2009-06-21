@@ -235,8 +235,6 @@
         <version>2.4</version>
         <configuration>
           <targetJdk>1.5</targetJdk>
-          <!-- Needs another report plugin; I'll do it later. -->
-          <linkXRef>false</linkXRef>
         </configuration>
       </plugin>
       <plugin>
