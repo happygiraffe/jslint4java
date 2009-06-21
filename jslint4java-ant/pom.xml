@@ -6,7 +6,7 @@
   <name>jslint4java ant task</name>
   <description>An ant task to run JSLint.</description>
   <parent>
-    <groupId>net.happygiraffe</groupId>
+    <groupId>net.happygiraffe.jslint4java</groupId>
     <artifactId>jslint4java-parent</artifactId>
     <version>1.3-SNAPSHOT</version>
   </parent>
