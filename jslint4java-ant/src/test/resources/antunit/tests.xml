@@ -3,7 +3,7 @@
 <project name="jslint-antunit"
          default="allTests"
          xmlns:au="antlib:org.apache.ant.antunit"
-         xmlns:jsl="antlib:net.happygiraffe.jslint">
+         xmlns:jsl="antlib:com.googlecode.jslint4java">
     <description>
 Tests for the JSLint ant task.
     </description>
@@ -11,8 +11,8 @@ Tests for the JSLint ant task.
     <taskdef uri="antlib:org.apache.ant.antunit"
              resource="org/apache/ant/antunit/antlib.xml"
              classpath="${test.classpath}" />
-    <taskdef uri="antlib:net.happygiraffe.jslint"
-             resource="net/happygiraffe/jslint/antlib.xml"
+    <taskdef uri="antlib:com.googlecode.jslint4java"
+             resource="com/googlecode/jslint4java/antlib.xml"
              classpath="${test.classpath}" />
 
     <!-- Have to convert from boolean for use in target/@unless. -->

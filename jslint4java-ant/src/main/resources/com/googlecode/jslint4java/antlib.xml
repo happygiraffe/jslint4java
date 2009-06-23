@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<!-- $Id$ -->
+<antlib>
+  <taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask" />
+</antlib>

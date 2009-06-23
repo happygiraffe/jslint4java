@@ -41,6 +41,6 @@
     </plugins>
   </build>
   <properties>
-    <mainClass>net.happygiraffe.jslint.Main</mainClass>
+    <mainClass>com.googlecode.jslint4java.Main</mainClass>
   </properties>
 </project>

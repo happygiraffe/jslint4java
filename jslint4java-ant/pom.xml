@@ -79,7 +79,7 @@
                   <transformers>
                     <transformer
                       implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                      <mainClass>net.happygiraffe.jslint.Main</mainClass>
+                      <mainClass>com.googlecode.jslint4java.Main</mainClass>
                     </transformer>
                   </transformers>
                 </configuration>
