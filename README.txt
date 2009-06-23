@@ -33,7 +33,7 @@ through the maven repository.
 If you wish to use jslint4java from within Java, please use a maven dependency:
 
     <dependency>
-      <groupId>net.happygiraffe.jslint4java</groupId>
+      <groupId>com.googlecode.jslint4java</groupId>
       <artifactId>jslint4java</artifactId>
       <version>${project.version}</version>
     </dependency>
