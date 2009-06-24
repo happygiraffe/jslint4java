@@ -249,14 +249,14 @@
   </reporting>
   <distributionManagement>
     <repository>
-      <id>happygiraffe</id>
-      <name>HappyGiraffe Internal Repository</name>
-      <url>scpexe://happygiraffe.net/local/maven/2</url>
+      <id>googlecode-releases</id>
+      <name>Googlecode Repository @ OSS.Sonatype</name>
+      <url>http://oss.sonatype.org/content/repositories/googlecode-releases/</url>
     </repository>
     <snapshotRepository>
-      <id>happygiraffe</id>
-      <name>HappyGiraffe Internal Repository</name>
-      <url>scpexe://happygiraffe.net/local/maven/snapshots-2</url>
+      <id>googlecode-snapshots</id>
+      <name>Googlecode Snapshots Repository @ OSS.Sonatype</name>
+      <url>http://oss.sonatype.org/content/repositories/googlecode-snapshots/</url>
     </snapshotRepository>
     <site>
       <id>happygiraffe</id>
