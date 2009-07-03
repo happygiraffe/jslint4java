@@ -54,6 +54,12 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>jslint4java-docs</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+      <dependency>
         <groupId>rhino</groupId>
         <artifactId>js</artifactId>
         <version>1.7R1</version>

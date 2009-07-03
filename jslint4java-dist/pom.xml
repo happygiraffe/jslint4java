@@ -18,6 +18,11 @@
       <artifactId>jslint4java-ant</artifactId>
       <classifier>shaded</classifier>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jslint4java-docs</artifactId>
+      <type>zip</type>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
