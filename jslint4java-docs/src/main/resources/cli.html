@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jslint4java command line usage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="jslint4java.css" type="text/css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1>Using jslint4java on the command line</h1>
+
+    <p>jslint4java can be run as an executable jar file:</p>
+
+    <pre>
+$ java -jar jslint4java-1.3.jar
+usage: jslint [options] file.js ...
+  --adsafe   If adsafe should be enforced
+  --bitwise  If bitwise operators should not be allowed
+  --browser  If the standard browser globals should be predefined
+  --cap      If upper case html should be allowed
+  --css      If css workarounds should be tolerated
+  --debug    If debugger statements should be allowed
+  --eqeqeq   If === should be required
+  --evil     If eval should be allowed
+  --forin    If for in statements must filter
+  --fragment If html fragments should be allowed
+  --immed    If immediate invocations must be wrapped in parens
+  --indent   The number of spaces used for indentation (default is 4)
+  --laxbreak If line breaks should not be checked
+  --newcap   If constructor names must be capitalized
+  --nomen    If names should be checked
+  --on       If html event handlers should be allowed
+  --onevar   If only one var statement per function should be allowed
+  --passfail If the scan should stop on first error
+  --plusplus If increment/decrement should not be allowed
+  --regexp   If the . should not be allowed in regexp literals
+  --rhino    If the rhino environment globals should be predefined
+  --safe     If use of some browser features should be restricted
+  --sidebar  If the system object should be predefined
+  --strict   Require the "use strict"; pragma
+  --sub      If all forms of subscript notation are tolerated
+  --undef    If variables should be declared before used
+  --white    If strict whitespace rules apply
+  --widget   If the yahoo widgets globals should be predefined
+
+using jslint version 2009-06-12
+$
+    </pre>
+
+    <p>The list of options is derived from the
+      <a href="apidocs/net/happygiraffe/jslint/Option.html">Option</a> enum.  For fuller
+      documentation of each option, see the
+      <a href="http://www.jslint.com/lint.html">jslint web site</a>.</p>
+
+    <p>You must pass a number of javascript files on the command line.  For each one,
+      jslint4java will produce a list of errors on stdout.  If any errors are found,
+      an exit code of 1 will be returned.</p>
+
+    <p>Sample error output:</p>
+
+    <pre>
+$ cat dodgy.js
+someVar = 42
+$ java -jar jslint4java-1.3.jar dodgy.js
+jslint:dodgy.js:0:12:Missing semicolon.
+$
+    </pre>
+
+    <p>The fields are colon separated and consist of:</p>
+
+    <ol>
+      <li>The fixed string "jslint"</li>
+      <li>The filename</li>
+      <li>The line number</li>
+      <li>The column number</li>
+      <li>The error</li>
+    </ol>
+
+    <p>Most command line flags are boolean.  If you wish to pass a value to a flag
+      (e.g. <code>--indent</code>), add it using an equals.  For example:</p>
+
+    <pre>
+$ cat happy.js
+var x;
+if (x) {
+  x = 42;
+}
+$ java -jar jslint4java-1.3.jar --white happy.js
+jslint:happy.js:2:2:Expected 'x' to have an indentation of 4 instead of 2.
+$ java -jar jslint4java-1.3.jar --white --indent=2 happy.js
+$
+    </pre>
+  </body>
+</html>
