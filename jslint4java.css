@@ -1,0 +1,18 @@
+table td, table th {
+  border: 1px solid #aaa;
+  padding: 5px;
+}
+
+dt {
+  font-style: italic;
+}
+
+/* taken from jslint.com */
+.warning {
+  text-align: center;
+  margin: 1em;
+  border: 2px solid black;
+  padding: 1em;
+  background-color:  rgb(255, 182, 193);
+  font-size: larger;
+}
