@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Update the gh-pages branch to point at the latest copy of the docs, which
+# are stored in a subdirectory.
+#
+
+parent_sha=$(git show-ref -s gh-pages)
+doc_sha=$(git ls-tree -d HEAD jslint4java-docs/src/main/resources | awk '{print $3}')
+new_commit=$(echo "Auto-update docs." | git commit-tree $doc_sha -p $parent_sha)
+git update-ref refs/heads/gh-pages $new_commit
