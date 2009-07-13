@@ -23,6 +23,10 @@
       </includes>
       <filtered>true</filtered>
     </fileSet>
+    <fileSet>
+      <directory>${basedir}/../target/site/apidocs</directory>
+      <outputDirectory>/docs/apidocs</outputDirectory>
+    </fileSet>
   </fileSets>
 
   <dependencySets>
