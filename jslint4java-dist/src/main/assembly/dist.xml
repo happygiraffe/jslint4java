@@ -32,9 +32,11 @@
   <dependencySets>
     <dependencySet>
       <includes>
-        <include>*:shaded</include>
+        <include>com.googlecode.jslint4java:jslint4java-ant:jar:shaded</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
+      <!-- Map to a sensible name. -->
+      <outputFileNameMapping>jslint4java-${artifact.version}.jar</outputFileNameMapping>
     </dependencySet>
     <dependencySet>
       <includes>
