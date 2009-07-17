@@ -1,5 +1,5 @@
 // jslint.js
-// 2009-06-12
+// 2009-07-08
 
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
@@ -99,7 +99,7 @@ SOFTWARE.
     "border-spacing", "border-style", "border-top", "border-top-color",
     "border-top-style", "border-top-width", "border-width", bottom, br,
     brown, browser, burlywood, button, bytesToUIString, c, cadetblue,
-    callee, caller, canvas, cap, caption, "caption-side", cases, center,
+    call, callee, caller, canvas, cap, caption, "caption-side", cases, center,
     charAt, charCodeAt, character, chartreuse, chocolate, chooseColor,
     chooseFile, chooseFolder, cite, clear, clearInterval, clearTimeout,
     clip, close, closeWidget, closed, cm, code, col, colgroup, color,
@@ -151,25 +151,27 @@ SOFTWARE.
     pink, play, plum, plusplus, pop, popupMenu, position, powderblue, pre,
     predef, preferenceGroups, preferences, print, prompt, prototype, pt,
     purple, push, px, q, quit, quotes, random, range, raw, reach, readFile,
-    readUrl, reason, red, regexp, reloadWidget, replace, report, reserved,
-    resizeBy, resizeTo, resolvePath, resumeUpdates, rhino, right, rosybrown,
-    royalblue, runCommand, runCommandInBg, saddlebrown, safe, salmon, samp,
-    sandybrown, saveAs, savePreferences, screen, script, scroll, scrollBy,
-    scrollTo, seagreen, seal, search, seashell, select, serialize,
-    setInterval, setTimeout, shift, showWidgetPreferences, sidebar, sienna,
-    silver, skyblue, slateblue, slategray, sleep, slice, small, snow, sort,
-    span, spawn, speak, split, springgreen, src, status, steelblue, strict,
-    strong, style, styleproperty, sub, substr, sup, supplant,
-    suppressUpdates, sync, system, table, "table-layout", tan, tbody, td,
-    teal, tellWidget, test, "text-align", "text-decoration", "text-indent",
-    "text-shadow", "text-transform", textarea, tfoot, th, thead, thistle,
-    title, toLowerCase, toString, toUpperCase, toint32, token, tomato, top,
-    tr, tt, turquoise, type, u, ul, undef, unescape, "unicode-bidi",
-    unwatch, updateNow, value, valueOf, var, version, "vertical-align",
-    violet, visibility, visited, watch, wheat, white, "white-space",
-    whitesmoke, widget, width, "word-spacing", yahooCheckLogin, yahooLogin,
-    yahooLogout, yellow, yellowgreen, "z-index"
+    readUrl, reason, red, regexp, reloadWidget, removeEventListener,
+    replace, report, reserved, resizeBy, resizeTo, resolvePath,
+    resumeUpdates, rhino, right, rosybrown, royalblue, runCommand,
+    runCommandInBg, saddlebrown, safe, salmon, samp, sandybrown, saveAs,
+    savePreferences, screen, script, scroll, scrollBy, scrollTo, seagreen,
+    seal, search, seashell, select, serialize, setInterval, setTimeout,
+    shift, showWidgetPreferences, sidebar, sienna, silver, skyblue,
+    slateblue, slategray, sleep, slice, small, snow, sort, span, spawn,
+    speak, split, springgreen, src, status, steelblue, strict, strong,
+    style, styleproperty, sub, substr, sup, supplant, suppressUpdates, sync,
+    system, table, "table-layout", tan, tbody, td, teal, tellWidget, test,
+    "text-align", "text-decoration", "text-indent", "text-shadow",
+    "text-transform", textarea, tfoot, th, thead, thistle, title,
+    toLowerCase, toString, toUpperCase, toint32, token, tomato, top, tr, tt,
+    turquoise, type, u, ul, undef, unescape, "unicode-bidi", unwatch,
+    updateNow, value, valueOf, var, version, "vertical-align", violet,
+    visibility, visited, watch, wheat, white, "white-space", whitesmoke,
+    widget, width, "word-spacing", yahooCheckLogin, yahooLogin, yahooLogout,
+    yellow, yellowgreen, "z-index"
 */
+
 
 // We build the application inside a function so that we produce only a single
 // global variable. The function will be invoked, its return value is the JSLINT
@@ -279,6 +281,7 @@ var JSLINT = (function () {
             parent          : false,
             print           : false,
             prompt          : false,
+            removeEventListener: false,
             resizeBy        : false,
             resizeTo        : false,
             screen          : false,
@@ -632,6 +635,7 @@ var JSLINT = (function () {
             'eval'              : false,
             EvalError           : false,
             Function            : false,
+            hasOwnProperty      : false,
             isFinite            : false,
             isNaN               : false,
             JSON                : false,
@@ -808,10 +812,16 @@ var JSLINT = (function () {
         };
     }
 
+
+    function is_own(object, name) {
+        return Object.prototype.hasOwnProperty.call(object, name);
+    }
+
+
     function combine(t, o) {
         var n;
         for (n in o) {
-            if (o.hasOwnProperty(n)) {
+            if (is_own(o, n)) {
                 t[n] = o[n];
             }
         }
@@ -977,7 +987,7 @@ var JSLINT = (function () {
             if (type === '(color)') {
                 t = {type: type};
             } else if (type === '(punctuator)' ||
-                    (type === '(identifier)' && syntax.hasOwnProperty(value))) {
+                    (type === '(identifier)' && is_own(syntax, value))) {
                 t = syntax[value] || syntax['(error)'];
             } else {
                 t = syntax[type];
@@ -1549,6 +1559,35 @@ var JSLINT = (function () {
 
     //      punctuator
 
+                        case '<!--':
+                            l = line;
+                            c = character;
+                            for (;;) {
+                                i = s.indexOf('--');
+                                if (i >= 0) {
+                                    break;
+                                }
+                                i = s.indexOf('<!');
+                                if (i >= 0) {
+                                    errorAt("Nested HTML comment.",
+                                        line, character + i);
+                                }
+                                if (!nextLine()) {
+                                    errorAt("Unclosed HTML comment.", l, c);
+                                }
+                            }
+                            l = s.indexOf('<!');
+                            if (l >= 0 && l < i) {
+                                errorAt("Nested HTML comment.",
+                                    line, character + l);
+                            }
+                            character += i;
+                            if (s[i + 2] !== '>') {
+                                errorAt("Expected -->.", line, character);
+                            }
+                            character += 3;
+                            s = s.slice(i + 3);
+                            break;
                         case '#':
                             if (xmode === 'html' || xmode === 'styleproperty') {
                                 for (;;) {
@@ -1600,16 +1639,15 @@ var JSLINT = (function () {
 
     function addlabel(t, type) {
 
-        if (t === 'hasOwnProperty') {
-            error("'hasOwnProperty' is a really bad name.");
-        }
         if (option.safe && funct['(global)'] && typeof predefined[t] !== 'boolean') {
             warning('ADsafe global: ' + t + '.', token);
+        } else if (t === 'hasOwnProperty') {
+            warning("'hasOwnProperty' is a really bad name.");
         }
 
 // Define t in the current function in the current scope.
 
-        if (funct.hasOwnProperty(t) && !funct['(global)']) {
+        if (is_own(funct, t) && !funct['(global)']) {
             warning(funct[t] === true ?
                 "'{a}' was used before it was defined." :
                 "'{a}' is already defined.",
@@ -1620,7 +1658,7 @@ var JSLINT = (function () {
             scope[t] = funct;
         } else if (funct['(global)']) {
             global[t] = funct;
-            if (implied.hasOwnProperty(t)) {
+            if (is_own(implied, t)) {
                 warning("'{a}' was used before it was defined.", nexttoken, t);
                 delete implied[t];
             }
@@ -1858,15 +1896,6 @@ loop:   for (;;) {
 
 // Functions for conformance of style.
 
-    function abut(left, right) {
-        left = left || token;
-        right = right || nexttoken;
-        if (left.line !== right.line || left.character !== right.from) {
-            warning("Unexpected space after '{a}'.", right, left.value);
-        }
-    }
-
-
     function adjacent(left, right) {
         left = left || token;
         right = right || nexttoken;
@@ -1994,11 +2023,16 @@ loop:   for (;;) {
         var x = symbol(s, 150);
         reserveName(x);
         x.nud = (typeof f === 'function') ? f : function () {
-            if (option.plusplus && (this.id === '++' || this.id === '--')) {
-                warning("Unexpected use of '{a}'.", this, this.id);
-            }
             this.right = parse(150);
             this.arity = 'unary';
+            if (this.id === '++' || this.id === '--') {
+                if (option.plusplus) {
+                    warning("Unexpected use of '{a}'.", this, this.id);
+                } else if ((!this.right.identifier || this.right.reserved) &&
+                        this.right.id !== '.' && this.right.id !== '[') {
+                    warning("Bad operand.", this);
+                }
+            }
             return this;
         };
         return x;
@@ -2167,6 +2201,8 @@ loop:   for (;;) {
         x.led = function (left) {
             if (option.plusplus) {
                 warning("Unexpected use of '{a}'.", this, this.id);
+            } else if ((!left.identifier || left.reserved) && left.id !== '.' && left.id !== '[') {
+                warning("Bad operand.", this);
             }
             this.left = left;
             return this;
@@ -2885,7 +2921,7 @@ loop:   for (;;) {
                 warning("Excepted a style attribute, and instead saw '{a}'.",
                     nexttoken, nexttoken.value);
             } else {
-                if (cssAttributeData.hasOwnProperty(nexttoken.value)) {
+                if (is_own(cssAttributeData, nexttoken.value)) {
                     v = cssAttributeData[nexttoken.value];
                 } else {
                     v = cssAny;
@@ -3024,7 +3060,7 @@ loop:   for (;;) {
         }
         for (;;) {
             if (nexttoken.identifier) {
-                if (!htmltag.hasOwnProperty(nexttoken.value)) {
+                if (!is_own(htmltag, nexttoken.value)) {
                     warning("Expected a tagName, and instead saw {a}.",
                         nexttoken, nexttoken.value);
                 }
@@ -3035,7 +3071,7 @@ loop:   for (;;) {
                 case '+':
                     advance();
                     if (!nexttoken.identifier ||
-                            !htmltag.hasOwnProperty(nexttoken.value)) {
+                            !is_own(htmltag, nexttoken.value)) {
                         warning("Expected a tagName, and instead saw {a}.",
                             nexttoken, nexttoken.value);
                     }
@@ -3397,7 +3433,7 @@ loop:   for (;;) {
                     }
                     a = a.toLowerCase();
                     xquote = '';
-                    if (attributes.hasOwnProperty(a)) {
+                    if (is_own(attributes, a)) {
                         warning("Attribute '{a}' repeated.", nexttoken, a);
                     }
                     if (a.slice(0, 2) === 'on') {
@@ -3503,32 +3539,16 @@ loop:   for (;;) {
                     if (nexttoken.id === '>' || nexttoken.id === '(end)') {
                         break;
                     }
-                    if (nexttoken.id === '--') {
+                    if (nexttoken.value.indexOf('--') >= 0) {
                         warning("Unexpected --.");
                     }
-                }
-                xmode = 'outer';
-                advance('>');
-                break;
-            case '<!--':
-                xmode = 'html';
-                if (option.safe) {
-                    warning("ADsafe HTML violation.");
-                }
-                for (;;) {
-                    advance();
-                    if (nexttoken.id === '(end)') {
-                        error("Missing '-->'.");
+                    if (nexttoken.value.indexOf('<') >= 0) {
+                        warning("Unexpected <.");
                     }
-                    if (nexttoken.id === '<!' || nexttoken.id === '<!--') {
-                        error("Unexpected '<!' in HTML comment.");
-                    }
-                    if (nexttoken.id === '--') {
-                        advance('--');
-                        break;
+                    if (nexttoken.value.indexOf('>') >= 0) {
+                        warning("Unexpected >.");
                     }
                 }
-                abut();
                 xmode = 'outer';
                 advance('>');
                 break;
@@ -3641,7 +3661,7 @@ loop:   for (;;) {
                             break;
                         case 'closure':
                         case 'parameter':
-                            funct[v] = 'outer';
+                            funct[v] = s['(global)'] ? 'global' : 'outer';
                             break;
                         case 'label':
                             warning("'{a}' is a statement label.", token, v);
@@ -4166,7 +4186,7 @@ loop:   for (;;) {
 // JavaScript does not have block scope. It only has function scope. So,
 // declaring a variable in a block can have unexpected consequences.
 
-        var name, value;
+        var id, name, value;
 
         if (funct['(onevar)'] && option.onevar) {
             warning("Too many var statements.");
@@ -4176,7 +4196,11 @@ loop:   for (;;) {
         this.first = [];
         for (;;) {
             nonadjacent(token, nexttoken);
-            addlabel(identifier(), 'unused');
+            id = identifier();
+            if (funct['(global)'] && predefined[id] === false) {
+                warning("Redefinition of '{a}'.", token, id);
+            }
+            addlabel(id, 'unused');
             if (prefix) {
                 break;
             }
@@ -4892,7 +4916,7 @@ loop:   for (;;) {
     function to_array(o) {
         var a = [], k;
         for (k in o) {
-            if (o.hasOwnProperty(k)) {
+            if (is_own(o, k)) {
                 a.push(k);
             }
         }
@@ -4978,7 +5002,7 @@ loop:   for (;;) {
                 gl = [];
                 la = [];
                 for (k in f) {
-                    if (f.hasOwnProperty(k) && k.charAt(0) !== '(') {
+                    if (is_own(f, k) && k.charAt(0) !== '(') {
                         v = f[k];
                         switch (v) {
                         case 'closure':
@@ -5050,7 +5074,7 @@ loop:   for (;;) {
         return o.join('');
     };
 
-    itself.edition = '2009-06-12';
+    itself.edition = '2009-07-08';
 
     return itself;
 

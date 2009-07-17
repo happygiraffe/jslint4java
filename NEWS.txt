@@ -6,7 +6,7 @@ Revision history for jslint4java.
       antlib:com.googlecode.jslint4java
     - Add support for the indent option.
     - Switch build to maven.
-    - Update to JSLint 2009-06-12.
+    - Update to JSLint 2009-07-08.
 
 1.2.1 2008-09-07
     - Recompile with Java 5.
