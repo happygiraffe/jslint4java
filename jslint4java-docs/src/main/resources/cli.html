@@ -11,7 +11,7 @@
     <p>jslint4java can be run as an executable jar file:</p>
 
     <pre>
-$ java -jar jslint4java-1.3.jar
+$ java -jar jslint4java-${project.version}.jar
 usage: jslint [options] file.js ...
   --adsafe   If adsafe should be enforced
   --bitwise  If bitwise operators should not be allowed
@@ -60,7 +60,7 @@ $
     <pre>
 $ cat dodgy.js
 someVar = 42
-$ java -jar jslint4java-1.3.jar dodgy.js
+$ java -jar jslint4java-${project.version}.jar dodgy.js
 jslint:dodgy.js:0:12:Missing semicolon.
 $
     </pre>
@@ -84,9 +84,9 @@ var x;
 if (x) {
   x = 42;
 }
-$ java -jar jslint4java-1.3.jar --white happy.js
+$ java -jar jslint4java-${project.version}.jar --white happy.js
 jslint:happy.js:2:2:Expected 'x' to have an indentation of 4 instead of 2.
-$ java -jar jslint4java-1.3.jar --white --indent=2 happy.js
+$ java -jar jslint4java-${project.version}.jar --white --indent=2 happy.js
 $
     </pre>
   </body>
