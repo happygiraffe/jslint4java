@@ -64,6 +64,14 @@ public class JSLintTest {
         assertIssues(issues);
     }
 
+    // Issue 16.
+    @Test
+    public void testGlobalName() throws Exception {
+        String src = "/*global name: true */\nname = \"fred\";";
+        List<Issue> issues = lint(src);
+        assertIssues(issues);
+    }
+
     @Test
     public void testLintReader() throws Exception {
         Reader reader = new StringReader("var foo = 1");
