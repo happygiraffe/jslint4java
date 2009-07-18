@@ -32,7 +32,19 @@ public class FormatterElement {
      *
      */
     public static enum Type {
-        plain, xml;
+        plain() {
+            @Override
+            public ResultFormatter getResultFormatter() {
+                return new PlainResultFormatter();
+            }
+        },
+        xml() {
+            @Override
+            public ResultFormatter getResultFormatter() {
+                return new XmlResultFormatter();
+            }
+        };
+        abstract ResultFormatter getResultFormatter();
     }
 
     private Type type;
@@ -60,15 +72,7 @@ public class FormatterElement {
     public ResultFormatter getResultFormatter() {
         if (type == null)
             throw new BuildException("you must specify type");
-        ResultFormatter rf = null;
-        switch (type) {
-        case plain:
-            rf = new PlainResultFormatter();
-            break;
-        case xml:
-            rf = new XmlResultFormatter();
-            break;
-        }
+        ResultFormatter rf = type.getResultFormatter();
         if (destFile != null) {
             rf.setOut(getFileOutputStream());
         } else {
