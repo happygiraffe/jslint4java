@@ -11,7 +11,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.util.DOMElementWriter;
 import org.apache.tools.ant.util.FileUtils;
@@ -40,9 +39,9 @@ import com.googlecode.jslint4java.Issue;
 public class XmlResultFormatter implements ResultFormatter {
 
     private OutputStream out;
-    private DocumentBuilder builder;
-    private Document doc;
-    private Element rootElement;
+    private DocumentBuilder builder = null;
+    private Document doc = null;
+    private Element rootElement = null;
 
     public void begin() {
         try {

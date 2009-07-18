@@ -6,7 +6,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
-
 import org.apache.tools.ant.util.FileUtils;
 
 import com.googlecode.jslint4java.Issue;
@@ -21,7 +20,7 @@ import com.googlecode.jslint4java.Issue;
 public class PlainResultFormatter implements ResultFormatter {
 
     private OutputStream out;
-    private PrintWriter w;
+    private PrintWriter w = null;
 
     public void begin() {
         // Use the default system encoding, as that's likely what the console is

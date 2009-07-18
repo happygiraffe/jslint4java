@@ -14,17 +14,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.jslint4java.Issue;
-import com.googlecode.jslint4java.JSLint;
-import com.googlecode.jslint4java.Option;
-
 /**
  * @author dom
  * @version $Id$
  */
 public class JSLintTest {
 
-    private JSLint lint;
+    private JSLint lint = null;
 
     // Check that the issues list matches zero or more reasons.
     private void assertIssues(List<Issue> issues, String... reasons) {

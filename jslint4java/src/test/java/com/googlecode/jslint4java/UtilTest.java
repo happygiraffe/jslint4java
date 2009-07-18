@@ -12,8 +12,6 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ScriptableObject;
 
-import com.googlecode.jslint4java.Util;
-
 /**
  * @author dom
  * @version $Id$
@@ -22,7 +20,7 @@ public class UtilTest {
 
     private final ContextFactory contextFactory = new ContextFactory();
     private final Context cx = contextFactory.enterContext();
-    private ScriptableObject scope;
+    private ScriptableObject scope = null;
 
     @Before
     public void setUp() throws Exception {
