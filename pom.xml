@@ -266,10 +266,6 @@
       <name>Googlecode Snapshots Repository @ OSS.Sonatype</name>
       <url>http://oss.sonatype.org/content/repositories/googlecode-snapshots/</url>
     </snapshotRepository>
-    <site>
-      <id>happygiraffe</id>
-      <url>scpexe://happygiraffe.net/local/maven/site</url>
-    </site>
   </distributionManagement>
   <profiles>
     <profile>
