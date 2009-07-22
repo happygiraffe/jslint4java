@@ -1,6 +1,6 @@
 Revision history for jslint4java.
 
-1.3-SNAPSHOT
+1.3-SNAPSHOT 2009-07-22
     - [INCOMPATIBILITY] Rename package from net.happygiraffe.jslint to
       com.googlecode.jslint4java.  This means that the antlib url is now
       antlib:com.googlecode.jslint4java
