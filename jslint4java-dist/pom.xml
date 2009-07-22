@@ -12,21 +12,21 @@
     <groupId>com.googlecode.jslint4java</groupId>
     <version>1.3-SNAPSHOT</version>
   </parent>
-  <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>jslint4java-ant</artifactId>
-      <classifier>shaded</classifier>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>jslint4java-docs</artifactId>
-      <type>zip</type>
-    </dependency>
-  </dependencies>
   <profiles>
     <profile>
       <id>dist</id>
+      <dependencies>
+        <dependency>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>jslint4java-ant</artifactId>
+          <classifier>shaded</classifier>
+        </dependency>
+        <dependency>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>jslint4java-docs</artifactId>
+          <type>zip</type>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <plugin>
