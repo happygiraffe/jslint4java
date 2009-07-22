@@ -38,6 +38,7 @@
   <modules>
     <module>jslint4java</module>
     <module>jslint4java-ant</module>
+    <module>jslint4java-dist</module>
     <module>jslint4java-docs</module>
   </modules>
   <dependencyManagement>
@@ -273,9 +274,6 @@
   <profiles>
     <profile>
       <id>dist</id>
-      <modules>
-        <module>jslint4java-dist</module>
-      </modules>
       <build>
         <plugins>
           <!-- Build the javadoc so we can aggregate it. -->
