@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Import javadocs from the latest release to googlecode svn.
+# This allows them to be made publically available in a fairly simple fashion.
+#
+
+me=${0##*/}
+
+if [[ -z $1 ]] ; then
+    echo "usage: $me jslint4java-X-dist.zip" >&2
+    exit 2
+fi
+
+distfile="$1"
+name=${distfile%-dist.zip}
+name=${name##*/}
+version=${name#jslint4java-}
+tmpd=$(mktemp -d -t $me.XXXXXX)
+trap "test -d '$tmpd' && rm -rf '$tmpd'" EXIT HUP INT QUIT TERM
+
+unzip -q $distfile -d $tmpd
+cd $tmpd/$name/docs
+svn import \
+    --auto-props \
+    --message "Import $name docs." \
+    https://jslint4java.googlecode.com/svn/docs/$version
