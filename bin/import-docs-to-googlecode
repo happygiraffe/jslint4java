@@ -18,6 +18,20 @@ version=${name#jslint4java-}
 tmpd=$(mktemp -d -t $me.XXXXXX)
 trap "test -d '$tmpd' && rm -rf '$tmpd'" EXIT HUP INT QUIT TERM
 
+# Check properties are set up correctly.
+if ! egrep -q '^[[:space:]]*\*.html\b' ~/.subversion/config; then
+    cat <<EOF
+$me: please set up auto-props in ~/.subversion/config:
+
+    [miscellany]
+    enable-auto-props = yes
+    [auto-props]
+    *.html = svn:eol-style=native;svn:mime-type=text/html
+
+EOF
+    exit 1
+fi
+
 unzip -q $distfile -d $tmpd
 cd $tmpd/$name/docs
 svn import \
