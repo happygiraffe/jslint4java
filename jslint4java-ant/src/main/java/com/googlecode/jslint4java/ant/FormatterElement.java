@@ -15,7 +15,7 @@ import org.apache.tools.ant.BuildException;
  *
  * <dl>
  * <dt><code>type</code></dt>
- * <dd>Either "plain" or "xml".</dd>
+ * <dd>Either "plain" or "xml" or "netbeans".</dd>
  * <dt><code>destfile</code></dt>
  * <dd>Optional.  A file to write the formatters' output to.</dd>
  * </dl>
@@ -42,6 +42,12 @@ public class FormatterElement {
             @Override
             public ResultFormatter getResultFormatter() {
                 return new XmlResultFormatter();
+            }
+        },
+        netbeans() {
+            @Override
+            public ResultFormatter getResultFormatter() {
+                return new NetbeansResultFormatter();
             }
         };
         abstract ResultFormatter getResultFormatter();

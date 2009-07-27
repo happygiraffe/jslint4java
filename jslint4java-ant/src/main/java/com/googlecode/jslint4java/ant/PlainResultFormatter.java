@@ -19,8 +19,8 @@ import com.googlecode.jslint4java.Issue;
  */
 public class PlainResultFormatter implements ResultFormatter {
 
-    private OutputStream out;
-    private PrintWriter w = null;
+    protected OutputStream out;
+    protected PrintWriter w = null;
 
     public void begin() {
         // Use the default system encoding, as that's likely what the console is
@@ -36,9 +36,9 @@ public class PlainResultFormatter implements ResultFormatter {
     /**
      * Emit all issues to the console.
      *
-     * @see ResultFormatter#output(String, List)
+     * @see ResultFormatter#output(String, String, List)
      */
-    public void output(String name, List<Issue> issues) {
+    public void output(String name, String fullPath, List<Issue> issues) {
         if (issues.size() == 0)
             return;
 
@@ -58,7 +58,7 @@ public class PlainResultFormatter implements ResultFormatter {
      *
      * @param howmany
      */
-    private String spaces(int howmany) {
+    protected String spaces(int howmany) {
         StringBuffer sb = new StringBuffer(howmany);
         for (int i = 0; i < howmany; i++) {
             sb.append(" ");

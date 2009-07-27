@@ -12,7 +12,7 @@ import com.googlecode.jslint4java.Issue;
  * <ul>
  * <li>{@link #setOut(OutputStream)}
  * <li>{@link #begin()}
- * <li>{@link #output(String, List)}
+ * <li>{@link #output(String, String, List)}
  * <li>{@link #end()}
  * </ul>
  *
@@ -36,11 +36,12 @@ public interface ResultFormatter {
      *
      * @param name
      *                The file just examined.
-     *
+     * @param fullPath
+     *                The full path (including base directory) to the file just examined.
      * @param issues
      *                A list of issues fond with this file. May be empty.
      */
-    public abstract void output(String name, List<Issue> issues);
+    public abstract void output(String name, String fullPath, List<Issue> issues);
 
     /**
      * Called during initialization.

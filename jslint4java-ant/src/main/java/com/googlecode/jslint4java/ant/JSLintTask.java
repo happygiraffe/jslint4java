@@ -113,7 +113,7 @@ public class JSLintTask extends Task {
         int failedCount = 0;
         for (Resource resource : resources.listResources()) {
             try {
-                if (!lintStream(resource.getName(), resource.getInputStream())) {
+                if (!lintStream(resource.getName(), resource.toString(), resource.getInputStream())) {
                     failedCount++;
                 }
             } catch (IOException e) {
@@ -162,7 +162,7 @@ public class JSLintTask extends Task {
      *
      * @throws IOException
      */
-    private boolean lintStream(String name, InputStream stream)
+    private boolean lintStream(String name, String fullPath, InputStream stream)
             throws UnsupportedEncodingException, IOException {
         try {
             List<Issue> issues = lint.lint(name, new BufferedReader(
@@ -170,7 +170,7 @@ public class JSLintTask extends Task {
             log("Found " + issues.size() + " issues in " + name,
                     Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
-                rf.output(name, issues);
+                rf.output(name, fullPath, issues);
             }
             return issues.size() == 0;
         } finally {
