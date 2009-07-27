@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Create a source-archive.
+#
+
+if [[ -z $1 ]] ; then
+    echo "usage: ${0##*/} tag" >&2
+    exit 2
+fi
+
+tag="$1"
+prefix="jslint4java-${tag#rel-}"
+zip="${prefix}-src.zip"
+git archive \
+    --format=zip \
+    --prefix=$prefix/ \
+    --output=$zip \
+    $tag
+ls $zip
