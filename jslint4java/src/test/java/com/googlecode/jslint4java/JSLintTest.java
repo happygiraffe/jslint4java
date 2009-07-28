@@ -47,6 +47,13 @@ public class JSLintTest {
     }
 
     @Test
+    public void testAccurateLineNumbers() {
+        List<Issue> issues = lint("var foo = 1");
+        assertIssues(issues, "Missing semicolon.");
+        assertThat(issues.get(0).getLine(), is(1));
+    }
+
+    @Test
     public void testGetEdition() throws Exception {
         String edition = lint.getEdition();
         assertThat(edition, is(notNullValue()));

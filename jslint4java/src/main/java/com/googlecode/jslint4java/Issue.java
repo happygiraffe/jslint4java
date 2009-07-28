@@ -33,7 +33,8 @@ public class Issue {
     Issue(String systemId, Scriptable err) {
         this.systemId = systemId;
         reason = Util.stringValue("reason", err);
-        line = Util.intValue("line", err);
+        // jslint emits zero based errors.
+        line = Util.intValue("line", err) + 1;
         character = Util.intValue("character", err);
         evidence = Util.stringValue("evidence", err);
         raw = Util.stringValue("raw", err);

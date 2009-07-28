@@ -30,7 +30,7 @@ public class IssueTest {
     public void testEmptyError() throws Exception {
         Issue issue = new Issue("foo.js", scope);
         assertThat(issue.getReason(), is(nullValue()));
-        assertThat(issue.getLine(), is(0));
+        assertThat(issue.getLine(), is(1));
         assertThat(issue.getCharacter(), is(0));
     }
 
@@ -38,14 +38,14 @@ public class IssueTest {
     public void testNullError() throws Exception {
         Issue issue = new Issue("foo.js", null);
         assertThat(issue.getReason(), is(nullValue()));
-        assertThat(issue.getLine(), is(0));
+        assertThat(issue.getLine(), is(1));
         assertThat(issue.getCharacter(), is(0));
     }
 
     @Test
     public void testToString() {
         scope.put("reason", scope, "you broke it");
-        scope.put("line", scope, 1);
+        scope.put("line", scope, 0);
         scope.put("character", scope, 1);
         Issue issue = new Issue("foo.js", scope);
         assertThat(issue.toString(), is("foo.js:1:1:you broke it"));
