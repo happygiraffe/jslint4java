@@ -14,6 +14,7 @@
       that it can be invoked automatically as part of your build procedure.  For
       more detail on precisely what is checked, please see
       <a href="http://jslint.com/lint.html">the original documentation</a>.
+      To get started quickly, see the <a href="#examples">examples</a>.
     </p>
 
     <p>jslint4java requires Java 5 and ant 1.7.</p>
@@ -143,7 +144,29 @@
 
     <p>
       Doing so will require you to access the <tt>jslint</tt> task as
-      <tt>jsl:jslint</tt>.
+      <tt>jsl:jslint</tt>.  This also means that you have to install
+      <code>jslint4java-${project.version}.jar</code> in
+      <code>~/.ant/libs</code>.
+    </p>
+
+    <p>
+      If you want to keep the jslint4java jar checked in as part of your
+      project, you have to combine the above two approaches. For example,
+      assuming you have placed the jar in <code>lib-build</code>:
+    </p>
+
+    <pre class="prettyprint" id="example-checkedin">&lt;project xmlns:jsl=&quot;antlib:com.googlecode.jslint4java&quot;&gt;
+  &lt;path id=&quot;ant.tasks.classpath&quot;&gt;
+    &lt;fileset dir=&quot;lib-build&quot; include=&quot;*.jar&quot; /&gt;
+  &lt;/path&gt;
+  &lt;taskdef uri=&quot;antlib:com.googlecode.jslint4java&quot;
+           resource=&quot;com/googlecode/jslint4java/antlib.xml&quot;
+           classpathref=&quot;ant.tasks.classpath&quot; /&gt;
+  &hellip;
+&lt;/project&gt;</pre>
+
+    <p>
+      Again, this means you have to refer to the task as <code>jsl:jslint</code>.
     </p>
 
     <p>
