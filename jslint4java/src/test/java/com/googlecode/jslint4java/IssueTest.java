@@ -27,7 +27,7 @@ public class IssueTest {
 
     @Test
     public void testEmptyError() throws Exception {
-        Issue issue = new IssueBuilder("foo.js", scope).build();
+        Issue issue = IssueBuilder.fromJavaScript("foo.js", scope);
         assertThat(issue.getReason(), is(nullValue()));
         assertThat(issue.getLine(), is(1));
         assertThat(issue.getCharacter(), is(1));
@@ -35,7 +35,7 @@ public class IssueTest {
 
     @Test
     public void testNullError() throws Exception {
-        Issue issue = new IssueBuilder("foo.js", null).build();
+        Issue issue = IssueBuilder.fromJavaScript("foo.js", null);
         assertThat(issue.getReason(), is(nullValue()));
         assertThat(issue.getLine(), is(1));
         assertThat(issue.getCharacter(), is(1));

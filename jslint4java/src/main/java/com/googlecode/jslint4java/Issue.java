@@ -15,6 +15,21 @@ public class Issue {
      */
     public static class IssueBuilder {
 
+        /** Build from a JavaScript context */
+        public static Issue fromJavaScript(String systemId, Scriptable err) {
+            // jslint emits zero based lines & columns.
+            int line = Util.intValue("line", err) + 1;
+            int col = Util.intValue("character", err) + 1;
+            return new IssueBuilder(systemId, line, col, Util.stringValue("reason", err))
+                    .evidence(Util.stringValue("evidence", err))
+                    .raw(Util.stringValue("raw", err))
+                    .a(Util.stringValue("a", err))
+                    .b(Util.stringValue("b", err))
+                    .c(Util.stringValue("c", err))
+                    .d(Util.stringValue("d", err))
+                    .build();
+        }
+
         private String a;
         private String b;
         private String c;
@@ -26,22 +41,6 @@ public class Issue {
         private String reason;
         private String systemId;
 
-        /** Build from a JavaScript context */
-        public IssueBuilder(String systemId, Scriptable err) {
-            this.systemId = systemId;
-            reason = Util.stringValue("reason", err);
-            // jslint emits zero based lines & columns.
-            line = Util.intValue("line", err) + 1;
-            character = Util.intValue("character", err) + 1;
-            evidence = Util.stringValue("evidence", err);
-            raw = Util.stringValue("raw", err);
-            a = Util.stringValue("a", err);
-            b = Util.stringValue("b", err);
-            c = Util.stringValue("c", err);
-            d = Util.stringValue("d", err);
-        }
-
-        /** Build by hand. */
         public IssueBuilder(String systemId, int line, int character, String reason) {
             this.character = character;
             this.line = line;
@@ -78,6 +77,10 @@ public class Issue {
             return this;
         }
 
+        public IssueBuilder raw(String raw) {
+            this.raw = raw;
+            return this;
+        }
     }
     private String a;
     private String b;

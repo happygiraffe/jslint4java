@@ -143,7 +143,7 @@ public class JSLint {
             // JSLINT spits out a null when it cannot proceed.
             // TODO Should probably turn i-1th issue into a "fatal".
             if (err != null) {
-                issues.add(new IssueBuilder(systemId, err).build());
+                issues.add(IssueBuilder.fromJavaScript(systemId, err));
             }
         }
     }
