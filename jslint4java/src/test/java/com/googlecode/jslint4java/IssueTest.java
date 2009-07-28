@@ -3,13 +3,12 @@ package com.googlecode.jslint4java;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import com.googlecode.jslint4java.Issue.IssueBuilder;
 import org.junit.After;
 import org.junit.Test;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ScriptableObject;
-
-import com.googlecode.jslint4java.Issue;
 
 /**
  * @author dom
@@ -28,7 +27,7 @@ public class IssueTest {
 
     @Test
     public void testEmptyError() throws Exception {
-        Issue issue = new Issue("foo.js", scope);
+        Issue issue = new IssueBuilder("foo.js", scope).build();
         assertThat(issue.getReason(), is(nullValue()));
         assertThat(issue.getLine(), is(1));
         assertThat(issue.getCharacter(), is(1));
@@ -36,7 +35,7 @@ public class IssueTest {
 
     @Test
     public void testNullError() throws Exception {
-        Issue issue = new Issue("foo.js", null);
+        Issue issue = new IssueBuilder("foo.js", null).build();
         assertThat(issue.getReason(), is(nullValue()));
         assertThat(issue.getLine(), is(1));
         assertThat(issue.getCharacter(), is(1));
@@ -44,10 +43,7 @@ public class IssueTest {
 
     @Test
     public void testToString() {
-        scope.put("reason", scope, "you broke it");
-        scope.put("line", scope, 0);
-        scope.put("character", scope, 0);
-        Issue issue = new Issue("foo.js", scope);
+        Issue issue = new IssueBuilder("foo.js", 1, 1, "you broke it").build();
         assertThat(issue.toString(), is("foo.js:1:1:you broke it"));
     }
 }

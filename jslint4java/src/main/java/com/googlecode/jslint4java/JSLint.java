@@ -1,5 +1,6 @@
 package com.googlecode.jslint4java;
 
+import com.googlecode.jslint4java.Issue.IssueBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -142,7 +143,7 @@ public class JSLint {
             // JSLINT spits out a null when it cannot proceed.
             // TODO Should probably turn i-1th issue into a "fatal".
             if (err != null) {
-                issues.add(new Issue(systemId, err));
+                issues.add(new IssueBuilder(systemId, err).build());
             }
         }
     }
