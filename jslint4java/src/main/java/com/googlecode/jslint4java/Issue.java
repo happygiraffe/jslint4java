@@ -33,9 +33,9 @@ public class Issue {
     Issue(String systemId, Scriptable err) {
         this.systemId = systemId;
         reason = Util.stringValue("reason", err);
-        // jslint emits zero based errors.
+        // jslint emits zero based lines & columns.
         line = Util.intValue("line", err) + 1;
-        character = Util.intValue("character", err);
+        character = Util.intValue("character", err) + 1;
         evidence = Util.stringValue("evidence", err);
         raw = Util.stringValue("raw", err);
         a = Util.stringValue("a", err);

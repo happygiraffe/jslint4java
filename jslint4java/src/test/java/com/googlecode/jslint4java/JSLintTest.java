@@ -47,6 +47,13 @@ public class JSLintTest {
     }
 
     @Test
+    public void testAccurateColumnNumbers() {
+        List<Issue> issues = lint("var foo = 1");
+        assertIssues(issues, "Missing semicolon.");
+        assertThat(issues.get(0).getCharacter(), is(12));
+    }
+
+    @Test
     public void testAccurateLineNumbers() {
         List<Issue> issues = lint("var foo = 1");
         assertIssues(issues, "Missing semicolon.");
