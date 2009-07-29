@@ -112,9 +112,12 @@ public class JSLintTask extends Task {
         }
 
         int failedCount = 0;
+        int totalErrorCount = 0;
         for (Resource resource : resources.listResources()) {
             try {
-                if (!lintStream(resource)) {
+                int errorCount = lintStream(resource);
+                if (errorCount > 0) {
+                    totalErrorCount += errorCount;
                     failedCount++;
                 }
             } catch (IOException e) {
@@ -128,7 +131,8 @@ public class JSLintTask extends Task {
 
         if (failedCount != 0) {
             String files = failedCount == 1 ? "file" : "files";
-            String msg = failedCount + " " + files + " did not pass JSLint";
+            String errors = totalErrorCount == 1 ? "error" : "errors";
+            String msg = "JSLint: " + totalErrorCount + " " + errors + " in " + failedCount + " " + files;
             if (haltOnFailure) {
                 throw new BuildException(msg);
             } else {
@@ -163,7 +167,7 @@ public class JSLintTask extends Task {
      *
      * @throws IOException
      */
-    private boolean lintStream(Resource resource)
+    private int lintStream(Resource resource)
             throws UnsupportedEncodingException, IOException {
         InputStream stream = null;
         try {
@@ -176,7 +180,7 @@ public class JSLintTask extends Task {
             for (ResultFormatter rf : formatters) {
                 rf.output(name, issues);
             }
-            return issues.size() == 0;
+            return issues.size();
         } finally {
             if (stream != null) {
                 stream.close();

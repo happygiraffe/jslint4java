@@ -35,7 +35,7 @@ Tests for the JSLint ant task.
     </target>
 
     <target name="testFailsOnError">
-        <au:expectfailure expectedmessage="1 file did not pass JSLint">
+        <au:expectfailure expectedmessage="JSLint: 1 error in 1 file">
             <jsl:jslint>
                 <fileset file="good.js" />
                 <fileset file="bad.js" />
@@ -58,7 +58,7 @@ Tests for the JSLint ant task.
 
     <!-- http://code.google.com/p/jslint4java/issues/detail?id=6 -->
     <target name="testIssue6">
-        <au:expectfailure expectedmessage="1 file did not pass JSLint">
+        <au:expectfailure expectedmessage="JSLint: 2 errors in 1 file">
             <jsl:jslint options="browser,undef,passfail">
                 <formatter type="plain" />
                 <fileset file="issue6.js" />
@@ -70,7 +70,7 @@ Tests for the JSLint ant task.
     </target>
 
     <target name="testArbitraryResource">
-        <au:expectfailure expectedmessage="1 file did not pass JSLint">
+        <au:expectfailure expectedmessage="JSLint: 1 error in 1 file">
             <jsl:jslint>
                 <formatter type="plain" />
                 <string value="eval(42);" />
@@ -80,7 +80,7 @@ Tests for the JSLint ant task.
 
     <!-- http://code.google.com/p/jslint4java/issues/detail?id=21 -->
     <target name="testNamesInOutputHavePath">
-        <au:expectfailure expectedmessage="1 file did not pass JSLint">
+        <au:expectfailure expectedmessage="JSLint: 1 error in 1 file">
             <jsl:jslint>
                 <formatter type="plain" />
                 <fileset dir="subdir" includes="*.js" />
