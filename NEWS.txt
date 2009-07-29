@@ -1,7 +1,9 @@
 Revision history for jslint4java.
 
 1.4
+    - issue 21: Emit full filename in ant errors.
     - issue 22: Correct line & column numbers to be 1-based.
+    - issue 23: State total error count in build failure message.
     - Add NetBeansResultFormatter (thanks, Ari Shamash!).
     - Update to JSLint 2009-07-25.
 
