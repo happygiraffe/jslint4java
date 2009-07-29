@@ -78,6 +78,16 @@ public class JSLintTask extends Task {
     private String encoding = System.getProperty("file.encoding", "UTF-8");
 
     /**
+     * Check the contents of this {@link ResourceCollection}.
+     *
+     * @param rc
+     *            Any kind of resource collection, e.g. fileset.
+     */
+    public void add(ResourceCollection rc) {
+        resources.add(rc);
+    }
+
+    /**
      * Add in a {@link ResultFormatter} through the medium of a
      * {@link FormatterElement}.
      *
@@ -86,16 +96,6 @@ public class JSLintTask extends Task {
     public void addConfiguredFormatter(FormatterElement fe) {
         fe.setDefaultOutputStream(getDefaultOutput());
         formatters.add(fe.getResultFormatter());
-    }
-
-    /**
-     * Check the contents of this {@link ResourceCollection}.
-     *
-     * @param rc
-     *            Any kind of resource collection, e.g. fileset.
-     */
-    public void add(ResourceCollection rc) {
-        resources.add(rc);
     }
 
     /**
@@ -130,15 +130,19 @@ public class JSLintTask extends Task {
         }
 
         if (failedCount != 0) {
-            String files = failedCount == 1 ? "file" : "files";
-            String errors = totalErrorCount == 1 ? "error" : "errors";
-            String msg = "JSLint: " + totalErrorCount + " " + errors + " in " + failedCount + " " + files;
+            String msg = failureMessage(failedCount, totalErrorCount);
             if (haltOnFailure) {
                 throw new BuildException(msg);
             } else {
                 log(msg);
             }
         }
+    }
+
+    private String failureMessage(int failedCount, int totalErrorCount) {
+        return "JSLint: " + totalErrorCount + " "
+                + plural(totalErrorCount, "error") + " in " + failedCount + " "
+                + plural(failedCount, "file");
     }
 
     /**
@@ -189,12 +193,10 @@ public class JSLintTask extends Task {
     }
 
     /**
-     * Should the build stop if JSLint fails? Defaults to true.
-     *
-     * @param haltOnFailure
+     * Quick and nasty hack to pluralise words.  Works enough for my needs.
      */
-    public void setHaltOnFailure(boolean haltOnFailure) {
-        this.haltOnFailure = haltOnFailure;
+    private String plural(int count, String word) {
+        return count == 1 ? word : word + "s";
     }
 
     /**
@@ -208,6 +210,15 @@ public class JSLintTask extends Task {
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
+    }
+
+    /**
+     * Should the build stop if JSLint fails? Defaults to true.
+     *
+     * @param haltOnFailure
+     */
+    public void setHaltOnFailure(boolean haltOnFailure) {
+        this.haltOnFailure = haltOnFailure;
     }
 
     /**
