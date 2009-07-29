@@ -1,15 +1,18 @@
 package com.googlecode.jslint4java.ant;
 
-import com.googlecode.jslint4java.Issue;
-import com.googlecode.jslint4java.Issue.IssueBuilder;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+
+import com.googlecode.jslint4java.Issue;
+import com.googlecode.jslint4java.Issue.IssueBuilder;
 
 public class PlainResultFormatterTest {
 
@@ -18,8 +21,8 @@ public class PlainResultFormatterTest {
     private final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
     /**
-     *  Run the formatter over the current set of issues.  The File as input
-     * is just a convenient way of passing a name & path together.
+     * Run the formatter over the current set of issues. The File as input is
+     * just a convenient way of passing a name & path together.
      */
     private void runFormatter(File file) {
         rf.begin();
@@ -42,7 +45,8 @@ public class PlainResultFormatterTest {
     @Test
     public void testExpectedOutputOneIssue() {
         File file = new File("foo/bar.js");
-        Issue issue = new IssueBuilder(file.getName(), 1, 1, "no clucking").evidence("cluck()").build();
+        Issue issue = new IssueBuilder(file.getName(), 1, 1, "no clucking")
+                .evidence("cluck()").build();
         issues.add(issue);
         runFormatter(file);
         String expected = "bar.js:1:1:no clucking\ncluck()\n^\n";
