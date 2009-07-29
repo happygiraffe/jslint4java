@@ -48,7 +48,10 @@ public class PlainResultFormatter implements ResultFormatter {
     }
 
     private void outputOneIssue(Issue issue) {
-        w.println(issue.toString());
+        // NB: space before reason to look like javac!
+        String msg = issue.getSystemId() + ":" + issue.getLine() + ":"
+                + issue.getCharacter() + ": " + issue.getReason();
+        w.println(msg);
         w.println(issue.getEvidence());
         // character is now one-based.
         w.println(spaces(issue.getCharacter() - 1) + "^");

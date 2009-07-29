@@ -49,7 +49,7 @@ public class PlainResultFormatterTest {
                 .evidence("cluck()").build();
         issues.add(issue);
         runFormatter(file);
-        String expected = "foo/bar.js:1:1:no clucking\ncluck()\n^\n";
+        String expected = "foo/bar.js:1:1: no clucking\ncluck()\n^\n";
         // NB: We use platform encoding here, as that's what we expect the
         // formatter to produce.
         assertThat(out.toString(), is(expected));
