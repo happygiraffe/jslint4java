@@ -103,8 +103,9 @@ public class JSLintTask extends Task {
      */
     @Override
     public void execute() throws BuildException {
-        if (resources.size() == 0)
+        if (resources.size() == 0) {
             throw new BuildException("no resources specified");
+        }
 
         for (ResultFormatter rf : formatters) {
             rf.begin();
@@ -113,7 +114,7 @@ public class JSLintTask extends Task {
         int failedCount = 0;
         for (Resource resource : resources.listResources()) {
             try {
-                if (!lintStream(resource.getName(), resource.toString(), resource.getInputStream())) {
+                if (!lintStream(resource)) {
                     failedCount++;
                 }
             } catch (IOException e) {
@@ -128,9 +129,9 @@ public class JSLintTask extends Task {
         if (failedCount != 0) {
             String files = failedCount == 1 ? "file" : "files";
             String msg = failedCount + " " + files + " did not pass JSLint";
-            if (haltOnFailure)
+            if (haltOnFailure) {
                 throw new BuildException(msg);
-            else {
+            } else {
                 log(msg);
             }
         }
@@ -162,15 +163,18 @@ public class JSLintTask extends Task {
      *
      * @throws IOException
      */
-    private boolean lintStream(String name, String fullPath, InputStream stream)
+    private boolean lintStream(Resource resource)
             throws UnsupportedEncodingException, IOException {
+        InputStream stream = null;
         try {
+            stream = resource.getInputStream();
+            String name = resource.getName();
             List<Issue> issues = lint.lint(name, new BufferedReader(
-                    new InputStreamReader(stream, encoding)));
+                    new InputStreamReader(resource.getInputStream(), encoding)));
             log("Found " + issues.size() + " issues in " + name,
                     Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
-                rf.output(name, fullPath, issues);
+                rf.output(resource.getName(), resource.toString(), issues);
             }
             return issues.size() == 0;
         } finally {
