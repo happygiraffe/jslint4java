@@ -168,13 +168,13 @@ public class JSLintTask extends Task {
         InputStream stream = null;
         try {
             stream = resource.getInputStream();
-            String name = resource.getName();
+            String name = resource.toString();
             List<Issue> issues = lint.lint(name, new BufferedReader(
                     new InputStreamReader(resource.getInputStream(), encoding)));
             log("Found " + issues.size() + " issues in " + name,
                     Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
-                rf.output(resource.getName(), resource.toString(), issues);
+                rf.output(name, name, issues);
             }
             return issues.size() == 0;
         } finally {

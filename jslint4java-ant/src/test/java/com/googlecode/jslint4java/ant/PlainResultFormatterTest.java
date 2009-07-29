@@ -45,11 +45,11 @@ public class PlainResultFormatterTest {
     @Test
     public void testExpectedOutputOneIssue() {
         File file = new File("foo/bar.js");
-        Issue issue = new IssueBuilder(file.getName(), 1, 1, "no clucking")
+        Issue issue = new IssueBuilder(file.toString(), 1, 1, "no clucking")
                 .evidence("cluck()").build();
         issues.add(issue);
         runFormatter(file);
-        String expected = "bar.js:1:1:no clucking\ncluck()\n^\n";
+        String expected = "foo/bar.js:1:1:no clucking\ncluck()\n^\n";
         // NB: We use platform encoding here, as that's what we expect the
         // formatter to produce.
         assertThat(out.toString(), is(expected));
