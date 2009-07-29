@@ -178,7 +178,7 @@ public class JSLintTask extends Task {
             stream = resource.getInputStream();
             String name = resource.toString();
             List<Issue> issues = lint.lint(name, new BufferedReader(
-                    new InputStreamReader(resource.getInputStream(), encoding)));
+                    new InputStreamReader(stream, encoding)));
             log("Found " + issues.size() + " issues in " + name,
                     Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
