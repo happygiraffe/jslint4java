@@ -76,4 +76,15 @@ Tests for the JSLint ant task.
             </jsl:jslint>
         </au:expectfailure>
     </target>
+
+    <!-- http://code.google.com/p/jslint4java/issues/detail?id=21 -->
+    <target name="testNamesInOutputHavePath">
+        <au:expectfailure expectedmessage="1 file did not pass JSLint">
+            <jsl:jslint>
+                <formatter type="plain" />
+                <fileset dir="subdir" includes="*.js" />
+            </jsl:jslint>
+        </au:expectfailure>
+        <au:assertLogContains text="subdir/issue21.js:1:24:Missing semicolon." />
+    </target>
 </project>
