@@ -5,11 +5,9 @@ This is a java wrapper around the fabulous tool by Douglas Crockford, jslint
 (See <http://jslint.com/>). It provides a simple interface for detecting
 potential problems in JavaScript code.
 
-The output of this project is a jar file, which can be used in two ways.
-
 You can run it on the command line:
 
-  % java -jar jslint4java-ant-${project.version}-jar-with-dependencies.jar application.js
+  % java -jar jslint4java-${project.version}.jar application.js
   jslint:application.js:11:9:Line breaking error ')'.
   jslint:application.js:11:10:Missing semicolon.
 
@@ -24,7 +22,7 @@ The output is colon separated fields.  The fields are:
 * the problem that was found
 
 You may also use the jar as an ant task.  The quickest way to get started is
-to drop it in ~/.ant/lib.  See JSLintTask in the javadoc for more details.
+to drop it in ~/.ant/lib.  See docs/ant.html for more details.
 
 NB: The packaged jar file includes a builtin version of rhino (a JavaScript
 engine).  If this causes trouble, you may wish to download standalone versions
