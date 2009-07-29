@@ -29,7 +29,6 @@ public class FormatterElement {
      * What kind of formatters are available.
      *
      * @author dom
-     *
      */
     public static enum Type {
         plain() {
@@ -42,12 +41,6 @@ public class FormatterElement {
             @Override
             public ResultFormatter getResultFormatter() {
                 return new XmlResultFormatter();
-            }
-        },
-        netbeans() {
-            @Override
-            public ResultFormatter getResultFormatter() {
-                return new NetbeansResultFormatter();
             }
         };
         abstract ResultFormatter getResultFormatter();
