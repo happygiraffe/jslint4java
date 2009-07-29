@@ -45,7 +45,8 @@ public class PlainResultFormatter implements ResultFormatter {
         for (Issue issue : issues) {
             w.println(issue.toString());
             w.println(issue.getEvidence());
-            w.println(spaces(issue.getCharacter()) + "^");
+            // character is now one-based.
+            w.println(spaces(issue.getCharacter() - 1) + "^");
         }
     }
 
