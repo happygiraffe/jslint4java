@@ -36,9 +36,9 @@ public class PlainResultFormatter implements ResultFormatter {
     /**
      * Emit all issues to the console.
      *
-     * @see ResultFormatter#output(String, String, List)
+     * @see ResultFormatter#output(String, List)
      */
-    public void output(String name, String fullPath, List<Issue> issues) {
+    public void output(String name, List<Issue> issues) {
         if (issues.size() == 0)
             return;
 

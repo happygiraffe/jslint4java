@@ -26,7 +26,7 @@ public class PlainResultFormatterTest {
      */
     private void runFormatter(File file) {
         rf.begin();
-        rf.output(file.getName(), file.toString(), issues);
+        rf.output(file.getName(), issues);
         rf.end();
     }
 

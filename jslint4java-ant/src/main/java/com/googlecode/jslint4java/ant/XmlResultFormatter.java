@@ -80,9 +80,9 @@ public class XmlResultFormatter implements ResultFormatter {
      * attributes. An element will be created for all files, regardless of any
      * issues being uncovered.
      *
-     * @see ResultFormatter#output(String, String, List)
+     * @see ResultFormatter#output(String, List)
      */
-    public void output(String name, String fullPath, List<Issue> issues) {
+    public void output(String name, List<Issue> issues) {
         Element f = doc.createElement("file");
         f.setAttribute("name", name);
         for (Issue issue : issues) {
