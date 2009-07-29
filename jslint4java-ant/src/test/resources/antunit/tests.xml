@@ -23,6 +23,7 @@ Tests for the JSLint ant task.
     <target name="allTests" unless="skipping">
         <au:antunit failonerror="true">
             <file file="${ant.file}" />
+            <!-- Add logLevel="info" attribute for debugging. -->
             <au:plainlistener />
         </au:antunit>
     </target>
