@@ -1,19 +1,12 @@
 Things to implement:
 
 * Add a maven2 plugin.
-** And then add a hudson plugin.
 
-* Distribution: separate CLI & ant tasks into diff jars.
-
-* Make a maven site with documentation for ant task & cli usage.
-
-* Add support for non-boolean parameters.
+* And then add a hudson plugin.
 
 * Allow Main.java to operate on stdin.
 
 * Add a ReportFormatter to output the HTML reports that JSLint can generate.
-
-* Provide an examples directory for the ant task.
 
 * An eclipse plugin, to flag up anything it finds as a warning in the Problems
   view.
