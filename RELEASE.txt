@@ -46,3 +46,5 @@ Now, update google code:
 * Add new Milestone for the next release.
 
 Send a mail to <jslint_com@yahoogroups.com> noting the new release.
+
+Write a blog post pointing out the new release.
