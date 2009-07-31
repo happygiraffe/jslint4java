@@ -178,9 +178,7 @@
           <configuration>
             <autoVersionSubmodules>true</autoVersionSubmodules>
             <!-- sign release artifacts.  Affected by MRELEASE-459? -->
-            <!--
             <releaseProfiles>gpg</releaseProfiles>
-            -->
             <arguments>-Pgpg -Dgpg.passphrase=${gpg.passphrase}</arguments>
           </configuration>
         </plugin>
