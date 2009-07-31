@@ -12,7 +12,7 @@ tag="$1"
 
 if [[ -f $tag && $tag = *-dist.zip ]] ; then
     # Pick apart the tag from the filename.
-    zip=${tag/dist/src}
+    zip=${tag/-dist.zip/-src.zip}
     prefix=${zip##*/}
     prefix=${prefix%-src.zip}
     tag=${prefix/jslint4java/rel}
