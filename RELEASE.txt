@@ -22,7 +22,7 @@ Next, run the release.  Use "rel-X.Y" as the tag.
 
 Now, create the distribution.
 
-  $ git checkout rel-1.3
+  $ git checkout rel-X.Y
   $ mvn -Pdist clean verify
 
 With that done, upload jslint4java-dist/target/jslint4java-X.Y-dist.zip
