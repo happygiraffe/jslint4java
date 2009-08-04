@@ -1,0 +1,68 @@
+#!/bin/bash
+#
+# Upload archives to Google code.
+#
+
+me=${0##*/}
+url="https://jslint4java.googlecode.com/files"
+
+usage() {
+    echo "usage: $me [-v] [-u user] .../jslint4java-X.Y-dist.zip" >&2
+    exit 2
+}
+
+die() {
+    echo "$me: $*" >&2
+    exit 1
+}
+
+out_flag="-i"
+while getopts "vu:" o
+do
+    case $o in
+        v) out_flag="-v" ;;
+        u) GOOGLECODE_USER=$OPTARG ;;
+        *) usage ;;
+    esac
+done
+shift $(( OPTIND - 1))
+
+dist="$1"
+[[ -n $dist && -f $dist ]] || usage
+
+name=${dist%-dist.zip}
+name=${name##*/}
+
+src=${dist%-dist.zip}-src.zip
+[[ -f $src ]]  || die "no source archive [$src]"
+
+user=${GOOGLECODE_USER:-dom@happygiraffe.net}
+[[ -n $user ]] || die "no user specified"
+
+pw=${GOOGLECODE_PASSWORD}
+if [[ -z $pw ]] ; then
+    read -s -p "Password for $user: " pw
+    echo
+fi
+
+echo "===> Uploading $dist..."
+curl \
+    $out_flag \
+    -u "$user:$pw" \
+    -F "summary=$name" \
+    -F "filename=@$dist" \
+    -F "label=Type-Archive" \
+    -F "label=OpSys-All" \
+    $url
+echo
+
+echo "===> Uploading $src..."
+curl \
+    $out_flag \
+    -u "$user:$pw" \
+    -F "summary=$name source archive" \
+    -F "filename=@$src" \
+    -F "label=Type-Source" \
+    -F "label=OpSys-All" \
+    $url
+echo
