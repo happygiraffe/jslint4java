@@ -1,5 +1,5 @@
 // jslint.js
-// 2009-08-05
+// 2009-08-06
 
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
@@ -1802,6 +1802,14 @@ loop:   for (;;) {
                     }
                     obj.white = true;
                     obj.indent = b;
+                } else if (t.value === 'maxerr' && o === '/*jslint') {
+                    b = +v.value;
+                    if (typeof b !== 'number' || !isFinite(b) || b <= 0 ||
+                            Math.floor(b) !== b) {
+                        error("Expected a small integer and instead saw '{a}'.",
+                                v, v.value);
+                    }
+                    obj.maxerr = b;
                 } else if (v.value === 'true') {
                     obj[t.value] = true;
                 } else if (v.value === 'false') {
@@ -5285,7 +5293,7 @@ loop:   for (;;) {
         return o.join('');
     };
 
-    itself.edition = '2009-08-05';
+    itself.edition = '2009-08-06';
 
     return itself;
 
