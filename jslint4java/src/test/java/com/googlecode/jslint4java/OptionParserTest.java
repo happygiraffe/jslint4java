@@ -5,9 +5,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.googlecode.jslint4java.OptionParser;
-
-
 public class OptionParserTest {
 
     private final OptionParser optionParser = new OptionParser();
@@ -20,5 +17,10 @@ public class OptionParserTest {
     @Test
     public void testParseInteger() throws Exception {
         assertThat(optionParser.parse(Integer.class, "2"), is(2));
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testParseIntegerFailure() throws Exception {
+        optionParser.parse(Integer.class, "foo");
     }
 }

@@ -28,8 +28,13 @@ public class OptionParser {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
+            Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException) {
+                // Attempt to rethrow original exception.
+                throw (RuntimeException) cause;
+            } else {
+                throw new RuntimeException(cause);
+            }
         }
     }
-
 }
