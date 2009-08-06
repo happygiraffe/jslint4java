@@ -56,6 +56,17 @@ public class Main {
         setErrored(true);
     }
 
+    /**
+     * Fetch the named {@link Option}, or null if there is no matching one.
+     */
+    private Option getOption(String optName) {
+        try {
+            return Option.valueOf(optName.toUpperCase(Locale.getDefault()));
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
     private void help() {
         info("usage: jslint [options] file.js ...");
         String fmt = "  --%-" + Option.maximumNameLength() + "s %s";
@@ -111,17 +122,20 @@ public class Main {
             }
             // Longopt.
             else if (arg.startsWith("--")) {
+                String[] bits = arg.substring(2).split("=", 2);
                 try {
-                    String[] bits = arg.substring(2).split("=", 2);
-                    Option o = Option.valueOf(bits[0].toUpperCase(Locale
-                            .getDefault()));
+                    Option o = getOption(bits[0]);
+                    if (o == null) {
+                        die("unknown option " + arg);
+                    }
                     if (bits.length == 2) {
                         lint.addOption(o, bits[1]);
                     } else {
                         lint.addOption(o);
                     }
                 } catch (IllegalArgumentException e) {
-                    die("unknown option " + arg);
+                    die(bits[0] + ": " + e.getClass().getName() + ": "
+                            + e.getMessage());
                 }
             }
             // File
