@@ -39,6 +39,8 @@ public enum Option {
     INDENT("The number of spaces used for indentation (default is 4)", Integer.class),
     /** If line breaks should not be checked */
     LAXBREAK("If line breaks should not be checked", Boolean.class),
+    /** The maximum number of warnings reported (default is 50) */
+    MAXERR("The maximum number of warnings reported (default is 50)", Integer.class),
     /** If constructor names must be capitalized */
     NEWCAP("If constructor names must be capitalized", Boolean.class),
     /** If names should be checked */

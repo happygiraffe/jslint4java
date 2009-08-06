@@ -4,7 +4,7 @@ import org.mozilla.javascript.Scriptable;
 
 /**
  * A single issue with the code that is being checked for problems.
- * 
+ *
  * @author dom
  * @version $Id$
  */
@@ -17,9 +17,15 @@ public class Issue {
 
         /** Build from a JavaScript context */
         public static Issue fromJavaScript(String systemId, Scriptable err) {
-            // jslint emits zero based lines & columns.
-            int line = Util.intValue("line", err) + 1;
-            int col = Util.intValue("character", err) + 1;
+            // Correct the line / column numbers so that they're never zero.
+            int line = Util.intValue("line", err);
+            if (line == 0) {
+                line = 1;
+            }
+            int col = Util.intValue("character", err);
+            if (col == 0) {
+                col = 1;
+            }
             return new IssueBuilder(systemId, line, col, Util.stringValue("reason", err))
                     .evidence(Util.stringValue("evidence", err))
                     .raw(Util.stringValue("raw", err))
@@ -33,13 +39,13 @@ public class Issue {
         private String a;
         private String b;
         private String c;
-        private int character;
+        private final int character;
         private String d;
         private String evidence;
-        private int line;
+        private final int line;
         private String raw;
-        private String reason;
-        private String systemId;
+        private final String reason;
+        private final String systemId;
 
         public IssueBuilder(String systemId, int line, int character, String reason) {
             this.character = character;
@@ -82,28 +88,28 @@ public class Issue {
             return this;
         }
     }
-    private String a;
-    private String b;
-    private String c;
-    private int character;
-    private String d;
-    private String evidence;
-    private int line;
-    private String raw;
-    private String reason;
-    private String systemId;
+    private final String a;
+    private final String b;
+    private final String c;
+    private final int character;
+    private final String d;
+    private final String evidence;
+    private final int line;
+    private final String raw;
+    private final String reason;
+    private final String systemId;
 
     private Issue(IssueBuilder ib) {
-        this.systemId = ib.systemId;
-        this.reason = ib.reason;
-        this.line = ib.line;
-        this.character = ib.character;
-        this.evidence = ib.evidence;
-        this.raw = ib.raw;
-        this.a = ib.a;
-        this.b = ib.b;
-        this.c = ib.c;
-        this.d = ib.d;
+        systemId = ib.systemId;
+        reason = ib.reason;
+        line = ib.line;
+        character = ib.character;
+        evidence = ib.evidence;
+        raw = ib.raw;
+        a = ib.a;
+        b = ib.b;
+        c = ib.c;
+        d = ib.d;
     }
 
     /**

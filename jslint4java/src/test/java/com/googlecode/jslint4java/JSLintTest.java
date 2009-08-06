@@ -49,6 +49,7 @@ public class JSLintTest {
     @Test
     public void testAccurateColumnNumbers() {
         List<Issue> issues = lint("var foo = 1");
+        // ....................... 123456789012
         assertIssues(issues, "Missing semicolon.");
         assertThat(issues.get(0).getCharacter(), is(12));
     }
@@ -87,6 +88,20 @@ public class JSLintTest {
         Reader reader = new StringReader("var foo = 1");
         List<Issue> issues = lint(reader);
         assertIssues(issues, "Missing semicolon.");
+    }
+
+    @Test
+    public void testMaxErr() throws Exception {
+        lint.addOption(Option.WHITE);
+        lint.addOption(Option.UNDEF);
+        lint.addOption(Option.MAXERR, "2");
+        // Just some nasty thing I threw together. :)
+        List<Issue> issues = lint("if (foo=42) {\n  println(\"bother\")\n}\n");
+        assertIssues(
+                issues,
+                "'foo' is not defined.",
+                "Expected a conditional expression and instead saw an assignment.",
+                "Too many errors. (25% scanned).");
     }
 
     @Test
@@ -160,6 +175,6 @@ public class JSLintTest {
         // "can't continue" message.
         List<Issue> issues = lint("\"");
         assertIssues(issues, "Unclosed string.",
-                "Stopping, unable to continue. (0% scanned).");
+                "Stopping, unable to continue. (100% scanned).");
     }
 }
