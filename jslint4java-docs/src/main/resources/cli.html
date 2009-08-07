@@ -4,14 +4,15 @@
     <title>jslint4java command line usage</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="jslint4java.css" type="text/css" rel="stylesheet" />
+    <link href="prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="prettify.js"></script>
   </head>
   <body>
     <h1>Using jslint4java on the command line</h1>
 
     <p>jslint4java can be run as an executable jar file:</p>
 
-    <pre>
-$ java -jar jslint4java-${project.version}.jar
+    <pre class="prettyprint"><span class="nocode">$ java -jar jslint4java-${project.version}.jar
 usage: jslint [options] file.js ...
   --adsafe   If adsafe should be enforced
   --bitwise  If bitwise operators should not be allowed
@@ -44,7 +45,7 @@ usage: jslint [options] file.js ...
 
 using jslint version 2009-06-12
 $
-    </pre>
+</span></pre>
 
     <p>The list of options is derived from the
       <a href="apidocs/com/googlecode/jslint4java/Option.html">Option</a> enum.  For fuller
@@ -57,13 +58,12 @@ $
 
     <p>Sample error output:</p>
 
-    <pre>
-$ cat dodgy.js
+    <pre class="prettyprint"><span class="nocode">$ cat dodgy.js
 someVar = 42
 $ java -jar jslint4java-${project.version}.jar dodgy.js
 jslint:dodgy.js:0:12:Missing semicolon.
 $
-    </pre>
+</span></pre>
 
     <p>The fields are colon separated and consist of:</p>
 
@@ -78,8 +78,7 @@ $
     <p>Most command line flags are boolean.  If you wish to pass a value to a flag
       (e.g. <code>--indent</code>), add it using an equals.  For example:</p>
 
-    <pre>
-$ cat happy.js
+      <pre class="prettyprint"><span class="nocode">$ cat happy.js
 var x;
 if (x) {
   x = 42;
@@ -88,6 +87,7 @@ $ java -jar jslint4java-${project.version}.jar --white happy.js
 jslint:happy.js:2:2:Expected 'x' to have an indentation of 4 instead of 2.
 $ java -jar jslint4java-${project.version}.jar --white --indent=2 happy.js
 $
-    </pre>
+</span></pre>
+    <script type="text/javascript">prettyPrint()</script>
   </body>
 </html>
