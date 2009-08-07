@@ -1,3 +1,5 @@
+/* @group jslint4java */
+
 table td, table th {
   border: 1px solid #aaa;
   padding: 5px;
@@ -6,6 +8,10 @@ table td, table th {
 dt {
   font-style: italic;
 }
+
+/* @end */
+
+/* @group jslint.com */
 
 /* taken from jslint.com */
 .warning {
@@ -16,3 +22,5 @@ dt {
   background-color:  rgb(255, 182, 193);
   font-size: larger;
 }
+
+/* @end */
