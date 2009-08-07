@@ -70,13 +70,87 @@ table {
 
 /* @group jslint4java */
 
+/*
+ * Font sizes:
+ * 16px × 1.5em   = 24px
+ * 16px x 1.25em  = 20px
+ * 16px x 1.125em = 18px
+ * 16px x 0.875em = 14px
+ * 16px x 0.75em  = 12px
+ */
+body {
+	font-size: 100%;
+	line-height: 1.5em;
+	margin: 1.5em 1em;
+	font-family: "Frutiger", "Univers", "Helvetica Neue", arial, helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Clarendon Std", "Century Old Style Std", "Century Schoolbook", Georgia, serif;
+}
+
+h1 {
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+h2 {
+	font-weight: bold;
+	font-size: 1.25em;
+	border-bottom-style: dotted;
+	border-bottom-width: 1px;
+	margin: 1.5em 0;
+}
+
+h3 {
+	font-weight: bold;
+	font-style: italic;
+	font-size: 1.125em;
+}
+
+p {
+	margin: 1.5em 0;
+}
+
+pre {
+	font-family: "Courier", "Courier New", mono;
+	font-size: 0.875em;
+	margin-left: 1em;
+	margin-right: 1em;
+	background-color: #eee;
+	padding: .5em;
+}
+
+code {
+	font-family: "Courier", "Courier New", mono;
+	font-size: 0.875em;
+}
+
+table {
+	margin: 1.5em 0;
+}
+
 table td, table th {
-  border: 1px solid #aaa;
-  padding: 5px;
+	border: 1px solid #aaa;
+	padding: 5px;
+}
+
+th {
+	font-weight: bold;
 }
 
 dt {
-  font-style: italic;
+	font-style: italic;
+}
+
+dd {
+	margin-left: 1em;
+}
+
+ol {
+	list-style-type: decimal;
+	margin: 1em 0;
+	padding-left: 2em;
 }
 
 /* @end */
@@ -84,13 +158,14 @@ dt {
 /* @group jslint.com */
 
 /* taken from jslint.com */
+
 .warning {
-  text-align: center;
-  margin: 1em;
-  border: 2px solid black;
-  padding: 1em;
-  background-color:  rgb(255, 182, 193);
-  font-size: larger;
+	text-align: center;
+	margin: 1em;
+	border: 2px solid black;
+	padding: 1em;
+	background-color: rgb(255, 182, 193);
+	font-size: larger;
 }
 
 /* @end */
