@@ -70,6 +70,8 @@ table {
 
 /* @group jslint4java */
 
+/* @group Fonts */
+
 /*
  * Font sizes:
  * 16px × 1.5em   = 24px
@@ -78,10 +80,10 @@ table {
  * 16px x 0.875em = 14px
  * 16px x 0.75em  = 12px
  */
+
 body {
 	font-size: 100%;
 	line-height: 1.5em;
-	margin: 1.5em 1em;
 	font-family: "Frutiger", "Univers", "Helvetica Neue", arial, helvetica, sans-serif;
 }
 
@@ -97,9 +99,6 @@ h1 {
 h2 {
 	font-weight: bold;
 	font-size: 1.25em;
-	border-bottom-style: dotted;
-	border-bottom-width: 1px;
-	margin: 1.5em 0;
 }
 
 h3 {
@@ -108,22 +107,45 @@ h3 {
 	font-size: 1.125em;
 }
 
-p {
-	margin: 1.5em 0;
-}
-
 pre {
 	font-family: "Courier", "Courier New", mono;
 	font-size: 0.875em;
-	margin-left: 1em;
-	margin-right: 1em;
-	background-color: #eee;
-	padding: .5em;
 }
 
 code {
 	font-family: "Courier", "Courier New", mono;
 	font-size: 0.875em;
+}
+
+th {
+	font-weight: bold;
+}
+
+dt {
+	font-style: italic;
+}
+
+/* @end */
+
+body {
+	margin: 1.5em 1em;
+}
+
+h2 {
+	border-bottom-style: dotted;
+	border-bottom-width: 1px;
+	margin: 1.5em 0;
+}
+
+p {
+	margin: 1.5em 0;
+}
+
+pre {
+	margin-left: 1em;
+	margin-right: 1em;
+	background-color: #eee;
+	padding: .5em;
 }
 
 table {
@@ -133,14 +155,6 @@ table {
 table td, table th {
 	border: 1px solid #aaa;
 	padding: 5px;
-}
-
-th {
-	font-weight: bold;
-}
-
-dt {
-	font-style: italic;
 }
 
 dd {
