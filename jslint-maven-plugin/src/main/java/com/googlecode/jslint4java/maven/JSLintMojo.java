@@ -71,8 +71,8 @@ public class JSLintMojo extends AbstractMojo {
         try {
             files = getFilesToProcess(includes, excludes);
         } catch (IOException e) {
-            throw new MojoExecutionException("Error getting files to process",
-                    e);
+            // Looking in FileUtils, this is a "can never happen". *sigh*
+            throw new MojoExecutionException("Error listing files", e);
         }
         int failures = 0;
         Iterator it = files.iterator();
