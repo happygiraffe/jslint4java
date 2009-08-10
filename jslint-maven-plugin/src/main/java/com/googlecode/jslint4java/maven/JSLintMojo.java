@@ -137,6 +137,13 @@ public class JSLintMojo extends AbstractMojo {
                     "unsupported character encoding UTF-8", e);
         } catch (IOException e) {
             throw new MojoExecutionException("aaaragh", e);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                }
+            }
         }
     }
 
