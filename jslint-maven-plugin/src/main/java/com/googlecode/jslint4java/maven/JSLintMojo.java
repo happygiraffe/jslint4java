@@ -48,7 +48,7 @@ public class JSLintMojo extends AbstractMojo {
     /**
      * Specifies the location of the source directory to be used for Checkstyle.
      *
-     * @parameter default-value="src/main/webapp"
+     * @parameter expression="${jslint.sourceDirectory}" default-value="src/main/webapp"
      * @required
      */
     private File sourceDirectory;
