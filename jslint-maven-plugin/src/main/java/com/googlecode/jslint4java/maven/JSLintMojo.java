@@ -131,12 +131,14 @@ public class JSLintMojo extends AbstractMojo {
             }
             return issues.size();
         } catch (FileNotFoundException e) {
-            throw new MojoExecutionException("file not found", e);
+            throw new MojoExecutionException("file not found: " + file, e);
         } catch (UnsupportedEncodingException e) {
+            // Can never happen.
             throw new MojoExecutionException(
                     "unsupported character encoding UTF-8", e);
         } catch (IOException e) {
-            throw new MojoExecutionException("aaaragh", e);
+            throw new MojoExecutionException("problem whilst linting " + file,
+                    e);
         } finally {
             if (stream != null) {
                 try {
