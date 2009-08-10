@@ -38,8 +38,7 @@ public class JSLintMojo extends AbstractMojo {
     private String includes;
 
     /**
-     * Specifies the names filter of the source files to be excluded for
-     * JSLint.
+     * Specifies the names filter of the source files to be excluded for JSLint.
      *
      * @parameter expression="${jslint.excludes}"
      */
@@ -48,7 +47,8 @@ public class JSLintMojo extends AbstractMojo {
     /**
      * Specifies the location of the source directory to be used for JSLint.
      *
-     * @parameter expression="${jslint.sourceDirectory}" default-value="src/main/webapp"
+     * @parameter expression="${jslint.sourceDirectory}"
+     *            default-value="src/main/webapp"
      * @required
      */
     private File sourceDirectory;
