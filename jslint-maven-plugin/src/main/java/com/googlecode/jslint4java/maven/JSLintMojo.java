@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class JSLintMojo extends AbstractMojo {
      *
      * @parameter
      */
-    private String[] includes;
+    private final List includes = new ArrayList();
 
     /**
      * Specifies the the source files to be excluded for JSLint (relative to
@@ -46,7 +45,7 @@ public class JSLintMojo extends AbstractMojo {
      *
      * @parameter
      */
-    private String[] excludes;
+    private final List excludes = new ArrayList();
 
     /**
      * Specifies the location of the source directory to be used for JSLint.
@@ -68,7 +67,7 @@ public class JSLintMojo extends AbstractMojo {
             getLog().warn(sourceDirectory + " does not exist");
             return;
         }
-        File[] files;
+        List files = null;
         try {
             files = getFilesToProcess(includes, excludes);
         } catch (IOException e) {
@@ -76,52 +75,45 @@ public class JSLintMojo extends AbstractMojo {
                     e);
         }
         int failures = 0;
-        for (int i = 0; i < files.length; i++) {
-            File file = files[i];
+        Iterator it = files.iterator();
+        while (it.hasNext()) {
+            File file = (File) it.next();
             failures += lintFile(file);
         }
         if (failures > 0) {
             throw new MojoFailureException("JSLint found " + failures
-                    + " problems in " + files.length + " files");
+                    + " problems in " + files.size() + " files");
         }
     }
 
     /**
      * Process includes and excludes to work out which files we ae interested
      * in. Originally nicked from CheckstyleReport, now looks nothing like it.
+     *
+     * @return a {@link List} of {@link File}s.
      */
-    private File[] getFilesToProcess(String[] includes, String[] excludes)
+    private List getFilesToProcess(List includes, List excludes)
             throws IOException {
-        ArrayList includeList = new ArrayList();
-        ArrayList excludeList = new ArrayList();
-
-        if (includes != null && includes.length == 0) {
-            includeList.addAll(Arrays.asList(includes));
-        }
         // Defaults.
-        if (includeList.isEmpty()) {
-            includeList.add("**/*.js");
+        if (includes.isEmpty()) {
+            includes.add("**/*.js");
         }
-        getLog().debug("includes=" + includeList);
-
-        if (excludes != null && excludes.length > 0) {
-            excludeList.addAll(Arrays.asList(excludes));
-        }
-        getLog().debug("excludes=" + excludeList);
+        getLog().debug("includes=" + includes);
+        getLog().debug("excludes=" + excludes);
 
         String[] defaultExcludes = FileUtils.getDefaultExcludes();
         for (int i = 0; i < defaultExcludes.length; i++) {
-            excludeList.add(defaultExcludes[i]);
+            excludes.add(defaultExcludes[i]);
         }
 
-        String includesStr = StringUtils.join(includeList.iterator(), ",");
-        String excludesStr = StringUtils.join(excludeList.iterator(), ",");
+        String includesStr = StringUtils.join(includes.iterator(), ",");
+        String excludesStr = StringUtils.join(excludes.iterator(), ",");
         List files = FileUtils.getFiles(sourceDirectory, includesStr,
                 excludesStr);
         getLog().debug("files=" + files);
 
         // How I wish for Java 5.
-        return (File[]) files.toArray(new File[files.size()]);
+        return files;
     }
 
     private int lintFile(File file) throws MojoExecutionException {
