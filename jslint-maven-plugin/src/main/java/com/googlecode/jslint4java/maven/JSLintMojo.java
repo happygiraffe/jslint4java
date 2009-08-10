@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,25 +32,26 @@ import com.googlecode.jslint4java.JSLint;
 public class JSLintMojo extends AbstractMojo {
 
     /**
-     * Specifies the names filter of the source files to be used for JSLint.
+     * Specifies the names filter of the source files to be used for JSLint. If
+     * none are specified, defaults to <code>**</code><code>/*.js</code>.
      *
-     * @parameter expression="${jslint.includes}" default-value="**\/*.js"
-     * @required
+     * @parameter
      */
-    private String includes;
+    private String[] includes;
 
     /**
      * Specifies the names filter of the source files to be excluded for JSLint.
+     * Maven applies its own defaults.
      *
-     * @parameter expression="${jslint.excludes}"
+     * @parameter
      */
-    private String excludes;
+    private String[] excludes;
 
     /**
      * Specifies the location of the source directory to be used for JSLint.
      *
      * @parameter expression="${jslint.sourceDirectory}"
-     *            default-value="src/main/webapp"
+     *            default-value="${basedir}/src/main/webapp"
      * @required
      */
     private File sourceDirectory;
@@ -79,35 +82,42 @@ public class JSLintMojo extends AbstractMojo {
         if (failures > 0) {
             throw new MojoFailureException("JSLint found " + failures
                     + " problems in " + files.length + " files");
-        } else {
-            getLog().info("all done");
         }
     }
 
     /**
      * Process includes and excludes to work out which files we ae interested
-     * in. Nicked from CheckstyleReport.
+     * in. Originally nicked from CheckstyleReport, now looks nothing like it.
      */
-    private File[] getFilesToProcess(String includes, String excludes)
+    private File[] getFilesToProcess(String[] includes, String[] excludes)
             throws IOException {
-        StringBuffer excludesStr = new StringBuffer();
+        ArrayList includeList = new ArrayList();
+        ArrayList excludeList = new ArrayList();
 
-        if (StringUtils.isNotEmpty(excludes)) {
-            excludesStr.append(excludes);
+        if (includes != null && includes.length == 0) {
+            includeList.addAll(Arrays.asList(includes));
         }
+        // Defaults.
+        if (includeList.isEmpty()) {
+            includeList.add("**/*.js");
+        }
+        getLog().debug("includes=" + includeList);
+
+        if (excludes != null && excludes.length > 0) {
+            excludeList.addAll(Arrays.asList(excludes));
+        }
+        getLog().debug("excludes=" + excludeList);
 
         String[] defaultExcludes = FileUtils.getDefaultExcludes();
         for (int i = 0; i < defaultExcludes.length; i++) {
-            String defaultExclude = defaultExcludes[i];
-            if (excludesStr.length() > 0) {
-                excludesStr.append(",");
-            }
-
-            excludesStr.append(defaultExclude);
+            excludeList.add(defaultExcludes[i]);
         }
 
-        List files = FileUtils.getFiles(sourceDirectory, includes, excludesStr
-                .toString());
+        String includesStr = StringUtils.join(includeList.iterator(), ",");
+        String excludesStr = StringUtils.join(excludeList.iterator(), ",");
+        List files = FileUtils.getFiles(sourceDirectory, includesStr,
+                excludesStr);
+        getLog().debug("files=" + files);
 
         // How I wish for Java 5.
         return (File[]) files.toArray(new File[files.size()]);
