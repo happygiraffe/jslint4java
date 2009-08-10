@@ -30,7 +30,7 @@ import com.googlecode.jslint4java.JSLint;
 public class JSLintMojo extends AbstractMojo {
 
     /**
-     * Specifies the names filter of the source files to be used for Checkstyle.
+     * Specifies the names filter of the source files to be used for JSLint.
      *
      * @parameter expression="${jslint.includes}" default-value="**\/*.js"
      * @required
@@ -39,14 +39,14 @@ public class JSLintMojo extends AbstractMojo {
 
     /**
      * Specifies the names filter of the source files to be excluded for
-     * Checkstyle.
+     * JSLint.
      *
      * @parameter expression="${jslint.excludes}"
      */
     private String excludes;
 
     /**
-     * Specifies the location of the source directory to be used for Checkstyle.
+     * Specifies the location of the source directory to be used for JSLint.
      *
      * @parameter expression="${jslint.sourceDirectory}" default-value="src/main/webapp"
      * @required
