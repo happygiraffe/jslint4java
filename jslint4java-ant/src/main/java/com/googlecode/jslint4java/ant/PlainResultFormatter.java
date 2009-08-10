@@ -39,8 +39,9 @@ public class PlainResultFormatter implements ResultFormatter {
      * @see ResultFormatter#output(String, List)
      */
     public void output(String name, List<Issue> issues) {
-        if (issues.size() == 0)
+        if (issues.size() == 0) {
             return;
+        }
 
         for (Issue issue : issues) {
             outputOneIssue(issue);
@@ -52,9 +53,12 @@ public class PlainResultFormatter implements ResultFormatter {
         String msg = issue.getSystemId() + ":" + issue.getLine() + ":"
                 + issue.getCharacter() + ": " + issue.getReason();
         w.println(msg);
-        w.println(issue.getEvidence());
-        // character is now one-based.
-        w.println(spaces(issue.getCharacter() - 1) + "^");
+        String evidence = issue.getEvidence();
+        if (evidence != null && !"".equals(evidence)) {
+            w.println(evidence);
+            // character is now one-based.
+            w.println(spaces(issue.getCharacter() - 1) + "^");
+        }
     }
 
     public void setOut(OutputStream os) {

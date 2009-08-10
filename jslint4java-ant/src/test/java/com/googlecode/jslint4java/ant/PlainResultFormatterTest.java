@@ -55,4 +55,19 @@ public class PlainResultFormatterTest {
         assertThat(out.toString(), is(expected));
     }
 
+    /**
+     * When there's no evidence, we shouldn't print a blank line or a caret.
+     */
+    @Test
+    public void testNoEvidence() throws Exception {
+        File file = new File("foo/bar.js");
+        Issue issue = new IssueBuilder(file.toString(), 1, 1, "fatality").build();
+        issues.add(issue);
+        runFormatter(file);
+        String expected = "foo/bar.js:1:1: fatality\n";
+        // NB: We use platform encoding here, as that's what we expect the
+        // formatter to produce.
+        assertThat(out.toString(), is(expected));
+    }
+
 }
