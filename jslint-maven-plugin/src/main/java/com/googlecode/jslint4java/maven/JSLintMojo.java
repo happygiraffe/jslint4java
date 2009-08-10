@@ -61,7 +61,8 @@ public class JSLintMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!sourceDirectory.exists()) {
-            throw new MojoFailureException(sourceDirectory + " does not exist");
+            getLog().warn(sourceDirectory + " does not exist");
+            return;
         }
         File[] files;
         try {
