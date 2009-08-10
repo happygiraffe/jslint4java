@@ -32,16 +32,17 @@ import com.googlecode.jslint4java.JSLint;
 public class JSLintMojo extends AbstractMojo {
 
     /**
-     * Specifies the names filter of the source files to be used for JSLint. If
-     * none are specified, defaults to <code>**</code><code>/*.js</code>.
+     * Specifies the the source files to be used for JSLint (relative to
+     * {@link #sourceDirectory}). If none are given, defaults to <code>**</code>
+     * <code>/*.js</code>.
      *
      * @parameter
      */
     private String[] includes;
 
     /**
-     * Specifies the names filter of the source files to be excluded for JSLint.
-     * Maven applies its own defaults.
+     * Specifies the the source files to be excluded for JSLint (relative to
+     * {@link #sourceDirectory}). Maven applies its own defaults.
      *
      * @parameter
      */
