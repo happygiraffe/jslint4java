@@ -1,0 +1,10 @@
+<project>
+  <taskdef name="lint" classname="com.googlecode.jslint4java.ant.JSLintTask" />
+
+  <target name="lint">
+    <lint>
+      <formatter type="plain" />
+      <fileset dir="${sourceDirectory}" includes="**/*.js" excludes="${excludes}"/>
+    </lint>
+  </target>
+</project>

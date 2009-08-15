@@ -1,0 +1,32 @@
+<!-- http://maven.apache.org/xsd/plugin-metadata-1.0.0.xsd -->
+<pluginMetadata>
+  <mojos>
+    <mojo>
+      <goal>lint</goal>
+      <call>lint</call>
+      <requiresProject>true</requiresProject>
+      <description>
+        Validate your JavaScript files, using the JSLint.com software.
+      </description>
+      <parameters>
+        <parameter>
+          <name>sourceDirectory</name> 
+          <property>sourceDirectory</property> 
+          <required>false</required> 
+          <expression>${sourceDirectory}</expression>
+          <defaultValue>${basedir}/src/main/webapp</defaultValue>
+          <type>java.lang.String</type>
+          <description>Where to look for JavaScript files.</description>
+        </parameter>
+        <parameter>
+          <name>excludes</name> 
+          <property>excludes</property> 
+          <required>false</required> 
+          <expression>${excludes}</expression>
+          <type>java.lang.String</type>
+          <description>Comma separated list of files to not validate.</description>
+        </parameter>
+      </parameters>
+    </mojo>
+  </mojos>
+</pluginMetadata>

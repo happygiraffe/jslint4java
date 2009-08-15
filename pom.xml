@@ -38,12 +38,18 @@
     <module>jslint4java-ant</module>
     <module>jslint4java-dist</module>
     <module>jslint4java-docs</module>
+    <module>jslint4java-maven-plugin</module>
   </modules>
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>jslint4java</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>jslint4java-ant</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
