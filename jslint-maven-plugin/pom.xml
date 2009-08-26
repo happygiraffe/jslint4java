@@ -9,6 +9,7 @@
   <artifactId>jslint-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>JSLint Maven Plugin</name>
+  <description>A plugin for validating JavaScript files using jslint4java.</description>
   <prerequisites>
     <maven>2.0.6</maven>
   </prerequisites>
