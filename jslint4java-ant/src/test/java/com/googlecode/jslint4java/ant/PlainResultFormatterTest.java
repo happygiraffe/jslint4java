@@ -51,7 +51,8 @@ public class PlainResultFormatterTest {
         runFormatter(file);
         // Build up the expected output in a cross-platform manner.
         String nl = System.getProperty("line.separator");
-        StringBuilder sb = new StringBuilder("foo/bar.js:1:1: no clucking");
+        StringBuilder sb = new StringBuilder(file.toString());
+        sb.append(":1:1: no clucking");
         sb.append(nl);
         sb.append("cluck()");
         sb.append(nl);
