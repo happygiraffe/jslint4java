@@ -182,6 +182,11 @@
             <arguments>-Pgpg -Dgpg.passphrase=${gpg.passphrase}</arguments>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.3</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>

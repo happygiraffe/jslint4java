@@ -49,14 +49,6 @@
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <!-- Force an upgrade to a newer ant version.  Required by antunit. -->
-          <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>1.7.0</version>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
   </build>
