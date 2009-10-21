@@ -49,10 +49,17 @@ public class PlainResultFormatterTest {
                 .evidence("cluck()").build();
         issues.add(issue);
         runFormatter(file);
-        String expected = "foo/bar.js:1:1: no clucking\ncluck()\n^\n";
+        // Build up the expected output in a cross-platform manner.
+        String nl = System.getProperty("line.separator");
+        StringBuilder sb = new StringBuilder("foo/bar.js:1:1: no clucking");
+        sb.append(nl);
+        sb.append("cluck()");
+        sb.append(nl);
+        sb.append("^");
+        sb.append(nl);
         // NB: We use platform encoding here, as that's what we expect the
         // formatter to produce.
-        assertThat(out.toString(), is(expected));
+        assertThat(out.toString(), is(sb.toString()));
     }
 
     /**
