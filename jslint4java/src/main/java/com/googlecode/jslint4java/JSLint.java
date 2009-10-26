@@ -14,7 +14,6 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 
 import com.googlecode.jslint4java.Issue.IssueBuilder;
 
@@ -43,7 +42,7 @@ public class JSLint {
     private final Map<Option, Object> options = new EnumMap<Option, Object>(
             Option.class);
 
-    private ScriptableObject scope;
+    private Scriptable scope;
 
     /**
      * Create a new {@link JSLint} object.
