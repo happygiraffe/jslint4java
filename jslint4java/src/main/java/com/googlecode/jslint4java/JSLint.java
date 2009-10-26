@@ -1,8 +1,6 @@
 package com.googlecode.jslint4java;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -11,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 
@@ -20,34 +17,27 @@ import com.googlecode.jslint4java.Issue.IssueBuilder;
 /**
  * A utility class to check JavaScript source code for potential problems.
  *
- * <p>
- * This class uses lazy loading. Any public method may throw a
- * {@link RuntimeException} containing a nested {@link IOException}, if it's the
- * first function call after construction.
- *
  * @author dom
  * @version $Id$
  */
 public class JSLint {
-
-    private static final String JSLINT_FILE = "fulljslint.js";
 
     // Uncomment to enable the rhino debugger.
     // static {
     // org.mozilla.javascript.tools.debugger.Main.mainEmbedded(null);
     // }
 
-    private static ContextFactory contextFactory = new ContextFactory();
-
     private final Map<Option, Object> options = new EnumMap<Option, Object>(
             Option.class);
 
-    private Scriptable scope;
+    private final Scriptable scope;
 
     /**
-     * Create a new {@link JSLint} object.
+     * Create a new {@link JSLint} object. You must pass in a {@link Scriptable}
+     * which already has the {@code JSLINT} function defined.
      */
-    public JSLint() {
+    public JSLint(Scriptable scope) {
+        this.scope = scope;
     }
 
     /**
@@ -86,28 +76,10 @@ public class JSLint {
 
     /**
      * Return the version of jslint in use.
-     *
-     * @throws RuntimeException
-     *             if loading jslint fails.
      */
     public String getEdition() {
-        if (scope == null) {
-            initialize();
-        }
         Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
         return (String) lintScope.get("edition", lintScope);
-    }
-
-    private void initialize() {
-        try {
-            Context ctx = contextFactory.enterContext();
-            scope = ctx.initStandardObjects();
-            Reader reader = new BufferedReader(new InputStreamReader(
-                    JSLint.class.getResourceAsStream(JSLINT_FILE)));
-            ctx.evaluateReader(scope, reader, JSLINT_FILE, 1, null);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -119,13 +91,8 @@ public class JSLint {
      *            a {@link Reader} over JavaScript source code.
      *
      * @return a {@link List} of {@link Issue}s describing any problems.
-     * @throws RuntimeException
-     *             if loading jslint fails.
      */
     public List<Issue> lint(String systemId, Reader reader) throws IOException {
-        if (scope == null) {
-            initialize();
-        }
         return lint(systemId, Util.readerToString(reader));
     }
 
@@ -138,13 +105,8 @@ public class JSLint {
      *            a String of JavaScript source code.
      *
      * @return a {@link List} of {@link Issue}s describing any problems.
-     * @throws RuntimeException
-     *             if loading jslint fails.
      */
     public List<Issue> lint(String systemId, String javaScript) {
-        if (scope == null) {
-            initialize();
-        }
         doLint(javaScript);
         List<Issue> issues = new ArrayList<Issue>();
         readErrors(systemId, issues);
@@ -184,13 +146,8 @@ public class JSLint {
      *
      * @param javaScript
      * @return an HTML report.
-     * @throws RuntimeException
-     *             if loading jslint fails.
      */
     public String report(String javaScript) {
-        if (scope == null) {
-            initialize();
-        }
         return report(javaScript, false);
     }
 
@@ -201,13 +158,8 @@ public class JSLint {
      * @param errorsOnly
      *            If a report consisting solely of the problems is desired.
      * @return an HTML report.
-     * @throws RuntimeException
-     *             if loading jslint fails.
      */
     public String report(String javaScript, boolean errorsOnly) {
-        if (scope == null) {
-            initialize();
-        }
         // Run the lint function itself as prep.
         doLint(javaScript);
 

@@ -43,7 +43,7 @@ public class Main {
     private final JSLint lint;
 
     private Main() throws IOException {
-        lint = new JSLint();
+        lint = new JSLintBuilder().fromDefault();
     }
 
     private void die(String message) {

@@ -43,7 +43,7 @@ public class JSLintTest {
 
     @Before
     public void setUp() throws IOException {
-        lint = new JSLint();
+        lint = new JSLintBuilder().fromDefault();
     }
 
     @Test

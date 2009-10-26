@@ -20,6 +20,7 @@ import org.apache.tools.ant.types.resources.Union;
 
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLint;
+import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.Option;
 
 /**
@@ -160,7 +161,7 @@ public class JSLintTask extends Task {
     @Override
     public void init() throws BuildException {
         try {
-            lint = new JSLint();
+            lint = new JSLintBuilder().fromDefault();
         } catch (IOException e) {
             throw new BuildException(e);
         }
