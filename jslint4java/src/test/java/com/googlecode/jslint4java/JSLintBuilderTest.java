@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.StringReader;
 import java.util.List;
 
 import org.junit.Before;
@@ -46,5 +47,13 @@ public class JSLintBuilderTest {
     public void testFromFile() throws Exception {
         File f = new File(getClass().getClassLoader().getResource(STUB_JSLINT).toURI());
         assertJSLintOK(builder.fromFile(f));
+    }
+
+    @Test
+    public void testFromReader() throws Exception {
+        // Same as stubjslint.js.
+        String jslint = "function JSLINT() {JSLINT.errors=[];return true}";
+        StringReader reader = new StringReader(jslint);
+        assertJSLintOK(builder.fromReader(reader, "stubjslint.js"));
     }
 }

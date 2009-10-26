@@ -45,13 +45,11 @@ public class JSLintBuilder {
      * @throws IOException
      *             if there are any problems reading the resource.
      */
-    public JSLint fromClasspathResource(String resource)
-            throws IOException {
+    public JSLint fromClasspathResource(String resource) throws IOException {
         // TODO encoding?
-        Reader reader = new BufferedReader(new InputStreamReader(getClass()
-                .getClassLoader().getResourceAsStream(resource)));
-        ctx.evaluateReader(scope, reader, resource, 1, null);
-        return new JSLint(scope);
+        Reader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader()
+                .getResourceAsStream(resource)));
+        return fromReader(reader, resource);
     }
 
     /**
@@ -76,7 +74,22 @@ public class JSLintBuilder {
      */
     public JSLint fromFile(File f) throws IOException {
         Reader reader = new BufferedReader(new FileReader(f));
-        ctx.evaluateReader(scope, reader, f.toString(), 1, null);
+        return fromReader(reader, f.toString());
+    }
+
+    /**
+     * Initialize the scope with an arbitrary jslint.
+     *
+     * @param reader
+     *            an input source providing jslint.js.
+     * @param name
+     *            the name of the resource backed by the reader
+     * @return a configured {@link JSLint}
+     * @throws IOException
+     *             if there are any problems reading from {@code reader}.
+     */
+    public JSLint fromReader(Reader reader, String name) throws IOException {
+        ctx.evaluateReader(scope, reader, name, 1, null);
         return new JSLint(scope);
     }
 }
