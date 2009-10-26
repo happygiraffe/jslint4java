@@ -11,6 +11,9 @@ import org.junit.Test;
 
 public class JSLintBuilderTest {
 
+    // This jslint will return true for any file.
+    private static final String STUB_JSLINT = "com/googlecode/jslint4java/stubjslint.js";
+
     private JSLintBuilder builder;
 
     @Before
@@ -29,9 +32,7 @@ public class JSLintBuilderTest {
 
     @Test
     public void testFromClasspathResource() throws Exception {
-        // This will validate anything as passing…
-        String resource = "com/googlecode/jslint4java/stubjslint.js";
-        JSLint lint = builder.fromClasspathResource(resource);
+        JSLint lint = builder.fromClasspathResource(STUB_JSLINT);
         assertThat(lint, is(notNullValue()));
         // Check it can lint OK.
         List<Issue> issues = lint.lint("-", "");
@@ -40,8 +41,7 @@ public class JSLintBuilderTest {
 
     @Test
     public void testFromFile() throws Exception {
-        String resource = "com/googlecode/jslint4java/stubjslint.js";
-        File f = new File(getClass().getClassLoader().getResource(resource).toURI());
+        File f = new File(getClass().getClassLoader().getResource(STUB_JSLINT).toURI());
         JSLint lint = builder.fromFile(f);
         assertThat(lint, is(notNullValue()));
         // Check it can lint OK.
