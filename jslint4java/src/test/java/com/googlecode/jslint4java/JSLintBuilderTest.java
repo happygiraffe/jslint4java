@@ -3,6 +3,7 @@ package com.googlecode.jslint4java;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.util.List;
 
 import org.junit.Before;
@@ -31,6 +32,17 @@ public class JSLintBuilderTest {
         // This will validate anything as passing…
         String resource = "com/googlecode/jslint4java/stubjslint.js";
         JSLint lint = builder.fromClasspathResource(resource);
+        assertThat(lint, is(notNullValue()));
+        // Check it can lint OK.
+        List<Issue> issues = lint.lint("-", "");
+        assertThat(issues.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testFromFile() throws Exception {
+        String resource = "com/googlecode/jslint4java/stubjslint.js";
+        File f = new File(getClass().getClassLoader().getResource(resource).toURI());
+        JSLint lint = builder.fromFile(f);
         assertThat(lint, is(notNullValue()));
         // Check it can lint OK.
         List<Issue> issues = lint.lint("-", "");

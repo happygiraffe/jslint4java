@@ -1,6 +1,8 @@
 package com.googlecode.jslint4java;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -61,5 +63,20 @@ public class JSLintBuilder {
      */
     public JSLint fromDefault() throws IOException {
         return fromClasspathResource(JSLINT_FILE);
+    }
+
+    /**
+     * Initialize the scope with the jslint.js passed in on the filesystem.
+     *
+     * @param f
+     *            the path to jslint.js
+     * @return a configured {@link JSLint}
+     * @throws IOException
+     *             if the file can't be read.
+     */
+    public JSLint fromFile(File f) throws IOException {
+        Reader reader = new BufferedReader(new FileReader(f));
+        ctx.evaluateReader(scope, reader, f.toString(), 1, null);
+        return new JSLint(scope);
     }
 }
