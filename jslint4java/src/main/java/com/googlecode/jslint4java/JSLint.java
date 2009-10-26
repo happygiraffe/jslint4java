@@ -89,6 +89,14 @@ public class JSLint {
     }
 
     /**
+     * Return the version of jslint in use.
+     */
+    public String getEdition() {
+        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
+        return (String) lintScope.get("edition", lintScope);
+    }
+
+    /**
      * Check for problems in a {@link Reader} which contains JavaScript source.
      *
      * @param systemId
@@ -185,14 +193,6 @@ public class JSLint {
      */
     public void resetOptions() {
         options.clear();
-    }
-
-    /**
-     * Return the version of jslint in use.
-     */
-    public String getEdition() {
-        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
-        return (String) lintScope.get("edition", lintScope);
     }
 
 }
