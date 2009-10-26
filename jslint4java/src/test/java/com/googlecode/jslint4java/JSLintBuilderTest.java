@@ -16,36 +16,35 @@ public class JSLintBuilderTest {
 
     private JSLintBuilder builder;
 
+    /**
+     * A minimal test that a JSLint looks OK. Just tests we can lint an empty
+     * string.
+     */
+    private void assertJSLintOK(JSLint lint) {
+        assertThat(lint, is(notNullValue()));
+        // Check it can lint OK.
+        List<Issue> issues = lint.lint("-", "");
+        assertThat(issues.isEmpty(), is(true));
+    }
+
     @Before
     public void setUp() throws Exception {
         builder = new JSLintBuilder();
     }
 
     @Test
-    public void testFromDefault() throws Exception {
-        JSLint lint = builder.fromDefault();
-        assertThat(lint, is(notNullValue()));
-        // Check it can lint OK.
-        List<Issue> issues = lint.lint("-", "");
-        assertThat(issues.isEmpty(), is(true));
+    public void testFromClasspathResource() throws Exception {
+        assertJSLintOK(builder.fromClasspathResource(STUB_JSLINT));
     }
 
     @Test
-    public void testFromClasspathResource() throws Exception {
-        JSLint lint = builder.fromClasspathResource(STUB_JSLINT);
-        assertThat(lint, is(notNullValue()));
-        // Check it can lint OK.
-        List<Issue> issues = lint.lint("-", "");
-        assertThat(issues.isEmpty(), is(true));
+    public void testFromDefault() throws Exception {
+        assertJSLintOK(builder.fromDefault());
     }
 
     @Test
     public void testFromFile() throws Exception {
         File f = new File(getClass().getClassLoader().getResource(STUB_JSLINT).toURI());
-        JSLint lint = builder.fromFile(f);
-        assertThat(lint, is(notNullValue()));
-        // Check it can lint OK.
-        List<Issue> issues = lint.lint("-", "");
-        assertThat(issues.isEmpty(), is(true));
+        assertJSLintOK(builder.fromFile(f));
     }
 }
