@@ -74,6 +74,8 @@ public class Main {
             info(String.format(fmt, o.getLowerName(), o.getDescription()));
         }
         info("");
+        info(String.format(fmt, "help", "Show this help"));
+        info("");
         info("using jslint version " + lint.getEdition());
         System.exit(0);
     }
