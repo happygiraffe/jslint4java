@@ -37,7 +37,7 @@ public class JSLint {
     private final Map<Option, Object> options = new EnumMap<Option, Object>(
             Option.class);
 
-    private final ScriptableObject scope;
+    private ScriptableObject scope;
 
     /**
      * Create a new {@link JSLint} object. This reads in the jslint JavaScript
@@ -47,11 +47,7 @@ public class JSLint {
      *             if something went wrong reading jslint.js.
      */
     public JSLint() throws IOException {
-        Context ctx = contextFactory.enterContext();
-        scope = ctx.initStandardObjects();
-        Reader reader = new BufferedReader(new InputStreamReader(JSLint.class
-                .getResourceAsStream(JSLINT_FILE)));
-        ctx.evaluateReader(scope, reader, JSLINT_FILE, 1, null);
+        initialize();
     }
 
     /**
@@ -94,6 +90,14 @@ public class JSLint {
     public String getEdition() {
         Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
         return (String) lintScope.get("edition", lintScope);
+    }
+
+    private void initialize() throws IOException {
+        Context ctx = contextFactory.enterContext();
+        scope = ctx.initStandardObjects();
+        Reader reader = new BufferedReader(new InputStreamReader(JSLint.class
+                .getResourceAsStream(JSLINT_FILE)));
+        ctx.evaluateReader(scope, reader, JSLINT_FILE, 1, null);
     }
 
     /**
