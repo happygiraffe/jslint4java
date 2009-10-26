@@ -5,9 +5,10 @@
 # $Id$
 
 dir=${0%/*}
+base=$(dirname $dir)
 
-javaDir="src/main/java"
-resourceDir="src/main/resources"
+javaDir="$base/src/main/java"
+resourceDir="$base/src/main/resources"
 pkgDir="com/googlecode/jslint4java"
 jslint="fulljslint.js"
 
