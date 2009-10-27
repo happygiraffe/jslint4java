@@ -136,6 +136,7 @@ public class Main {
         }
         info("");
         info(String.format(fmt, "help", "Show this help"));
+        info(String.format(fmt, "jslint", "Specify an alternative version of jslint.js"));
         info("");
         info("using jslint version " + lint.getEdition());
         throw new DieException(null, 0);
