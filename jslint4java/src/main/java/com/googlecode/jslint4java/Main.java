@@ -95,10 +95,15 @@ public class Main {
     private void applyOptions(Map<Option, String> options) {
         for (Entry<Option, String> entry : options.entrySet()) {
             String value = entry.getValue();
-            if (value == null) {
-                lint.addOption(entry.getKey());
-            } else {
-                lint.addOption(entry.getKey(), value);
+            try {
+                if (value == null) {
+                    lint.addOption(entry.getKey());
+                } else {
+                    lint.addOption(entry.getKey(), value);
+                }
+            } catch (IllegalArgumentException e) {
+                String optName = entry.getKey().getLowerName();
+                die("--" + optName + ": " + e.getClass().getName() + ": " + e.getMessage());
             }
         }
     }
@@ -206,15 +211,11 @@ public class Main {
             // Longopt.
             else if (arg.startsWith("--")) {
                 Pair<String, String> pair = parseArgAndValue(arg);
-                try {
-                    Option o = getOption(pair.a);
-                    if (o == null) {
-                        die("unknown option " + arg);
-                    }
-                    options.put(o, pair.b);
-                } catch (IllegalArgumentException e) {
-                    die(pair.a + ": " + e.getClass().getName() + ": " + e.getMessage());
+                Option o = getOption(pair.a);
+                if (o == null) {
+                    die("unknown option " + arg);
                 }
+                options.put(o, pair.b);
             }
             // File
             else {
