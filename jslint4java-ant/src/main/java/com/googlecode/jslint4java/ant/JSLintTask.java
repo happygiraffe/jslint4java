@@ -74,8 +74,6 @@ public class JSLintTask extends Task {
 
     private final Union resources = new Union();
 
-    private JSLint lint;
-
     private final List<ResultFormatter> formatters = new ArrayList<ResultFormatter>();
 
     private boolean haltOnFailure = true;
@@ -133,6 +131,7 @@ public class JSLintTask extends Task {
             throw new BuildException("no resources specified");
         }
 
+        JSLint lint = makeLint();
         applyOptions(lint);
 
         for (ResultFormatter rf : formatters) {
@@ -143,7 +142,7 @@ public class JSLintTask extends Task {
         int totalErrorCount = 0;
         for (Resource resource : resources.listResources()) {
             try {
-                int errorCount = lintStream(resource);
+                int errorCount = lintStream(lint, resource);
                 if (errorCount > 0) {
                     totalErrorCount += errorCount;
                     failedCount++;
@@ -183,27 +182,12 @@ public class JSLintTask extends Task {
     }
 
     /**
-     * Create a new {@link JSLint} object.
-     */
-    @Override
-    public void init() throws BuildException {
-        try {
-            if (jslintSource == null) {
-                lint = new JSLintBuilder().fromDefault();
-            } else {
-                lint = new JSLintBuilder().fromFile(jslintSource);
-            }
-        } catch (IOException e) {
-            throw new BuildException(e);
-        }
-    }
-
-    /**
      * Lint a given stream. Closes the stream after use.
+     * @param lint
      *
      * @throws IOException
      */
-    private int lintStream(Resource resource)
+    private int lintStream(JSLint lint, Resource resource)
             throws UnsupportedEncodingException, IOException {
         InputStream stream = null;
         try {
@@ -221,6 +205,21 @@ public class JSLintTask extends Task {
             if (stream != null) {
                 stream.close();
             }
+        }
+    }
+
+    /**
+     * Create a new {@link JSLint} object.
+     */
+    public JSLint makeLint() throws BuildException {
+        try {
+            if (jslintSource == null) {
+                return new JSLintBuilder().fromDefault();
+            } else {
+                return new JSLintBuilder().fromFile(jslintSource);
+            }
+        } catch (IOException e) {
+            throw new BuildException(e);
         }
     }
 
