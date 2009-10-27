@@ -1,6 +1,7 @@
 package com.googlecode.jslint4java;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class Main {
 
     private boolean errored = false;
 
-    private final JSLint lint;
+    private JSLint lint;
 
     private Main() throws IOException {
         lint = new JSLintBuilder().fromDefault();
@@ -121,6 +122,19 @@ public class Main {
             // Hayelp!
             else if ("--help".equals(arg)) {
                 help();
+            }
+            // Specify an alternative jslint.
+            else if (arg.startsWith("--jslint")) {
+                String[] bits = arg.substring(2).split("=", 2);
+                if (bits.length != 2) {
+                    die("Must specify file with --jslint=/some/where/jslint.js");
+                }
+                try {
+                    // TODO Don't wipe out existing options that have been set.
+                    lint = new JSLintBuilder().fromFile(new File(bits[1]));
+                } catch (IOException e) {
+                    die(e.getMessage());
+                }
             }
             // Longopt.
             else if (arg.startsWith("--")) {
