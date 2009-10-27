@@ -36,6 +36,23 @@ public class Main {
         }
     }
 
+    /**
+     * This is just to avoid calling {@link System#exit(int)} outside of main()…
+     */
+    @SuppressWarnings("serial")
+    private static class DieException extends RuntimeException {
+        private final int code;
+
+        public DieException(String message, int code) {
+            super(message);
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+    }
+
     private static final String PROGNAME = "jslint";
 
     /**
@@ -46,15 +63,22 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        Main main = new Main();
-        List<String> files = main.processOptions(args);
-        if (files.size() == 0) {
-            main.help();
+        try {
+            Main main = new Main();
+            List<String> files = main.processOptions(args);
+            if (files.size() == 0) {
+                main.help();
+            }
+            for (String file : files) {
+                main.lintFile(file);
+            }
+            System.exit(main.isErrored() ? 1 : 0);
+        } catch (DieException e) {
+            if (e.getMessage() != null) {
+                System.err.println(PROGNAME + ": " + e.getMessage());
+            }
+            System.exit(e.getCode());
         }
-        for (String file : files) {
-            main.lintFile(file);
-        }
-        System.exit(main.isErrored() ? 1 : 0);
     }
 
     private boolean errored = false;
@@ -80,8 +104,7 @@ public class Main {
     }
 
     private void die(String message) {
-        System.err.println(PROGNAME + ": " + message);
-        System.exit(1);
+        throw new DieException(message, 1);
     }
 
     private void err(String message) {
@@ -110,7 +133,7 @@ public class Main {
         info(String.format(fmt, "help", "Show this help"));
         info("");
         info("using jslint version " + lint.getEdition());
-        System.exit(0);
+        throw new DieException(null, 0);
     }
 
     private void info(String message) {
