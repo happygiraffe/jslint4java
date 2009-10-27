@@ -21,6 +21,21 @@ import java.util.Map.Entry;
  */
 public class Main {
 
+    /** Just a useful utility class. Should probably be top-level. */
+    private static class Pair<A, B> {
+        public final A a;
+        public final B b;
+
+        public Pair(A a, B b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public static <A, B> Pair<A, B> of(A a, B b) {
+            return new Pair<A, B>(a, b);
+        }
+    }
+
     private static final String PROGNAME = "jslint";
 
     /**
@@ -109,8 +124,7 @@ public class Main {
     private void lintFile(String file) throws IOException {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file)));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             List<Issue> issues = lint.lint(file, reader);
             for (Issue issue : issues) {
                 err(issue.toString());
@@ -121,6 +135,19 @@ public class Main {
             if (reader != null) {
                 reader.close();
             }
+        }
+    }
+
+    /**
+     * Parse {@code arg} into two components, separated by equals. If there is
+     * no second component, the value will be {@code null}.
+     */
+    private Pair<String, String> parseArgAndValue(String arg) {
+        String[] bits = arg.substring(2).split("=", 2);
+        if (bits.length == 2) {
+            return Pair.of(bits[0], bits[1]);
+        } else {
+            return Pair.of(bits[0], null);
         }
     }
 
@@ -143,32 +170,27 @@ public class Main {
             }
             // Specify an alternative jslint.
             else if (arg.startsWith("--jslint")) {
-                String[] bits = arg.substring(2).split("=", 2);
-                if (bits.length != 2) {
+                Pair<String, String> pair = parseArgAndValue(arg);
+                if (pair.b == null) {
                     die("Must specify file with --jslint=/some/where/jslint.js");
                 }
                 try {
-                    lint = new JSLintBuilder().fromFile(new File(bits[1]));
+                    lint = new JSLintBuilder().fromFile(new File(pair.b));
                 } catch (IOException e) {
                     die(e.getMessage());
                 }
             }
             // Longopt.
             else if (arg.startsWith("--")) {
-                String[] bits = arg.substring(2).split("=", 2);
+                Pair<String, String> pair = parseArgAndValue(arg);
                 try {
-                    Option o = getOption(bits[0]);
+                    Option o = getOption(pair.a);
                     if (o == null) {
                         die("unknown option " + arg);
                     }
-                    if (bits.length == 2) {
-                        options.put(o, bits[1]);
-                    } else {
-                        options.put(o, null);
-                    }
+                    options.put(o, pair.b);
                 } catch (IllegalArgumentException e) {
-                    die(bits[0] + ": " + e.getClass().getName() + ": "
-                            + e.getMessage());
+                    die(pair.a + ": " + e.getClass().getName() + ": " + e.getMessage());
                 }
             }
             // File
