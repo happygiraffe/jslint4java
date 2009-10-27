@@ -7,8 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * A command line interface to {@link JSLint}.
@@ -45,6 +48,20 @@ public class Main {
 
     private Main() throws IOException {
         lint = new JSLintBuilder().fromDefault();
+    }
+
+    /**
+     * Apply a set of options to the current JSLint.
+     */
+    private void applyOptions(Map<Option, String> options) {
+        for (Entry<Option, String> entry : options.entrySet()) {
+            String value = entry.getValue();
+            if (value == null) {
+                lint.addOption(entry.getKey());
+            } else {
+                lint.addOption(entry.getKey(), value);
+            }
+        }
     }
 
     private void die(String message) {
@@ -110,6 +127,7 @@ public class Main {
     private List<String> processOptions(String[] args) {
         boolean inFiles = false;
         List<String> files = new ArrayList<String>();
+        Map<Option, String> options = new HashMap<Option, String>();
         for (String arg : args) {
             if (inFiles) {
                 files.add(arg);
@@ -130,7 +148,6 @@ public class Main {
                     die("Must specify file with --jslint=/some/where/jslint.js");
                 }
                 try {
-                    // TODO Don't wipe out existing options that have been set.
                     lint = new JSLintBuilder().fromFile(new File(bits[1]));
                 } catch (IOException e) {
                     die(e.getMessage());
@@ -145,9 +162,9 @@ public class Main {
                         die("unknown option " + arg);
                     }
                     if (bits.length == 2) {
-                        lint.addOption(o, bits[1]);
+                        options.put(o, bits[1]);
                     } else {
-                        lint.addOption(o);
+                        options.put(o, null);
                     }
                 } catch (IllegalArgumentException e) {
                     die(bits[0] + ": " + e.getClass().getName() + ": "
@@ -160,6 +177,7 @@ public class Main {
                 files.add(arg);
             }
         }
+        applyOptions(options);
         return files;
     }
 
