@@ -1,6 +1,7 @@
 package com.googlecode.jslint4java.ant;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -77,6 +78,8 @@ public class JSLintTask extends Task {
     private boolean haltOnFailure = true;
 
     private String encoding = System.getProperty("file.encoding", "UTF-8");
+
+    private File jslintSource = null;
 
     /**
      * Check the contents of this {@link ResourceCollection}.
@@ -161,7 +164,11 @@ public class JSLintTask extends Task {
     @Override
     public void init() throws BuildException {
         try {
-            lint = new JSLintBuilder().fromDefault();
+            if (jslintSource == null) {
+                lint = new JSLintBuilder().fromDefault();
+            } else {
+                lint = new JSLintBuilder().fromFile(jslintSource);
+            }
         } catch (IOException e) {
             throw new BuildException(e);
         }
@@ -211,6 +218,13 @@ public class JSLintTask extends Task {
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
+    }
+
+    /**
+     * Specify an alternative version of jslint.
+     */
+    public void setJslint(File jslint) {
+        jslintSource = jslint;
     }
 
     /**
