@@ -25,8 +25,9 @@ usage: jslint [options] file.js ...
   --forin    If for in statements must filter
   --fragment If html fragments should be allowed
   --immed    If immediate invocations must be wrapped in parens
-  --indent   The number of spaces used for indentation (default is 4)
+  --indent=  The number of spaces used for indentation (default is 4)
   --laxbreak If line breaks should not be checked
+  --maxerr=  The maximum number of warnings reported (default is 50)
   --newcap   If constructor names must be capitalized
   --nomen    If names should be checked
   --on       If html event handlers should be allowed
@@ -43,8 +44,10 @@ usage: jslint [options] file.js ...
   --white    If strict whitespace rules apply
   --widget   If the yahoo widgets globals should be predefined
 
-using jslint version 2009-06-12
-$
+  --help     Show this help
+  --jslint=  Specify an alternative version of jslint.js
+
+using jslint version 2009-10-04
 </span></pre>
 
     <p>The list of options is derived from the
@@ -88,6 +91,12 @@ jslint:happy.js:2:2:Expected 'x' to have an indentation of 4 instead of 2.
 $ java -jar jslint4java-${project.version}.jar --white --indent=2 happy.js
 $
 </span></pre>
+
+    <p>You can specify an alternative <code>jslint.js</code> in case the version
+      supplied doesn't suit you (for example there is a newer version available).
+      To use another jslint, specify <code>--jslint=/some/where/jslint.js</code>
+      on the command line.</p>
+
     <script type="text/javascript">prettyPrint()</script>
   </body>
 </html>
