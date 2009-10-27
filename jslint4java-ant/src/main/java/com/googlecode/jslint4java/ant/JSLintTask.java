@@ -8,8 +8,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -81,6 +84,8 @@ public class JSLintTask extends Task {
 
     private File jslintSource = null;
 
+    private final Map<Option, String> options = new HashMap<Option, String>();
+
     /**
      * Check the contents of this {@link ResourceCollection}.
      *
@@ -102,6 +107,23 @@ public class JSLintTask extends Task {
         formatters.add(fe.getResultFormatter());
     }
 
+    public void applyOptions(JSLint lint) {
+        for (Entry<Option, String> entry : options.entrySet()) {
+            String value = entry.getValue();
+            try {
+                if (value == null) {
+                    lint.addOption(entry.getKey());
+                } else {
+                    lint.addOption(entry.getKey(), value);
+                }
+            } catch (IllegalArgumentException e) {
+                String optName = entry.getKey().getLowerName();
+                String className = e.getClass().getName();
+                throw new BuildException(optName + ": " + className + ": " + e.getMessage());
+            }
+        }
+    }
+
     /**
      * Scan the specified directories for JavaScript files and lint them.
      */
@@ -110,6 +132,8 @@ public class JSLintTask extends Task {
         if (resources.size() == 0) {
             throw new BuildException("no resources specified");
         }
+
+        applyOptions(lint);
 
         for (ResultFormatter rf : formatters) {
             rf.begin();
@@ -246,14 +270,10 @@ public class JSLintTask extends Task {
             String optName = parts[0];
             try {
                 // The Option constants are upper case…
-                Option o = Option.valueOf(optName.toUpperCase(Locale
-                        .getDefault()));
+                Option o = Option.valueOf(optName.toUpperCase(Locale.getDefault()));
                 // If an argument has been specified, use it.
-                if (parts.length == 2) {
-                    lint.addOption(o, parts[1]);
-                } else {
-                    lint.addOption(o);
-                }
+                String value = parts.length == 2 ? parts[1] : null;
+                options.put(o, value);
             } catch (IllegalArgumentException e) {
                 throw new BuildException("Unknown option " + optName);
             }
