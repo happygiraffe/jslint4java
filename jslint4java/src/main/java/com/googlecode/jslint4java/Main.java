@@ -132,11 +132,15 @@ public class Main {
         info("usage: jslint [options] file.js ...");
         String fmt = "  --%-" + Option.maximumNameLength() + "s %s";
         for (Option o : Option.values()) {
-            info(String.format(fmt, o.getLowerName(), o.getDescription()));
+            String name = o.getLowerName();
+            if (o.getType() != Boolean.class) {
+                name = name + "=";
+            }
+            info(String.format(fmt, name, o.getDescription()));
         }
         info("");
         info(String.format(fmt, "help", "Show this help"));
-        info(String.format(fmt, "jslint", "Specify an alternative version of jslint.js"));
+        info(String.format(fmt, "jslint=", "Specify an alternative version of jslint.js"));
         info("");
         info("using jslint version " + lint.getEdition());
         throw new DieException(null, 0);
