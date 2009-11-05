@@ -72,10 +72,14 @@ public class PlainResultFormatterTest {
         Issue issue = new IssueBuilder(file.toString(), 1, 1, "fatality").build();
         issues.add(issue);
         runFormatter(file);
-        String expected = "foo/bar.js:1:1: fatality\n";
+        // Build up the expected output in a cross-platform manner.
+        String nl = System.getProperty("line.separator");
+        StringBuilder sb = new StringBuilder(file.toString());
+        sb.append(":1:1: fatality");
+        sb.append(nl);
         // NB: We use platform encoding here, as that's what we expect the
         // formatter to produce.
-        assertThat(out.toString(), is(expected));
+        assertThat(out.toString(), is(sb.toString()));
     }
 
 }
