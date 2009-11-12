@@ -25,14 +25,13 @@ Now, create the distribution.
   $ git checkout rel-X.Y
   $ mvn -Pdist clean verify
 
-With that done, upload jslint4java-dist/target/jslint4java-X.Y-dist.zip
-to google code.
-
 Create a source archive.
 
   $ bin/src-archive jslint4java-dist/target/jslint4java-X.Y-dist.zip
 
-Upload the created source archive to google code.
+With that done, upload the dist and src archives to google code.
+
+  $ bin/upload-to-googlecode jslint4java-dist/target/jslint4java-X.Y-dist.zip
 
 Import the documentation to google code svn.
 
