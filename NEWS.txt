@@ -1,8 +1,11 @@
 Revision history for jslint4java.
 
-1.3.2 2009-10-27
+1.3.2 2009-11-12
     - issue 18: add support for external jslint.js.
+    - issue 29: pretty up the docs some.
+    - issue 32: clear up some non-partable tests.
     - Update to JSLint 2009-10-04.
+      - Adds maxerr option.
 
 1.3.1 2009-07-30
     - issue 21: Emit full filename in ant errors.
