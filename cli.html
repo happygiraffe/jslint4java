@@ -4,14 +4,15 @@
     <title>jslint4java command line usage</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="jslint4java.css" type="text/css" rel="stylesheet" />
+    <link href="prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="prettify.js"></script>
   </head>
   <body>
     <h1>Using jslint4java on the command line</h1>
 
     <p>jslint4java can be run as an executable jar file:</p>
 
-    <pre>
-$ java -jar jslint4java-${project.version}.jar
+    <pre class="prettyprint"><span class="nocode">$ java -jar jslint4java-${project.version}.jar
 usage: jslint [options] file.js ...
   --adsafe   If adsafe should be enforced
   --bitwise  If bitwise operators should not be allowed
@@ -24,8 +25,9 @@ usage: jslint [options] file.js ...
   --forin    If for in statements must filter
   --fragment If html fragments should be allowed
   --immed    If immediate invocations must be wrapped in parens
-  --indent   The number of spaces used for indentation (default is 4)
+  --indent=  The number of spaces used for indentation (default is 4)
   --laxbreak If line breaks should not be checked
+  --maxerr=  The maximum number of warnings reported (default is 50)
   --newcap   If constructor names must be capitalized
   --nomen    If names should be checked
   --on       If html event handlers should be allowed
@@ -42,9 +44,11 @@ usage: jslint [options] file.js ...
   --white    If strict whitespace rules apply
   --widget   If the yahoo widgets globals should be predefined
 
-using jslint version 2009-06-12
-$
-    </pre>
+  --help     Show this help
+  --jslint=  Specify an alternative version of jslint.js
+
+using jslint version 2009-10-04
+</span></pre>
 
     <p>The list of options is derived from the
       <a href="apidocs/com/googlecode/jslint4java/Option.html">Option</a> enum.  For fuller
@@ -57,13 +61,12 @@ $
 
     <p>Sample error output:</p>
 
-    <pre>
-$ cat dodgy.js
+    <pre class="prettyprint"><span class="nocode">$ cat dodgy.js
 someVar = 42
 $ java -jar jslint4java-${project.version}.jar dodgy.js
 jslint:dodgy.js:0:12:Missing semicolon.
 $
-    </pre>
+</span></pre>
 
     <p>The fields are colon separated and consist of:</p>
 
@@ -78,8 +81,7 @@ $
     <p>Most command line flags are boolean.  If you wish to pass a value to a flag
       (e.g. <code>--indent</code>), add it using an equals.  For example:</p>
 
-    <pre>
-$ cat happy.js
+      <pre class="prettyprint"><span class="nocode">$ cat happy.js
 var x;
 if (x) {
   x = 42;
@@ -88,6 +90,13 @@ $ java -jar jslint4java-${project.version}.jar --white happy.js
 jslint:happy.js:2:2:Expected 'x' to have an indentation of 4 instead of 2.
 $ java -jar jslint4java-${project.version}.jar --white --indent=2 happy.js
 $
-    </pre>
+</span></pre>
+
+    <p>You can specify an alternative <code>jslint.js</code> in case the version
+      supplied doesn't suit you (for example there is a newer version available).
+      To use another jslint, specify <code>--jslint=/some/where/jslint.js</code>
+      on the command line.</p>
+
+    <script type="text/javascript">prettyPrint()</script>
   </body>
 </html>
