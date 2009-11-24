@@ -25,6 +25,8 @@ public enum Option {
     CSS("If css workarounds should be tolerated", Boolean.class),
     /** If debugger statements should be allowed */
     DEBUG("If debugger statements should be allowed", Boolean.class),
+    /** If logging should be allowed (console, alert, etc.) */
+    DEVEL("If logging should be allowed (console, alert, etc.)", Boolean.class),
     /** If === should be required */
     EQEQEQ("If === should be required", Boolean.class),
     /** If eval should be allowed */

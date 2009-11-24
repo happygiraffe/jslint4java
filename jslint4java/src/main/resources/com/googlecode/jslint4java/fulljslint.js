@@ -1,5 +1,5 @@
 // jslint.js
-// 2009-10-04
+// 2009-11-22
 
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
@@ -182,7 +182,7 @@ SOFTWARE.
     darkkhaki, darkmagenta, darkolivegreen, darkorange, darkorchid, darkred,
     darksalmon, darkseagreen, darkslateblue, darkslategray, darkturquoise,
     darkviolet, data, dd, debug, decodeURI, decodeURIComponent, deeppink,
-    deepskyblue, defaultStatus, defineClass, del, deserialize, dfn,
+    deepskyblue, defaultStatus, defineClass, del, deserialize, devel, dfn,
     dimension, dimgray, dir, direction, display, div, dl, document,
     dodgerblue, dt, edition, else, em, embed, empty, "empty-cells",
     encodeURI, encodeURIComponent, entityify, eqeqeq, errors, escape, eval,
@@ -309,6 +309,7 @@ var JSLINT = (function () {
             cap        : true, // if upper case HTML should be allowed
             css        : true, // if CSS workarounds should be tolerated
             debug      : true, // if debugger statements should be allowed
+            devel      : true, // if logging should be allowed (console, alert, etc.)
             eqeqeq     : true, // if === should be required
             evil       : true, // if eval should be allowed
             forin      : true, // if for in statements must filter
@@ -337,15 +338,11 @@ var JSLINT = (function () {
 
         browser = {
             addEventListener: false,
-            alert           : false,
             blur            : false,
             clearInterval   : false,
             clearTimeout    : false,
             close           : false,
             closed          : false,
-            confirm         : false,
-            console         : false,
-            Debug           : false,
             defaultStatus   : false,
             document        : false,
             event           : false,
@@ -369,11 +366,9 @@ var JSLINT = (function () {
             onunload        : true,
             open            : false,
             opener          : false,
-            opera           : false,
             Option          : false,
             parent          : false,
             print           : false,
-            prompt          : false,
             removeEventListener: false,
             resizeBy        : false,
             resizeTo        : false,
@@ -549,6 +544,15 @@ var JSLINT = (function () {
         },
 
         cssOverflow,
+
+        devel = {
+            alert           : false,
+            confirm         : false,
+            console         : false,
+            Debug           : false,
+            opera           : false,
+            prompt          : false
+        },
 
         escapes = {
             '\b': '\\b',
@@ -969,6 +973,9 @@ var JSLINT = (function () {
         if (!option.safe) {
             if (option.rhino) {
                 combine(predefined, rhino);
+            }
+            if (option.devel) {
+                combine(predefined, devel);
             }
             if (option.browser || option.sidebar) {
                 combine(predefined, browser);
@@ -1848,6 +1855,14 @@ loop:   for (;;) {
                                 v, v.value);
                     }
                     obj.maxerr = b;
+                } else if (t.value === 'maxlen' && o === '/*jslint') {
+                    b = +v.value;
+                    if (typeof b !== 'number' || !isFinite(b) || b <= 0 ||
+                            Math.floor(b) !== b) {
+                        error("Expected a small integer and instead saw '{a}'.",
+                                v, v.value);
+                    }
+                    obj.maxlen = b;
                 } else if (v.value === 'true') {
                     obj[t.value] = true;
                 } else if (v.value === 'false') {
@@ -5078,6 +5093,7 @@ loop:   for (;;) {
                 o.browser = false;
                 o.css     = false;
                 o.debug   = false;
+                o.devel   = false;
                 o.eqeqeq  = true;
                 o.evil    = false;
                 o.forin   = false;
@@ -5422,7 +5438,7 @@ loop:   for (;;) {
     };
     itself.jslint = itself;
 
-    itself.edition = '2009-10-04';
+    itself.edition = '2009-11-22';
 
     return itself;
 
