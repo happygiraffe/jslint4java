@@ -74,6 +74,7 @@
       <dt>onevar   </dt><dd>If only one var statement per function should be allowed</dd>
       <dt>passfail </dt><dd>If the scan should stop on first error</dd>
       <dt>plusplus </dt><dd>If increment/decrement should not be allowed</dd>
+      <!-- NB: predef omitted, as it has its own child element. -->
       <dt>regexp   </dt><dd>If the . should not be allowed in regexp literals</dd>
       <dt>rhino    </dt><dd>If the rhino environment globals should be predefined</dd>
       <dt>safe     </dt><dd>If use of some browser features should be restricted</dd>
@@ -129,6 +130,15 @@
     <p>
       If no formatter elements are present, then no output will be produced.
       However, the build will still fail if the validation fails.
+    </p>
+
+    <h3 id="predef">predef</h3>
+
+    <p>
+      You can specify a comma separated list of global variables inside a
+      <code>&lt;predef&gt;</code> element.  This can be useful for functions
+      that you know are globally available in your environment, e.g.
+      <code>jQuery</code>.
     </p>
 
     <h2 id="examples">Examples</h2>
@@ -198,15 +208,26 @@
 
     <p>
       To check a directory of JavaScript files, whilst warning about whitespace
-      issues and undefined variables.  Send the errors to the console, and also
-      emit an XML report to the build directory.
+      issues and undefined variables, as well as predefining a couple of
+      global variables we know we'll be using.
+
+      Send the errors to the console, and also emit an XML report to the build
+      directory.
     </p>
 
     <pre class="prettyprint" id="example-xml">  &lt;jslint options="undef,white"&gt;
+    &lt;predef&gt;jQuery,$$&lt;/predef&gt;
     &lt;formatter type="plain" /&gt;
     &lt;formatter type="xml" destfile="${build.dir}/jslint.xml" /&gt;
     &lt;fileset dir="web/js" includes="**/*.js" excludes="**/*.pack.js" /&gt;
   &lt;/jslint&gt;</pre>
+
+    <p>
+      NB: In order to specify a dollar sign, it has to be doubled so that ant
+      doesn't attempt to treat it as a property.  If you wanted to list the
+      <code>$$</code> function that Prototype uses, you'd have to say
+      <code>&lt;predef&gt;$$$$&lt;/predef&gt;</code>!
+    </p>
 
     <script type="text/javascript">prettyPrint()</script>
   </body>
