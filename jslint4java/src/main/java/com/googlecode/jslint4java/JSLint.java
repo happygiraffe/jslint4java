@@ -121,7 +121,7 @@ public class JSLint {
         Scriptable opts = Context.getCurrentContext().newObject(scope);
         for (Entry<Option, Object> entry : options.entrySet()) {
             String key = entry.getKey().getLowerName();
-            Object value = entry.getValue();
+            Object value = Context.javaToJS(entry.getValue(), opts);
             opts.put(key, opts, value);
         }
         return opts;
