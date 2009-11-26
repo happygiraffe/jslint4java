@@ -123,6 +123,17 @@ public class JSLintTest {
         assertIssues(problems, "Missing semicolon.");
     }
 
+    /**
+     * We're testing this so that we know arrays get passed into JavaScript correctly.
+     */
+    @Test
+    public void testPredefOption() throws Exception {
+        lint.addOption(Option.PREDEF, "foo,bar");
+        lint.addOption(Option.UNDEF);
+        List<Issue> issues = lint("foo(bar(42));");
+        assertIssues(issues);
+    }
+
     @Test
     public void testReportErrorsOnly() throws Exception {
         String html = lint.report("var foo = 42", true);

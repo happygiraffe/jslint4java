@@ -1,6 +1,7 @@
 Revision history for jslint4java.
 
-1.3.3-SNAPSHOT 2009-11-24
+1.3.3-SNAPSHOT 2009-11-26
+    - issue 8: add support for predef option.
     - Update to JSLint 2009-11-22
       - Adds "devel" option.
 

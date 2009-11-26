@@ -8,6 +8,8 @@ opts = {
   # Hard-code these, as they're not part of the boolean options.
   "indent" => ['The number of spaces used for indentation (default is 4)', 'Integer'],
   'maxerr' => ['The maximum number of warnings reported (default is 50)', 'Integer'],
+  # NB: Slight variant of original text.
+  'predef' => ['The names of predefined global variables.', 'StringArray'],
 }
 
 File.open(ARGV[0]) do |fh|
