@@ -99,4 +99,13 @@ Tests for the JSLint ant task.
         </jsl:jslint>
       </au:expectfailure>
     </target>
+
+    <!-- This will fail unless we can successfullly predefine the globals. -->
+    <target name="testPredef">
+        <jsl:jslint options="undef">
+            <predef>foo,bar</predef>
+            <formatter type="plain" />
+            <fileset file="globals.js" />
+        </jsl:jslint>
+    </target>
 </project>

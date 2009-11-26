@@ -84,6 +84,8 @@ public class JSLintTask extends Task {
 
     private final Map<Option, String> options = new HashMap<Option, String>();
 
+    private PredefElement predef = null;
+
     /**
      * Check the contents of this {@link ResourceCollection}.
      *
@@ -105,6 +107,13 @@ public class JSLintTask extends Task {
         formatters.add(fe.getResultFormatter());
     }
 
+    /**
+     * Capture a predef element.
+     */
+    public void addPredef(PredefElement predef) {
+        this.predef = predef;
+    }
+
     public void applyOptions(JSLint lint) {
         for (Entry<Option, String> entry : options.entrySet()) {
             String value = entry.getValue();
@@ -119,6 +128,10 @@ public class JSLintTask extends Task {
                 String className = e.getClass().getName();
                 throw new BuildException(optName + ": " + className + ": " + e.getMessage());
             }
+        }
+        // Handle predefs separately.  They don't work too well in the options string.
+        if (predef != null) {
+            lint.addOption(Option.PREDEF, predef.getText());
         }
     }
 
@@ -262,6 +275,12 @@ public class JSLintTask extends Task {
     /**
      * Set the options for running JSLint. This is a comma separated list of
      * {@link Option} names. The names are case-insensitive.
+     *
+     * <p>
+     * NB: If you want to put an {@link Option#PREDEF} in here, you should use a
+     * {@code <predef>} child element instead. Otherwise, it could be difficult
+     * to specify a comma separated list as an element of a comma separated
+     * list…
      */
     public void setOptions(String optionList) throws BuildException {
         for (String name : optionList.split("\\s*,\\s*")) {
