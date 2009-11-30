@@ -86,6 +86,7 @@ Tests for the JSLint ant task.
                 <fileset dir="subdir" includes="*.js" />
             </jsl:jslint>
         </au:expectfailure>
+        <!-- TODO This will always fail on windows. -->
         <au:assertLogContains text="subdir/issue21.js:1:24: Missing semicolon." />
     </target>
 
