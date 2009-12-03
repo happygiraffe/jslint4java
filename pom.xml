@@ -38,7 +38,7 @@
     <module>jslint4java-ant</module>
     <module>jslint4java-dist</module>
     <module>jslint4java-docs</module>
-    <module>jslint-maven-plugin</module>
+    <module>jslint4java-maven-plugin</module>
   </modules>
   <dependencyManagement>
     <dependencies>

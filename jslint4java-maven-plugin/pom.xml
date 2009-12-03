@@ -6,7 +6,7 @@
     <groupId>com.googlecode.jslint4java</groupId>
     <version>1.3.2-SNAPSHOT</version>
   </parent>
-  <artifactId>jslint-maven-plugin</artifactId>
+  <artifactId>jslint4java-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>JSLint Maven Plugin</name>
   <description>A plugin for validating JavaScript files using jslint4java.</description>
