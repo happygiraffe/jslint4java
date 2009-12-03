@@ -20,6 +20,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLint;
+import com.googlecode.jslint4java.JSLintBuilder;
 
 /**
  * Validates JavaScript using jslint4java.
@@ -59,7 +60,7 @@ public class JSLintMojo extends AbstractMojo {
     private final JSLint jsLint;
 
     public JSLintMojo() throws IOException {
-        jsLint = new JSLint();
+        jsLint = new JSLintBuilder().fromDefault();
     }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
