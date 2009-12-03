@@ -1,13 +1,17 @@
 package com.googlecode.jslint4java;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * A command line interface to {@link JSLint}.
@@ -16,6 +20,38 @@ import java.util.Locale;
  * @version $Id$
  */
 public class Main {
+
+    /** Just a useful utility class. Should probably be top-level. */
+    private static class Pair<A, B> {
+        public final A a;
+        public final B b;
+
+        public Pair(A a, B b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public static <A, B> Pair<A, B> of(A a, B b) {
+            return new Pair<A, B>(a, b);
+        }
+    }
+
+    /**
+     * This is just to avoid calling {@link System#exit(int)} outside of main()…
+     */
+    @SuppressWarnings("serial")
+    private static class DieException extends RuntimeException {
+        private final int code;
+
+        public DieException(String message, int code) {
+            super(message);
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+    }
 
     private static final String PROGNAME = "jslint";
 
@@ -27,28 +63,53 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        Main main = new Main();
-        List<String> files = main.processOptions(args);
-        if (files.size() == 0) {
-            main.help();
+        try {
+            Main main = new Main();
+            List<String> files = main.processOptions(args);
+            if (files.size() == 0) {
+                main.help();
+            }
+            for (String file : files) {
+                main.lintFile(file);
+            }
+            System.exit(main.isErrored() ? 1 : 0);
+        } catch (DieException e) {
+            if (e.getMessage() != null) {
+                System.err.println(PROGNAME + ": " + e.getMessage());
+            }
+            System.exit(e.getCode());
         }
-        for (String file : files) {
-            main.lintFile(file);
-        }
-        System.exit(main.isErrored() ? 1 : 0);
     }
 
     private boolean errored = false;
 
-    private final JSLint lint;
+    private JSLint lint;
 
     private Main() throws IOException {
-        lint = new JSLint();
+        lint = new JSLintBuilder().fromDefault();
+    }
+
+    /**
+     * Apply a set of options to the current JSLint.
+     */
+    private void applyOptions(Map<Option, String> options) {
+        for (Entry<Option, String> entry : options.entrySet()) {
+            String value = entry.getValue();
+            try {
+                if (value == null) {
+                    lint.addOption(entry.getKey());
+                } else {
+                    lint.addOption(entry.getKey(), value);
+                }
+            } catch (IllegalArgumentException e) {
+                String optName = entry.getKey().getLowerName();
+                die("--" + optName + ": " + e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
     }
 
     private void die(String message) {
-        System.err.println(PROGNAME + ": " + message);
-        System.exit(1);
+        throw new DieException(message, 1);
     }
 
     private void err(String message) {
@@ -71,11 +132,18 @@ public class Main {
         info("usage: jslint [options] file.js ...");
         String fmt = "  --%-" + Option.maximumNameLength() + "s %s";
         for (Option o : Option.values()) {
-            info(String.format(fmt, o.getLowerName(), o.getDescription()));
+            String name = o.getLowerName();
+            if (o.getType() != Boolean.class) {
+                name = name + "=";
+            }
+            info(String.format(fmt, name, o.getDescription()));
         }
         info("");
+        info(String.format(fmt, "help", "Show this help"));
+        info(String.format(fmt, "jslint=", "Specify an alternative version of jslint.js"));
+        info("");
         info("using jslint version " + lint.getEdition());
-        System.exit(0);
+        throw new DieException(null, 0);
     }
 
     private void info(String message) {
@@ -89,8 +157,7 @@ public class Main {
     private void lintFile(String file) throws IOException {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file)));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             List<Issue> issues = lint.lint(file, reader);
             for (Issue issue : issues) {
                 err(issue.toString());
@@ -104,9 +171,23 @@ public class Main {
         }
     }
 
+    /**
+     * Parse {@code arg} into two components, separated by equals. If there is
+     * no second component, the value will be {@code null}.
+     */
+    private Pair<String, String> parseArgAndValue(String arg) {
+        String[] bits = arg.substring(2).split("=", 2);
+        if (bits.length == 2) {
+            return Pair.of(bits[0], bits[1]);
+        } else {
+            return Pair.of(bits[0], null);
+        }
+    }
+
     private List<String> processOptions(String[] args) {
         boolean inFiles = false;
         List<String> files = new ArrayList<String>();
+        Map<Option, String> options = new HashMap<Option, String>();
         for (String arg : args) {
             if (inFiles) {
                 files.add(arg);
@@ -120,23 +201,26 @@ public class Main {
             else if ("--help".equals(arg)) {
                 help();
             }
+            // Specify an alternative jslint.
+            else if (arg.startsWith("--jslint")) {
+                Pair<String, String> pair = parseArgAndValue(arg);
+                if (pair.b == null) {
+                    die("Must specify file with --jslint=/some/where/jslint.js");
+                }
+                try {
+                    lint = new JSLintBuilder().fromFile(new File(pair.b));
+                } catch (IOException e) {
+                    die(e.getMessage());
+                }
+            }
             // Longopt.
             else if (arg.startsWith("--")) {
-                String[] bits = arg.substring(2).split("=", 2);
-                try {
-                    Option o = getOption(bits[0]);
-                    if (o == null) {
-                        die("unknown option " + arg);
-                    }
-                    if (bits.length == 2) {
-                        lint.addOption(o, bits[1]);
-                    } else {
-                        lint.addOption(o);
-                    }
-                } catch (IllegalArgumentException e) {
-                    die(bits[0] + ": " + e.getClass().getName() + ": "
-                            + e.getMessage());
+                Pair<String, String> pair = parseArgAndValue(arg);
+                Option o = getOption(pair.a);
+                if (o == null) {
+                    die("unknown option " + arg);
                 }
+                options.put(o, pair.b);
             }
             // File
             else {
@@ -144,6 +228,7 @@ public class Main {
                 files.add(arg);
             }
         }
+        applyOptions(options);
         return files;
     }
 

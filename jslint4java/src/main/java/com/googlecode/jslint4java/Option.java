@@ -25,6 +25,8 @@ public enum Option {
     CSS("If css workarounds should be tolerated", Boolean.class),
     /** If debugger statements should be allowed */
     DEBUG("If debugger statements should be allowed", Boolean.class),
+    /** If logging should be allowed (console, alert, etc.) */
+    DEVEL("If logging should be allowed (console, alert, etc.)", Boolean.class),
     /** If === should be required */
     EQEQEQ("If === should be required", Boolean.class),
     /** If eval should be allowed */
@@ -53,6 +55,8 @@ public enum Option {
     PASSFAIL("If the scan should stop on first error", Boolean.class),
     /** If increment/decrement should not be allowed */
     PLUSPLUS("If increment/decrement should not be allowed", Boolean.class),
+    /** The names of predefined global variables. */
+    PREDEF("The names of predefined global variables.", StringArray.class),
     /** If the . should not be allowed in regexp literals */
     REGEXP("If the . should not be allowed in regexp literals", Boolean.class),
     /** If the rhino environment globals should be predefined */

@@ -43,7 +43,7 @@ public class JSLintTest {
 
     @Before
     public void setUp() throws IOException {
-        lint = new JSLint();
+        lint = new JSLintBuilder().fromDefault();
     }
 
     @Test
@@ -121,6 +121,17 @@ public class JSLintTest {
         // There is a missing semicolon here.
         List<Issue> problems = lint("var foo = 1");
         assertIssues(problems, "Missing semicolon.");
+    }
+
+    /**
+     * We're testing this so that we know arrays get passed into JavaScript correctly.
+     */
+    @Test
+    public void testPredefOption() throws Exception {
+        lint.addOption(Option.PREDEF, "foo,bar");
+        lint.addOption(Option.UNDEF);
+        List<Issue> issues = lint("foo(bar(42));");
+        assertIssues(issues);
     }
 
     @Test

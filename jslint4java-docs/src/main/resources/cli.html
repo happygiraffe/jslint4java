@@ -20,19 +20,22 @@ usage: jslint [options] file.js ...
   --cap      If upper case html should be allowed
   --css      If css workarounds should be tolerated
   --debug    If debugger statements should be allowed
+  --devel    If logging should be allowed (console, alert, etc.)
   --eqeqeq   If === should be required
   --evil     If eval should be allowed
   --forin    If for in statements must filter
   --fragment If html fragments should be allowed
   --immed    If immediate invocations must be wrapped in parens
-  --indent   The number of spaces used for indentation (default is 4)
+  --indent=  The number of spaces used for indentation (default is 4)
   --laxbreak If line breaks should not be checked
+  --maxerr=  The maximum number of warnings reported (default is 50)
   --newcap   If constructor names must be capitalized
   --nomen    If names should be checked
   --on       If html event handlers should be allowed
   --onevar   If only one var statement per function should be allowed
   --passfail If the scan should stop on first error
   --plusplus If increment/decrement should not be allowed
+  --predef=  The names of predefined global variables.
   --regexp   If the . should not be allowed in regexp literals
   --rhino    If the rhino environment globals should be predefined
   --safe     If use of some browser features should be restricted
@@ -43,8 +46,10 @@ usage: jslint [options] file.js ...
   --white    If strict whitespace rules apply
   --widget   If the yahoo widgets globals should be predefined
 
-using jslint version 2009-06-12
-$
+  --help     Show this help
+  --jslint=  Specify an alternative version of jslint.js
+
+using jslint version 2009-11-22
 </span></pre>
 
     <p>The list of options is derived from the
@@ -88,6 +93,26 @@ jslint:happy.js:2:2:Expected 'x' to have an indentation of 4 instead of 2.
 $ java -jar jslint4java-${project.version}.jar --white --indent=2 happy.js
 $
 </span></pre>
+
+    <p>
+      To pass a list of predefined global variables, give a comma separated
+      list of names to <code>--predef</code>, e.g.
+    </p>
+
+    <pre class="prettyprint"><span class="nocode">$ cat globals.js
+foo(bar(42));
+$ java -jar jslint4java-${project.version}.jar --undef globals.js
+jslint:globals.js:1:1:'foo' is not defined.
+jslint:globals.js:1:5:'bar' is not defined.
+$ java -jar jslint4java-${project.version}.jar --undef --predef=foo,bar globals.js
+$
+</span></pre>
+
+    <p>You can specify an alternative <code>jslint.js</code> in case the version
+      supplied doesn't suit you (for example there is a newer version available).
+      To use another jslint, specify <code>--jslint=/some/where/jslint.js</code>
+      on the command line.</p>
+
     <script type="text/javascript">prettyPrint()</script>
   </body>
 </html>

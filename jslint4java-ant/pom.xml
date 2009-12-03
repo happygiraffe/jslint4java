@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.googlecode.jslint4java</groupId>
     <artifactId>jslint4java-parent</artifactId>
-    <version>1.3.2-SNAPSHOT</version>
+    <version>1.3.4-SNAPSHOT</version>
   </parent>
   <dependencies>
     <dependency>
@@ -49,14 +49,6 @@
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <!-- Force an upgrade to a newer ant version.  Required by antunit. -->
-          <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>1.7.0</version>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
   </build>

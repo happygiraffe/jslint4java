@@ -1,14 +1,18 @@
 package com.googlecode.jslint4java.ant;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -20,6 +24,7 @@ import org.apache.tools.ant.types.resources.Union;
 
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLint;
+import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.Option;
 
 /**
@@ -69,13 +74,17 @@ public class JSLintTask extends Task {
 
     private final Union resources = new Union();
 
-    private JSLint lint;
-
     private final List<ResultFormatter> formatters = new ArrayList<ResultFormatter>();
 
     private boolean haltOnFailure = true;
 
     private String encoding = System.getProperty("file.encoding", "UTF-8");
+
+    private File jslintSource = null;
+
+    private final Map<Option, String> options = new HashMap<Option, String>();
+
+    private PredefElement predef = null;
 
     /**
      * Check the contents of this {@link ResourceCollection}.
@@ -99,6 +108,34 @@ public class JSLintTask extends Task {
     }
 
     /**
+     * Capture a predef element.
+     */
+    public void addPredef(PredefElement predef) {
+        this.predef = predef;
+    }
+
+    public void applyOptions(JSLint lint) {
+        for (Entry<Option, String> entry : options.entrySet()) {
+            String value = entry.getValue();
+            try {
+                if (value == null) {
+                    lint.addOption(entry.getKey());
+                } else {
+                    lint.addOption(entry.getKey(), value);
+                }
+            } catch (IllegalArgumentException e) {
+                String optName = entry.getKey().getLowerName();
+                String className = e.getClass().getName();
+                throw new BuildException(optName + ": " + className + ": " + e.getMessage());
+            }
+        }
+        // Handle predefs separately.  They don't work too well in the options string.
+        if (predef != null) {
+            lint.addOption(Option.PREDEF, predef.getText());
+        }
+    }
+
+    /**
      * Scan the specified directories for JavaScript files and lint them.
      */
     @Override
@@ -106,6 +143,9 @@ public class JSLintTask extends Task {
         if (resources.size() == 0) {
             throw new BuildException("no resources specified");
         }
+
+        JSLint lint = makeLint();
+        applyOptions(lint);
 
         for (ResultFormatter rf : formatters) {
             rf.begin();
@@ -115,7 +155,7 @@ public class JSLintTask extends Task {
         int totalErrorCount = 0;
         for (Resource resource : resources.listResources()) {
             try {
-                int errorCount = lintStream(resource);
+                int errorCount = lintStream(lint, resource);
                 if (errorCount > 0) {
                     totalErrorCount += errorCount;
                     failedCount++;
@@ -155,23 +195,12 @@ public class JSLintTask extends Task {
     }
 
     /**
-     * Create a new {@link JSLint} object.
-     */
-    @Override
-    public void init() throws BuildException {
-        try {
-            lint = new JSLint();
-        } catch (IOException e) {
-            throw new BuildException(e);
-        }
-    }
-
-    /**
      * Lint a given stream. Closes the stream after use.
+     * @param lint
      *
      * @throws IOException
      */
-    private int lintStream(Resource resource)
+    private int lintStream(JSLint lint, Resource resource)
             throws UnsupportedEncodingException, IOException {
         InputStream stream = null;
         try {
@@ -189,6 +218,21 @@ public class JSLintTask extends Task {
             if (stream != null) {
                 stream.close();
             }
+        }
+    }
+
+    /**
+     * Create a new {@link JSLint} object.
+     */
+    public JSLint makeLint() throws BuildException {
+        try {
+            if (jslintSource == null) {
+                return new JSLintBuilder().fromDefault();
+            } else {
+                return new JSLintBuilder().fromFile(jslintSource);
+            }
+        } catch (IOException e) {
+            throw new BuildException(e);
         }
     }
 
@@ -213,6 +257,13 @@ public class JSLintTask extends Task {
     }
 
     /**
+     * Specify an alternative version of jslint.
+     */
+    public void setJslint(File jslint) {
+        jslintSource = jslint;
+    }
+
+    /**
      * Should the build stop if JSLint fails? Defaults to true.
      *
      * @param haltOnFailure
@@ -224,6 +275,12 @@ public class JSLintTask extends Task {
     /**
      * Set the options for running JSLint. This is a comma separated list of
      * {@link Option} names. The names are case-insensitive.
+     *
+     * <p>
+     * NB: If you want to put an {@link Option#PREDEF} in here, you should use a
+     * {@code <predef>} child element instead. Otherwise, it could be difficult
+     * to specify a comma separated list as an element of a comma separated
+     * list…
      */
     public void setOptions(String optionList) throws BuildException {
         for (String name : optionList.split("\\s*,\\s*")) {
@@ -231,14 +288,10 @@ public class JSLintTask extends Task {
             String optName = parts[0];
             try {
                 // The Option constants are upper case…
-                Option o = Option.valueOf(optName.toUpperCase(Locale
-                        .getDefault()));
+                Option o = Option.valueOf(optName.toUpperCase(Locale.getDefault()));
                 // If an argument has been specified, use it.
-                if (parts.length == 2) {
-                    lint.addOption(o, parts[1]);
-                } else {
-                    lint.addOption(o);
-                }
+                String value = parts.length == 2 ? parts[1] : null;
+                options.put(o, value);
             } catch (IllegalArgumentException e) {
                 throw new BuildException("Unknown option " + optName);
             }

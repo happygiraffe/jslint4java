@@ -86,6 +86,27 @@ Tests for the JSLint ant task.
                 <fileset dir="subdir" includes="*.js" />
             </jsl:jslint>
         </au:expectfailure>
+        <!-- TODO This will always fail on windows. -->
         <au:assertLogContains text="subdir/issue21.js:1:24: Missing semicolon." />
+    </target>
+
+    <!-- Run a stub linter that always fails over a good javascript file,
+         and check that it fails correctly. -->
+    <target name="testAlternateJSLint">
+      <au:expectfailure expectedmessage="JSLint: 1 error in 1 file">
+        <jsl:jslint jslint="always-fail-lint.js">
+          <formatter type="plain" />
+          <fileset file="good.js" />
+        </jsl:jslint>
+      </au:expectfailure>
+    </target>
+
+    <!-- This will fail unless we can successfullly predefine the globals. -->
+    <target name="testPredef">
+        <jsl:jslint options="undef">
+            <predef>foo,bar</predef>
+            <formatter type="plain" />
+            <fileset file="globals.js" />
+        </jsl:jslint>
     </target>
 </project>
