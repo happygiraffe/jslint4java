@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -79,7 +80,9 @@ public class JSLintMojo extends AbstractMojo {
         Iterator it = files.iterator();
         while (it.hasNext()) {
             File file = (File) it.next();
-            failures += lintFile(file);
+            Issue[] issues = lintFile(file);
+            failures += issues.length;
+            logIssues(issues);
         }
         if (failures > 0) {
             throw new MojoFailureException("JSLint found " + failures
@@ -117,20 +120,14 @@ public class JSLintMojo extends AbstractMojo {
         return files;
     }
 
-    private int lintFile(File file) throws MojoExecutionException {
+    private Issue[] lintFile(File file) throws MojoExecutionException {
         getLog().debug("lint " + file);
         InputStream stream = null;
         try {
             stream = new FileInputStream(file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     stream, "UTF-8"));
-            List issues = jsLint.lint(file.toString(), reader);
-            Iterator it = issues.iterator();
-            while (it.hasNext()) {
-                Issue issue = (Issue) it.next();
-                logIssue(issue);
-            }
-            return issues.size();
+            return lintReader(file.toString(), reader);
         } catch (FileNotFoundException e) {
             throw new MojoExecutionException("file not found: " + file, e);
         } catch (UnsupportedEncodingException e) {
@@ -150,10 +147,21 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
+    private Issue[] lintReader(String name, Reader reader) throws IOException {
+        List issues = jsLint.lint(name, reader);
+        return (Issue[]) issues.toArray(new Issue[issues.size()]);
+    }
+
     private void logIssue(Issue issue) {
         getLog().info(issue.toString());
         getLog().info(issue.getEvidence());
         getLog().info(spaces(issue.getCharacter() - 1) + "^");
+    }
+
+    private void logIssues(Issue[] issues) {
+        for (int i = 0; i < issues.length; i++) {
+            logIssue(issues[i]);
+        }
     }
 
     protected String spaces(int howmany) {
