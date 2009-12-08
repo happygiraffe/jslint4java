@@ -16,8 +16,6 @@ import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.StringUtils;
 
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLint;
@@ -105,15 +103,7 @@ public class JSLintMojo extends AbstractMojo {
         getLog().debug("includes=" + includes);
         getLog().debug("excludes=" + excludes);
 
-        String[] defaultExcludes = FileUtils.getDefaultExcludes();
-        for (int i = 0; i < defaultExcludes.length; i++) {
-            excludes.add(defaultExcludes[i]);
-        }
-
-        String includesStr = StringUtils.join(includes.iterator(), ",");
-        String excludesStr = StringUtils.join(excludes.iterator(), ",");
-        List files = FileUtils.getFiles(sourceDirectory, includesStr,
-                excludesStr);
+        List files = new FileLister(sourceDirectory, includes, excludes).files();
         getLog().debug("files=" + files);
 
         // How I wish for Java 5.
