@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -37,7 +36,7 @@ public class JSLintMojo extends AbstractMojo {
      *
      * @parameter
      */
-    private final List includes = new ArrayList();
+    private final List<String> includes = new ArrayList<String>();
 
     /**
      * Specifies the the source files to be excluded for JSLint (relative to
@@ -45,7 +44,7 @@ public class JSLintMojo extends AbstractMojo {
      *
      * @parameter
      */
-    private final List excludes = new ArrayList();
+    private final List<String> excludes = new ArrayList<String>();
 
     /**
      * Specifies the location of the source directory to be used for JSLint.
@@ -67,7 +66,7 @@ public class JSLintMojo extends AbstractMojo {
             getLog().warn(sourceDirectory + " does not exist");
             return;
         }
-        List files = null;
+        List<File> files = null;
         try {
             files = getFilesToProcess(includes, excludes);
         } catch (IOException e) {
@@ -75,11 +74,9 @@ public class JSLintMojo extends AbstractMojo {
             throw new MojoExecutionException("Error listing files", e);
         }
         int failures = 0;
-        Iterator it = files.iterator();
-        while (it.hasNext()) {
-            File file = (File) it.next();
-            Issue[] issues = lintFile(file);
-            failures += issues.length;
+        for (File file : files) {
+            List<Issue> issues = lintFile(file);
+            failures += issues.size();
             logIssues(issues);
         }
         if (failures > 0) {
@@ -94,7 +91,7 @@ public class JSLintMojo extends AbstractMojo {
      *
      * @return a {@link List} of {@link File}s.
      */
-    private List getFilesToProcess(List includes, List excludes)
+    private List<File> getFilesToProcess(List<String> includes, List<String> excludes)
             throws IOException {
         // Defaults.
         if (includes.isEmpty()) {
@@ -103,14 +100,14 @@ public class JSLintMojo extends AbstractMojo {
         getLog().debug("includes=" + includes);
         getLog().debug("excludes=" + excludes);
 
-        List files = new FileLister(sourceDirectory, includes, excludes).files();
+        List<File> files = new FileLister(sourceDirectory, includes, excludes).files();
         getLog().debug("files=" + files);
 
         // How I wish for Java 5.
         return files;
     }
 
-    private Issue[] lintFile(File file) throws MojoExecutionException {
+    private List<Issue> lintFile(File file) throws MojoExecutionException {
         getLog().debug("lint " + file);
         InputStream stream = null;
         try {
@@ -137,9 +134,8 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
-    private Issue[] lintReader(String name, Reader reader) throws IOException {
-        List issues = jsLint.lint(name, reader);
-        return (Issue[]) issues.toArray(new Issue[issues.size()]);
+    private List<Issue> lintReader(String name, Reader reader) throws IOException {
+        return jsLint.lint(name, reader);
     }
 
     private void logIssue(Issue issue) {
@@ -148,9 +144,9 @@ public class JSLintMojo extends AbstractMojo {
         getLog().info(spaces(issue.getCharacter() - 1) + "^");
     }
 
-    private void logIssues(Issue[] issues) {
-        for (int i = 0; i < issues.length; i++) {
-            logIssue(issues[i]);
+    private void logIssues(List<Issue> issues) {
+        for (Issue issue : issues) {
+            logIssue(issue);
         }
     }
 

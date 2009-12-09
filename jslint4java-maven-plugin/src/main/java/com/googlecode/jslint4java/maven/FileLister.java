@@ -16,22 +16,26 @@ import org.codehaus.plexus.util.StringUtils;
  */
 public class FileLister {
 
-    private final List includes;
-    private final List excludes;
+    private final List<String> includes;
+    private final List<String> excludes;
     private final File sourceDirectory;
 
-    public FileLister(File sourceDirectory, List includes, List excludes) {
+    public FileLister(File sourceDirectory, List<String> includes, List<String> excludes) {
         this.sourceDirectory = sourceDirectory;
         this.includes = includes;
         this.excludes = excludes;
     }
 
-    public List files() throws IOException {
-        excludes.addAll(FileUtils.getDefaultExcludesAsList());
+    public List<File> files() throws IOException {
+        @SuppressWarnings("unchecked")
+        List<String> defaultExcludes = FileUtils.getDefaultExcludesAsList();
+        excludes.addAll(defaultExcludes);
 
         String includesStr = StringUtils.join(includes.iterator(), ",");
         String excludesStr = StringUtils.join(excludes.iterator(), ",");
-        return FileUtils.getFiles(sourceDirectory, includesStr, excludesStr);
+        @SuppressWarnings("unchecked")
+        List<File> files = FileUtils.getFiles(sourceDirectory, includesStr, excludesStr);
+        return files;
     }
 
 }
