@@ -84,12 +84,7 @@ public class JSLintMojo extends AbstractMojo {
             // Looking in FileUtils, this is a "can never happen". *sigh*
             throw new MojoExecutionException("Error listing files", e);
         }
-        int failures = 0;
-        for (File file : files) {
-            List<Issue> issues = lintFile(file);
-            failures += issues.size();
-            logIssues(issues);
-        }
+        int failures = lintFiles(files);
         if (failures > 0) {
             throw new MojoFailureException("JSLint found " + failures
                     + " problems in " + files.size() + " files");
@@ -140,6 +135,16 @@ public class JSLintMojo extends AbstractMojo {
                 }
             }
         }
+    }
+
+    private int lintFiles(List<File> files) throws MojoExecutionException {
+        int failures = 0;
+        for (File file : files) {
+            List<Issue> issues = lintFile(file);
+            failures += issues.size();
+            logIssues(issues);
+        }
+        return failures;
     }
 
     private List<Issue> lintReader(String name, Reader reader) throws IOException {
