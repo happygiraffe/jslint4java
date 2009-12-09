@@ -61,6 +61,16 @@ public class JSLintMojo extends AbstractMojo {
         jsLint = new JSLintBuilder().fromDefault();
     }
 
+    /**
+     * Set the default includes.
+     * @param includes
+     */
+    private void applyDefaultIncludes(List<String> includes) {
+        if (includes.isEmpty()) {
+            includes.add("**/*.js");
+        }
+    }
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!sourceDirectory.exists()) {
             getLog().warn(sourceDirectory + " does not exist");
@@ -68,6 +78,7 @@ public class JSLintMojo extends AbstractMojo {
         }
         List<File> files = null;
         try {
+            applyDefaultIncludes(includes);
             files = getFilesToProcess(includes, excludes);
         } catch (IOException e) {
             // Looking in FileUtils, this is a "can never happen". *sigh*
@@ -94,9 +105,6 @@ public class JSLintMojo extends AbstractMojo {
     private List<File> getFilesToProcess(List<String> includes, List<String> excludes)
             throws IOException {
         // Defaults.
-        if (includes.isEmpty()) {
-            includes.add("**/*.js");
-        }
         getLog().debug("includes=" + includes);
         getLog().debug("excludes=" + excludes);
 
