@@ -1,5 +1,10 @@
 Revision history for jslint4java.
 
+1.3.4 2010-06-30
+    - Update to JSLint 2010-06-27.
+      - Adds options: es5, windows.
+      - Removes options: sidebar.
+
 1.3.3 2009-12-02
     - issue 8: add support for predef option.
     - Update to JSLint 2009-11-22

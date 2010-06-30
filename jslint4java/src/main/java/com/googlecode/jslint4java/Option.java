@@ -29,6 +29,8 @@ public enum Option {
     DEVEL("If logging should be allowed (console, alert, etc.)", Boolean.class),
     /** If === should be required */
     EQEQEQ("If === should be required", Boolean.class),
+    /** If es5 syntax should be allowed */
+    ES5("If es5 syntax should be allowed", Boolean.class),
     /** If eval should be allowed */
     EVIL("If eval should be allowed", Boolean.class),
     /** If for in statements must filter */
@@ -63,8 +65,6 @@ public enum Option {
     RHINO("If the rhino environment globals should be predefined", Boolean.class),
     /** If use of some browser features should be restricted */
     SAFE("If use of some browser features should be restricted", Boolean.class),
-    /** If the system object should be predefined */
-    SIDEBAR("If the system object should be predefined", Boolean.class),
     /** Require the "use strict"; pragma */
     STRICT("Require the \"use strict\"; pragma", Boolean.class),
     /** If all forms of subscript notation are tolerated */
@@ -74,7 +74,9 @@ public enum Option {
     /** If strict whitespace rules apply */
     WHITE("If strict whitespace rules apply", Boolean.class),
     /** If the yahoo widgets globals should be predefined */
-    WIDGET("If the yahoo widgets globals should be predefined", Boolean.class);
+    WIDGET("If the yahoo widgets globals should be predefined", Boolean.class),
+    /** If ms windows-specigic globals should be predefined */
+    WINDOWS("If ms windows-specigic globals should be predefined", Boolean.class);
     //END-OPTIONS
 
     private String description;
