@@ -80,6 +80,8 @@ public class JSLintTask extends Task {
 
     private String encoding = System.getProperty("file.encoding", "UTF-8");
 
+    private String failureProperty = null;
+
     private File jslintSource = null;
 
     private final Map<Option, String> options = new HashMap<Option, String>();
@@ -175,14 +177,16 @@ public class JSLintTask extends Task {
                 throw new BuildException(msg);
             } else {
                 log(msg);
+                if (failureProperty != null) {
+                    getProject().setProperty(failureProperty, msg);
+                }
             }
         }
     }
 
     private String failureMessage(int failedCount, int totalErrorCount) {
-        return "JSLint: " + totalErrorCount + " "
-                + plural(totalErrorCount, "error") + " in " + failedCount + " "
-                + plural(failedCount, "file");
+        return "JSLint: " + totalErrorCount + " " + plural(totalErrorCount, "error") + " in "
+                + failedCount + " " + plural(failedCount, "file");
     }
 
     /**
@@ -254,6 +258,14 @@ public class JSLintTask extends Task {
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
+    }
+
+    /**
+     * The name of a property to set upon failure. This property will contain
+     * the log message.
+     */
+    public void setFailureProperty(String failureProperty) {
+        this.failureProperty = failureProperty;
     }
 
     /**

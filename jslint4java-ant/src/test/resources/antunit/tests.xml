@@ -109,4 +109,12 @@ Tests for the JSLint ant task.
             <fileset file="globals.js" />
         </jsl:jslint>
     </target>
+
+	<!-- We should be able to set a property on failure. -->
+	<target name="testFailureProperty">
+		<jsl:jslint failureproperty="boom" haltonfailure="false">
+			<fileset file="bad.js"/>
+		</jsl:jslint>
+		<au:assertEquals expected="JSLint: 1 error in 1 file" actual="${boom}" />
+	</target>
 </project>
