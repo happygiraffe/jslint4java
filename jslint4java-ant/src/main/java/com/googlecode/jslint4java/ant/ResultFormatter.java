@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.googlecode.jslint4java.Issue;
 
-
 /**
  * Output all issues found somewhere. The calling sequence is:
  *
@@ -35,9 +34,9 @@ public interface ResultFormatter {
      * Called for each file that is checked by {@link JSLintTask}.
      *
      * @param name
-     *                The file just examined.
+     *            The file just examined.
      * @param issues
-     *                A list of issues fond with this file. May be empty.
+     *            A list of issues fond with this file. May be empty.
      */
     public abstract void output(String name, List<Issue> issues);
 

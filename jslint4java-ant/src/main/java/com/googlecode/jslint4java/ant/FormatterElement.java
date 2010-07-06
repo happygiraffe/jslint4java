@@ -17,7 +17,7 @@ import org.apache.tools.ant.BuildException;
  * <dt><code>type</code></dt>
  * <dd>Either "plain" or "xml" or "netbeans".</dd>
  * <dt><code>destfile</code></dt>
- * <dd>Optional.  A file to write the formatters' output to.</dd>
+ * <dd>Optional. A file to write the formatters' output to.</dd>
  * </dl>
  *
  * @author dom
@@ -69,8 +69,9 @@ public class FormatterElement {
      * element.
      */
     public ResultFormatter getResultFormatter() {
-        if (type == null)
+        if (type == null) {
             throw new BuildException("you must specify type");
+        }
         ResultFormatter rf = type.getResultFormatter();
         if (destFile != null) {
             rf.setOut(getFileOutputStream());

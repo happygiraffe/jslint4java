@@ -97,9 +97,7 @@ public class JSLintTest {
         lint.addOption(Option.MAXERR, "2");
         // Just some nasty thing I threw together. :)
         List<Issue> issues = lint("if (foo=42) {\n  println(\"bother\")\n}\n");
-        assertIssues(
-                issues,
-                "'foo' is not defined.",
+        assertIssues(issues, "'foo' is not defined.",
                 "Expected a conditional expression and instead saw an assignment.",
                 "Too many errors. (25% scanned).");
     }
@@ -124,7 +122,8 @@ public class JSLintTest {
     }
 
     /**
-     * We're testing this so that we know arrays get passed into JavaScript correctly.
+     * We're testing this so that we know arrays get passed into JavaScript
+     * correctly.
      */
     @Test
     public void testPredefOption() throws Exception {
@@ -185,7 +184,6 @@ public class JSLintTest {
         // This isn't the originally reported problem, but it tickles the
         // "can't continue" message.
         List<Issue> issues = lint("\"");
-        assertIssues(issues, "Unclosed string.",
-                "Stopping, unable to continue. (100% scanned).");
+        assertIssues(issues, "Unclosed string.", "Stopping, unable to continue. (100% scanned).");
     }
 }

@@ -45,8 +45,8 @@ public class PlainResultFormatterTest {
     @Test
     public void testExpectedOutputOneIssue() {
         File file = new File("foo/bar.js");
-        Issue issue = new IssueBuilder(file.toString(), 1, 1, "no clucking")
-                .evidence("cluck()").build();
+        Issue issue = new IssueBuilder(file.toString(), 1, 1, "no clucking").evidence("cluck()")
+                .build();
         issues.add(issue);
         runFormatter(file);
         // Build up the expected output in a cross-platform manner.

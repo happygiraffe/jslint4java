@@ -27,8 +27,7 @@ public class JSLint {
     // org.mozilla.javascript.tools.debugger.Main.mainEmbedded(null);
     // }
 
-    private final Map<Option, Object> options = new EnumMap<Option, Object>(
-            Option.class);
+    private final Map<Option, Object> options = new EnumMap<Option, Object>(Option.class);
 
     private final Scriptable scope;
 
@@ -169,8 +168,7 @@ public class JSLint {
         Function reportFunc = (Function) lintScope.get("report", lintScope);
         // JSLINT actually returns a boolean, but we ignore it as we always go
         // and look at the errors in more detail.
-        return (String) reportFunc.call(Context.getCurrentContext(), scope,
-                scope, args);
+        return (String) reportFunc.call(Context.getCurrentContext(), scope, scope, args);
     }
 
     /**

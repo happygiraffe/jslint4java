@@ -131,7 +131,8 @@ public class JSLintTask extends Task {
                 throw new BuildException(optName + ": " + className + ": " + e.getMessage());
             }
         }
-        // Handle predefs separately.  They don't work too well in the options string.
+        // Handle predefs separately. They don't work too well in the options
+        // string.
         if (predef != null) {
             lint.addOption(Option.PREDEF, predef.getText());
         }
@@ -200,20 +201,20 @@ public class JSLintTask extends Task {
 
     /**
      * Lint a given stream. Closes the stream after use.
+     *
      * @param lint
      *
      * @throws IOException
      */
-    private int lintStream(JSLint lint, Resource resource)
-            throws UnsupportedEncodingException, IOException {
+    private int lintStream(JSLint lint, Resource resource) throws UnsupportedEncodingException,
+            IOException {
         InputStream stream = null;
         try {
             stream = resource.getInputStream();
             String name = resource.toString();
-            List<Issue> issues = lint.lint(name, new BufferedReader(
-                    new InputStreamReader(stream, encoding)));
-            log("Found " + issues.size() + " issues in " + name,
-                    Project.MSG_VERBOSE);
+            List<Issue> issues = lint.lint(name, new BufferedReader(new InputStreamReader(stream,
+                    encoding)));
+            log("Found " + issues.size() + " issues in " + name, Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
                 rf.output(name, issues);
             }
@@ -241,7 +242,7 @@ public class JSLintTask extends Task {
     }
 
     /**
-     * Quick and nasty hack to pluralise words.  Works enough for my needs.
+     * Quick and nasty hack to pluralise words. Works enough for my needs.
      */
     private String plural(int count, String word) {
         return count == 1 ? word : word + "s";

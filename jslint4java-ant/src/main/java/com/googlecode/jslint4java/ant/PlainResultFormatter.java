@@ -50,8 +50,8 @@ public class PlainResultFormatter implements ResultFormatter {
 
     private void outputOneIssue(Issue issue) {
         // NB: space before reason to look like javac!
-        String msg = issue.getSystemId() + ":" + issue.getLine() + ":"
-                + issue.getCharacter() + ": " + issue.getReason();
+        String msg = issue.getSystemId() + ":" + issue.getLine() + ":" + issue.getCharacter()
+                + ": " + issue.getReason();
         w.println(msg);
         String evidence = issue.getEvidence();
         if (evidence != null && !"".equals(evidence)) {
