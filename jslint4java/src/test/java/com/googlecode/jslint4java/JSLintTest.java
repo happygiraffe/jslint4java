@@ -32,12 +32,12 @@ public class JSLintTest {
     }
 
     // small helper function.
-    private List<Issue> lint(Reader reader) throws IOException {
+    private JSLintResult lint(Reader reader) throws IOException {
         return lint.lint("-", reader);
     }
 
     // small helper function.
-    private List<Issue> lint(String source) {
+    private JSLintResult lint(String source) {
         return lint.lint("-", source);
     }
 
@@ -48,7 +48,7 @@ public class JSLintTest {
 
     @Test
     public void testAccurateColumnNumbers() {
-        List<Issue> issues = lint("var foo = 1");
+        List<Issue> issues = lint("var foo = 1").getIssues();
         // ....................... 123456789012
         assertIssues(issues, "Missing semicolon.");
         assertThat(issues.get(0).getCharacter(), is(12));
@@ -56,7 +56,7 @@ public class JSLintTest {
 
     @Test
     public void testAccurateLineNumbers() {
-        List<Issue> issues = lint("var foo = 1");
+        List<Issue> issues = lint("var foo = 1").getIssues();
         assertIssues(issues, "Missing semicolon.");
         assertThat(issues.get(0).getLine(), is(1));
     }
@@ -71,22 +71,20 @@ public class JSLintTest {
 
     @Test
     public void testEmptySource() throws Exception {
-        List<Issue> issues = lint("");
-        assertIssues(issues);
+        assertIssues(lint("").getIssues());
     }
 
     // Issue 16.
     @Test
     public void testGlobalName() throws Exception {
         String src = "/*global name: true */\nname = \"fred\";";
-        List<Issue> issues = lint(src);
-        assertIssues(issues);
+        assertIssues(lint(src).getIssues());
     }
 
     @Test
     public void testLintReader() throws Exception {
         Reader reader = new StringReader("var foo = 1");
-        List<Issue> issues = lint(reader);
+        List<Issue> issues = lint(reader).getIssues();
         assertIssues(issues, "Missing semicolon.");
     }
 
@@ -96,28 +94,28 @@ public class JSLintTest {
         lint.addOption(Option.UNDEF);
         lint.addOption(Option.MAXERR, "2");
         // Just some nasty thing I threw together. :)
-        List<Issue> issues = lint("if (foo=42) {\n  println(\"bother\")\n}\n");
-        assertIssues(issues, "'foo' is not defined.",
+        JSLintResult result = lint("if (foo=42) {\n  println(\"bother\")\n}\n");
+        assertIssues(result.getIssues(), "'foo' is not defined.",
                 "Expected a conditional expression and instead saw an assignment.",
                 "Too many errors. (25% scanned).");
     }
 
     @Test
     public void testNoProblems() throws IOException {
-        List<Issue> problems = lint("var foo = 1;");
+        List<Issue> problems = lint("var foo = 1;").getIssues();
         assertIssues(problems);
     }
 
     @Test
     public void testNullSource() throws Exception {
-        List<Issue> issues = lint((String) null);
+        List<Issue> issues = lint((String) null).getIssues();
         assertIssues(issues);
     }
 
     @Test
     public void testOneProblem() throws IOException {
         // There is a missing semicolon here.
-        List<Issue> problems = lint("var foo = 1");
+        List<Issue> problems = lint("var foo = 1").getIssues();
         assertIssues(problems, "Missing semicolon.");
     }
 
@@ -129,7 +127,7 @@ public class JSLintTest {
     public void testPredefOption() throws Exception {
         lint.addOption(Option.PREDEF, "foo,bar");
         lint.addOption(Option.UNDEF);
-        List<Issue> issues = lint("foo(bar(42));");
+        List<Issue> issues = lint("foo(bar(42));").getIssues();
         assertIssues(issues);
     }
 
@@ -151,7 +149,7 @@ public class JSLintTest {
         String eval_js = "eval('1');";
         lint.addOption(Option.EVIL);
         lint.resetOptions();
-        List<Issue> issues = lint(eval_js);
+        List<Issue> issues = lint(eval_js).getIssues();
         assertIssues(issues, "eval is evil.");
 
     }
@@ -160,11 +158,11 @@ public class JSLintTest {
     public void testSetOption() throws Exception {
         String eval_js = "eval('1');";
         // should be disallowed by default.
-        List<Issue> issues = lint(eval_js);
+        List<Issue> issues = lint(eval_js).getIssues();
         assertIssues(issues, "eval is evil.");
         // Now should be a problem.
         lint.addOption(Option.EVIL);
-        issues = lint(eval_js);
+        issues = lint(eval_js).getIssues();
         assertIssues(issues);
     }
 
@@ -174,7 +172,7 @@ public class JSLintTest {
         String js = "var x = 0;\nif (true) {\n  x = 1;\n}";
         lint.addOption(Option.WHITE);
         lint.addOption(Option.INDENT, "2");
-        List<Issue> issues = lint(js);
+        List<Issue> issues = lint(js).getIssues();
         assertIssues(issues);
     }
 
@@ -183,7 +181,7 @@ public class JSLintTest {
     public void testUnableToContinue() throws Exception {
         // This isn't the originally reported problem, but it tickles the
         // "can't continue" message.
-        List<Issue> issues = lint("\"");
+        List<Issue> issues = lint("\"").getIssues();
         assertIssues(issues, "Unclosed string.", "Stopping, unable to continue. (100% scanned).");
     }
 }

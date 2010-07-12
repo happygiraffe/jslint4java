@@ -24,7 +24,7 @@ public class JSLintBuilderTest {
     private void assertJSLintOK(JSLint lint) {
         assertThat(lint, is(notNullValue()));
         // Check it can lint OK.
-        List<Issue> issues = lint.lint("-", "");
+        List<Issue> issues = lint.lint("-", "").getIssues();
         assertThat(issues.isEmpty(), is(true));
     }
 

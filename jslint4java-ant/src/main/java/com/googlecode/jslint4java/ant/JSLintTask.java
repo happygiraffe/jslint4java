@@ -25,6 +25,7 @@ import org.apache.tools.ant.types.resources.Union;
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
+import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
 
 /**
@@ -212,8 +213,9 @@ public class JSLintTask extends Task {
         try {
             stream = resource.getInputStream();
             String name = resource.toString();
-            List<Issue> issues = lint.lint(name, new BufferedReader(new InputStreamReader(stream,
+            JSLintResult result = lint.lint(name, new BufferedReader(new InputStreamReader(stream,
                     encoding)));
+            List<Issue> issues = result.getIssues();
             log("Found " + issues.size() + " issues in " + name, Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
                 rf.output(name, issues);

@@ -158,8 +158,8 @@ public class Main {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-            List<Issue> issues = lint.lint(file, reader);
-            for (Issue issue : issues) {
+            JSLintResult result = lint.lint(file, reader);
+            for (Issue issue : result.getIssues()) {
                 err(issue.toString());
             }
         } catch (FileNotFoundException e) {

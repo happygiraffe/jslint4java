@@ -89,9 +89,9 @@ public class JSLint {
      * @param reader
      *            a {@link Reader} over JavaScript source code.
      *
-     * @return a {@link List} of {@link Issue}s describing any problems.
+     * @return a {@link JSLintResult}.
      */
-    public List<Issue> lint(String systemId, Reader reader) throws IOException {
+    public JSLintResult lint(String systemId, Reader reader) throws IOException {
         return lint(systemId, Util.readerToString(reader));
     }
 
@@ -103,13 +103,13 @@ public class JSLint {
      * @param javaScript
      *            a String of JavaScript source code.
      *
-     * @return a {@link List} of {@link Issue}s describing any problems.
+     * @return a {@link JSLintResult}.
      */
-    public List<Issue> lint(String systemId, String javaScript) {
+    public JSLintResult lint(String systemId, String javaScript) {
         doLint(javaScript);
         List<Issue> issues = new ArrayList<Issue>();
         readErrors(systemId, issues);
-        return issues;
+        return new JSLintResult(issues);
     }
 
     /**
