@@ -62,16 +62,16 @@ public class JSLintTest {
     }
 
     @Test
+    public void testEmptySource() throws Exception {
+        assertIssues(lint("").getIssues());
+    }
+
+    @Test
     public void testGetEdition() throws Exception {
         String edition = lint.getEdition();
         assertThat(edition, is(notNullValue()));
         String dateRe = "^\\d\\d\\d\\d-\\d\\d-\\d\\d$";
         assertTrue(edition + " matches " + dateRe, edition.matches(dateRe));
-    }
-
-    @Test
-    public void testEmptySource() throws Exception {
-        assertIssues(lint("").getIssues());
     }
 
     // Issue 16.
