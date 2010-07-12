@@ -107,9 +107,7 @@ public class JSLint {
      */
     public JSLintResult lint(String systemId, String javaScript) {
         doLint(javaScript);
-        List<Issue> issues = new ArrayList<Issue>();
-        readErrors(systemId, issues);
-        return new JSLintResult(issues);
+        return new JSLintResult(readErrors(systemId));
     }
 
     /**
@@ -126,7 +124,8 @@ public class JSLint {
         return opts;
     }
 
-    private void readErrors(String systemId, List<Issue> issues) {
+    private List<Issue> readErrors(String systemId) {
+        ArrayList<Issue> issues = new ArrayList<Issue>();
         Scriptable JSLINT = (Scriptable) scope.get("JSLINT", scope);
         Scriptable errors = (Scriptable) JSLINT.get("errors", JSLINT);
         int count = Util.intValue("length", errors);
@@ -138,6 +137,7 @@ public class JSLint {
                 issues.add(IssueBuilder.fromJavaScript(systemId, err));
             }
         }
+        return issues;
     }
 
     /**
