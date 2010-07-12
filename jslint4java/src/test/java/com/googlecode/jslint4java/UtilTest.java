@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.StringReader;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -53,6 +54,26 @@ public class UtilTest {
     @Test
     public void testIntValueOfUndefined() {
         assertThat(Util.intValue("foo", scope), is(0));
+    }
+
+    @Test
+    public void testListValueString() throws Exception {
+        cx.evaluateString(scope, "var l = ['a','b','c'];", "-", 1, null);
+        List<String> l = Util.listValue("l", String.class, scope);
+        assertThat(l.size(), is(3));
+        assertThat(l.get(0), is("a"));
+        assertThat(l.get(1), is("b"));
+        assertThat(l.get(2), is("c"));
+    }
+
+    @Test
+    public void testListValueInteger() throws Exception {
+        cx.evaluateString(scope, "var l = [9,8,7];", "-", 1, null);
+        List<Integer> l = Util.listValue("l", Integer.class, scope);
+        assertThat(l.size(), is(3));
+        assertThat(l.get(0), is(9));
+        assertThat(l.get(1), is(8));
+        assertThat(l.get(2), is(7));
     }
 
     @Test

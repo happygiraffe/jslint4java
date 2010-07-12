@@ -2,6 +2,8 @@ package com.googlecode.jslint4java;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -62,6 +64,31 @@ class Util {
             sb.append((char) c);
         }
         return sb.toString();
+    }
+
+    /**
+     * Convert a JavaScript array into a Java {@link List}, trying to do so in a
+     * type safe way.
+     *
+     * @param <T>
+     *            Normally, {@link String} or {@link Integer}.
+     * @param name
+     *            The name of the array to convert
+     * @param class1
+     *            The type of the array values
+     * @param scope
+     *            The scope containing the array.
+     */
+    public static <T> List<T> listValue(String name, Class<T> class1, Scriptable scope) {
+        Scriptable ary = (Scriptable) scope.get(name, scope);
+        int count = intValue("length", ary);
+        List<T> list = new ArrayList<T>(count);
+        for (int i = 0; i < count; i++) {
+            @SuppressWarnings("unchecked")
+            T obj = (T) ary.get(i, ary);
+            list.add(obj);
+        }
+        return list;
     }
 
 }
