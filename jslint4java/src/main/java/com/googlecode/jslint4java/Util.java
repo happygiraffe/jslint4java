@@ -17,6 +17,17 @@ import org.mozilla.javascript.Scriptable;
 class Util {
 
     /**
+     * An object that can convert a JavaScript object into a Java one.
+     */
+    interface Converter<T> {
+        /**
+         * Turn the JavaScript object <i>obj</i> into a Java one. NB: For
+         * some values (e.g. strings), this may be a regular Java object.
+         */
+        T convert(Object obj);
+    }
+
+    /**
      * Return the integer value of a JavaScript variable.
      *
      * @param name
@@ -34,20 +45,53 @@ class Util {
     }
 
     /**
-     * Returns the value of a JavaScript variable, or null.
+     * Convert a JavaScript array into a Java {@link List}. You must provide a
+     * converter which will be called on each value in order to convert it to a
+     * Java object.
      *
+     * @param <T>
+     *            The type of every array member.
      * @param name
-     *            the JavaScript variable.
+     *            The name of the array.
      * @param scope
-     *            the JavaScript scope to read from
-     * @return the value of <i>name</i> or null.
+     *            The scope which contains the array.
+     * @param c
+     *            A {@link Converter} instance to change the JavaScript object
+     *            into a Java one.
+     * @return A {@link List} of Java objects.
      */
-    static String stringValue(String name, Scriptable scope) {
-        if (scope == null) {
-            return null;
+     static <T> List<T> listValue(String name, Scriptable scope, Converter<T> c) {
+        Scriptable ary = (Scriptable) scope.get(name, scope);
+        int count = intValue("length", ary);
+        List<T> list = new ArrayList<T>(count);
+        for (int i = 0; i < count; i++) {
+            T obj = c.convert(ary.get(i, ary));
+            list.add(obj);
         }
-        Object o = scope.get(name, scope);
-        return o instanceof String ? (String) o : null;
+        return list;
+    }
+
+    /**
+     * Convert a JavaScript array into a Java {@link List}, where each value in
+     * that array is a Java object (or castable to it).
+     *
+     * @param <T>
+     *            Normally, {@link String} or {@link Integer}.
+     * @param name
+     *            The name of the array to convert
+     * @param class1
+     *            The type of the array values
+     * @param scope
+     *            The scope containing the array.
+     */
+     static <T> List<T> listValueOfType(String name, Class<T> class1, Scriptable scope) {
+        return listValue(name, scope, new Converter<T>() {
+            public T convert(Object obj) {
+                @SuppressWarnings("unchecked")
+                T value = (T) obj;
+                return value;
+            }
+        });
     }
 
     /**
@@ -67,28 +111,20 @@ class Util {
     }
 
     /**
-     * Convert a JavaScript array into a Java {@link List}, trying to do so in a
-     * type safe way.
+     * Returns the value of a JavaScript variable, or null.
      *
-     * @param <T>
-     *            Normally, {@link String} or {@link Integer}.
      * @param name
-     *            The name of the array to convert
-     * @param class1
-     *            The type of the array values
+     *            the JavaScript variable.
      * @param scope
-     *            The scope containing the array.
+     *            the JavaScript scope to read from
+     * @return the value of <i>name</i> or null.
      */
-    public static <T> List<T> listValue(String name, Class<T> class1, Scriptable scope) {
-        Scriptable ary = (Scriptable) scope.get(name, scope);
-        int count = intValue("length", ary);
-        List<T> list = new ArrayList<T>(count);
-        for (int i = 0; i < count; i++) {
-            @SuppressWarnings("unchecked")
-            T obj = (T) ary.get(i, ary);
-            list.add(obj);
+    static String stringValue(String name, Scriptable scope) {
+        if (scope == null) {
+            return null;
         }
-        return list;
+        Object o = scope.get(name, scope);
+        return o instanceof String ? (String) o : null;
     }
 
 }

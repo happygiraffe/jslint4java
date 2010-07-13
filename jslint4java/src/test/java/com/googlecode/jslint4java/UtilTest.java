@@ -11,7 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+
+import com.googlecode.jslint4java.Util.Converter;
 
 /**
  * @author dom
@@ -57,9 +60,9 @@ public class UtilTest {
     }
 
     @Test
-    public void testListValueString() throws Exception {
+    public void testListValueOfTypeString() throws Exception {
         cx.evaluateString(scope, "var l = ['a','b','c'];", "-", 1, null);
-        List<String> l = Util.listValue("l", String.class, scope);
+        List<String> l = Util.listValueOfType("l", String.class, scope);
         assertThat(l.size(), is(3));
         assertThat(l.get(0), is("a"));
         assertThat(l.get(1), is("b"));
@@ -67,13 +70,35 @@ public class UtilTest {
     }
 
     @Test
-    public void testListValueInteger() throws Exception {
+    public void testListValueOfTypeInteger() throws Exception {
         cx.evaluateString(scope, "var l = [9,8,7];", "-", 1, null);
-        List<Integer> l = Util.listValue("l", Integer.class, scope);
+        List<Integer> l = Util.listValueOfType("l", Integer.class, scope);
         assertThat(l.size(), is(3));
         assertThat(l.get(0), is(9));
         assertThat(l.get(1), is(8));
         assertThat(l.get(2), is(7));
+    }
+
+    @Test
+    public void testListValueOfObject() throws Exception {
+        // Just a little helper class for the test.
+        final class Foo {
+            final int a;
+            Foo(int a) {
+                this.a = a;
+            }
+        }
+        cx.evaluateString(scope, "var l = [{'a':1}, {'a':2}];", "-", 1, null);
+        Util.Converter<Foo> c = new Converter<Foo>() {
+            public Foo convert(Object obj) {
+                Scriptable scope = (Scriptable) obj;
+                return new Foo((int)Context.toNumber(scope.get("a", scope)));
+            }
+        };
+        List<Foo> l = Util.listValue("l", scope, c);
+        assertThat(l.size(), is(2));
+        assertThat(l.get(0).a, is(1));
+        assertThat(l.get(1).a, is(2));
     }
 
     @Test
