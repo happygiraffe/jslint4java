@@ -60,26 +60,6 @@ public class UtilTest {
     }
 
     @Test
-    public void testListValueOfTypeString() throws Exception {
-        cx.evaluateString(scope, "var l = ['a','b','c'];", "-", 1, null);
-        List<String> l = Util.listValueOfType("l", String.class, scope);
-        assertThat(l.size(), is(3));
-        assertThat(l.get(0), is("a"));
-        assertThat(l.get(1), is("b"));
-        assertThat(l.get(2), is("c"));
-    }
-
-    @Test
-    public void testListValueOfTypeInteger() throws Exception {
-        cx.evaluateString(scope, "var l = [9,8,7];", "-", 1, null);
-        List<Integer> l = Util.listValueOfType("l", Integer.class, scope);
-        assertThat(l.size(), is(3));
-        assertThat(l.get(0), is(9));
-        assertThat(l.get(1), is(8));
-        assertThat(l.get(2), is(7));
-    }
-
-    @Test
     public void testListValueOfObject() throws Exception {
         // Just a little helper class for the test.
         final class Foo {
@@ -99,6 +79,46 @@ public class UtilTest {
         assertThat(l.size(), is(2));
         assertThat(l.get(0).a, is(1));
         assertThat(l.get(1).a, is(2));
+    }
+
+    @Test
+    public void testListValueOfTypeInteger() throws Exception {
+        cx.evaluateString(scope, "var l = [9,8,7];", "-", 1, null);
+        List<Integer> l = Util.listValueOfType("l", Integer.class, scope);
+        assertThat(l.size(), is(3));
+        assertThat(l.get(0), is(9));
+        assertThat(l.get(1), is(8));
+        assertThat(l.get(2), is(7));
+    }
+
+    @Test
+    public void testListValueOfTypeString() throws Exception {
+        cx.evaluateString(scope, "var l = ['a','b','c'];", "-", 1, null);
+        List<String> l = Util.listValueOfType("l", String.class, scope);
+        assertThat(l.size(), is(3));
+        assertThat(l.get(0), is("a"));
+        assertThat(l.get(1), is("b"));
+        assertThat(l.get(2), is("c"));
+    }
+
+    @Test
+    public void testListValueOfUndefined() throws Exception {
+        cx.evaluateString(scope, "var l = ['a',null];", "-", 1, null);
+        List<String> l = Util.listValueOfType("l", String.class, scope);
+        assertThat(l.size(), is(2));
+        assertThat(l.get(0), is("a"));
+        assertThat(l.get(1), is(nullValue()));
+    }
+
+    @Test
+    public void testListValueWithNull() throws Exception {
+        List<Void> l = Util.listValue("foo", scope, new Converter<Void>() {
+            public Void convert(Object obj) {
+                return null;
+            }
+        });
+        assertThat(l, notNullValue());
+        assertTrue(l.isEmpty());
     }
 
     @Test

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.UniqueTag;
 
 /**
  * A collection of useful routines.
@@ -61,12 +62,16 @@ class Util {
      * @return A {@link List} of Java objects.
      */
      static <T> List<T> listValue(String name, Scriptable scope, Converter<T> c) {
-        Scriptable ary = (Scriptable) scope.get(name, scope);
+        Object val = scope.get(name, scope);
+        if (val == UniqueTag.NOT_FOUND) {
+            return new ArrayList<T>();
+        }
+
+        Scriptable ary = (Scriptable) val;
         int count = intValue("length", ary);
         List<T> list = new ArrayList<T>(count);
         for (int i = 0; i < count; i++) {
-            T obj = c.convert(ary.get(i, ary));
-            list.add(obj);
+            list.add(c.convert(ary.get(i, ary)));
         }
         return list;
     }
