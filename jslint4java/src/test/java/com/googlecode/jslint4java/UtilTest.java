@@ -38,6 +38,23 @@ public class UtilTest {
     }
 
     @Test
+    public void testBooleanTrue() throws Exception {
+        cx.evaluateString(scope, "var ok = true;", "-", 1, null);
+        assertThat(Util.booleanValue("ok", scope), is(true));
+    }
+
+    @Test
+    public void testBooleanFalse() throws Exception {
+        cx.evaluateString(scope, "var ok = false;", "-", 1, null);
+        assertThat(Util.booleanValue("ok", scope), is(false));
+    }
+
+    @Test
+    public void testBooleanUndefined() throws Exception {
+        assertThat(Util.booleanValue("ok", scope), is(false));
+    }
+
+    @Test
     public void testIntValueFromJava() throws Exception {
         scope.put("foo", scope, 42);
         assertThat(Util.intValue("foo", scope), is(42));

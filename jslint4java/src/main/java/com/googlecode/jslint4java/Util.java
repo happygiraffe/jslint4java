@@ -22,10 +22,29 @@ class Util {
      */
     interface Converter<T> {
         /**
-         * Turn the JavaScript object <i>obj</i> into a Java one. NB: For
-         * some values (e.g. strings), this may be a regular Java object.
+         * Turn the JavaScript object <i>obj</i> into a Java one. NB: For some
+         * values (e.g. strings), this may be a regular Java object.
          */
         T convert(Object obj);
+    }
+
+    /**
+     * Return the boolean value of a JavaScript variable. If the variable is
+     * undefined, <i>false</i> is returned.
+     *
+     * @param name
+     *            the JavaScript variable
+     * @param scope
+     *            the JavaScript scope to read from
+     * @return the value of <i>name</i>
+     */
+    static boolean booleanValue(String name, Scriptable scope) {
+        Object val = scope.get(name, scope);
+        if (val == UniqueTag.NOT_FOUND) {
+            return false;
+        } else {
+            return Context.toBoolean(val);
+        }
     }
 
     /**
@@ -61,7 +80,7 @@ class Util {
      *            into a Java one.
      * @return A {@link List} of Java objects.
      */
-     static <T> List<T> listValue(String name, Scriptable scope, Converter<T> c) {
+    static <T> List<T> listValue(String name, Scriptable scope, Converter<T> c) {
         Object val = scope.get(name, scope);
         if (val == UniqueTag.NOT_FOUND) {
             return new ArrayList<T>();
@@ -89,7 +108,7 @@ class Util {
      * @param scope
      *            The scope containing the array.
      */
-     static <T> List<T> listValueOfType(String name, Class<T> class1, Scriptable scope) {
+    static <T> List<T> listValueOfType(String name, Class<T> class1, Scriptable scope) {
         return listValue(name, scope, new Converter<T>() {
             public T convert(Object obj) {
                 @SuppressWarnings("unchecked")
