@@ -22,7 +22,7 @@ public class JSLintResult {
     private final List<Identifier> unuseds = new ArrayList<Identifier>();
     private final List<String> urls = new ArrayList<String>();
 
-    public JSLintResult(List<Issue> issues) {
+    JSLintResult(List<Issue> issues) {
         this.issues.addAll(issues);
     }
 
