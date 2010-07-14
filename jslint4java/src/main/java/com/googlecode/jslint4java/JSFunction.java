@@ -11,7 +11,7 @@ import java.util.Map;
  * @author hdm
  *
  */
-public class Function {
+public class JSFunction {
 
     private final List<String> closures = new ArrayList<String>();
     private final List<String> exceptions = new ArrayList<String>();
@@ -25,7 +25,7 @@ public class Function {
     private final List<String> unused = new ArrayList<String>();
     private final List<String> vars = new ArrayList<String>();
 
-    public Function(String name, int line, int last, Map<String, List<String>> info) {
+    public JSFunction(String name, int line, int last, Map<String, List<String>> info) {
         this.name = name;
         this.line = line;
         this.last = last;

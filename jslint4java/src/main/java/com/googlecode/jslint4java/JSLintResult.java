@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class JSLintResult {
 
-    private final List<Function> functions = new ArrayList<Function>();
+    private final List<JSFunction> functions = new ArrayList<JSFunction>();
     private final List<String> globals = new ArrayList<String>();
     private final List<Identifier> implieds = new ArrayList<Identifier>();
     private final List<Issue> issues = new ArrayList<Issue>();
@@ -27,7 +27,7 @@ public class JSLintResult {
     }
 
     /** Return a list of functions defined. */
-    public List<Function> getFunctions() {
+    public List<JSFunction> getFunctions() {
         return functions;
     }
 
@@ -68,7 +68,7 @@ public class JSLintResult {
         return json;
     }
 
-    void setFunctions(List<Function> functions) {
+    void setFunctions(List<JSFunction> functions) {
         this.functions.clear();
         this.functions.addAll(functions);
     }
