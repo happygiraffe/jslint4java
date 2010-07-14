@@ -1,7 +1,9 @@
 package com.googlecode.jslint4java;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The result of a JSLint run.
@@ -16,7 +18,7 @@ public class JSLintResult {
     private final List<Identifier> implieds = new ArrayList<Identifier>();
     private final List<Issue> issues = new ArrayList<Issue>();
     private boolean json;
-    private final List<String> members = new ArrayList<String>();
+    private final Map<String, Integer> member = new HashMap<String, Integer>();
     private final List<Identifier> unuseds = new ArrayList<Identifier>();
     private final List<String> urls = new ArrayList<String>();
 
@@ -47,8 +49,8 @@ public class JSLintResult {
     }
 
     /** Don't know. Ask Doug. */
-    public List<String> getMembers() {
-        return members;
+    public Map<String, Integer> getMember() {
+        return member;
     }
 
     /** A list of unused names. */
@@ -64,5 +66,39 @@ public class JSLintResult {
     /** Was this JSON? */
     public boolean isJson() {
         return json;
+    }
+
+    void setFunctions(List<Function> functions) {
+        this.functions.clear();
+        this.functions.addAll(functions);
+    }
+
+    void setGlobals(List<String> globals) {
+        this.globals.clear();
+        this.globals.addAll(globals);
+    }
+
+    void setImplieds(List<Identifier> implieds) {
+        this.implieds.clear();
+        this.implieds.addAll(implieds);
+    }
+
+    void setJson(boolean json) {
+        this.json = json;
+    }
+
+    void setMember(Map<String, Integer> member) {
+        this.member.clear();
+        this.member.putAll(member);
+    }
+
+    void setUnuseds(List<Identifier> unuseds) {
+        this.unuseds.clear();
+        this.unuseds.addAll(unuseds);
+    }
+
+    void setUrls(List<String> urls) {
+        this.urls.clear();
+        this.urls.addAll(urls);
     }
 }
