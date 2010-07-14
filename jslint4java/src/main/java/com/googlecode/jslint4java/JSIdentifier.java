@@ -6,12 +6,12 @@ package com.googlecode.jslint4java;
  * @author hdm
  *
  */
-public class Identifier {
+public class JSIdentifier {
 
     private final int line;
     private final String name;
 
-    public Identifier(String name, int line) {
+    public JSIdentifier(String name, int line) {
         super();
         this.name = name;
         this.line = line;

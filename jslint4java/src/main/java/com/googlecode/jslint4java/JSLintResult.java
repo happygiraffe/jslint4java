@@ -15,11 +15,11 @@ public class JSLintResult {
 
     private final List<JSFunction> functions = new ArrayList<JSFunction>();
     private final List<String> globals = new ArrayList<String>();
-    private final List<Identifier> implieds = new ArrayList<Identifier>();
+    private final List<JSIdentifier> implieds = new ArrayList<JSIdentifier>();
     private final List<Issue> issues = new ArrayList<Issue>();
     private boolean json;
     private final Map<String, Integer> member = new HashMap<String, Integer>();
-    private final List<Identifier> unused = new ArrayList<Identifier>();
+    private final List<JSIdentifier> unused = new ArrayList<JSIdentifier>();
     private final List<String> urls = new ArrayList<String>();
 
     JSLintResult(List<Issue> issues) {
@@ -37,7 +37,7 @@ public class JSLintResult {
     }
 
     /** List all names with implied definitions. */
-    public List<Identifier> getImplieds() {
+    public List<JSIdentifier> getImplieds() {
         return implieds;
     }
 
@@ -54,7 +54,7 @@ public class JSLintResult {
     }
 
     /** A list of unused names. */
-    public List<Identifier> getUnused() {
+    public List<JSIdentifier> getUnused() {
         return unused;
     }
 
@@ -78,7 +78,7 @@ public class JSLintResult {
         this.globals.addAll(globals);
     }
 
-    void setImplieds(List<Identifier> implieds) {
+    void setImplieds(List<JSIdentifier> implieds) {
         this.implieds.clear();
         this.implieds.addAll(implieds);
     }
@@ -92,7 +92,7 @@ public class JSLintResult {
         this.member.putAll(member);
     }
 
-    void setUnused(List<Identifier> unused) {
+    void setUnused(List<JSIdentifier> unused) {
         this.unused.clear();
         this.unused.addAll(unused);
     }
