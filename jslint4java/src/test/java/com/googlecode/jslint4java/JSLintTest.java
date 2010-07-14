@@ -25,7 +25,8 @@ public class JSLintTest {
     // Check that the issues list matches zero or more reasons.
     private void assertIssues(List<Issue> issues, String... reasons) {
         assertThat(issues, is(notNullValue()));
-        assertThat(issues.size(), is(reasons.length));
+        String msg = "Actual issues: " + issues;
+        assertThat(msg, issues.size(), is(reasons.length));
         for (int i = 0; i < reasons.length; i++) {
             assertThat(issues.get(i).getReason(), is(reasons[i]));
         }
