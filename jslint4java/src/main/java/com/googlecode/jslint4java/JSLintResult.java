@@ -19,7 +19,7 @@ public class JSLintResult {
     private final List<Issue> issues = new ArrayList<Issue>();
     private boolean json;
     private final Map<String, Integer> member = new HashMap<String, Integer>();
-    private final List<Identifier> unuseds = new ArrayList<Identifier>();
+    private final List<Identifier> unused = new ArrayList<Identifier>();
     private final List<String> urls = new ArrayList<String>();
 
     JSLintResult(List<Issue> issues) {
@@ -54,8 +54,8 @@ public class JSLintResult {
     }
 
     /** A list of unused names. */
-    public List<Identifier> getUnuseds() {
-        return unuseds;
+    public List<Identifier> getUnused() {
+        return unused;
     }
 
     /** A list of URLs encountered (when parsing HTML). */
@@ -92,9 +92,9 @@ public class JSLintResult {
         this.member.putAll(member);
     }
 
-    void setUnuseds(List<Identifier> unuseds) {
-        this.unuseds.clear();
-        this.unuseds.addAll(unuseds);
+    void setUnused(List<Identifier> unused) {
+        this.unused.clear();
+        this.unused.addAll(unused);
     }
 
     void setUrls(List<String> urls) {
