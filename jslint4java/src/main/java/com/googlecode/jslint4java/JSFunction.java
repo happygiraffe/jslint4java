@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class JSFunction {
 
-    private final List<String> closures = new ArrayList<String>();
-    private final List<String> exceptions = new ArrayList<String>();
+    private final List<String> closure = new ArrayList<String>();
+    private final List<String> exception = new ArrayList<String>();
     private final List<String> global = new ArrayList<String>();
     private final List<String> label = new ArrayList<String>();
     private int last;
@@ -28,12 +28,12 @@ public class JSFunction {
     JSFunction() {
     }
 
-    public List<String> getClosures() {
-        return closures;
+    public List<String> getClosure() {
+        return closure;
     }
 
-    public List<String> getExceptions() {
-        return exceptions;
+    public List<String> getException() {
+        return exception;
     }
 
     public List<String> getGlobal() {
@@ -72,14 +72,14 @@ public class JSFunction {
         return vars;
     }
 
-    void setClosures(List<String> closures) {
-        this.closures.clear();
-        this.closures.addAll(closures);
+    void setClosure(List<String> closure) {
+        this.closure.clear();
+        this.closure.addAll(closure);
     }
 
-    void setExceptions(List<String> exceptions) {
-        this.exceptions.clear();
-        this.exceptions.addAll(exceptions);
+    void setException(List<String> exception) {
+        this.exception.clear();
+        this.exception.addAll(exception);
     }
 
     void setGlobal(List<String> global) {
