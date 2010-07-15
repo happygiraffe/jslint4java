@@ -119,12 +119,11 @@ public class UtilTest {
     }
 
     @Test
-    public void testListValueOfUndefined() throws Exception {
-        cx.evaluateString(scope, "var l = ['a',null];", "-", 1, null);
+    public void testListValueOfNull() throws Exception {
+        cx.evaluateString(scope, "var l = [null];", "-", 1, null);
         List<String> l = Util.listValueOfType("l", String.class, scope);
-        assertThat(l.size(), is(2));
-        assertThat(l.get(0), is("a"));
-        assertThat(l.get(1), is(nullValue()));
+        assertThat(l.size(), is(1));
+        assertThat(l.get(0), is(nullValue()));
     }
 
     @Test
