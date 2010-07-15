@@ -28,18 +28,27 @@ public class JSFunction {
     JSFunction() {
     }
 
+    /**
+     * The variables and parameters that are declared in the function that are
+     * used by its inner functions.
+     */
     public List<String> getClosure() {
         return closure;
     }
 
+    /** The variables that are declared by try statements. */
     public List<String> getException() {
         return exception;
     }
 
+    /**
+     * Global variables that are used by this function. Keep these to a minimum.
+     */
     public List<String> getGlobal() {
         return global;
     }
 
+    /** Statement labels that are used by this function. */
     public List<String> getLabel() {
         return label;
     }
@@ -48,26 +57,38 @@ public class JSFunction {
         return last;
     }
 
+    /** The line the function is defined on. */
     public int getLine() {
         return line;
     }
 
+    /** The name of the function. */
     public String getName() {
         return name;
     }
 
+    /** Variables used by this function that are declared in another function. */
     public List<String> getOuter() {
         return outer;
     }
 
+    /** The parameters of the function. */
     public List<String> getParams() {
         return params;
     }
 
+    /**
+     * The variables that are declared in the function that are not used. This
+     * may be an indication of an error.
+     */
     public List<String> getUnused() {
         return unused;
     }
 
+    /**
+     * The variables that are declared in the function that are used only by the
+     * function.
+     */
     public List<String> getVars() {
         return vars;
     }

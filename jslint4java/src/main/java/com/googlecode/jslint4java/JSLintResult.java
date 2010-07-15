@@ -48,7 +48,7 @@ public class JSLintResult {
         return issues;
     }
 
-    /** Don't know. Ask Doug. */
+    /** A count of how many times each member name is defined. */
     public Map<String, Integer> getMember() {
         return member;
     }
