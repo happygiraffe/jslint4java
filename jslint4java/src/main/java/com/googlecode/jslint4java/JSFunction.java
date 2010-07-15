@@ -124,4 +124,8 @@ public class JSFunction {
         this.vars.addAll(vars);
     }
 
+    @Override
+    public String toString() {
+        return String.format("function %s()", getName());
+    }
 }
