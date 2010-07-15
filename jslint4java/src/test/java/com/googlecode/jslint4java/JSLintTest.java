@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,6 +61,87 @@ public class JSLintTest {
         List<Issue> issues = lint("var foo = 1").getIssues();
         assertIssues(issues, "Missing semicolon.");
         assertThat(issues.get(0).getLine(), is(1));
+    }
+
+    /**
+     * See what information we can return about a single function.
+     * @throws Exception
+     */
+    @Test
+    public void testDataFunctions() throws Exception {
+        JSLintResult result = lint("var z = 5;function foo(x) {var y = x+z;return y;}");
+        assertIssues(result.getIssues());
+        List<JSFunction> functions = result.getFunctions();
+        assertThat(functions.size(), is(1));
+        JSFunction f1 = functions.get(0);
+        assertThat(f1.getName(), is("foo"));
+        assertThat(f1.getLine(), is(1));
+        assertThat(f1.getParams().size(), is(1));
+        assertThat(f1.getParams().get(0), is("x"));
+        // TODO: how to test getClosure()?
+        assertThat(f1.getVars().size(), is(1));
+        assertThat(f1.getVars().get(0), is("y"));
+        // TODO: test getException()
+        // TODO: test getOuter()
+        // TODO: test getUnused()
+        assertThat(f1.getGlobal().size(), is(1));
+        assertThat(f1.getGlobal().get(0), is("z"));
+        // TODO: test getLabel()
+    }
+
+    @Test
+    public void testDataGlobals() throws Exception {
+        JSLintResult result = lint("var foo = 12;");
+        assertTrue(result.getIssues().isEmpty());
+        assertThat(result.getGlobals(), hasItem("foo"));
+    }
+
+    @Test
+    public void testDataImplieds() throws Exception {
+        JSLintResult result = lint("foo();");
+        assertIssues(result.getIssues());
+        List<JSIdentifier> implieds = result.getImplieds();
+        assertThat(implieds.size(), is(1));
+        assertThat(implieds.get(0).getName(), is("foo"));
+        assertThat(implieds.get(0).getLine(), is(1));
+    }
+
+    @Test
+    public void testDataJsonness() throws Exception {
+        JSLintResult result = lint("{\"a\":100}");
+        assertIssues(result.getIssues());
+        assertTrue(result.isJson());
+    }
+
+    @Test
+    public void testDataMembers() throws Exception {
+        JSLintResult result = lint("var obj = {\"a\":1, \"b\": 42};");
+        assertIssues(result.getIssues());
+        Map<String, Integer> members = result.getMember();
+        assertThat(members.size(), is(2));
+        // It's a count of how many times we've seen each member.
+        assertThat(members.get("a"), is(1));
+        assertThat(members.get("b"), is(1));
+    }
+
+    @Test
+    public void testDataUnused() throws Exception {
+        JSLintResult result = lint("function f() {var foo = 2;}");
+        assertIssues(result.getIssues());
+        List<JSIdentifier> unused = result.getUnused();
+        assertThat(unused.size(), is(1));
+        assertThat(unused.get(0).getName(), is("foo"));
+        assertThat(unused.get(0).getLine(), is(1));
+    }
+
+    @Test
+    public void testDataUrls() throws Exception {
+        JSLintResult result = lint("<html><body><a href='http://example.com'>e.g.</a>"
+                + "</body></html>");
+        assertIssues(result.getIssues());
+        List<String> urls = result.getUrls();
+        assertThat(urls.size(), is(1));
+        assertThat(urls.get(0), is("http://example.com"));
     }
 
     @Test
