@@ -51,6 +51,7 @@ public class UtilTest {
 
     @Test
     public void testBooleanUndefined() throws Exception {
+        cx.evaluateString(scope, "var ok;", "-", 1, null);
         assertThat(Util.booleanValue("ok", scope), is(false));
     }
 
@@ -73,6 +74,7 @@ public class UtilTest {
 
     @Test
     public void testIntValueOfUndefined() {
+        cx.evaluateString(scope, "var foo;", "-", 1, null);
         assertThat(Util.intValue("foo", scope), is(0));
     }
 
@@ -127,6 +129,13 @@ public class UtilTest {
     }
 
     @Test
+    public void testListValueOfUndefined() throws Exception {
+        cx.evaluateString(scope, "var undef;", "-", 1, null);
+        List<String> l = Util.listValueOfType("undef", String.class, scope);
+        assertThat(l.size(), is(0));
+    }
+
+    @Test
     public void testListValueWithNull() throws Exception {
         List<Void> l = Util.listValue("foo", scope, new Converter<Void>() {
             public Void convert(Object obj) {
@@ -162,6 +171,7 @@ public class UtilTest {
 
     @Test
     public void testStringValueOfUndefined() {
+        cx.evaluateString(scope, "var foo;", "-", 1, null);
         assertThat(Util.stringValue("foo", scope), is(nullValue()));
     }
 }

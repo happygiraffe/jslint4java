@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.UniqueTag;
 
 /**
@@ -82,7 +83,7 @@ class Util {
      */
     static <T> List<T> listValue(String name, Scriptable scope, Converter<T> c) {
         Object val = scope.get(name, scope);
-        if (val == UniqueTag.NOT_FOUND) {
+        if (val == UniqueTag.NOT_FOUND || val instanceof Undefined) {
             return new ArrayList<T>();
         }
 
