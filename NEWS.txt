@@ -2,7 +2,7 @@ Revision history for jslint4java.
 
 1.3.4 2010-07-16
     - issue 26: add support for .data() call in JSLINT.
-    - Update to JSLint 2010-06-27.
+    - Update to JSLint 2010-07-14.
       - Adds options: es5, windows.
       - Removes options: sidebar.
 

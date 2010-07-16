@@ -1,5 +1,5 @@
 // jslint.js
-// 2010-06-27
+// 2010-07-14
 
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
@@ -902,7 +902,7 @@ var JSLINT = (function () {
 // unsafe characters that are silently deleted by one or more browsers
         cx = /[\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/,
 // token
-        tx = /^\s*([(){}\[.,:;'"~\?\]#@]|==?=?|\/(\*(jslint|members?|global)?|=|\/)?|\*[\/=]?|\+[+=]?|-[\-=]?|%=?|&[&=]?|\|[|=]?|>>?>?=?|<([\/=!]|\!(\[|--)?|<=?)?|\^=?|\!=?=?|[a-zA-Z_$][a-zA-Z0-9_$]*|[0-9]+([xX][0-9a-fA-F]+|\.[0-9]*)?([eE][+\-]?[0-9]+)?)/,
+        tx = /^\s*([(){}\[.,:;'"~\?\]#@]|==?=?|\/(\*(jslint|members?|global)?|=|\/)?|\*[\/=]?|\+(?:=|\++)?|-(?:=|-+)?|%=?|&[&=]?|\|[|=]?|>>?>?=?|<([\/=!]|\!(\[|--)?|<=?)?|\^=?|\!=?=?|[a-zA-Z_$][a-zA-Z0-9_$]*|[0-9]+([xX][0-9a-fA-F]+|\.[0-9]*)?([eE][+\-]?[0-9]+)?)/,
 // html token
         hx = /^\s*(['"=>\/&#]|<(?:\/|\!(?:--)?)?|[a-zA-Z][a-zA-Z0-9_\-:]*|[0-9]+|--)/,
 // characters in strings that need escapement
@@ -4181,8 +4181,32 @@ loop:   for (;;) {
         return that;
     }, 130);
     prefix('+', 'num');
+    prefix('+++', function () {
+        warning("Confusing pluses.");
+        this.right = parse(150);
+        this.arity = 'unary';
+        return this;
+    });
+    infix('+++', function (left) {
+        warning("Confusing pluses.");
+        this.left = left;
+        this.right = parse(130);
+        return this;
+    }, 130);
     infix('-', 'sub', 130);
     prefix('-', 'neg');
+    prefix('---', function () {
+        warning("Confusing minuses.");
+        this.right = parse(150);
+        this.arity = 'unary';
+        return this;
+    });
+    infix('---', function (left) {
+        warning("Confusing minuses.");
+        this.left = left;
+        this.right = parse(130);
+        return this;
+    }, 130);
     infix('*', 'mult', 140);
     infix('/', 'div', 140);
     infix('%', 'mod', 140);
@@ -5612,7 +5636,7 @@ loop:   for (;;) {
     };
     itself.jslint = itself;
 
-    itself.edition = '2010-06-27';
+    itself.edition = '2010-07-14';
 
     return itself;
 

@@ -12,7 +12,7 @@ import java.util.Locale;
  * @version $Id$
  */
 public enum Option {
-    // BEGIN-OPTIONS
+    //BEGIN-OPTIONS
     /** If adsafe should be enforced */
     ADSAFE("If adsafe should be enforced", Boolean.class),
     /** If bitwise operators should not be allowed */
@@ -77,7 +77,7 @@ public enum Option {
     WIDGET("If the yahoo widgets globals should be predefined", Boolean.class),
     /** If ms windows-specigic globals should be predefined */
     WINDOWS("If ms windows-specigic globals should be predefined", Boolean.class);
-    // END-OPTIONS
+    //END-OPTIONS
 
     private String description;
     private Class<?> type;
