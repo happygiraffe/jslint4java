@@ -5,17 +5,26 @@ package com.googlecode.jslint4java.formatter;
  */
 public class XmlFormatter {
 
-    protected String attr(String key, String val) {
+    protected String attr(String key, String value) {
+        if (key == null) {
+            throw new NullPointerException("key cannot be null");
+        }
+        if (value == null) {
+            value = "";
+        }
         StringBuilder sb = new StringBuilder(' ');
         sb.append(' ');
         sb.append(escapeAttr(key));
         sb.append("='");
-        sb.append(escapeAttr(val));
+        sb.append(escapeAttr(value));
         sb.append("'");
         return sb.toString();
     }
 
     protected String escape(String str) {
+        if (str == null) {
+            return "";
+        }
         return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
     }
 
