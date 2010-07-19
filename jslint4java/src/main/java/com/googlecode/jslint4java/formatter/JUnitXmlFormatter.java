@@ -41,26 +41,9 @@ import com.googlecode.jslint4java.JSLintResult;
  * href="http://www.hudson-ci.org/">hudson</a>, this appears to give reasonable
  * output.
  */
-public class JUnitXmlFormatter implements JSLintResultFormatter {
+public class JUnitXmlFormatter extends XmlFormatter implements JSLintResultFormatter {
 
     private static final String TEST_CLASSNAME = "com.googlecode.jslint4java";
-
-    private void attr(StringBuilder sb, String key, String val) {
-        sb.append(' ');
-        sb.append(escapeAttr(key));
-        sb.append("='");
-        sb.append(escapeAttr(val));
-        sb.append("'");
-    }
-
-    // Very simple XML escaping.
-    private String escape(String str) {
-        return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
-    }
-
-    private String escapeAttr(String str) {
-        return escape(str).replaceAll("\"", "&quot;").replaceAll("\'", "&apos;");
-    }
 
     public String format(JSLintResult result) {
         // TODO use a proper serializer
