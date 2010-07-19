@@ -16,6 +16,7 @@ import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.UniqueTag;
 
 import com.googlecode.jslint4java.Issue.IssueBuilder;
+import com.googlecode.jslint4java.JSFunction.Builder;
 
 /**
  * A utility class to check JavaScript source code for potential problems.
@@ -48,19 +49,35 @@ public class JSLint {
     private final class JSFunctionConverter implements Util.Converter<JSFunction> {
         public JSFunction convert(Object obj) {
             Scriptable scope = (Scriptable) obj;
-            JSFunction f = new JSFunction();
-            f.setName(Util.stringValue("name", scope));
-            f.setLine(Util.intValue("line", scope));
-            f.setLast(Util.intValue("last", scope));
-            f.setParams(Util.listValueOfType("param", String.class, scope));
-            f.setClosure(Util.listValueOfType("closure", String.class, scope));
-            f.setVars(Util.listValueOfType("var", String.class, scope));
-            f.setException(Util.listValueOfType("exception", String.class, scope));
-            f.setOuter(Util.listValueOfType("outer", String.class, scope));
-            f.setUnused(Util.listValueOfType("unused", String.class, scope));
-            f.setGlobal(Util.listValueOfType("global", String.class, scope));
-            f.setLabel(Util.listValueOfType("label", String.class, scope));
-            return f;
+            String name = Util.stringValue("name", scope);
+            int line = Util.intValue("line", scope);
+            Builder b = new JSFunction.Builder(name, line);
+            b.last(Util.intValue("last", scope));
+            for (String param : Util.listValueOfType("param", String.class, scope)) {
+                b.addParam(param);
+            }
+            for (String closure : Util.listValueOfType("closure", String.class, scope)) {
+                b.addClosure(closure);
+            }
+            for (String var : Util.listValueOfType("var", String.class, scope)) {
+                b.addVar(var);
+            }
+            for (String exception : Util.listValueOfType("exception", String.class, scope)) {
+                b.addException(exception);
+            }
+            for (String outer : Util.listValueOfType("outer", String.class, scope)) {
+                b.addOuter(outer);
+            }
+            for (String unused : Util.listValueOfType("unused", String.class, scope)) {
+                b.addUnused(unused);
+            }
+            for (String global : Util.listValueOfType("global", String.class, scope)) {
+                b.addGlobal(global);
+            }
+            for (String label : Util.listValueOfType("label", String.class, scope)) {
+                b.addLabel(label);
+            }
+            return b.build();
         }
     }
 
