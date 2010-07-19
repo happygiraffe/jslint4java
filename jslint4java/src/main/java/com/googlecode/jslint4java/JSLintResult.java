@@ -43,8 +43,8 @@ public class JSLintResult {
             return this;
         }
 
-        public ResultBuilder addImplied(String name, int line) {
-            implieds.add(new JSIdentifier(name, line));
+        public ResultBuilder addImplied(JSIdentifier id) {
+            implieds.add(id);
             return this;
         }
 
@@ -58,8 +58,8 @@ public class JSLintResult {
             return this;
         }
 
-        public ResultBuilder addUnused(String name, int line) {
-            unused.add(new JSIdentifier(name, line));
+        public ResultBuilder addUnused(JSIdentifier id) {
+            unused.add(id);
             return this;
         }
 

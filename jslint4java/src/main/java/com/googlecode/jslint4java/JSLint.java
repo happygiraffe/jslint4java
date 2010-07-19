@@ -203,10 +203,10 @@ public class JSLint {
                 b.addMember(member.getKey(), member.getValue());
             }
             for (JSIdentifier id : Util.listValue("unused", data, new IdentifierConverter())) {
-                b.addUnused(id.getName(), id.getLine());
+                b.addUnused(id);
             }
             for (JSIdentifier id : Util.listValue("implieds", data, new IdentifierConverter())) {
-                b.addImplied(id.getName(), id.getLine());
+                b.addImplied(id);
             }
             b.json(Util.booleanValue("json", data));
             for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {
