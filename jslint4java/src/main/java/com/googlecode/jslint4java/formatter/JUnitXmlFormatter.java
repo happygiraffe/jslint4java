@@ -40,8 +40,36 @@ import com.googlecode.jslint4java.JSLintResult;
  */
 public class JUnitXmlFormatter implements JSLintResultFormatter {
 
+    private static final String TEST_CLASSNAME = "com.googlecode.jslint4java";
+
+    private void attr(StringBuilder sb, String key, String val) {
+        sb.append(' ');
+        sb.append(key);
+        sb.append("='");
+        // TODO: escape
+        sb.append(val);
+        sb.append("'");
+    }
+
     public String format(JSLintResult result) {
-        return "";
+        // TODO use a proper serializer
+        StringBuilder sb = new StringBuilder("<testsuite");
+        attr(sb, "failures", Integer.toString(result.getIssues().size()));
+        String time = String.format("%.3f", result.getDuration() / 1000.0);
+        attr(sb, "time", time);
+        attr(sb, "skipped", "0");
+        attr(sb, "errors", result.getIssues().isEmpty() ? "0" : "1");
+        attr(sb, "tests", "1");
+        attr(sb, "name", result.getName());
+        sb.append(">");
+        sb.append("<testcase");
+        attr(sb, "time", time);
+        attr(sb, "classname", TEST_CLASSNAME);
+        attr(sb, "name", result.getName());
+        sb.append(">");
+        sb.append("</testcase>");
+        sb.append("</testsuite>");
+        return sb.toString();
     }
 
 }
