@@ -144,7 +144,7 @@ public class JSLint {
      */
     public JSLintResult lint(String systemId, String javaScript) {
         doLint(javaScript);
-        JSLintResult result = new JSLintResult(readErrors(systemId));
+        JSLintResult result = new JSLintResult(systemId, readErrors(systemId));
 
         // Extract JSLINT.data() output and set it on the result.
         Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);

@@ -19,10 +19,12 @@ public class JSLintResult {
     private final List<Issue> issues = new ArrayList<Issue>();
     private boolean json;
     private final Map<String, Integer> member = new HashMap<String, Integer>();
+    private final String name;
     private final List<JSIdentifier> unused = new ArrayList<JSIdentifier>();
     private final List<String> urls = new ArrayList<String>();
 
-    JSLintResult(List<Issue> issues) {
+    JSLintResult(String name, List<Issue> issues) {
+        this.name = name;
         this.issues.addAll(issues);
     }
 
@@ -51,6 +53,11 @@ public class JSLintResult {
     /** A count of how many times each member name is defined. */
     public Map<String, Integer> getMember() {
         return member;
+    }
+
+    /** The name of the source file just validated. */
+    public String getName() {
+        return name;
     }
 
     /** A list of unused names. */
