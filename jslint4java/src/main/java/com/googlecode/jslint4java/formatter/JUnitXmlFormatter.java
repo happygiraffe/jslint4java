@@ -49,23 +49,23 @@ public class JUnitXmlFormatter extends XmlFormatter implements JSLintResultForma
         // TODO use a proper serializer
         StringBuilder sb = new StringBuilder("<testsuite");
         List<Issue> issues = result.getIssues();
-        attr(sb, "failures", Integer.toString(issues.size()));
-        attr(sb, "time", formatTimeAsSeconds(result.getDuration()));
-        attr(sb, "skipped", "0");
-        attr(sb, "errors", issues.isEmpty() ? "0" : "1");
-        attr(sb, "tests", "1");
-        attr(sb, "name", result.getName());
+        sb.append(attr("failures", Integer.toString(issues.size())));
+        sb.append(attr("time", formatTimeAsSeconds(result.getDuration())));
+        sb.append(attr("skipped", "0"));
+        sb.append(attr("errors", issues.isEmpty() ? "0" : "1"));
+        sb.append(attr("tests", "1"));
+        sb.append(attr("name", result.getName()));
         sb.append(">");
         sb.append("<testcase");
-        attr(sb, "time", formatTimeAsSeconds(result.getDuration()));
-        attr(sb, "classname", TEST_CLASSNAME);
-        attr(sb, "name", result.getName());
+        sb.append(attr("time", formatTimeAsSeconds(result.getDuration())));
+        sb.append(attr("classname", TEST_CLASSNAME));
+        sb.append(attr("name", result.getName()));
         sb.append(">");
         if (!issues.isEmpty()) {
             sb.append("<failure");
             String msg = String.format("Found %d problem%s", issues.size(), s(issues.size()));
-            attr(sb, "message", msg);
-            attr(sb, "type", AssertionError.class.getName());
+            sb.append(attr("message", msg));
+            sb.append(attr("type", AssertionError.class.getName()));
             sb.append(">");
             for (Issue issue : issues) {
                 sb.append(escape(issue.toString()));

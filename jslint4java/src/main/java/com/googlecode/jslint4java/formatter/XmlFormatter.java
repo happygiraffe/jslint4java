@@ -5,12 +5,14 @@ package com.googlecode.jslint4java.formatter;
  */
 public class XmlFormatter {
 
-    protected void attr(StringBuilder sb, String key, String val) {
+    protected String attr(String key, String val) {
+        StringBuilder sb = new StringBuilder(' ');
         sb.append(' ');
         sb.append(escapeAttr(key));
         sb.append("='");
         sb.append(escapeAttr(val));
         sb.append("'");
+        return sb.toString();
     }
 
     protected String escape(String str) {
