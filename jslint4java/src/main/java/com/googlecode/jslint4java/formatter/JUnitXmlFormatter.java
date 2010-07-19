@@ -1,5 +1,8 @@
 package com.googlecode.jslint4java.formatter;
 
+import java.util.List;
+
+import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLintResult;
 
 /**
@@ -44,32 +47,61 @@ public class JUnitXmlFormatter implements JSLintResultFormatter {
 
     private void attr(StringBuilder sb, String key, String val) {
         sb.append(' ');
-        sb.append(key);
+        sb.append(escapeAttr(key));
         sb.append("='");
-        // TODO: escape
-        sb.append(val);
+        sb.append(escapeAttr(val));
         sb.append("'");
+    }
+
+    // Very simple XML escaping.
+    private String escape(String str) {
+        return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
+    }
+
+    private String escapeAttr(String str) {
+        return escape(str).replaceAll("\"", "&quot;").replaceAll("\'", "&apos;");
     }
 
     public String format(JSLintResult result) {
         // TODO use a proper serializer
         StringBuilder sb = new StringBuilder("<testsuite");
-        attr(sb, "failures", Integer.toString(result.getIssues().size()));
-        String time = String.format("%.3f", result.getDuration() / 1000.0);
-        attr(sb, "time", time);
+        List<Issue> issues = result.getIssues();
+        attr(sb, "failures", Integer.toString(issues.size()));
+        attr(sb, "time", formatTimeAsSeconds(result.getDuration()));
         attr(sb, "skipped", "0");
-        attr(sb, "errors", result.getIssues().isEmpty() ? "0" : "1");
+        attr(sb, "errors", issues.isEmpty() ? "0" : "1");
         attr(sb, "tests", "1");
         attr(sb, "name", result.getName());
         sb.append(">");
         sb.append("<testcase");
-        attr(sb, "time", time);
+        attr(sb, "time", formatTimeAsSeconds(result.getDuration()));
         attr(sb, "classname", TEST_CLASSNAME);
         attr(sb, "name", result.getName());
         sb.append(">");
+        if (!issues.isEmpty()) {
+            sb.append("<failure");
+            String msg = String.format("Found %d problem%s", issues.size(), s(issues.size()));
+            attr(sb, "message", msg);
+            attr(sb, "type", AssertionError.class.getName());
+            sb.append(">");
+            for (Issue issue : issues) {
+                sb.append(escape(issue.toString()));
+                sb.append("\n");
+            }
+            sb.append("</failure>");
+        }
         sb.append("</testcase>");
         sb.append("</testsuite>");
         return sb.toString();
+    }
+
+    private String formatTimeAsSeconds(long duration) {
+        return String.format("%.3f", duration / 1000.0);
+    }
+
+    // Return an "s" for any size other than one. Crap i18n, I know.
+    private String s(int size) {
+        return size == 1 ? "" : "s";
     }
 
 }
