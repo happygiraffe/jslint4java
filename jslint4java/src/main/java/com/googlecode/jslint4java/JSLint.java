@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
@@ -179,8 +180,11 @@ public class JSLint {
      * @return a {@link JSLintResult}.
      */
     public JSLintResult lint(String systemId, String javaScript) {
+        long before = System.nanoTime();
         doLint(javaScript);
+        long after = System.nanoTime();
         ResultBuilder b = new JSLintResult.ResultBuilder(systemId);
+        b.duration(TimeUnit.NANOSECONDS.toMillis(after - before));
         for (Issue issue : readErrors(systemId)) {
             b.addIssue(issue);
         }

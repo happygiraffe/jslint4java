@@ -28,6 +28,7 @@ public class JSLintResult {
         private final String name;
         private final List<JSIdentifier> unused = new ArrayList<JSIdentifier>();
         private final List<String> urls = new ArrayList<String>();
+        private long duration;
 
         public ResultBuilder(String name) {
             this.name = name;
@@ -77,8 +78,14 @@ public class JSLintResult {
             return this;
         }
 
+        public ResultBuilder duration(long millis) {
+            duration = millis;
+            return this;
+        }
+
     }
 
+    private final long duration;
     private final List<JSFunction> functions = new ArrayList<JSFunction>();
     private final List<String> globals = new ArrayList<String>();
     private final List<JSIdentifier> implieds = new ArrayList<JSIdentifier>();
@@ -91,6 +98,7 @@ public class JSLintResult {
 
     private JSLintResult(ResultBuilder b) {
         name = b.name;
+        duration = b.duration;
         issues.addAll(b.issues);
         functions.addAll(b.functions);
         globals.addAll(b.globals);
@@ -99,6 +107,11 @@ public class JSLintResult {
         member.putAll(b.member);
         unused.addAll(b.unused);
         urls.addAll(b.urls);
+    }
+
+    /** How long did JSLint take to run? (milliseconds)*/
+    public long getDuration() {
+        return duration;
     }
 
     /** Return a list of functions defined. */
