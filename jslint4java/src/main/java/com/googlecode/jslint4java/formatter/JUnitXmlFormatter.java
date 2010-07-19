@@ -49,10 +49,11 @@ public class JUnitXmlFormatter extends XmlFormatter implements JSLintResultForma
         // TODO use a proper serializer
         StringBuilder sb = new StringBuilder("<testsuite");
         List<Issue> issues = result.getIssues();
-        sb.append(attr("failures", Integer.toString(issues.size())));
+        String testFailures = issues.isEmpty() ? "0" : "1";
+        sb.append(attr("failures", testFailures));
         sb.append(attr("time", formatTimeAsSeconds(result.getDuration())));
         sb.append(attr("skipped", "0"));
-        sb.append(attr("errors", issues.isEmpty() ? "0" : "1"));
+        sb.append(attr("errors", testFailures));
         sb.append(attr("tests", "1"));
         sb.append(attr("name", result.getName()));
         sb.append(">");

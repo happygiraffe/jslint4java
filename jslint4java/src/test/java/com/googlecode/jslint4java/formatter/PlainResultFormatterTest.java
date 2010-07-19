@@ -23,14 +23,14 @@ public class PlainResultFormatterTest {
     @Test
     public void testExpectedOutputOneIssue() {
         String name = "foo/bar.js";
-        Issue issue = new IssueBuilder(name, 1, 1, "no clucking").evidence("cluck()").build();
+        Issue issue = new IssueBuilder(name, 1, 2, "no clucking").evidence("cluck()").build();
         JSLintResult result = new JSLintResult.ResultBuilder(name).addIssue(issue).build();
         StringBuilder sb = new StringBuilder(name);
-        sb.append(":1:1: no clucking");
+        sb.append(":1:2: no clucking");
         sb.append("\n");
         sb.append("cluck()");
         sb.append("\n");
-        sb.append("^");
+        sb.append(" ^");
         sb.append("\n");
         assertThat(rf.format(result), is(sb.toString()));
     }
