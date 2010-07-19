@@ -38,7 +38,7 @@ import com.googlecode.jslint4java.JSLintResult;
  * href="http://www.hudson-ci.org/">hudson</a>, this appears to give reasonable
  * output.
  */
-public class JUnitXmlFormatter implements Formatter {
+public class JUnitXmlFormatter implements JSLintResultFormatter {
 
     public String format(JSLintResult result) {
         return "";
