@@ -13,19 +13,92 @@ import java.util.Map;
  */
 public class JSLintResult {
 
+    /**
+     * Allow constructing a result class in such a way that we can publish
+     * immutable instances, even from outside this package.
+     */
+    public static class ResultBuilder {
+
+        private final List<JSFunction> functions = new ArrayList<JSFunction>();
+        private final List<String> globals = new ArrayList<String>();
+        private final List<JSIdentifier> implieds = new ArrayList<JSIdentifier>();
+        private final List<Issue> issues = new ArrayList<Issue>();
+        private boolean json;
+        private final Map<String, Integer> member = new HashMap<String, Integer>();
+        private final String name;
+        private final List<JSIdentifier> unused = new ArrayList<JSIdentifier>();
+        private final List<String> urls = new ArrayList<String>();
+
+        public ResultBuilder(String name) {
+            this.name = name;
+        }
+
+        public ResultBuilder addFunction(JSFunction f) {
+            functions.add(f);
+            return this;
+        }
+
+        public ResultBuilder addGlobal(String global) {
+            globals.add(global);
+            return this;
+        }
+
+        public ResultBuilder addImplied(String name, int line) {
+            implieds.add(new JSIdentifier(name, line));
+            return this;
+        }
+
+        public ResultBuilder addIssue(Issue issue) {
+            issues.add(issue);
+            return this;
+        }
+
+        public ResultBuilder addMember(String name, int count) {
+            member.put(name, count);
+            return this;
+        }
+
+        public ResultBuilder addUnused(String name, int line) {
+            unused.add(new JSIdentifier(name, line));
+            return this;
+        }
+
+        public ResultBuilder addUrl(String url) {
+            urls.add(url);
+            return this;
+        }
+
+        public JSLintResult build() {
+            return new JSLintResult(this);
+        }
+
+        public ResultBuilder json(boolean json) {
+            this.json = json;
+            return this;
+        }
+
+    }
+
     private final List<JSFunction> functions = new ArrayList<JSFunction>();
     private final List<String> globals = new ArrayList<String>();
     private final List<JSIdentifier> implieds = new ArrayList<JSIdentifier>();
     private final List<Issue> issues = new ArrayList<Issue>();
-    private boolean json;
+    private final boolean json;
     private final Map<String, Integer> member = new HashMap<String, Integer>();
     private final String name;
     private final List<JSIdentifier> unused = new ArrayList<JSIdentifier>();
     private final List<String> urls = new ArrayList<String>();
 
-    JSLintResult(String name, List<Issue> issues) {
-        this.name = name;
-        this.issues.addAll(issues);
+    private JSLintResult(ResultBuilder b) {
+        name = b.name;
+        issues.addAll(b.issues);
+        functions.addAll(b.functions);
+        globals.addAll(b.globals);
+        implieds.addAll(b.implieds);
+        json = b.json;
+        member.putAll(b.member);
+        unused.addAll(b.unused);
+        urls.addAll(b.urls);
     }
 
     /** Return a list of functions defined. */
@@ -73,39 +146,5 @@ public class JSLintResult {
     /** Was this JSON? */
     public boolean isJson() {
         return json;
-    }
-
-    void setFunctions(List<JSFunction> functions) {
-        this.functions.clear();
-        this.functions.addAll(functions);
-    }
-
-    void setGlobals(List<String> globals) {
-        this.globals.clear();
-        this.globals.addAll(globals);
-    }
-
-    void setImplieds(List<JSIdentifier> implieds) {
-        this.implieds.clear();
-        this.implieds.addAll(implieds);
-    }
-
-    void setJson(boolean json) {
-        this.json = json;
-    }
-
-    void setMember(Map<String, Integer> member) {
-        this.member.clear();
-        this.member.putAll(member);
-    }
-
-    void setUnused(List<JSIdentifier> unused) {
-        this.unused.clear();
-        this.unused.addAll(unused);
-    }
-
-    void setUrls(List<String> urls) {
-        this.urls.clear();
-        this.urls.addAll(urls);
     }
 }

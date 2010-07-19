@@ -17,6 +17,7 @@ import org.mozilla.javascript.UniqueTag;
 
 import com.googlecode.jslint4java.Issue.IssueBuilder;
 import com.googlecode.jslint4java.JSFunction.Builder;
+import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
 
 /**
  * A utility class to check JavaScript source code for potential problems.
@@ -128,6 +129,24 @@ public class JSLint {
     }
 
     /**
+     * Set the "member" field of the {@link JSLintResult}.
+     */
+    private Map<String,Integer> getDataMembers(Scriptable data) {
+        Object o1 = data.get("member", data);
+        if (o1 == UniqueTag.NOT_FOUND) {
+            return new HashMap<String, Integer>();
+        }
+        Scriptable member = (Scriptable) o1;
+        Object[] propertyIds = ScriptableObject.getPropertyIds(member);
+        Map<String, Integer> members = new HashMap<String, Integer>(propertyIds.length);
+        for (Object id : propertyIds) {
+            String k = (String) id;
+            members.put(k, Util.intValue(k, member));
+        }
+        return members;
+    }
+
+    /**
      * Return the version of jslint in use.
      */
     public String getEdition() {
@@ -161,7 +180,10 @@ public class JSLint {
      */
     public JSLintResult lint(String systemId, String javaScript) {
         doLint(javaScript);
-        JSLintResult result = new JSLintResult(systemId, readErrors(systemId));
+        ResultBuilder b = new JSLintResult.ResultBuilder(systemId);
+        for (Issue issue : readErrors(systemId)) {
+            b.addIssue(issue);
+        }
 
         // Extract JSLINT.data() output and set it on the result.
         Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
@@ -171,16 +193,28 @@ public class JSLint {
             Function reportFunc = (Function) o;
             Scriptable data = (Scriptable) reportFunc.call(Context.getCurrentContext(), scope,
                     scope, new Object[] {});
-            setResultGlobal(result, data);
-            setResultUrls(result, data);
-            setResultMember(result, data);
-            setResultUnused(result, data);
-            setResultImplieds(result, data);
-            setResultJson(result, data);
-            setResultFunctions(result, data);
+            for (String global : Util.listValueOfType("globals", String.class, data)) {
+                b.addGlobal(global);
+            }
+            for (String url : Util.listValueOfType("urls", String.class, data)) {
+                b.addUrl(url);
+            }
+            for (Entry<String, Integer> member : getDataMembers(data).entrySet()) {
+                b.addMember(member.getKey(), member.getValue());
+            }
+            for (JSIdentifier id : Util.listValue("unused", data, new IdentifierConverter())) {
+                b.addUnused(id.getName(), id.getLine());
+            }
+            for (JSIdentifier id : Util.listValue("implieds", data, new IdentifierConverter())) {
+                b.addImplied(id.getName(), id.getLine());
+            }
+            b.json(Util.booleanValue("json", data));
+            for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {
+                b.addFunction(f);
+            }
         }
 
-        return result;
+        return b.build();
     }
 
     /**
@@ -250,59 +284,4 @@ public class JSLint {
     public void resetOptions() {
         options.clear();
     }
-
-    /**
-     * Set the "functions" field of the {@link JSLintResult}.
-     */
-    private void setResultFunctions(JSLintResult result, Scriptable data) {
-        result.setFunctions(Util.listValue("functions", data, new JSFunctionConverter()));
-    }
-
-    private void setResultGlobal(JSLintResult result, Scriptable data) {
-        result.setGlobals(Util.listValueOfType("globals", String.class, data));
-    }
-
-    /**
-     * Set the "implieds" field of the {@link JSLintResult}.
-     */
-    private void setResultImplieds(JSLintResult result, Scriptable data) {
-        result.setImplieds(Util.listValue("implieds", data, new IdentifierConverter()));
-    }
-
-    private void setResultJson(JSLintResult result, Scriptable data) {
-        result.setJson(Util.booleanValue("json", data));
-    }
-
-    /**
-     * Set the "member" field of the {@link JSLintResult}.
-     */
-    private void setResultMember(JSLintResult result, Scriptable data) {
-        Object o1 = data.get("member", data);
-        if (o1 == UniqueTag.NOT_FOUND) {
-            return;
-        }
-        Scriptable member = (Scriptable) o1;
-        Object[] propertyIds = ScriptableObject.getPropertyIds(member);
-        Map<String, Integer> members = new HashMap<String, Integer>(propertyIds.length);
-        for (Object id : propertyIds) {
-            String k = (String) id;
-            members.put(k, Util.intValue(k, member));
-        }
-        result.setMember(members);
-    }
-
-    /**
-     * Set the "unused" field of the {@link JSLintResult}.
-     */
-    private void setResultUnused(JSLintResult result, Scriptable data) {
-        result.setUnused(Util.listValue("unused", data, new IdentifierConverter()));
-    }
-
-    /**
-     * Set the "urls" field of the {@link JSLintResult}.
-     */
-    private void setResultUrls(JSLintResult result, Scriptable data) {
-        result.setUrls(Util.listValueOfType("urls", String.class, data));
-    }
-
 }
