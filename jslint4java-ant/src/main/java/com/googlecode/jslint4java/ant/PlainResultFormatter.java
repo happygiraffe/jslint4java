@@ -8,8 +8,9 @@ import java.util.List;
 
 import org.apache.tools.ant.util.FileUtils;
 
-import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLintResult;
+import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
+import com.googlecode.jslint4java.formatter.PlainFormatter;
 
 /**
  * Output all JSLint errors to the console. Shows the error, the line on which
@@ -22,6 +23,8 @@ public class PlainResultFormatter implements ResultFormatter {
 
     protected OutputStream out;
     protected PrintWriter w = null;
+
+    private final JSLintResultFormatter form = new PlainFormatter();
 
     public void begin() {
         // Use the default system encoding, as that's likely what the console is
@@ -44,38 +47,11 @@ public class PlainResultFormatter implements ResultFormatter {
             return;
         }
 
-        for (Issue issue : result.getIssues()) {
-            outputOneIssue(issue);
-        }
-    }
+        w.print(form.format(result));
 
-    private void outputOneIssue(Issue issue) {
-        // NB: space before reason to look like javac!
-        String msg = issue.getSystemId() + ":" + issue.getLine() + ":" + issue.getCharacter()
-                + ": " + issue.getReason();
-        w.println(msg);
-        String evidence = issue.getEvidence();
-        if (evidence != null && !"".equals(evidence)) {
-            w.println(evidence);
-            // character is now one-based.
-            w.println(spaces(issue.getCharacter() - 1) + "^");
-        }
     }
 
     public void setOut(OutputStream os) {
         out = os;
-    }
-
-    /**
-     * Return a string of <i>howmany</i> spaces.
-     *
-     * @param howmany
-     */
-    protected String spaces(int howmany) {
-        StringBuffer sb = new StringBuffer(howmany);
-        for (int i = 0; i < howmany; i++) {
-            sb.append(" ");
-        }
-        return sb.toString();
     }
 }
