@@ -38,7 +38,7 @@ public class PlainResultFormatterTest {
 
     @Before
     public void setUpOutputStream() {
-        rf.setOut(out);
+        rf.setStdout(out);
     }
 
     @Test
