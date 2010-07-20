@@ -209,7 +209,9 @@
         <configuration>
           <quiet>true</quiet>
           <links>
-            <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+            <!-- Why couldn't snoracle have left this link alone?  And what on
+                 earth is E17476_01? -->
+            <link>http://download.oracle.com/docs/cd/E17476_01/javase/1.5.0/docs/api</link>
           </links>
         </configuration>
         <reportSets>
