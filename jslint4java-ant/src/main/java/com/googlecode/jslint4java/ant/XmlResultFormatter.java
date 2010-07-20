@@ -1,6 +1,9 @@
 package com.googlecode.jslint4java.ant;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -38,6 +41,9 @@ public class XmlResultFormatter implements ResultFormatter {
     private OutputStream out;
 
     public void begin() {
+        if (out == null) {
+            throw new BuildException("must specify destFile for xml output");
+        }
         // Clear, just in case this object gets reused.
         sb.delete(0, sb.length() - 1);
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
@@ -63,6 +69,7 @@ public class XmlResultFormatter implements ResultFormatter {
                 FileUtils.close(w);
             }
         }
+        out = null;
     }
 
     /**
@@ -77,8 +84,16 @@ public class XmlResultFormatter implements ResultFormatter {
         sb.append(form.format(result));
     }
 
-    public void setOut(OutputStream os) {
-        out = os;
+    public void setFile(File file) {
+        try {
+            out = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new BuildException(e);
+        }
+    }
+
+    public void setStdout(OutputStream defaultOutputStream) {
+        // Ignore, we never want to write to stdout.
     }
 
 }

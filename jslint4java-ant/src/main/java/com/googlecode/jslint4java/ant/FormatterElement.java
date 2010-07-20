@@ -1,8 +1,6 @@
 package com.googlecode.jslint4java.ant;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import org.apache.tools.ant.BuildException;
@@ -51,20 +49,6 @@ public class FormatterElement {
     private File destFile;
 
     /**
-     * Return an output stream for the destFile.
-     *
-     * @return
-     */
-    private OutputStream getFileOutputStream() {
-        try {
-            // NB: The encoding will be determined by the ResultFormatter.
-            return new FileOutputStream(destFile);
-        } catch (FileNotFoundException e) {
-            throw new BuildException(e);
-        }
-    }
-
-    /**
      * Return a configured {@link ResultFormatter} corresponding to this
      * element.
      */
@@ -73,10 +57,9 @@ public class FormatterElement {
             throw new BuildException("you must specify type");
         }
         ResultFormatter rf = type.getResultFormatter();
+        rf.setStdout(defaultOutputStream);
         if (destFile != null) {
-            rf.setOut(getFileOutputStream());
-        } else {
-            rf.setOut(defaultOutputStream);
+            rf.setFile(destFile);
         }
         return rf;
     }

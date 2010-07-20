@@ -1,11 +1,15 @@
 package com.googlecode.jslint4java.ant;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.util.FileUtils;
 
 import com.googlecode.jslint4java.JSLintResult;
@@ -15,6 +19,10 @@ import com.googlecode.jslint4java.formatter.PlainFormatter;
 /**
  * Output all JSLint errors to the console. Shows the error, the line on which
  * it occurred and a pointer to the character at which it occurred.
+ *
+ * <p>
+ * If a file is specified, all output will go there. If not, then all output
+ * will go to stdout.
  *
  * @author dom
  * @version $Id$
@@ -51,7 +59,15 @@ public class PlainResultFormatter implements ResultFormatter {
 
     }
 
-    public void setOut(OutputStream os) {
-        out = os;
+    public void setFile(File file) {
+        try {
+            out = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new BuildException(e);
+        }
+    }
+
+    public void setStdout(OutputStream defaultOutputStream) {
+        out = defaultOutputStream;
     }
 }
