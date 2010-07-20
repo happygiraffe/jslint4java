@@ -7,18 +7,12 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.util.DOMElementWriter;
 import org.apache.tools.ant.util.FileUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLintResult;
+import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
+import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
 
 /**
  * Write out JSLint problems to an XML file. This may be easily transformed into
@@ -39,19 +33,15 @@ import com.googlecode.jslint4java.JSLintResult;
  */
 public class XmlResultFormatter implements ResultFormatter {
 
+    private final JSLintResultFormatter form = new JSLintXmlFormatter();
+    private final StringBuilder sb = new StringBuilder();
     private OutputStream out;
-    private DocumentBuilder builder = null;
-    private Document doc = null;
-    private Element rootElement = null;
 
     public void begin() {
-        try {
-            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            doc = builder.newDocument();
-            rootElement = doc.createElement("jslint");
-        } catch (ParserConfigurationException e) {
-            throw new BuildException(e);
-        }
+        // Clear, just in case this object gets reused.
+        sb.delete(0, sb.length() - 1);
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+        sb.append("<jslint>\n");
     }
 
     /**
@@ -60,11 +50,11 @@ public class XmlResultFormatter implements ResultFormatter {
      * @see com.googlecode.jslint4java.ant.ResultFormatter#end()
      */
     public void end() {
+        sb.append("</jslint>");
         Writer w = null;
         try {
             w = new BufferedWriter(new OutputStreamWriter(out, "UTF8"));
-            w.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-            new DOMElementWriter().write(rootElement, w, 0, "  ");
+            w.write(sb.toString());
             w.flush();
         } catch (IOException exc) {
             throw new BuildException("Unable to write log file", exc);
@@ -84,21 +74,7 @@ public class XmlResultFormatter implements ResultFormatter {
      * @see ResultFormatter#output(String, List)
      */
     public void output(JSLintResult result) {
-        Element f = doc.createElement("file");
-        f.setAttribute("name", result.getName());
-        for (Issue issue : result.getIssues()) {
-            f.appendChild(issueToElement(issue));
-        }
-        rootElement.appendChild(f);
-    }
-
-    private Element issueToElement(Issue issue) {
-        Element iel = doc.createElement("issue");
-        iel.setAttribute("line", Integer.toString(issue.getLine()));
-        iel.setAttribute("char", Integer.toString(issue.getCharacter()));
-        iel.setAttribute("reason", issue.getReason());
-        iel.setAttribute("evidence", issue.getEvidence());
-        return iel;
+        sb.append(form.format(result));
     }
 
     public void setOut(OutputStream os) {
