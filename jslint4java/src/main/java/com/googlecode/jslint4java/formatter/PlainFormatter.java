@@ -10,7 +10,7 @@ import com.googlecode.jslint4java.JSLintResult;
  * @author dom
  * @version $Id$
  */
-public class PlainResultFormatter implements JSLintResultFormatter {
+public class PlainFormatter implements JSLintResultFormatter {
 
     public String format(JSLintResult result) {
         StringBuilder sb = new StringBuilder();

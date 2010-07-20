@@ -9,9 +9,9 @@ import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.Issue.IssueBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 
-public class PlainResultFormatterTest {
+public class PlainFormatterTest {
 
-    private final PlainResultFormatter rf = new PlainResultFormatter();
+    private final PlainFormatter rf = new PlainFormatter();
 
     @Test
     public void testExpectedOutputNoIssues() {
