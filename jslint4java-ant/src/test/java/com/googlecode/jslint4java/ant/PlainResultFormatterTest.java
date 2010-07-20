@@ -13,6 +13,8 @@ import org.junit.Test;
 
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.Issue.IssueBuilder;
+import com.googlecode.jslint4java.JSLintResult;
+import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
 
 public class PlainResultFormatterTest {
 
@@ -26,7 +28,11 @@ public class PlainResultFormatterTest {
      */
     private void runFormatter(File file) {
         rf.begin();
-        rf.output(file.getName(), issues);
+        ResultBuilder builder = new JSLintResult.ResultBuilder(file.getName());
+        for (Issue issue : issues) {
+            builder.addIssue(issue);
+        }
+        rf.output(builder.build());
         rf.end();
     }
 
