@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.tools.ant.util.FileUtils;
 
 import com.googlecode.jslint4java.Issue;
+import com.googlecode.jslint4java.JSLintResult;
 
 /**
  * Output all JSLint errors to the console. Shows the error, the line on which
@@ -38,12 +39,12 @@ public class PlainResultFormatter implements ResultFormatter {
      *
      * @see ResultFormatter#output(String, List)
      */
-    public void output(String name, List<Issue> issues) {
-        if (issues.size() == 0) {
+    public void output(JSLintResult result) {
+        if (result.getIssues().size() == 0) {
             return;
         }
 
-        for (Issue issue : issues) {
+        for (Issue issue : result.getIssues()) {
             outputOneIssue(issue);
         }
     }

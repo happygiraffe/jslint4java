@@ -18,6 +18,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.googlecode.jslint4java.Issue;
+import com.googlecode.jslint4java.JSLintResult;
 
 /**
  * Write out JSLint problems to an XML file. This may be easily transformed into
@@ -82,10 +83,10 @@ public class XmlResultFormatter implements ResultFormatter {
      *
      * @see ResultFormatter#output(String, List)
      */
-    public void output(String name, List<Issue> issues) {
+    public void output(JSLintResult result) {
         Element f = doc.createElement("file");
-        f.setAttribute("name", name);
-        for (Issue issue : issues) {
+        f.setAttribute("name", result.getName());
+        for (Issue issue : result.getIssues()) {
             f.appendChild(issueToElement(issue));
         }
         rootElement.appendChild(f);

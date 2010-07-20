@@ -3,7 +3,7 @@ package com.googlecode.jslint4java.ant;
 import java.io.OutputStream;
 import java.util.List;
 
-import com.googlecode.jslint4java.Issue;
+import com.googlecode.jslint4java.JSLintResult;
 
 /**
  * Output all issues found somewhere. The calling sequence is:
@@ -33,12 +33,10 @@ public interface ResultFormatter {
     /**
      * Called for each file that is checked by {@link JSLintTask}.
      *
-     * @param name
-     *            The file just examined.
-     * @param issues
-     *            A list of issues fond with this file. May be empty.
+     * @param result
+     *            The details if this JSLint run.
      */
-    public abstract void output(String name, List<Issue> issues);
+    public abstract void output(JSLintResult result);
 
     /**
      * Called during initialization.
