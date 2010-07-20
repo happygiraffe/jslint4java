@@ -23,4 +23,9 @@ public class OptionParserTest {
     public void testParseIntegerFailure() throws Exception {
         optionParser.parse(Integer.class, "foo");
     }
+
+    @Test(expected = RuntimeException.class)
+    public void testNoSuchMethod() throws Exception {
+        optionParser.parse(System.class, "foo");
+    }
 }
