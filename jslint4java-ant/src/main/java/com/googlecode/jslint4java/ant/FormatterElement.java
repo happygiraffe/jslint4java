@@ -13,9 +13,10 @@ import org.apache.tools.ant.BuildException;
  *
  * <dl>
  * <dt><code>type</code></dt>
- * <dd>Either "plain" or "xml" or "netbeans".</dd>
+ * <dd>One of "plain," "xml" or "junit".</dd>
  * <dt><code>destfile</code></dt>
- * <dd>Optional. A file to write the formatters' output to.</dd>
+ * <dd>Optional. A file to write the formatters' output to. In the case of
+ * “junit” this is mandatory and <i>must</i> point at a directory.</dd>
  * </dl>
  *
  * @author dom
@@ -39,6 +40,12 @@ public class FormatterElement {
             @Override
             public ResultFormatter getResultFormatter() {
                 return new XmlResultFormatter();
+            }
+        },
+        junit() {
+            @Override
+            ResultFormatter getResultFormatter() {
+                return new JUnitXmlResultFormatter();
             }
         };
         abstract ResultFormatter getResultFormatter();
