@@ -6,6 +6,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +88,8 @@ public class Main {
 
     private JSLint lint;
 
+    private Charset encoding = Charset.defaultCharset();
+
     private Main() throws IOException {
         lint = new JSLintBuilder().fromDefault();
     }
@@ -139,6 +144,7 @@ public class Main {
             info(String.format(fmt, name, o.getDescription()));
         }
         info("");
+        info(String.format(fmt, "encoding=", "Specify the input encoding"));
         info(String.format(fmt, "help", "Show this help"));
         info(String.format(fmt, "jslint=", "Specify an alternative version of jslint.js"));
         info("");
@@ -157,7 +163,7 @@ public class Main {
     private void lintFile(String file) throws IOException {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
             JSLintResult result = lint.lint(file, reader);
             for (Issue issue : result.getIssues()) {
                 err(issue.toString());
@@ -216,11 +222,15 @@ public class Main {
             // Longopt.
             else if (arg.startsWith("--")) {
                 Pair<String, String> pair = parseArgAndValue(arg);
-                Option o = getOption(pair.a);
-                if (o == null) {
-                    die("unknown option " + arg);
+                if (pair.a.equals("encoding")) {
+                    setEncoding(pair.b);
+                } else {
+                    Option o = getOption(pair.a);
+                    if (o == null) {
+                        die("unknown option " + arg);
+                    }
+                    options.put(o, pair.b);
                 }
-                options.put(o, pair.b);
             }
             // File
             else {
@@ -230,6 +240,16 @@ public class Main {
         }
         applyOptions(options);
         return files;
+    }
+
+    private void setEncoding(String name) {
+        try {
+            encoding = Charset.forName(name);
+        } catch (IllegalCharsetNameException e) {
+            die("unknown encoding '" + name + "'");
+        } catch (UnsupportedCharsetException e) {
+            die("unknown encoding '" + name + "'");
+        }
     }
 
     private void setErrored(boolean errored) {
