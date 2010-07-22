@@ -113,7 +113,7 @@ pre {
 	font-size: 0.875em;
 }
 
-code {
+code, tt {
 	font-family: "Courier", "Courier New", mono;
 	font-size: 0.875em;
 }

@@ -123,16 +123,16 @@
       </tr>
       <tr>
         <td> type </td>
-        <td> One of <tt>plain</tt>, <tt>xml</tt> or <tt>junit</tt>.  The <tt>xml</tt> format is a custom invention of this project; it's probably more useful to use the junit format as it has interoperability with existing tools.</td>
+        <td> One of <code>plain</code>, <code>xml</code> or <code>junit</code>.  The <code>xml</code> format is a custom invention of this project; it's probably more useful to use the junit format as it has interoperability with existing tools.</td>
         <td> Yes </td>
       </tr>
       <tr>
         <td> destfile </td>
         <td> A location to write the output to.
           <ul>
-            <li>For the <tt>plain</tt> formatter, you can redirect output to a file.  If you leave this attribute out, then output will appear on the console.</li>
-            <li>For the <tt>xml</tt> formatter, you have to specify a file to write the output to.</li>
-            <li>For the <tt>junit</tt> formatter, you have to specify a directory.  Each file linted will have one file created in that directory.</li>
+            <li>For the <code>plain</code> formatter, you can redirect output to a file.  If you leave this attribute out, then output will appear on the console.</li>
+            <li>For the <code>xml</code> formatter, you have to specify a file to write the output to.</li>
+            <li>For the <code>junit</code> formatter, you have to specify a directory.  Each file linted will have one file created in that directory.</li>
           </ul>
         </td>
         <td> No </td>
@@ -172,8 +172,8 @@
   &lt;/project&gt;</pre>
 
     <p>
-      Doing so will require you to access the <tt>jslint</tt> task as
-      <tt>jsl:jslint</tt>.  This also means that you have to install
+      Doing so will require you to access the <code>jslint</code> task as
+      <code>jsl:jslint</code>.  This also means that you have to install
       <code>jslint4java-${project.version}.jar</code> in
       <code>~/.ant/libs</code>.
     </p>
@@ -199,7 +199,7 @@
     </p>
 
     <p>
-      To check a directory for all <tt>.js</tt> files, and emit all errors to
+      To check a directory for all <code>.js</code> files, and emit all errors to
       the console:
     </p>
 
@@ -209,8 +209,8 @@
   &lt;/jslint&gt;</pre>
 
     <p>
-      To check a directory for all <tt>.js</tt> files, excluding packed files.
-      Send any problems to a file <tt>jslint.out</tt>.
+      To check a directory for all <code>.js</code> files, excluding packed files.
+      Send any problems to a file <code>jslint.out</code>.
     </p>
 
     <pre class="prettyprint" id="example-plain-file">  &lt;jslint&gt;
