@@ -123,12 +123,18 @@
       </tr>
       <tr>
         <td> type </td>
-        <td> Either <tt>plain</tt> or <tt>xml</tt>. </td>
+        <td> One of <tt>plain</tt>, <tt>xml</tt> or <tt>junit</tt>.  The <tt>xml</tt> format is a custom invention of this project; it's probably more useful to use the junit format as it has interoperability with existing tools.</td>
         <td> Yes </td>
       </tr>
       <tr>
         <td> destfile </td>
-        <td> A location to write the output to.  Defaults to the console. </td>
+        <td> A location to write the output to.
+          <ul>
+            <li>For the <tt>plain</tt> formatter, you can redirect output to a file.  If you leave this attribute out, then output will appear on the console.</li>
+            <li>For the <tt>xml</tt> formatter, you have to specify a file to write the output to.</li>
+            <li>For the <tt>junit</tt> formatter, you have to specify a directory.  Each file linted will have one file created in that directory.</li>
+          </ul>
+        </td>
         <td> No </td>
       </tr>
     </table>
@@ -217,14 +223,14 @@
       issues and undefined variables, as well as predefining a couple of
       global variables we know we'll be using.
 
-      Send the errors to the console, and also emit an XML report to the build
+      Send the errors to the console, and also emit JUnit XML reports to the build
       directory.
     </p>
 
     <pre class="prettyprint" id="example-xml">  &lt;jslint options="undef,white"&gt;
     &lt;predef&gt;jQuery,$$&lt;/predef&gt;
     &lt;formatter type="plain" /&gt;
-    &lt;formatter type="xml" destfile="${build.dir}/jslint.xml" /&gt;
+    &lt;formatter type="junit" destfile="${build.dir}/test-reports" /&gt;
     &lt;fileset dir="web/js" includes="**/*.js" excludes="**/*.pack.js" /&gt;
   &lt;/jslint&gt;</pre>
 
