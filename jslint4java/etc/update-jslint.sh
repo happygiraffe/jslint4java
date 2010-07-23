@@ -18,6 +18,6 @@ if [[ -f $1 ]] ; then
 else
   $dir/fetch-jslint.sh $resourceDir $pkgDir
 fi
-$dir/extract-options.rb $resourceDir/$pkgDir/$jslint $javaDir/$pkgDir/Option.java $javaDir/$pkgDir/Flags.java
+$dir/extract-options.rb $resourceDir/$pkgDir/$jslint $javaDir/$pkgDir/Option.java $javaDir/$pkgDir/JSLintFlags.java
 
 echo "Please update jslint4java-docs now!"
