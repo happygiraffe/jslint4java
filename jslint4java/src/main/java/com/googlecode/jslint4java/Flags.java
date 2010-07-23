@@ -1,5 +1,6 @@
 package com.googlecode.jslint4java;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +13,8 @@ import com.beust.jcommander.Parameter;
  */
 public class Flags {
 
-    @Parameter(names = "--encoding", description = "Specify the input encoding")
-    public String encoding;
+    @Parameter(names = "--encoding", description = "Specify the input encoding", converter=CharsetConverter.class)
+    public Charset encoding;
 
     @Parameter(names = "--jslint", description = "Specify an alternative version of jslint.js")
     public String jslint;

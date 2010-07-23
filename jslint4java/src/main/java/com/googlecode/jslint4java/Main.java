@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Locale;
 
@@ -128,7 +126,7 @@ public class Main {
             usage(jc);
         }
         if (flags.encoding != null) {
-            setEncoding(flags.encoding);
+            encoding = flags.encoding;
         }
         if (flags.jslint != null) {
             setJSLint(flags.jslint);
@@ -168,16 +166,6 @@ public class Main {
             return null; // can never happen
         } else {
             return flags.files;
-        }
-    }
-
-    private void setEncoding(String name) {
-        try {
-            encoding = Charset.forName(name);
-        } catch (IllegalCharsetNameException e) {
-            die("unknown encoding '" + name + "'");
-        } catch (UnsupportedCharsetException e) {
-            die("unknown encoding '" + name + "'");
         }
     }
 
