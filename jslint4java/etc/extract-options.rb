@@ -60,7 +60,7 @@ end
 
 update_file(ARGV[2], indent, opts) do |k,desc,type|
   descEscaped = desc.gsub(/"/, '\\"')
-  ["#{indent}@Parameter(names=\"--#{k}\", description=\"#{descEscaped}\")",
+  ["#{indent}@Parameter(names = \"--#{k}\", description = \"#{descEscaped}\")",
    "#{indent}public #{type} #{k} = null;",
    ""]
 end
