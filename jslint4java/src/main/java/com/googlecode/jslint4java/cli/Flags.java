@@ -1,4 +1,4 @@
-package com.googlecode.jslint4java;
+package com.googlecode.jslint4java.cli;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;

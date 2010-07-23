@@ -44,6 +44,6 @@
     </plugins>
   </build>
   <properties>
-    <mainClass>com.googlecode.jslint4java.Main</mainClass>
+    <mainClass>com.googlecode.jslint4java.cli.Main</mainClass>
   </properties>
 </project>

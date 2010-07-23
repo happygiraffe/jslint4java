@@ -1,4 +1,4 @@
-package com.googlecode.jslint4java;
+package com.googlecode.jslint4java.cli;
 
 import com.beust.jcommander.Parameter;
 

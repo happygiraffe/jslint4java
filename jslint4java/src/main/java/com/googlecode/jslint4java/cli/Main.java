@@ -1,4 +1,4 @@
-package com.googlecode.jslint4java;
+package com.googlecode.jslint4java.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +13,11 @@ import java.util.Locale;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
+import com.googlecode.jslint4java.Issue;
+import com.googlecode.jslint4java.JSLint;
+import com.googlecode.jslint4java.JSLintBuilder;
+import com.googlecode.jslint4java.JSLintResult;
+import com.googlecode.jslint4java.Option;
 
 /**
  * A command line interface to {@link JSLint}.
