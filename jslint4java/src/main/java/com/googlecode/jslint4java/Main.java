@@ -53,11 +53,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         try {
             Main main = new Main();
-            List<String> files = main.processOptions(args);
-            if (files.size() == 0) {
-                main.help();
-            }
-            for (String file : files) {
+            for (String file : main.processOptions(args)) {
                 main.lintFile(file);
             }
             System.exit(main.isErrored() ? 1 : 0);
@@ -69,11 +65,11 @@ public class Main {
         }
     }
 
+    private Charset encoding = Charset.defaultCharset();
+
     private boolean errored = false;
 
     private JSLint lint;
-
-    private Charset encoding = Charset.defaultCharset();
 
     private Main() throws IOException {
         lint = new JSLintBuilder().fromDefault();
@@ -97,25 +93,6 @@ public class Main {
         } catch (IllegalArgumentException e) {
             return null;
         }
-    }
-
-    private void help() {
-        info("usage: jslint [options] file.js ...");
-        String fmt = "  --%-" + Option.maximumNameLength() + "s %s";
-        for (Option o : Option.values()) {
-            String name = o.getLowerName();
-            if (o.getType() != Boolean.class) {
-                name = name + "=";
-            }
-            info(String.format(fmt, name, o.getDescription()));
-        }
-        info("");
-        info(String.format(fmt, "encoding=", "Specify the input encoding"));
-        info(String.format(fmt, "help", "Show this help"));
-        info(String.format(fmt, "jslint=", "Specify an alternative version of jslint.js"));
-        info("");
-        info("using jslint version " + lint.getEdition());
-        throw new DieException(null, 0);
     }
 
     private void info(String message) {
@@ -148,10 +125,7 @@ public class Main {
         JSLintFlags jslintFlags = new JSLintFlags();
         JCommander jc = new JCommander(new Object[] { flags, jslintFlags }, args);
         if (flags.help) {
-            jc.usage();
-            info("");
-            info("using jslint version " + lint.getEdition());
-            throw new DieException(null, 0);
+            usage(jc);
         }
         if (flags.encoding != null) {
             setEncoding(flags.encoding);
@@ -189,14 +163,11 @@ public class Main {
                 die(e.getMessage());
             }
         }
-        return flags.files;
-    }
-
-    private void setJSLint(String jslint) {
-        try {
-            lint = new JSLintBuilder().fromFile(new File(jslint));
-        } catch (IOException e) {
-            die(e.getMessage());
+        if (flags.files.isEmpty()) {
+            usage(jc);
+            return null; // can never happen
+        } else {
+            return flags.files;
         }
     }
 
@@ -212,6 +183,21 @@ public class Main {
 
     private void setErrored(boolean errored) {
         this.errored = errored;
+    }
+
+    private void setJSLint(String jslint) {
+        try {
+            lint = new JSLintBuilder().fromFile(new File(jslint));
+        } catch (IOException e) {
+            die(e.getMessage());
+        }
+    }
+
+    private void usage(JCommander jc) {
+        jc.usage();
+        info("");
+        info("using jslint version " + lint.getEdition());
+        throw new DieException(null, 0);
     }
 
 }
