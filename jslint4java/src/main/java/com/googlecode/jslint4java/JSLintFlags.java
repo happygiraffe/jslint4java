@@ -74,7 +74,7 @@ public class JSLintFlags {
     public Boolean plusplus = null;
 
     @Parameter(names = "--predef", description = "The names of predefined global variables.")
-    public StringArray predef = null;
+    public String predef = null;
 
     @Parameter(names = "--regexp", description = "If the . should not be allowed in regexp literals")
     public Boolean regexp = null;
