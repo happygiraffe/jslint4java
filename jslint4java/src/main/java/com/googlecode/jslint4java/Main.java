@@ -6,15 +6,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterDescription;
 
 /**
  * A command line interface to {@link JSLint}.
@@ -23,21 +23,6 @@ import java.util.Map.Entry;
  * @version $Id$
  */
 public class Main {
-
-    /** Just a useful utility class. Should probably be top-level. */
-    private static class Pair<A, B> {
-        public final A a;
-        public final B b;
-
-        public Pair(A a, B b) {
-            this.a = a;
-            this.b = b;
-        }
-
-        public static <A, B> Pair<A, B> of(A a, B b) {
-            return new Pair<A, B>(a, b);
-        }
-    }
 
     /**
      * This is just to avoid calling {@link System#exit(int)} outside of main()…
@@ -92,25 +77,6 @@ public class Main {
 
     private Main() throws IOException {
         lint = new JSLintBuilder().fromDefault();
-    }
-
-    /**
-     * Apply a set of options to the current JSLint.
-     */
-    private void applyOptions(Map<Option, String> options) {
-        for (Entry<Option, String> entry : options.entrySet()) {
-            String value = entry.getValue();
-            try {
-                if (value == null) {
-                    lint.addOption(entry.getKey());
-                } else {
-                    lint.addOption(entry.getKey(), value);
-                }
-            } catch (IllegalArgumentException e) {
-                String optName = entry.getKey().getLowerName();
-                die("--" + optName + ": " + e.getClass().getName() + ": " + e.getMessage());
-            }
-        }
     }
 
     private void die(String message) {
@@ -177,69 +143,56 @@ public class Main {
         }
     }
 
-    /**
-     * Parse {@code arg} into two components, separated by equals. If there is
-     * no second component, the value will be {@code null}.
-     */
-    private Pair<String, String> parseArgAndValue(String arg) {
-        String[] bits = arg.substring(2).split("=", 2);
-        if (bits.length == 2) {
-            return Pair.of(bits[0], bits[1]);
-        } else {
-            return Pair.of(bits[0], null);
-        }
-    }
-
     private List<String> processOptions(String[] args) {
-        boolean inFiles = false;
-        List<String> files = new ArrayList<String>();
-        Map<Option, String> options = new HashMap<Option, String>();
-        for (String arg : args) {
-            if (inFiles) {
-                files.add(arg);
-            }
-            // End of arguments.
-            else if ("--".equals(arg)) {
-                inFiles = true;
+        Flags flags = new Flags();
+        JSLintFlags jslintFlags = new JSLintFlags();
+        JCommander jc = new JCommander(new Object[] { flags, jslintFlags }, args);
+        if (flags.help) {
+            jc.usage();
+            info("");
+            info("using jslint version " + lint.getEdition());
+            throw new DieException(null, 0);
+        }
+        if (flags.encoding != null) {
+            setEncoding(flags.encoding);
+        }
+        if (flags.jslint != null) {
+            setJSLint(flags.jslint);
+        }
+        for (ParameterDescription pd : jc.getParameters()) {
+            Field field = pd.getField();
+            // Is it declared on JSLintFlags?
+            if (!field.getDeclaringClass().isAssignableFrom(JSLintFlags.class)) {
                 continue;
             }
-            // Hayelp!
-            else if ("--help".equals(arg)) {
-                help();
-            }
-            // Specify an alternative jslint.
-            else if (arg.startsWith("--jslint")) {
-                Pair<String, String> pair = parseArgAndValue(arg);
-                if (pair.b == null) {
-                    die("Must specify file with --jslint=/some/where/jslint.js");
-                }
+            // Need to get Option.
+            Option o = getOption(field.getName());
+            // Need to get value.
+            Class<?> type = field.getType();
+            if (type.isAssignableFrom(Boolean.class)) {
+                lint.addOption(o);
+            } else if (type.isAssignableFrom(String.class)) {
                 try {
-                    lint = new JSLintBuilder().fromFile(new File(pair.b));
-                } catch (IOException e) {
+                    String val = (String) field.get(jslintFlags);
+                    lint.addOption(o, val);
+                } catch (IllegalArgumentException e) {
+                    die(e.getMessage());
+                } catch (IllegalAccessException e) {
                     die(e.getMessage());
                 }
-            }
-            // Longopt.
-            else if (arg.startsWith("--")) {
-                Pair<String, String> pair = parseArgAndValue(arg);
-                if (pair.a.equals("encoding")) {
-                    setEncoding(pair.b);
-                } else {
-                    Option o = getOption(pair.a);
-                    if (o == null) {
-                        die("unknown option " + arg);
-                    }
-                    options.put(o, pair.b);
-                }
-            }
-            // File
-            else {
-                inFiles = true;
-                files.add(arg);
+            } else {
+                die("unknown type \"" + type + "\" (for " + field.getName() + ")");
             }
         }
-        applyOptions(options);
-        return files;
+        return flags.files;
+    }
+
+    private void setJSLint(String jslint) {
+        try {
+            lint = new JSLintBuilder().fromFile(new File(jslint));
+        } catch (IOException e) {
+            die(e.getMessage());
+        }
     }
 
     private void setEncoding(String name) {

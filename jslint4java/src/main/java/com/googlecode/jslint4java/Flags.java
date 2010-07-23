@@ -18,6 +18,9 @@ public class Flags {
     @Parameter(names = "--jslint", description = "Specify an alternative version of jslint.js")
     public String jslint;
 
+    @Parameter(names = "--help", description = "Display usage information")
+    public boolean help;
+
     /**
      * All remaining files on the command line. The ones that actually need
      * linting.
