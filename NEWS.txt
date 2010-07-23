@@ -4,8 +4,10 @@ Revision history for jslint4java.
     - Use JCommander for flag processing.
       - This means that command line option parsing has changed
         slightly.  You now have to say "--indent 2" instead of
-        "--indent=2"
+        "--indent=2".
       - The minimum version of Java is now 6.
+    - issue 37: add a --encoding flag for specifying the encoding files
+      on the command line.
     - issue 36: add a JUnit XML formatter.
     - issue 26: add support for .data() call in JSLINT.
     - Update to JSLint 2010-07-14.
