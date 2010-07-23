@@ -177,6 +177,7 @@ public class Main {
                 if (type.isAssignableFrom(Boolean.class)) {
                     lint.addOption(o);
                 }
+                // In theory, everything else should be a String for later parsing.
                 else if (type.isAssignableFrom(String.class)) {
                     lint.addOption(o, (String) val);
                 } else {
