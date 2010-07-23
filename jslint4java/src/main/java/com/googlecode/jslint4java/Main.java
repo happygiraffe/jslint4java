@@ -165,23 +165,27 @@ public class Main {
             if (!field.getDeclaringClass().isAssignableFrom(JSLintFlags.class)) {
                 continue;
             }
-            // Need to get Option.
-            Option o = getOption(field.getName());
-            // Need to get value.
-            Class<?> type = field.getType();
-            if (type.isAssignableFrom(Boolean.class)) {
-                lint.addOption(o);
-            } else if (type.isAssignableFrom(String.class)) {
-                try {
-                    String val = (String) field.get(jslintFlags);
-                    lint.addOption(o, val);
-                } catch (IllegalArgumentException e) {
-                    die(e.getMessage());
-                } catch (IllegalAccessException e) {
-                    die(e.getMessage());
+            try {
+                // Need to get Option.
+                Option o = getOption(field.getName());
+                // Need to get value.
+                Object val = field.get(jslintFlags);
+                if (val == null) {
+                    continue;
                 }
-            } else {
-                die("unknown type \"" + type + "\" (for " + field.getName() + ")");
+                Class<?> type = field.getType();
+                if (type.isAssignableFrom(Boolean.class)) {
+                    lint.addOption(o);
+                }
+                else if (type.isAssignableFrom(String.class)) {
+                    lint.addOption(o, (String) val);
+                } else {
+                    die("unknown type \"" + type + "\" (for " + field.getName() + ")");
+                }
+            } catch (IllegalArgumentException e) {
+                die(e.getMessage());
+            } catch (IllegalAccessException e) {
+                die(e.getMessage());
             }
         }
         return flags.files;
