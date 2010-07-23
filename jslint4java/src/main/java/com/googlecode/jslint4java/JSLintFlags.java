@@ -47,13 +47,13 @@ public class JSLintFlags {
     public Boolean immed = null;
 
     @Parameter(names = "--indent", description = "The number of spaces used for indentation (default is 4)")
-    public Integer indent = null;
+    public String indent = null;
 
     @Parameter(names = "--laxbreak", description = "If line breaks should not be checked")
     public Boolean laxbreak = null;
 
     @Parameter(names = "--maxerr", description = "The maximum number of warnings reported (default is 50)")
-    public Integer maxerr = null;
+    public String maxerr = null;
 
     @Parameter(names = "--newcap", description = "If constructor names must be capitalized")
     public Boolean newcap = null;

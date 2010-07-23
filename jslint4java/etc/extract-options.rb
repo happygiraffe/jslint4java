@@ -60,13 +60,9 @@ end
 
 update_file(ARGV[2], indent, opts) do |k,desc,type|
   descEscaped = desc.gsub(/"/, '\\"')
-  # XXX This is slightly nasty.  We can't just set predef to be
-  # List<String> everywhere, as we reference the class directly and erasure
-  # ensures we'll just see List.
-  #
-  # For now, just set it to String here, and let the other code parse it
-  # where necessary.
-  if type == 'StringArray'
+  # Set all non-boolean values to "String" so that they can be parsed by
+  # us rather than JCommander.
+  if type != 'Boolean'
     type = 'String'
   end
   ["#{indent}@Parameter(names = \"--#{k}\", description = \"#{descEscaped}\")",
