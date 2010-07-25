@@ -71,6 +71,8 @@ public class Main {
 
     private boolean errored = false;
 
+    private final Flags flags = new Flags();
+
     private JSLint lint;
 
     private Main() throws IOException {
@@ -105,13 +107,26 @@ public class Main {
         return errored;
     }
 
+    private void issueReport(JSLintResult result) {
+        String name = result.getName();
+        info("<div class='file'>");
+        info("<h1 id='" + name + "'>" + name + "</h1>");
+        info(result.getReport());
+        info("</div>"); // try to fix somewhat crappy JSLint markup.
+        info("</div>"); // close the file div.
+    }
+
     private void lintFile(String file) throws IOException {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
             JSLintResult result = lint.lint(file, reader);
-            for (Issue issue : result.getIssues()) {
-                err(issue.toString());
+            if (flags.report) {
+                issueReport(result);
+            } else {
+                for (Issue issue : result.getIssues()) {
+                    err(issue.toString());
+                }
             }
         } catch (FileNotFoundException e) {
             die(file + ": No such file or directory.");
@@ -123,7 +138,6 @@ public class Main {
     }
 
     private List<String> processOptions(String[] args) {
-        Flags flags = new Flags();
         JSLintFlags jslintFlags = new JSLintFlags();
         JCommander jc = new JCommander(new Object[] { flags, jslintFlags }, args);
         if (flags.help) {

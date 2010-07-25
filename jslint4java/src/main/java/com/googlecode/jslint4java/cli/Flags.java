@@ -13,7 +13,7 @@ import com.beust.jcommander.Parameter;
  */
 public class Flags {
 
-    @Parameter(names = "--encoding", description = "Specify the input encoding", converter=CharsetConverter.class)
+    @Parameter(names = "--encoding", description = "Specify the input encoding", converter = CharsetConverter.class)
     public Charset encoding;
 
     @Parameter(names = "--jslint", description = "Specify an alternative version of jslint.js")
@@ -22,9 +22,11 @@ public class Flags {
     @Parameter(names = "--help", description = "Display usage information")
     public boolean help;
 
+    @Parameter(names = "--report", description = "Display HTML report")
+    public boolean report = false;
+
     /**
-     * All remaining files on the command line. The ones that actually need
-     * linting.
+     * All remaining files on the command line. The ones that actually need linting.
      */
     @Parameter(description = "file.js ...")
     public List<String> files = new ArrayList<String>();
