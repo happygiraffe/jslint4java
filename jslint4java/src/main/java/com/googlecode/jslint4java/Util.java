@@ -18,6 +18,10 @@ import org.mozilla.javascript.UniqueTag;
  */
 class Util {
 
+    // Non-instantiable.
+    private Util() {
+    }
+
     /**
      * An object that can convert a JavaScript object into a Java one.
      */
