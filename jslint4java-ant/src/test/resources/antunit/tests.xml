@@ -8,6 +8,9 @@
 Tests for the JSLint ant task.
     </description>
 
+	<!-- A temp location the tests can write to. -->
+	<property name="temp.dir" location="${basedir}/out"/>
+
     <taskdef uri="antlib:org.apache.ant.antunit"
              resource="org/apache/ant/antunit/antlib.xml"
              classpath="${test.classpath}" />
@@ -25,8 +28,19 @@ Tests for the JSLint ant task.
             <file file="${ant.file}" />
             <!-- Add logLevel="info" attribute for debugging. -->
             <au:plainlistener />
+        	<!-- Record test results in the same places as JUnit. -->
+        	<!-- TODO: pass the location in from maven. -->
+        	<au:xmllistener logLevel="info" toDir="${basedir}/../../surefire-reports" />
         </au:antunit>
     </target>
+
+	<target name="setUp">
+		<mkdir dir="${temp.dir}"/>
+	</target>
+
+	<target name="tearDown">
+		<delete dir="${temp.dir}" />
+	</target>
 
     <target name="testNoResources">
         <au:expectfailure expectedmessage="no resources specified">
@@ -109,4 +123,28 @@ Tests for the JSLint ant task.
             <fileset file="globals.js" />
         </jsl:jslint>
     </target>
+
+	<!-- We should be able to set a property on failure. -->
+	<target name="testFailureProperty">
+		<jsl:jslint failureproperty="boom" haltonfailure="false">
+			<fileset file="bad.js"/>
+		</jsl:jslint>
+		<au:assertEquals expected="JSLint: 1 error in 1 file" actual="${boom}" />
+	</target>
+
+	<!-- Check JUnit output appears in the right place with the right name. -->
+	<target name="testJUnitFormatter">
+		<echo message="in testJUnitFormatter" />
+		<jsl:jslint haltonfailure="false">
+			<formatter type="junit" destfile="${temp.dir}" />
+			<fileset dir="." includes="good.js" />
+		</jsl:jslint>
+		<!--
+		TODO: How can I work out the correct filename?
+		It's appearing as:
+		TEST-_Users_hdm_work_jslint4java_jslint4java-ant_target_test-classes_antunit_good.js.xml
+		It should be anchored at the root of the fileset, ideally.
+		<au:assertFileExists file="${temp.dir}/TEST-good.js.xml" />
+		-->
+	</target>
 </project>

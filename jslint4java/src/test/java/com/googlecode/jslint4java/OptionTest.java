@@ -5,8 +5,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.googlecode.jslint4java.Option;
-
 /**
  * @author dom
  * @version $Id$
@@ -15,8 +13,7 @@ public class OptionTest {
 
     @Test
     public void testGetDescription() {
-        assertThat(Option.EVIL.getDescription(),
-                is("If eval should be allowed"));
+        assertThat(Option.EVIL.getDescription(), is("If eval should be allowed"));
     }
 
     @Test
@@ -26,8 +23,7 @@ public class OptionTest {
 
     @Test
     public void testToString() throws Exception {
-        assertThat(Option.EVIL.toString(),
-                is("evil[If eval should be allowed]"));
+        assertThat(Option.EVIL.toString(), is("evil[If eval should be allowed]"));
     }
 
     // This is useful for formatting lists of options...

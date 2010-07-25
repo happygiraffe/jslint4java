@@ -13,6 +13,8 @@ import org.junit.Test;
 
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.Issue.IssueBuilder;
+import com.googlecode.jslint4java.JSLintResult;
+import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
 
 public class PlainResultFormatterTest {
 
@@ -26,13 +28,17 @@ public class PlainResultFormatterTest {
      */
     private void runFormatter(File file) {
         rf.begin();
-        rf.output(file.getName(), issues);
+        ResultBuilder builder = new JSLintResult.ResultBuilder(file.getName());
+        for (Issue issue : issues) {
+            builder.addIssue(issue);
+        }
+        rf.output(builder.build());
         rf.end();
     }
 
     @Before
     public void setUpOutputStream() {
-        rf.setOut(out);
+        rf.setStdout(out);
     }
 
     @Test
@@ -45,8 +51,8 @@ public class PlainResultFormatterTest {
     @Test
     public void testExpectedOutputOneIssue() {
         File file = new File("foo/bar.js");
-        Issue issue = new IssueBuilder(file.toString(), 1, 1, "no clucking")
-                .evidence("cluck()").build();
+        Issue issue = new IssueBuilder(file.toString(), 1, 1, "no clucking").evidence("cluck()")
+                .build();
         issues.add(issue);
         runFormatter(file);
         // Build up the expected output in a cross-platform manner.

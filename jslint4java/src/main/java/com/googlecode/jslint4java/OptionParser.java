@@ -12,8 +12,8 @@ import java.lang.reflect.Method;
 public class OptionParser {
 
     /**
-     * Attempt to parse <i>value</i> using the {@code valueOf(String)} method on
-     * <i>clazz</i>, should one exist.
+     * Attempt to parse <i>value</i> using the {@code valueOf(String)} method on <i>clazz</i>,
+     * should one exist.
      */
     public <T> T parse(Class<T> clazz, String value) {
         try {
@@ -26,6 +26,8 @@ public class OptionParser {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
+            // Can never happen. If the method can't be accessed, we get a NoSuchMethodException
+            // first, instead.
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();

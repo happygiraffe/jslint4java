@@ -27,13 +27,9 @@ public class Issue {
                 col = 1;
             }
             return new IssueBuilder(systemId, line, col, Util.stringValue("reason", err))
-                    .evidence(Util.stringValue("evidence", err))
-                    .raw(Util.stringValue("raw", err))
-                    .a(Util.stringValue("a", err))
-                    .b(Util.stringValue("b", err))
-                    .c(Util.stringValue("c", err))
-                    .d(Util.stringValue("d", err))
-                    .build();
+                    .evidence(Util.stringValue("evidence", err)).raw(Util.stringValue("raw", err))
+                    .a(Util.stringValue("a", err)).b(Util.stringValue("b", err))
+                    .c(Util.stringValue("c", err)).d(Util.stringValue("d", err)).build();
         }
 
         private String a;
@@ -88,6 +84,7 @@ public class Issue {
             return this;
         }
     }
+
     private final String a;
     private final String b;
     private final String c;

@@ -3,12 +3,13 @@ package com.googlecode.jslint4java;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import com.googlecode.jslint4java.Issue.IssueBuilder;
 import org.junit.After;
 import org.junit.Test;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ScriptableObject;
+
+import com.googlecode.jslint4java.Issue.IssueBuilder;
 
 /**
  * @author dom

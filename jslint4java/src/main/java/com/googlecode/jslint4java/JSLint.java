@@ -4,15 +4,21 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.UniqueTag;
 
 import com.googlecode.jslint4java.Issue.IssueBuilder;
+import com.googlecode.jslint4java.JSFunction.Builder;
+import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
 
 /**
  * A utility class to check JavaScript source code for potential problems.
@@ -27,8 +33,57 @@ public class JSLint {
     // org.mozilla.javascript.tools.debugger.Main.mainEmbedded(null);
     // }
 
-    private final Map<Option, Object> options = new EnumMap<Option, Object>(
-            Option.class);
+    /**
+     * A helper class for interpreting the output of {@code JSLINT.data()}.
+     */
+    private static final class IdentifierConverter implements Util.Converter<JSIdentifier> {
+        public JSIdentifier convert(Object obj) {
+            Scriptable identifier = (Scriptable) obj;
+            String name = Util.stringValue("name", identifier);
+            int line = Util.intValue("line", identifier);
+            return new JSIdentifier(name, line);
+        }
+    }
+
+    /**
+     * A helper class for interpreting the output of {@code JSLINT.data()}.
+     */
+    private final class JSFunctionConverter implements Util.Converter<JSFunction> {
+        public JSFunction convert(Object obj) {
+            Scriptable scope = (Scriptable) obj;
+            String name = Util.stringValue("name", scope);
+            int line = Util.intValue("line", scope);
+            Builder b = new JSFunction.Builder(name, line);
+            b.last(Util.intValue("last", scope));
+            for (String param : Util.listValueOfType("param", String.class, scope)) {
+                b.addParam(param);
+            }
+            for (String closure : Util.listValueOfType("closure", String.class, scope)) {
+                b.addClosure(closure);
+            }
+            for (String var : Util.listValueOfType("var", String.class, scope)) {
+                b.addVar(var);
+            }
+            for (String exception : Util.listValueOfType("exception", String.class, scope)) {
+                b.addException(exception);
+            }
+            for (String outer : Util.listValueOfType("outer", String.class, scope)) {
+                b.addOuter(outer);
+            }
+            for (String unused : Util.listValueOfType("unused", String.class, scope)) {
+                b.addUnused(unused);
+            }
+            for (String global : Util.listValueOfType("global", String.class, scope)) {
+                b.addGlobal(global);
+            }
+            for (String label : Util.listValueOfType("label", String.class, scope)) {
+                b.addLabel(label);
+            }
+            return b.build();
+        }
+    }
+
+    private final Map<Option, Object> options = new EnumMap<Option, Object>(Option.class);
 
     private final Scriptable scope;
 
@@ -75,6 +130,24 @@ public class JSLint {
     }
 
     /**
+     * Set the "member" field of the {@link JSLintResult}.
+     */
+    private Map<String,Integer> getDataMembers(Scriptable data) {
+        Object o1 = data.get("member", data);
+        if (o1 == UniqueTag.NOT_FOUND) {
+            return new HashMap<String, Integer>();
+        }
+        Scriptable member = (Scriptable) o1;
+        Object[] propertyIds = ScriptableObject.getPropertyIds(member);
+        Map<String, Integer> members = new HashMap<String, Integer>(propertyIds.length);
+        for (Object id : propertyIds) {
+            String k = (String) id;
+            members.put(k, Util.intValue(k, member));
+        }
+        return members;
+    }
+
+    /**
      * Return the version of jslint in use.
      */
     public String getEdition() {
@@ -90,9 +163,9 @@ public class JSLint {
      * @param reader
      *            a {@link Reader} over JavaScript source code.
      *
-     * @return a {@link List} of {@link Issue}s describing any problems.
+     * @return a {@link JSLintResult}.
      */
-    public List<Issue> lint(String systemId, Reader reader) throws IOException {
+    public JSLintResult lint(String systemId, Reader reader) throws IOException {
         return lint(systemId, Util.readerToString(reader));
     }
 
@@ -104,13 +177,48 @@ public class JSLint {
      * @param javaScript
      *            a String of JavaScript source code.
      *
-     * @return a {@link List} of {@link Issue}s describing any problems.
+     * @return a {@link JSLintResult}.
      */
-    public List<Issue> lint(String systemId, String javaScript) {
+    public JSLintResult lint(String systemId, String javaScript) {
+        long before = System.nanoTime();
         doLint(javaScript);
-        List<Issue> issues = new ArrayList<Issue>();
-        readErrors(systemId, issues);
-        return issues;
+        long after = System.nanoTime();
+        ResultBuilder b = new JSLintResult.ResultBuilder(systemId);
+        b.duration(TimeUnit.NANOSECONDS.toMillis(after - before));
+        for (Issue issue : readErrors(systemId)) {
+            b.addIssue(issue);
+        }
+
+        // Extract JSLINT.data() output and set it on the result.
+        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
+        Object o = lintScope.get("data", lintScope);
+        // Real JSLINT will always have this, but some of my test stubs don't.
+        if (o != UniqueTag.NOT_FOUND) {
+            Function reportFunc = (Function) o;
+            Scriptable data = (Scriptable) reportFunc.call(Context.getCurrentContext(), scope,
+                    scope, new Object[] {});
+            for (String global : Util.listValueOfType("globals", String.class, data)) {
+                b.addGlobal(global);
+            }
+            for (String url : Util.listValueOfType("urls", String.class, data)) {
+                b.addUrl(url);
+            }
+            for (Entry<String, Integer> member : getDataMembers(data).entrySet()) {
+                b.addMember(member.getKey(), member.getValue());
+            }
+            for (JSIdentifier id : Util.listValue("unused", data, new IdentifierConverter())) {
+                b.addUnused(id);
+            }
+            for (JSIdentifier id : Util.listValue("implieds", data, new IdentifierConverter())) {
+                b.addImplied(id);
+            }
+            b.json(Util.booleanValue("json", data));
+            for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {
+                b.addFunction(f);
+            }
+        }
+
+        return b.build();
     }
 
     /**
@@ -127,7 +235,8 @@ public class JSLint {
         return opts;
     }
 
-    private void readErrors(String systemId, List<Issue> issues) {
+    private List<Issue> readErrors(String systemId) {
+        ArrayList<Issue> issues = new ArrayList<Issue>();
         Scriptable JSLINT = (Scriptable) scope.get("JSLINT", scope);
         Scriptable errors = (Scriptable) JSLINT.get("errors", JSLINT);
         int count = Util.intValue("length", errors);
@@ -139,6 +248,7 @@ public class JSLint {
                 issues.add(IssueBuilder.fromJavaScript(systemId, err));
             }
         }
+        return issues;
     }
 
     /**
@@ -169,8 +279,7 @@ public class JSLint {
         Function reportFunc = (Function) lintScope.get("report", lintScope);
         // JSLINT actually returns a boolean, but we ignore it as we always go
         // and look at the errors in more detail.
-        return (String) reportFunc.call(Context.getCurrentContext(), scope,
-                scope, args);
+        return (String) reportFunc.call(Context.getCurrentContext(), scope, scope, args);
     }
 
     /**
@@ -179,5 +288,4 @@ public class JSLint {
     public void resetOptions() {
         options.clear();
     }
-
 }

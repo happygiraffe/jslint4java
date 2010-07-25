@@ -22,9 +22,9 @@ import org.apache.tools.ant.types.Resource;
 import org.apache.tools.ant.types.ResourceCollection;
 import org.apache.tools.ant.types.resources.Union;
 
-import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
+import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
 
 /**
@@ -80,6 +80,8 @@ public class JSLintTask extends Task {
 
     private String encoding = System.getProperty("file.encoding", "UTF-8");
 
+    private String failureProperty = null;
+
     private File jslintSource = null;
 
     private final Map<Option, String> options = new HashMap<Option, String>();
@@ -129,7 +131,8 @@ public class JSLintTask extends Task {
                 throw new BuildException(optName + ": " + className + ": " + e.getMessage());
             }
         }
-        // Handle predefs separately.  They don't work too well in the options string.
+        // Handle predefs separately. They don't work too well in the options
+        // string.
         if (predef != null) {
             lint.addOption(Option.PREDEF, predef.getText());
         }
@@ -175,14 +178,16 @@ public class JSLintTask extends Task {
                 throw new BuildException(msg);
             } else {
                 log(msg);
+                if (failureProperty != null) {
+                    getProject().setProperty(failureProperty, msg);
+                }
             }
         }
     }
 
     private String failureMessage(int failedCount, int totalErrorCount) {
-        return "JSLint: " + totalErrorCount + " "
-                + plural(totalErrorCount, "error") + " in " + failedCount + " "
-                + plural(failedCount, "file");
+        return "JSLint: " + totalErrorCount + " " + plural(totalErrorCount, "error") + " in "
+                + failedCount + " " + plural(failedCount, "file");
     }
 
     /**
@@ -196,24 +201,24 @@ public class JSLintTask extends Task {
 
     /**
      * Lint a given stream. Closes the stream after use.
+     *
      * @param lint
      *
      * @throws IOException
      */
-    private int lintStream(JSLint lint, Resource resource)
-            throws UnsupportedEncodingException, IOException {
+    private int lintStream(JSLint lint, Resource resource) throws UnsupportedEncodingException,
+            IOException {
         InputStream stream = null;
         try {
             stream = resource.getInputStream();
             String name = resource.toString();
-            List<Issue> issues = lint.lint(name, new BufferedReader(
-                    new InputStreamReader(stream, encoding)));
-            log("Found " + issues.size() + " issues in " + name,
-                    Project.MSG_VERBOSE);
+            JSLintResult result = lint.lint(name, new BufferedReader(new InputStreamReader(stream,
+                    encoding)));
+            log("Found " + result.getIssues().size() + " issues in " + name, Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
-                rf.output(name, issues);
+                rf.output(result);
             }
-            return issues.size();
+            return result.getIssues().size();
         } finally {
             if (stream != null) {
                 stream.close();
@@ -237,7 +242,7 @@ public class JSLintTask extends Task {
     }
 
     /**
-     * Quick and nasty hack to pluralise words.  Works enough for my needs.
+     * Quick and nasty hack to pluralise words. Works enough for my needs.
      */
     private String plural(int count, String word) {
         return count == 1 ? word : word + "s";
@@ -254,6 +259,14 @@ public class JSLintTask extends Task {
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
+    }
+
+    /**
+     * The name of a property to set upon failure. This property will contain
+     * the log message.
+     */
+    public void setFailureProperty(String failureProperty) {
+        this.failureProperty = failureProperty;
     }
 
     /**

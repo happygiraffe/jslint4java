@@ -8,6 +8,11 @@ package com.googlecode.jslint4java;
  *
  */
 public class StringArray {
+
+    // Should never be instantiated.
+    private StringArray() {
+    }
+
     /**
      * Parse a comma separated string into an array..
      */

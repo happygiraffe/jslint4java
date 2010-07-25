@@ -22,6 +22,7 @@ usage: jslint [options] file.js ...
   --debug    If debugger statements should be allowed
   --devel    If logging should be allowed (console, alert, etc.)
   --eqeqeq   If === should be required
+  --es5      If es5 syntax should be allowed
   --evil     If eval should be allowed
   --forin    If for in statements must filter
   --fragment If html fragments should be allowed
@@ -39,17 +40,18 @@ usage: jslint [options] file.js ...
   --regexp   If the . should not be allowed in regexp literals
   --rhino    If the rhino environment globals should be predefined
   --safe     If use of some browser features should be restricted
-  --sidebar  If the system object should be predefined
   --strict   Require the "use strict"; pragma
   --sub      If all forms of subscript notation are tolerated
   --undef    If variables should be declared before used
   --white    If strict whitespace rules apply
   --widget   If the yahoo widgets globals should be predefined
+  --windows  If ms windows-specigic globals should be predefined
 
+  --encoding= Specify the input encoding
   --help     Show this help
   --jslint=  Specify an alternative version of jslint.js
 
-using jslint version 2009-11-22
+using jslint version 2010-07-14
 </span></pre>
 
     <p>The list of options is derived from the
@@ -112,6 +114,17 @@ $
       supplied doesn't suit you (for example there is a newer version available).
       To use another jslint, specify <code>--jslint=/some/where/jslint.js</code>
       on the command line.</p>
+
+    <p>
+      If your file is in an alternative encoding, that can be specified
+      with the <code>--encoding</code> flag.  This value is passed directly
+      to <a href="http://download.oracle.com/docs/cd/E17409_01/javase/6/docs/api/java/nio/charset/Charset.html#forName(java.lang.String)">Charset.forName()</a>,
+      so any encoding supported by your Java VM is allowed.  If no encoding
+      is specified, the platform default is used.
+      <span style="color:#eee">
+        &lt;subliminal&gt;Use UTF-8!  Use UTF-8!&lt;/subliminal&gt;
+      </span>
+    </p>
 
     <script type="text/javascript">prettyPrint()</script>
   </body>

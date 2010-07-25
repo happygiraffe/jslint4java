@@ -23,27 +23,49 @@ File.open(ARGV[0]) do |fh|
   end
 end
 
-indent = "    "
-File.open(ARGV[1]) do |fh|
-  while line = fh.gets do
-    if line =~ /\/\/\s*BEGIN-OPTIONS/
-      # Skip up to the end of the options section.
-      while line !~ /\/\/\s*END-OPTIONS/
-        line = fh.gets
+def update_file(f, indent, opts)
+  contents = []
+  File.open(f) do |fh|
+    while line = fh.gets do
+      if line =~ /\/\/\s*BEGIN-OPTIONS/
+        # Skip up to the end of the options section.
+        while line !~ /\/\/\s*END-OPTIONS/
+          line = fh.gets
+        end
+
+        # And start rewriting.
+        contents << "#{indent}// BEGIN-OPTIONS"
+        opts.keys.sort.map do |k|
+          # key, desc, type
+          contents << yield(k, opts[k][0], opts[k][1])
+        end
+        contents << "#{indent}// END-OPTIONS"
+      else
+        contents << line.rstrip()
       end
-      
-      # And start rewriting.
-      puts "#{indent}//BEGIN-OPTIONS"
-      allopts =  opts.keys.sort.map do |k|
-        desc = opts[k][0]
-        descEscaped = desc.gsub(/"/, '\\"')
-        "#{indent}/** #{desc} */\n" +
-        "#{indent}#{k.upcase}(\"#{descEscaped}\", #{opts[k][1]}.class)"
-      end.join(",\n")
-      puts "#{allopts};"
-      puts "#{indent}//END-OPTIONS"
-    else
-      puts line
     end
   end
+  File.open(f, "w") do |fh|
+    fh.write(contents.join("\n") + "\n")
+  end
+end
+
+indent = "    "
+update_file(ARGV[1], indent, opts) do |k,desc,type|
+  descEscaped = desc.gsub(/"/, '\\"')
+  ["#{indent}/** #{desc} */",
+   "#{indent}#{k.upcase}(\"#{descEscaped}\", #{type}.class),",
+   ""]
+end
+
+update_file(ARGV[2], indent, opts) do |k,desc,type|
+  descEscaped = desc.gsub(/"/, '\\"')
+  # Set all non-boolean values to "String" so that they can be parsed by
+  # us rather than JCommander.
+  if type != 'Boolean'
+    type = 'String'
+  end
+  ["#{indent}@Parameter(names = \"--#{k}\", description = \"#{descEscaped}\")",
+   "#{indent}public #{type} #{k} = null;",
+   ""]
 end

@@ -14,10 +14,19 @@
       <artifactId>js</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+	<dependency>
+	  <groupId>xmlunit</groupId>
+	  <artifactId>xmlunit</artifactId>
+	  <scope>test</scope>
+	</dependency>
   </dependencies>
   <build>
     <plugins>
@@ -35,6 +44,6 @@
     </plugins>
   </build>
   <properties>
-    <mainClass>com.googlecode.jslint4java.Main</mainClass>
+    <mainClass>com.googlecode.jslint4java.cli.Main</mainClass>
   </properties>
 </project>

@@ -1,8 +1,6 @@
 package com.googlecode.jslint4java.ant;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import org.apache.tools.ant.BuildException;
@@ -15,9 +13,10 @@ import org.apache.tools.ant.BuildException;
  *
  * <dl>
  * <dt><code>type</code></dt>
- * <dd>Either "plain" or "xml" or "netbeans".</dd>
+ * <dd>One of "plain," "xml" or "junit".</dd>
  * <dt><code>destfile</code></dt>
- * <dd>Optional.  A file to write the formatters' output to.</dd>
+ * <dd>Optional. A file to write the formatters' output to. In the case of
+ * “junit” this is mandatory and <i>must</i> point at a directory.</dd>
  * </dl>
  *
  * @author dom
@@ -42,6 +41,12 @@ public class FormatterElement {
             public ResultFormatter getResultFormatter() {
                 return new XmlResultFormatter();
             }
+        },
+        junit() {
+            @Override
+            ResultFormatter getResultFormatter() {
+                return new JUnitXmlResultFormatter();
+            }
         };
         abstract ResultFormatter getResultFormatter();
     }
@@ -51,31 +56,17 @@ public class FormatterElement {
     private File destFile;
 
     /**
-     * Return an output stream for the destFile.
-     *
-     * @return
-     */
-    private OutputStream getFileOutputStream() {
-        try {
-            // NB: The encoding will be determined by the ResultFormatter.
-            return new FileOutputStream(destFile);
-        } catch (FileNotFoundException e) {
-            throw new BuildException(e);
-        }
-    }
-
-    /**
      * Return a configured {@link ResultFormatter} corresponding to this
      * element.
      */
     public ResultFormatter getResultFormatter() {
-        if (type == null)
+        if (type == null) {
             throw new BuildException("you must specify type");
+        }
         ResultFormatter rf = type.getResultFormatter();
+        rf.setStdout(defaultOutputStream);
         if (destFile != null) {
-            rf.setOut(getFileOutputStream());
-        } else {
-            rf.setOut(defaultOutputStream);
+            rf.setFile(destFile);
         }
         return rf;
     }

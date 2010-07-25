@@ -32,6 +32,11 @@
         <td> No </td>
       </tr>
       <tr>
+        <td> failureProperty </td>
+        <td> The name of a property to set in case of build failure.   You should also set <code>haltOnFailure="false"</code>. </td>
+        <td> No </td>
+      </tr>
+      <tr>
         <td> haltOnFailure </td>
         <td> Should the build stop if JSLint reports an error?  Defaults to true. </td>
         <td> No </td>
@@ -62,6 +67,7 @@
       <dt>devel    </dt><dd>If logging should be allowed (console, alert, etc.)</dd>
       <dt>eqeqeq   </dt><dd>If === should be required</dd>
       <dt>evil     </dt><dd>If eval should be allowed</dd>
+      <dt>es5      </dt><dd>If es5 syntax should be allowed</dd>
       <dt>forin    </dt><dd>If for in statements must filter</dd>
       <dt>fragment </dt><dd>If html fragments should be allowed</dd>
       <dt>immed    </dt><dd>If immediate invocations must be wrapped in parens</dd>
@@ -78,12 +84,12 @@
       <dt>regexp   </dt><dd>If the . should not be allowed in regexp literals</dd>
       <dt>rhino    </dt><dd>If the rhino environment globals should be predefined</dd>
       <dt>safe     </dt><dd>If use of some browser features should be restricted</dd>
-      <dt>sidebar  </dt><dd>If the system object should be predefined</dd>
       <dt>strict   </dt><dd>Require the "use strict"; pragma</dd>
       <dt>sub      </dt><dd>If all forms of subscript notation are tolerated</dd>
       <dt>undef    </dt><dd>If variables should be declared before used</dd>
       <dt>white    </dt><dd>If strict whitespace rules apply</dd>
       <dt>widget   </dt><dd>If the yahoo widgets globals should be predefined</dd>
+      <dt>windows  </dt><dd>If ms windows-specigic globals should be predefined</dd>
     </dl>
 
     <p>
@@ -97,9 +103,9 @@
 
     <p>
       Any kind of
-      <a href="http://ant.apache.org/manual/CoreTypes/resources.html#collection">resource collection</a>
+      <a href="http://ant.apache.org/manual/Types/resources.html#collection">resource collection</a>
       may be specified as a subelement.  Most of the time, this will mean a
-      <a href="http://ant.apache.org/manual/CoreTypes/fileset.html">fileset</a>.
+      <a href="http://ant.apache.org/manual/Types/fileset.html">fileset</a>.
     </p>
 
     <h3 id="formatter">formatter</h3>
@@ -117,12 +123,18 @@
       </tr>
       <tr>
         <td> type </td>
-        <td> Either <tt>plain</tt> or <tt>xml</tt>. </td>
+        <td> One of <code>plain</code>, <code>xml</code> or <code>junit</code>.  The <code>xml</code> format is a custom invention of this project; it's probably more useful to use the <code>junit</code> format as it has interoperability with existing tools.</td>
         <td> Yes </td>
       </tr>
       <tr>
         <td> destfile </td>
-        <td> A location to write the output to.  Defaults to the console. </td>
+        <td> A location to write the output to.
+          <ul>
+            <li>For the <code>plain</code> formatter, you can redirect output to a file.  If you leave this attribute out, then output will appear on the console.</li>
+            <li>For the <code>xml</code> formatter, you have to specify a file to write the output to.</li>
+            <li>For the <code>junit</code> formatter, you have to specify a directory.  Each file linted will have one file created in that directory.</li>
+          </ul>
+        </td>
         <td> No </td>
       </tr>
     </table>
@@ -160,8 +172,8 @@
   &lt;/project&gt;</pre>
 
     <p>
-      Doing so will require you to access the <tt>jslint</tt> task as
-      <tt>jsl:jslint</tt>.  This also means that you have to install
+      Doing so will require you to access the <code>jslint</code> task as
+      <code>jsl:jslint</code>.  This also means that you have to install
       <code>jslint4java-${project.version}.jar</code> in
       <code>~/.ant/libs</code>.
     </p>
@@ -187,7 +199,7 @@
     </p>
 
     <p>
-      To check a directory for all <tt>.js</tt> files, and emit all errors to
+      To check a directory for all <code>.js</code> files, and emit all errors to
       the console:
     </p>
 
@@ -197,8 +209,8 @@
   &lt;/jslint&gt;</pre>
 
     <p>
-      To check a directory for all <tt>.js</tt> files, excluding packed files.
-      Send any problems to a file <tt>jslint.out</tt>.
+      To check a directory for all <code>.js</code> files, excluding packed files.
+      Send any problems to a file <code>jslint.out</code>.
     </p>
 
     <pre class="prettyprint" id="example-plain-file">  &lt;jslint&gt;
@@ -211,14 +223,14 @@
       issues and undefined variables, as well as predefining a couple of
       global variables we know we'll be using.
 
-      Send the errors to the console, and also emit an XML report to the build
+      Send the errors to the console, and also emit JUnit XML reports to the build
       directory.
     </p>
 
     <pre class="prettyprint" id="example-xml">  &lt;jslint options="undef,white"&gt;
     &lt;predef&gt;jQuery,$$&lt;/predef&gt;
     &lt;formatter type="plain" /&gt;
-    &lt;formatter type="xml" destfile="${build.dir}/jslint.xml" /&gt;
+    &lt;formatter type="junit" destfile="${build.dir}/test-reports" /&gt;
     &lt;fileset dir="web/js" includes="**/*.js" excludes="**/*.pack.js" /&gt;
   &lt;/jslint&gt;</pre>
 

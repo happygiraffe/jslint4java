@@ -1,18 +1,28 @@
 package com.googlecode.jslint4java.ant;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.util.FileUtils;
 
-import com.googlecode.jslint4java.Issue;
+import com.googlecode.jslint4java.JSLintResult;
+import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
+import com.googlecode.jslint4java.formatter.PlainFormatter;
 
 /**
  * Output all JSLint errors to the console. Shows the error, the line on which
  * it occurred and a pointer to the character at which it occurred.
+ *
+ * <p>
+ * If a file is specified, all output will go there. If not, then all output
+ * will go to stdout.
  *
  * @author dom
  * @version $Id$
@@ -21,6 +31,8 @@ public class PlainResultFormatter implements ResultFormatter {
 
     protected OutputStream out;
     protected PrintWriter w = null;
+
+    private final JSLintResultFormatter form = new PlainFormatter();
 
     public void begin() {
         // Use the default system encoding, as that's likely what the console is
@@ -38,43 +50,24 @@ public class PlainResultFormatter implements ResultFormatter {
      *
      * @see ResultFormatter#output(String, List)
      */
-    public void output(String name, List<Issue> issues) {
-        if (issues.size() == 0) {
+    public void output(JSLintResult result) {
+        if (result.getIssues().size() == 0) {
             return;
         }
 
-        for (Issue issue : issues) {
-            outputOneIssue(issue);
+        w.print(form.format(result));
+
+    }
+
+    public void setFile(File file) {
+        try {
+            out = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new BuildException(e);
         }
     }
 
-    private void outputOneIssue(Issue issue) {
-        // NB: space before reason to look like javac!
-        String msg = issue.getSystemId() + ":" + issue.getLine() + ":"
-                + issue.getCharacter() + ": " + issue.getReason();
-        w.println(msg);
-        String evidence = issue.getEvidence();
-        if (evidence != null && !"".equals(evidence)) {
-            w.println(evidence);
-            // character is now one-based.
-            w.println(spaces(issue.getCharacter() - 1) + "^");
-        }
-    }
-
-    public void setOut(OutputStream os) {
-        out = os;
-    }
-
-    /**
-     * Return a string of <i>howmany</i> spaces.
-     *
-     * @param howmany
-     */
-    protected String spaces(int howmany) {
-        StringBuffer sb = new StringBuffer(howmany);
-        for (int i = 0; i < howmany; i++) {
-            sb.append(" ");
-        }
-        return sb.toString();
+    public void setStdout(OutputStream defaultOutputStream) {
+        out = defaultOutputStream;
     }
 }
