@@ -17,7 +17,6 @@ import com.googlecode.jslint4java.JSLintResult;
  * </ul>
  *
  * @author dom
- * @version $Id$
  */
 public interface ResultFormatter {
 

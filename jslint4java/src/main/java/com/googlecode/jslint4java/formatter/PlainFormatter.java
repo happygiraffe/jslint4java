@@ -8,7 +8,6 @@ import com.googlecode.jslint4java.JSLintResult;
  * it occurred and a pointer to the character at which it occurred.
  *
  * @author dom
- * @version $Id$
  */
 public class PlainFormatter implements JSLintResultFormatter {
 

@@ -23,7 +23,6 @@ import com.googlecode.jslint4java.Option;
  * A command line interface to {@link JSLint}.
  *
  * @author dom
- * @version $Id$
  */
 public class Main {
 

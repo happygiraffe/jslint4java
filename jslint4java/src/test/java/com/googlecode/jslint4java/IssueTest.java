@@ -13,7 +13,6 @@ import com.googlecode.jslint4java.Issue.IssueBuilder;
 
 /**
  * @author dom
- * @version $Id$
  */
 public class IssueTest {
 

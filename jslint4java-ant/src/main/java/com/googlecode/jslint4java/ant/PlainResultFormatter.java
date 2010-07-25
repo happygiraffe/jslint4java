@@ -25,7 +25,6 @@ import com.googlecode.jslint4java.formatter.PlainFormatter;
  * will go to stdout.
  *
  * @author dom
- * @version $Id$
  */
 public class PlainResultFormatter implements ResultFormatter {
 

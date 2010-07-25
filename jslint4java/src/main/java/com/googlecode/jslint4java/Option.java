@@ -9,7 +9,6 @@ import java.util.Locale;
  * arg, how to parse it, etc.
  *
  * @author dom
- * @version $Id$
  */
 public enum Option {
     // BEGIN-OPTIONS

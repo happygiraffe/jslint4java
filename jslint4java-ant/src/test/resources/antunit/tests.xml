@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id$ -->
 <project name="jslint-antunit"
          default="allTests"
          xmlns:au="antlib:org.apache.ant.antunit"

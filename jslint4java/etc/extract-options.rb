@@ -2,7 +2,6 @@
 #
 # Pull out the list of options from fulljslint.js.
 #
-# @(#) $Id$
 
 opts = {
   # Hard-code these, as they're not part of the boolean options.

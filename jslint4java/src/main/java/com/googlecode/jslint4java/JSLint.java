@@ -24,7 +24,6 @@ import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
  * A utility class to check JavaScript source code for potential problems.
  *
  * @author dom
- * @version $Id$
  */
 public class JSLint {
 

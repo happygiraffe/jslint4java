@@ -40,4 +40,3 @@ If you have any comments or queries, please send them to dom [at] happygiraffe.n
 
 This software is licenced under the BSD licence (see LICENCE.txt).
 
-@(#) $Id$

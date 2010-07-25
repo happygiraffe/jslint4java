@@ -18,7 +18,6 @@ import com.googlecode.jslint4java.Util.Converter;
 
 /**
  * @author dom
- * @version $Id$
  */
 public class UtilTest {
 

@@ -20,7 +20,6 @@ import org.apache.tools.ant.BuildException;
  * </dl>
  *
  * @author dom
- * @version $Id$
  */
 public class FormatterElement {
 

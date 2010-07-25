@@ -14,7 +14,6 @@ import org.mozilla.javascript.UniqueTag;
  * A collection of useful routines.
  *
  * @author dom
- * @version $Id$
  */
 class Util {
 

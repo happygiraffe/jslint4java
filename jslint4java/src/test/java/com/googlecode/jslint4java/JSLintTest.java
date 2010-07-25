@@ -1,4 +1,3 @@
-// @(#) $Id$
 
 package com.googlecode.jslint4java;
 
@@ -17,7 +16,6 @@ import org.junit.Test;
 
 /**
  * @author dom
- * @version $Id$
  */
 public class JSLintTest {
 

@@ -66,7 +66,6 @@ import com.googlecode.jslint4java.Option;
  * </dl>
  *
  * @author dom
- * @version $Id$
  * @see <a href="http://jslint.com/">jslint.com< /a>
  * @see FormatterElement
  */

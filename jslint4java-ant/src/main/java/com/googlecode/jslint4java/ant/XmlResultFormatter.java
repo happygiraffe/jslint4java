@@ -31,8 +31,6 @@ import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
  * </pre>
  *
  * @author dom
- * @version $Id: XmlResultFormatter.java 141 2007-12-20 08:39:30Z
- *          happygiraffe.net $
  */
 public class XmlResultFormatter implements ResultFormatter {
 
