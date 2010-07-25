@@ -225,6 +225,15 @@ public class JSLintTest {
         assertThat(html, containsString("<div>"));
     }
 
+
+    @Test
+    public void testReportInResult() throws Exception {
+        String html = lint("var foo = 42").getReport();
+        assertThat(html, containsString("<div id=errors"));
+        assertThat(html, containsString("Missing semicolon"));
+        assertThat(html, containsString("<div>"));
+    }
+
     @Test
     public void testResetOptions() throws Exception {
         String eval_js = "eval('1');";
