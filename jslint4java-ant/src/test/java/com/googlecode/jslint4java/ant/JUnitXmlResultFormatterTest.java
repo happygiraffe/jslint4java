@@ -32,8 +32,12 @@ public class JUnitXmlResultFormatterTest {
     public void setUp() throws Exception {
         tmpd = File.createTempFile(JUnitXmlResultFormatter.class.getName() + ".", ".d");
         // I actually wanted a directory, not a file…
-        tmpd.delete();
-        tmpd.mkdir();
+        if (!tmpd.delete()) {
+            throw new IOException("Can't delete " + tmpd);
+        }
+        if (!tmpd.mkdir()) {
+            throw new IOException("Can't mkdir " + tmpd);
+        }
     }
 
     @After
@@ -50,7 +54,9 @@ public class JUnitXmlResultFormatterTest {
     @Test(expected = BuildException.class)
     public void testFileSetReallyIsFile() throws Exception {
         File foo = new File(tmpd, "foo");
-        foo.createNewFile();
+        if (!foo.createNewFile()) {
+            throw new IOException("Can't create " + foo);
+        }
         JSLintResult result = aResult("foo.js");
         formatter.setFile(foo);
         formatResult(result);
@@ -73,7 +79,9 @@ public class JUnitXmlResultFormatterTest {
     @Test(expected = BuildException.class)
     public void testReadOnlyFileBlowsUp() throws IOException {
         File output = new File(tmpd, "TEST-foo.js.xml");
-        output.createNewFile();
+        if (!output.createNewFile()) {
+            throw new IOException("Can't create " + output);
+        }
         assertTrue(output.setReadOnly());
         formatter.setFile(tmpd);
         // Should blow up when write occurs.
