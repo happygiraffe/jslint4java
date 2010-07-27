@@ -26,6 +26,6 @@ public class Flags {
      * All remaining files on the command line. The ones that actually need
      * linting.
      */
-    @Parameter
+    @Parameter(description = "file.js ...")
     public List<String> files = new ArrayList<String>();
 }
