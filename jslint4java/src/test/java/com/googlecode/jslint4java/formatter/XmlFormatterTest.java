@@ -32,7 +32,7 @@ public class XmlFormatterTest {
         assertThat(xf.escape("echo '<usage>' 2>&1"), is("echo '&lt;usage>' 2>&amp;1"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAttrKeyIsNull() throws Exception {
         xf.attr(null, "foo");
     }

@@ -7,7 +7,7 @@ public class XmlFormatter {
 
     protected String attr(String key, String value) {
         if (key == null) {
-            throw new NullPointerException("key cannot be null");
+            throw new IllegalArgumentException("key cannot be null");
         }
         if (value == null) {
             value = "";
