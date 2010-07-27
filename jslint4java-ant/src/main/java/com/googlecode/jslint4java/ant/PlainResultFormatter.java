@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.util.FileUtils;
@@ -46,8 +45,6 @@ public class PlainResultFormatter implements ResultFormatter {
 
     /**
      * Emit all issues to the console.
-     *
-     * @see ResultFormatter#output(String, List)
      */
     public void output(JSLintResult result) {
         if (result.getIssues().size() == 0) {

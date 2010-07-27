@@ -41,14 +41,14 @@ public interface ResultFormatter {
     /**
      * Called during initialization. The file to where output should be written.
      *
-     * @param os
+     * @param file
+     *            The file to write to.
      */
     public abstract void setFile(File file);
 
     /**
-     * If you want to write to stdout, you can't just use System.out, because
-     * we're in the middle of ant task. Ensure that a suitable form is passed
-     * down instead.
+     * If you want to write to stdout, you can't just use System.out, because we're in the middle of
+     * ant task. Ensure that a suitable form is passed down instead.
      */
     public abstract void setStdout(OutputStream defaultOutputStream);
 

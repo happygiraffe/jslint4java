@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.util.FileUtils;
@@ -75,8 +74,6 @@ public class XmlResultFormatter implements ResultFormatter {
      * will have <i>line</i>, <i>char</i>, <i>reason</i> and <i>evidence</i>
      * attributes. An element will be created for all files, regardless of any
      * issues being uncovered.
-     *
-     * @see ResultFormatter#output(String, List)
      */
     public void output(JSLintResult result) {
         sb.append(form.format(result));
