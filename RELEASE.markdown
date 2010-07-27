@@ -28,6 +28,8 @@ Then, do it for real.
 
 In case this barfs after the "git push" stage, edit release.properties and change the phase from "run-preparation-goals" to "scm-commit-release".  Yes, this is utterly horrible.
 
+Log into the [OSS Nexus (staging repositories)](https://oss.sonatype.org/index.html#stagingRepositories), and follow the [release it](https://docs.sonatype.org/display/repository/sonatype+oss+maven+repository+usage+guide#SonatypeOSSMavenRepositoryUsageGuide-10.ReleaseIt) instructions from Sonatype.
+
 Now, create the distribution.
 
     $ git checkout rel-$ver
