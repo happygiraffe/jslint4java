@@ -7,7 +7,7 @@ package com.googlecode.jslint4java;
  * @author hdm
  *
  */
-public class StringArray {
+public final class StringArray {
 
     // Should never be instantiated.
     private StringArray() {

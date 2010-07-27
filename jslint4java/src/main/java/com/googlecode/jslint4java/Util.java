@@ -15,7 +15,7 @@ import org.mozilla.javascript.UniqueTag;
  *
  * @author dom
  */
-class Util {
+final class Util {
 
     // Non-instantiable.
     private Util() {
@@ -114,6 +114,7 @@ class Util {
      */
     static <T> List<T> listValueOfType(String name, Class<T> class1, Scriptable scope) {
         return listValue(name, scope, new Converter<T>() {
+            @Override
             public T convert(Object obj) {
                 @SuppressWarnings("unchecked")
                 T value = (T) obj;
