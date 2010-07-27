@@ -19,6 +19,8 @@ Put the version into a shell variable for easy access (and cut'n'paste ability).
 Next, run the release.  First, try a dry run, to check it's all OK (and download any missing plugins).
 
     $ mvn -DdryRun=true -DreleaseVersion="$ver" -Dtag="rel-$ver" -Dgpg.passphrase="$pw" release:prepare
+    …
+    $ mvn release:clean
 
 Then, do it for real.
 
