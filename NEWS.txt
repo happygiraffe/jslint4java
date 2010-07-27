@@ -1,15 +1,20 @@
 Revision history for jslint4java.
 
-1.3.4 2010-07-16
+1.4 2010-07-27
+    - issue 35: Removed embedded JUnit.
+    - issue 30: Add a "report" formatter to the ant task.
+      - Also available on the command line with "--report"
+    - issue 37: add a --encoding flag for specifying the encoding files
+      on the command line.
+    - issue 36: add a JUnit XML formatter.
+    - issue 26: add support for .data() call in JSLINT.
+      - This is only available in the Java API right now.
+    - issue 39: add failureproperty to the ant task.
     - Use JCommander for flag processing.
       - This means that command line option parsing has changed
         slightly.  You now have to say "--indent 2" instead of
         "--indent=2".
       - The minimum version of Java is now 6.
-    - issue 37: add a --encoding flag for specifying the encoding files
-      on the command line.
-    - issue 36: add a JUnit XML formatter.
-    - issue 26: add support for .data() call in JSLINT.
     - Update to JSLint 2010-07-14.
       - Adds options: es5, windows.
       - Removes options: sidebar.
