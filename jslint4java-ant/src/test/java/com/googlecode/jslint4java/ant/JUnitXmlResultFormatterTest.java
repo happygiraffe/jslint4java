@@ -6,17 +6,17 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.taskdefs.Delete;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.googlecode.jslint4java.JSLintResult;
 
 public class JUnitXmlResultFormatterTest {
 
     private final JUnitXmlResultFormatter formatter = new JUnitXmlResultFormatter();
-    private File tmpd;
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     private JSLintResult aResult(String name) {
         return new JSLintResult.ResultBuilder(name).build();
@@ -28,37 +28,10 @@ public class JUnitXmlResultFormatterTest {
         formatter.end();
     }
 
-    @Before
-    public void setUp() throws Exception {
-        tmpd = File.createTempFile(JUnitXmlResultFormatter.class.getName() + ".", ".d");
-        // I actually wanted a directory, not a file…
-        if (!tmpd.delete()) {
-            throw new IOException("Can't delete " + tmpd);
-        }
-        if (!tmpd.mkdir()) {
-            throw new IOException("Can't mkdir " + tmpd);
-        }
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        // Use the ant task in order to delete a tree of files.
-        Delete delete = new Delete();
-        delete.setDir(tmpd);
-        // I know that this produces messages on stderr, but I have no idea how
-        // to tell Delete to just “STFU.” Various combinations of setVerbose()
-        // and setQuiet() all fail. I guess it's just noisy. :-(
-        delete.execute();
-    }
-
     @Test(expected = BuildException.class)
     public void testFileSetReallyIsFile() throws Exception {
-        File foo = new File(tmpd, "foo");
-        if (!foo.createNewFile()) {
-            throw new IOException("Can't create " + foo);
-        }
         JSLintResult result = aResult("foo.js");
-        formatter.setFile(foo);
+        formatter.setFile(folder.newFile("foo"));
         formatResult(result);
     }
 
@@ -70,29 +43,26 @@ public class JUnitXmlResultFormatterTest {
     @Test
     public void testNormality() {
         // File is set to a pre-existing directory.
-        formatter.setFile(tmpd);
+        formatter.setFile(folder.getRoot());
         formatResult(aResult("foo.js"));
-        File expected = new File(tmpd, "TEST-foo.js.xml");
+        File expected = new File(folder.getRoot(), "TEST-foo.js.xml");
         assertTrue(expected.exists());
     }
 
     @Test(expected = BuildException.class)
     public void testReadOnlyFileBlowsUp() throws IOException {
-        File output = new File(tmpd, "TEST-foo.js.xml");
-        if (!output.createNewFile()) {
-            throw new IOException("Can't create " + output);
-        }
+        File output = folder.newFile("TEST-foo.js.xml");
         assertTrue(output.setReadOnly());
-        formatter.setFile(tmpd);
+        formatter.setFile(folder.getRoot());
         // Should blow up when write occurs.
         formatResult(aResult("foo.js"));
     }
 
     @Test
     public void testNonAlphaNumericFilename() {
-        formatter.setFile(tmpd);
+        formatter.setFile(folder.getRoot());
         formatResult(aResult("a&b.js"));
-        File expected = new File(tmpd, "TEST-a_b.js.xml");
+        File expected = new File(folder.getRoot(), "TEST-a_b.js.xml");
         assertTrue(expected.exists());
     }
 
