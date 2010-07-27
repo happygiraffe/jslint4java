@@ -8,8 +8,7 @@ Prerequisites:
 ** The release plugin does a plain "git push", which pushes all branches
    by default.  This will fail if any branch is behind.
    Typically, this means the gh-pages branch.
-* Is JAVA_HOME pointing at java 5?  We need to be compatible with Java
-  5, not 6.
+* Is JAVA_HOME pointing at java 6?  We need to be compatible with Java 6.
 
 First, read your GPG passphrase into a variable.  Unfortunately, I can't
 make the GPG plugin read from stdin during the release, so it has to be
@@ -22,9 +21,13 @@ ability).
 
   $ ver=1.3.4
 
-Next, run the release.
+Next, run the release.  First, try a dry run, to check it's all OK.
 
-  $ mvn -Dtag="rel-$ver" -Dgpg.passphrase="$pw" release:prepare release:perform
+  $ mvn -DdryRun=true -DreleaseVersion="$ver" -Dtag="rel-$ver" -Dgpg.passphrase="$pw" release:prepare
+
+Then, do it for real.
+
+  $ mvn -DreleaseVersion="$ver" -Dtag="rel-$ver" -Dgpg.passphrase="$pw" release:prepare release:perform
 
 In case this barfs after the "git push" stage, edit release.properties and
 change the phase from "run-preparation-goals" to "scm-commit-release".  Yes,
