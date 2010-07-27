@@ -47,7 +47,7 @@ public class JSLint {
     /**
      * A helper class for interpreting the output of {@code JSLINT.data()}.
      */
-    private final class JSFunctionConverter implements Util.Converter<JSFunction> {
+    private static final class JSFunctionConverter implements Util.Converter<JSFunction> {
         public JSFunction convert(Object obj) {
             Scriptable scope = (Scriptable) obj;
             String name = Util.stringValue("name", scope);
