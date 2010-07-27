@@ -2,9 +2,9 @@ package com.googlecode.jslint4java.cli;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,14 +36,12 @@ public class CharsetConverterTest {
     public void testUnknownCharset() throws Exception {
         // We only want to run this test if we can guarantee that the charset _doesn't_ exist in the
         // system first. Otherwise, we'll just have to ignore this test.
-        try {
-            Charset.forName(UNKNOWN_CHARSET_NAME);
-        } catch (UnsupportedCharsetException e) {
-            // We're good to run the test.
-            thrown.expect(ParameterException.class);
-            thrown.expectMessage("unknown encoding");
-            cc.convert(UNKNOWN_CHARSET_NAME);
-        }
+        assumeThat(Charset.isSupported(UNKNOWN_CHARSET_NAME), is(false));
+
+        // We're good to run the test.
+        thrown.expect(ParameterException.class);
+        thrown.expectMessage("unknown encoding");
+        cc.convert(UNKNOWN_CHARSET_NAME);
     }
 
 }
