@@ -39,11 +39,11 @@ Create a source archive.
 
     $ bin/src-archive jslint4java-dist/target/jslint4java-$ver-dist.zip
 
-With that done, upload the dist and src archives to google code.
+With that done, upload the dist and src archives to google code.  If you are prompted for a password, use the one on your [google code profile](https://code.google.com/hosting/settings).
 
     $ bin/upload-to-googlecode jslint4java-dist/target/jslint4java-$ver-dist.zip
 
-Import the documentation to google code svn.
+Import the documentation to google code svn.  Use the same password as before.
 
     $ bin/import-docs-to-googlecode jslint4java-dist/target/jslint4java-$ver-dist.zip
 

@@ -27,6 +27,8 @@ $me: please set up auto-props in ~/.subversion/config:
     enable-auto-props = yes
     [auto-props]
     *.html = svn:eol-style=native;svn:mime-type=text/html
+    *.css = svn:eol-style=native;svn:mime-type=text/css
+    *.js = svn:eol-style=native;svn:mime-type=text/javascript
 
 EOF
     exit 1
