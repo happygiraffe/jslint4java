@@ -20,13 +20,13 @@ import org.mozilla.javascript.ScriptableObject;
 public class JSLintBuilder {
     private static final String JSLINT_FILE = "com/googlecode/jslint4java/fulljslint.js";
 
-    private static final ContextFactory contextFactory = new ContextFactory();
+    private static final ContextFactory CONTEXT_FACTORY = new ContextFactory();
 
     private final ScriptableObject scope;
     private final Context ctx;
 
     public JSLintBuilder() {
-        ctx = contextFactory.enterContext();
+        ctx = CONTEXT_FACTORY.enterContext();
         scope = ctx.initStandardObjects();
     }
 
