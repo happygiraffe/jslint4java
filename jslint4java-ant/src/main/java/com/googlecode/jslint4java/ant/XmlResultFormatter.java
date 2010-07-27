@@ -17,8 +17,8 @@ import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
 
 /**
- * Write out JSLint problems to an XML file. This may be easily transformed into
- * a nice report. Sample output:
+ * Write out JSLint problems to an XML file. This may be easily transformed into a nice report.
+ * Sample output:
  *
  * <pre>
  *  &lt;jslint&gt;
@@ -62,18 +62,15 @@ public class XmlResultFormatter implements ResultFormatter {
         } catch (IOException exc) {
             throw new BuildException("Unable to write log file", exc);
         } finally {
-            if (out != System.out && out != System.err) {
-                FileUtils.close(w);
-            }
+            FileUtils.close(w);
         }
         out = null;
     }
 
     /**
-     * Create a "file" element, containing nested "issue" elements. Each issue
-     * will have <i>line</i>, <i>char</i>, <i>reason</i> and <i>evidence</i>
-     * attributes. An element will be created for all files, regardless of any
-     * issues being uncovered.
+     * Create a "file" element, containing nested "issue" elements. Each issue will have
+     * <i>line</i>, <i>char</i>, <i>reason</i> and <i>evidence</i> attributes. An element will be
+     * created for all files, regardless of any issues being uncovered.
      */
     public void output(JSLintResult result) {
         sb.append(form.format(result));

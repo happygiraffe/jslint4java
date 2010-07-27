@@ -43,9 +43,7 @@ public class ReportResultFormatter implements ResultFormatter {
         } catch (IOException exc) {
             throw new BuildException("Unable to write log file", exc);
         } finally {
-            if (out != System.out && out != System.err) {
-                FileUtils.close(w);
-            }
+            FileUtils.close(w);
         }
         out = null;
         sb.delete(0, sb.length() - 1);
