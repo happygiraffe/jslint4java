@@ -18,6 +18,7 @@ import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
+import com.googlecode.jslint4java.formatter.ReportFormatter;
 
 /**
  * A command line interface to {@link JSLint}.
@@ -75,6 +76,8 @@ public class Main {
 
     private JSLint lint;
 
+    private final ReportFormatter reportFormatter = new ReportFormatter();
+
     private Main() throws IOException {
         lint = new JSLintBuilder().fromDefault();
     }
@@ -107,22 +110,13 @@ public class Main {
         return errored;
     }
 
-    private void issueReport(JSLintResult result) {
-        String name = result.getName();
-        info("<div class='file'>");
-        info("<h1 id='" + name + "'>" + name + "</h1>");
-        info(result.getReport());
-        info("</div>"); // try to fix somewhat crappy JSLint markup.
-        info("</div>"); // close the file div.
-    }
-
     private void lintFile(String file) throws IOException {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
             JSLintResult result = lint.lint(file, reader);
             if (flags.report) {
-                issueReport(result);
+                info(reportFormatter.format(result));
             } else {
                 for (Issue issue : result.getIssues()) {
                     err(issue.toString());
