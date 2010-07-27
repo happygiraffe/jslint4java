@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
  * @author dom
  *
  */
-public class OptionParser {
+class OptionParser {
 
     /**
      * Attempt to parse <i>value</i> using the {@code valueOf(String)} method on <i>clazz</i>,

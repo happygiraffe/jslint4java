@@ -11,7 +11,7 @@ import com.beust.jcommander.Parameter;
  *
  * @see JSLintFlags
  */
-public class Flags {
+class Flags {
 
     @Parameter(names = "--encoding", description = "Specify the input encoding", converter = CharsetConverter.class)
     public Charset encoding;

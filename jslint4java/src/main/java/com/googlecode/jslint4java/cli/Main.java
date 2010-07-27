@@ -25,7 +25,7 @@ import com.googlecode.jslint4java.formatter.ReportFormatter;
  *
  * @author dom
  */
-public class Main {
+class Main {
 
     /**
      * This is just to avoid calling {@link System#exit(int)} outside of main()…
