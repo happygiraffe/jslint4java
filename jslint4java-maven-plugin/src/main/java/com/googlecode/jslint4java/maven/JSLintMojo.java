@@ -16,10 +16,11 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
+import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
+import com.googlecode.jslint4java.formatter.PlainFormatter;
 
 /**
  * Validates JavaScript using jslint4java.
@@ -56,6 +57,8 @@ public class JSLintMojo extends AbstractMojo {
      * @required
      */
     private File sourceDirectory;
+
+    private final JSLintResultFormatter formatter = new PlainFormatter();
 
     public JSLintMojo() throws IOException {
         jsLint = new JSLintBuilder().fromDefault();
@@ -141,7 +144,7 @@ public class JSLintMojo extends AbstractMojo {
         for (File file : files) {
             JSLintResult result = lintFile(file);
             failures += result.getIssues().size();
-            logIssues(result.getIssues());
+            logIssues(result);
         }
         return failures;
     }
@@ -150,15 +153,13 @@ public class JSLintMojo extends AbstractMojo {
         return jsLint.lint(name, reader);
     }
 
-    private void logIssue(Issue issue) {
-        getLog().info(issue.toString());
-        getLog().info(issue.getEvidence());
-        getLog().info(spaces(issue.getCharacter() - 1) + "^");
-    }
-
-    private void logIssues(List<Issue> issues) {
-        for (Issue issue : issues) {
-            logIssue(issue);
+    private void logIssues(JSLintResult result) {
+        String report = formatter.format(result);
+        if (report.equals("")) {
+            return;
+        }
+        for (String line : report.split("\n")) {
+            getLog().info(line);
         }
     }
 
@@ -174,14 +175,6 @@ public class JSLintMojo extends AbstractMojo {
 
     public void setSourceDirectory(File sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
-    }
-
-    protected String spaces(int howmany) {
-        StringBuffer sb = new StringBuffer(howmany);
-        for (int i = 0; i < howmany; i++) {
-            sb.append(" ");
-        }
-        return sb.toString();
     }
 
 }
