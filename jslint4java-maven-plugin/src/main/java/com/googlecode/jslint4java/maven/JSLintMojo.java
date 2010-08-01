@@ -41,7 +41,7 @@ public class JSLintMojo extends AbstractMojo {
 
     /**
      * Specifies the the source files to be used for JSLint (relative to {@link #sourceDirectory}).
-     * If none are given, defaults to <code>**</code> <code>/*.js</code>.
+     * If none are given, defaults to <code>**&#47;*.js</code>.
      *
      * @parameter property="includes"
      */
