@@ -31,32 +31,31 @@ import com.googlecode.jslint4java.JSLintResult;
 public class JSLintMojo extends AbstractMojo {
 
     /**
-     * Specifies the the source files to be used for JSLint (relative to
-     * {@link #sourceDirectory}). If none are given, defaults to <code>**</code>
-     * <code>/*.js</code>.
-     *
-     * @parameter
-     */
-    private final List<String> includes = new ArrayList<String>();
-
-    /**
      * Specifies the the source files to be excluded for JSLint (relative to
      * {@link #sourceDirectory}). Maven applies its own defaults.
      *
-     * @parameter
+     * @parameter property="excludes"
      */
     private final List<String> excludes = new ArrayList<String>();
 
     /**
+     * Specifies the the source files to be used for JSLint (relative to {@link #sourceDirectory}).
+     * If none are given, defaults to <code>**</code> <code>/*.js</code>.
+     *
+     * @parameter property="includes"
+     */
+    private final List<String> includes = new ArrayList<String>();
+
+    private final JSLint jsLint;
+
+    /**
      * Specifies the location of the source directory to be used for JSLint.
      *
-     * @parameter expression="${jslint.sourceDirectory}"
-     *            default-value="${basedir}/src/main/webapp"
+     * @parameter expression="${jslint.sourceDirectory}" default-value="${basedir}/src/main/webapp"
+     *            property="sourceDirectory"
      * @required
      */
     private File sourceDirectory;
-
-    private final JSLint jsLint;
 
     public JSLintMojo() throws IOException {
         jsLint = new JSLintBuilder().fromDefault();
@@ -64,6 +63,7 @@ public class JSLintMojo extends AbstractMojo {
 
     /**
      * Set the default includes.
+     *
      * @param includes
      */
     private void applyDefaultIncludes(List<String> includes) {
@@ -88,14 +88,14 @@ public class JSLintMojo extends AbstractMojo {
         }
         int failures = lintFiles(files);
         if (failures > 0) {
-            throw new MojoFailureException("JSLint found " + failures
-                    + " problems in " + files.size() + " files");
+            throw new MojoFailureException("JSLint found " + failures + " problems in "
+                    + files.size() + " files");
         }
     }
 
     /**
-     * Process includes and excludes to work out which files we ae interested
-     * in. Originally nicked from CheckstyleReport, now looks nothing like it.
+     * Process includes and excludes to work out which files we ae interested in. Originally nicked
+     * from CheckstyleReport, now looks nothing like it.
      *
      * @return a {@link List} of {@link File}s.
      */
@@ -117,18 +117,15 @@ public class JSLintMojo extends AbstractMojo {
         InputStream stream = null;
         try {
             stream = new FileInputStream(file);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    stream, "UTF-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
             return lintReader(file.toString(), reader);
         } catch (FileNotFoundException e) {
             throw new MojoExecutionException("file not found: " + file, e);
         } catch (UnsupportedEncodingException e) {
             // Can never happen.
-            throw new MojoExecutionException(
-                    "unsupported character encoding UTF-8", e);
+            throw new MojoExecutionException("unsupported character encoding UTF-8", e);
         } catch (IOException e) {
-            throw new MojoExecutionException("problem whilst linting " + file,
-                    e);
+            throw new MojoExecutionException("problem whilst linting " + file, e);
         } finally {
             if (stream != null) {
                 try {
@@ -163,6 +160,20 @@ public class JSLintMojo extends AbstractMojo {
         for (Issue issue : issues) {
             logIssue(issue);
         }
+    }
+
+    public void setExcludes(List<String> excludes) {
+        this.excludes.clear();
+        this.excludes.addAll(excludes);
+    }
+
+    public void setIncludes(List<String> includes) {
+        this.includes.clear();
+        this.includes.addAll(includes);
+    }
+
+    public void setSourceDirectory(File sourceDirectory) {
+        this.sourceDirectory = sourceDirectory;
     }
 
     protected String spaces(int howmany) {
