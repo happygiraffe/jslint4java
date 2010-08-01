@@ -2,6 +2,7 @@ package com.googlecode.jslint4java.maven;
 
 import java.io.File;
 
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 
 // Urgh, JUnit 3. :(
@@ -33,5 +34,15 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     public void testBasics() throws Exception {
         mojo.setSourceDirectory(baseRelative("good-js"));
         mojo.execute();
+    }
+
+    public void testFailure() throws Exception {
+        try {
+            mojo.setSourceDirectory(baseRelative("bad-js"));
+            mojo.execute();
+            fail("Should have one error.");
+        } catch (MojoFailureException e) {
+            assertEquals("JSLint found 1 problems in 1 files", e.getMessage());
+        }
     }
 }
