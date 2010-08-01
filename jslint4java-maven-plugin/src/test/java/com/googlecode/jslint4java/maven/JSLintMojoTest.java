@@ -1,6 +1,8 @@
 package com.googlecode.jslint4java.maven;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
@@ -43,6 +45,19 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
             fail("Should have one error.");
         } catch (MojoFailureException e) {
             assertEquals("JSLint found 1 problems in 1 files", e.getMessage());
+        }
+    }
+
+    public void testOptions() throws Exception {
+        mojo.setSourceDirectory(baseRelative("good-js"));
+        Map<String,String> options = new HashMap<String, String>();
+        options.put("strict", "true");
+        mojo.setOptions(options);
+        try {
+            mojo.execute();
+            fail("should have failed due to lack of 'use strict'");
+        } catch (MojoFailureException e) {
+            assertTrue(true);
         }
     }
 }
