@@ -19,6 +19,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
+import com.googlecode.jslint4java.JSLintResult;
 
 /**
  * Validates JavaScript using jslint4java.
@@ -71,6 +72,7 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!sourceDirectory.exists()) {
             getLog().warn(sourceDirectory + " does not exist");
@@ -110,7 +112,7 @@ public class JSLintMojo extends AbstractMojo {
         return files;
     }
 
-    private List<Issue> lintFile(File file) throws MojoExecutionException {
+    private JSLintResult lintFile(File file) throws MojoExecutionException {
         getLog().debug("lint " + file);
         InputStream stream = null;
         try {
@@ -140,14 +142,14 @@ public class JSLintMojo extends AbstractMojo {
     private int lintFiles(List<File> files) throws MojoExecutionException {
         int failures = 0;
         for (File file : files) {
-            List<Issue> issues = lintFile(file);
-            failures += issues.size();
-            logIssues(issues);
+            JSLintResult result = lintFile(file);
+            failures += result.getIssues().size();
+            logIssues(result.getIssues());
         }
         return failures;
     }
 
-    private List<Issue> lintReader(String name, Reader reader) throws IOException {
+    private JSLintResult lintReader(String name, Reader reader) throws IOException {
         return jsLint.lint(name, reader);
     }
 
