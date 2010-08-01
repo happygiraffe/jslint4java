@@ -7,7 +7,6 @@ import org.junit.Test;
 
 /**
  * @author dom
- * @version $Id$
  */
 public class OptionTest {
 

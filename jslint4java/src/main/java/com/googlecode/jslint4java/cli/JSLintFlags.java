@@ -5,7 +5,7 @@ import com.beust.jcommander.Parameter;
 /**
  * Flags which correspond directly to JSLint options.
  */
-public class JSLintFlags {
+class JSLintFlags {
     // BEGIN-OPTIONS
     @Parameter(names = "--adsafe", description = "If adsafe should be enforced")
     public Boolean adsafe = null;

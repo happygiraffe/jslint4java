@@ -6,7 +6,6 @@ import org.mozilla.javascript.Scriptable;
  * A single issue with the code that is being checked for problems.
  *
  * @author dom
- * @version $Id$
  */
 public class Issue {
 

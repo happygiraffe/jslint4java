@@ -18,9 +18,16 @@ import com.googlecode.jslint4java.Util.Converter;
 
 /**
  * @author dom
- * @version $Id$
  */
 public class UtilTest {
+
+    // Just a little helper class for the test.
+    private static final class Foo {
+        final int a;
+        Foo(int a) {
+            this.a = a;
+        }
+    }
 
     private final ContextFactory contextFactory = new ContextFactory();
     private final Context cx = contextFactory.enterContext();
@@ -80,13 +87,6 @@ public class UtilTest {
 
     @Test
     public void testListValueOfObject() throws Exception {
-        // Just a little helper class for the test.
-        final class Foo {
-            final int a;
-            Foo(int a) {
-                this.a = a;
-            }
-        }
         cx.evaluateString(scope, "var l = [{'a':1}, {'a':2}];", "-", 1, null);
         Util.Converter<Foo> c = new Converter<Foo>() {
             public Foo convert(Object obj) {

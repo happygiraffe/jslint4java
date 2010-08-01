@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id$ -->
 <project name="jslint-antunit"
          default="allTests"
          xmlns:au="antlib:org.apache.ant.antunit"
@@ -146,5 +145,18 @@ Tests for the JSLint ant task.
 		It should be anchored at the root of the fileset, ideally.
 		<au:assertFileExists file="${temp.dir}/TEST-good.js.xml" />
 		-->
+	</target>
+
+	<!-- Check that the report formatter produces some output. -->
+	<target name="testReportFormatter">
+		<jsl:jslint haltonfailure="no">
+			<formatter type="report" destfile="${temp.dir}/report.html" />
+			<fileset file="good.js" />
+		</jsl:jslint>
+		<au:assertFileExists file="${temp.dir}/report.html" />
+		<!-- Can't figure out _exactly_ the filename… -->
+		<au:assertResourceContains resource="${temp.dir}/report.html" value="good.js" />
+		<au:assertResourceContains resource="${temp.dir}/report.html"
+                                   value="&lt;html>&lt;head>&lt;/head>&lt;body>&lt;div class='file'>" />
 	</target>
 </project>

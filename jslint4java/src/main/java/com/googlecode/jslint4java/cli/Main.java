@@ -18,14 +18,14 @@ import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
+import com.googlecode.jslint4java.formatter.ReportFormatter;
 
 /**
  * A command line interface to {@link JSLint}.
  *
  * @author dom
- * @version $Id$
  */
-public class Main {
+class Main {
 
     /**
      * This is just to avoid calling {@link System#exit(int)} outside of main()…
@@ -72,7 +72,11 @@ public class Main {
 
     private boolean errored = false;
 
+    private final Flags flags = new Flags();
+
     private JSLint lint;
+
+    private final ReportFormatter reportFormatter = new ReportFormatter();
 
     private Main() throws IOException {
         lint = new JSLintBuilder().fromDefault();
@@ -111,8 +115,12 @@ public class Main {
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
             JSLintResult result = lint.lint(file, reader);
-            for (Issue issue : result.getIssues()) {
-                err(issue.toString());
+            if (flags.report) {
+                info(reportFormatter.format(result));
+            } else {
+                for (Issue issue : result.getIssues()) {
+                    err(issue.toString());
+                }
             }
         } catch (FileNotFoundException e) {
             die(file + ": No such file or directory.");
@@ -124,7 +132,6 @@ public class Main {
     }
 
     private List<String> processOptions(String[] args) {
-        Flags flags = new Flags();
         JSLintFlags jslintFlags = new JSLintFlags();
         JCommander jc = new JCommander(new Object[] { flags, jslintFlags }, args);
         if (flags.help) {

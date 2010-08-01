@@ -19,6 +19,7 @@ public class JSLintResult {
      */
     public static class ResultBuilder {
 
+        private long duration;
         private final List<JSFunction> functions = new ArrayList<JSFunction>();
         private final List<String> globals = new ArrayList<String>();
         private final List<JSIdentifier> implieds = new ArrayList<JSIdentifier>();
@@ -26,9 +27,9 @@ public class JSLintResult {
         private boolean json;
         private final Map<String, Integer> member = new HashMap<String, Integer>();
         private final String name;
+        private String report;
         private final List<JSIdentifier> unused = new ArrayList<JSIdentifier>();
         private final List<String> urls = new ArrayList<String>();
-        private long duration;
 
         public ResultBuilder(String name) {
             this.name = name;
@@ -73,13 +74,18 @@ public class JSLintResult {
             return new JSLintResult(this);
         }
 
+        public ResultBuilder duration(long millis) {
+            duration = millis;
+            return this;
+        }
+
         public ResultBuilder json(boolean json) {
             this.json = json;
             return this;
         }
 
-        public ResultBuilder duration(long millis) {
-            duration = millis;
+        public ResultBuilder report(String report) {
+            this.report = report;
             return this;
         }
 
@@ -93,6 +99,7 @@ public class JSLintResult {
     private final boolean json;
     private final Map<String, Integer> member = new HashMap<String, Integer>();
     private final String name;
+    private final String report;
     private final List<JSIdentifier> unused = new ArrayList<JSIdentifier>();
     private final List<String> urls = new ArrayList<String>();
 
@@ -105,6 +112,7 @@ public class JSLintResult {
         implieds.addAll(b.implieds);
         json = b.json;
         member.putAll(b.member);
+        report = b.report;
         unused.addAll(b.unused);
         urls.addAll(b.urls);
     }
@@ -144,6 +152,11 @@ public class JSLintResult {
     /** The name of the source file just validated. */
     public String getName() {
         return name;
+    }
+
+    /** An HTML report of the source file. */
+    public String getReport() {
+        return report;
     }
 
     /** A list of unused names. */

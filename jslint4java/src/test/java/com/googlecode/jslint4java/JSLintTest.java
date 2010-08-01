@@ -1,4 +1,3 @@
-// @(#) $Id$
 
 package com.googlecode.jslint4java;
 
@@ -17,7 +16,6 @@ import org.junit.Test;
 
 /**
  * @author dom
- * @version $Id$
  */
 public class JSLintTest {
 
@@ -224,6 +222,15 @@ public class JSLintTest {
     @Test
     public void testReportFull() throws Exception {
         String html = lint.report("var foo = 42;");
+        assertThat(html, containsString("<div>"));
+    }
+
+
+    @Test
+    public void testReportInResult() throws Exception {
+        String html = lint("var foo = 42").getReport();
+        assertThat(html, containsString("<div id=errors"));
+        assertThat(html, containsString("Missing semicolon"));
         assertThat(html, containsString("<div>"));
     }
 

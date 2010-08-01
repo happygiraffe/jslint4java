@@ -2,7 +2,6 @@
 #
 # Download & update the latest jslint.
 #
-# $Id$
 
 dir=${0%/*}
 base=$(dirname $dir)

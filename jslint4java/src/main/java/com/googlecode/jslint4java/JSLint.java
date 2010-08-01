@@ -24,7 +24,6 @@ import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
  * A utility class to check JavaScript source code for potential problems.
  *
  * @author dom
- * @version $Id$
  */
 public class JSLint {
 
@@ -48,7 +47,7 @@ public class JSLint {
     /**
      * A helper class for interpreting the output of {@code JSLINT.data()}.
      */
-    private final class JSFunctionConverter implements Util.Converter<JSFunction> {
+    private static final class JSFunctionConverter implements Util.Converter<JSFunction> {
         public JSFunction convert(Object obj) {
             Scriptable scope = (Scriptable) obj;
             String name = Util.stringValue("name", scope);
@@ -120,6 +119,18 @@ public class JSLint {
         options.put(o, optionParser.parse(o.getType(), arg));
     }
 
+    private String callReport(boolean errorsOnly) {
+        Object[] args = new Object[] { Boolean.valueOf(errorsOnly) };
+        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
+        Object report = lintScope.get("report", lintScope);
+        // Shouldn't happen ordinarily, but some of my tests don't have it.
+        if (report == UniqueTag.NOT_FOUND) {
+            return "";
+        }
+        Function reportFunc = (Function) report;
+        return (String) reportFunc.call(Context.getCurrentContext(), scope, scope, args);
+    }
+
     private void doLint(String javaScript) {
         String src = javaScript == null ? "" : javaScript;
         Object[] args = new Object[] { src, optionsAsJavaScriptObject() };
@@ -188,6 +199,9 @@ public class JSLint {
         for (Issue issue : readErrors(systemId)) {
             b.addIssue(issue);
         }
+
+        // Collect a report on what we've just linted.
+        b.report(callReport(false));
 
         // Extract JSLINT.data() output and set it on the result.
         Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
@@ -274,12 +288,7 @@ public class JSLint {
         doLint(javaScript);
 
         // The run the reporter.
-        Object[] args = new Object[] { Boolean.valueOf(errorsOnly) };
-        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
-        Function reportFunc = (Function) lintScope.get("report", lintScope);
-        // JSLINT actually returns a boolean, but we ignore it as we always go
-        // and look at the errors in more detail.
-        return (String) reportFunc.call(Context.getCurrentContext(), scope, scope, args);
+        return callReport(errorsOnly);
     }
 
     /**

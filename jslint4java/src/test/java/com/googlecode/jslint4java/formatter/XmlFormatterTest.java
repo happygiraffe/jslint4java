@@ -3,7 +3,9 @@ package com.googlecode.jslint4java.formatter;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class XmlFormatterTest {
 
@@ -22,6 +24,9 @@ public class XmlFormatterTest {
 
     private final XF xf = new XF();
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void testEscapeNull() throws Exception {
         assertThat(xf.escape(null), is(""));
@@ -32,8 +37,10 @@ public class XmlFormatterTest {
         assertThat(xf.escape("echo '<usage>' 2>&1"), is("echo '&lt;usage>' 2>&amp;1"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testAttrKeyIsNull() throws Exception {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("key cannot be null");
         xf.attr(null, "foo");
     }
 

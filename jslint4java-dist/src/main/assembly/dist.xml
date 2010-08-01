@@ -17,9 +17,9 @@
       <directory>${basedir}/..</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>README.txt</include>
+        <include>README.markdown</include>
         <include>LICENCE.txt</include>
-        <include>NEWS.txt</include>
+        <include>NEWS.markdown</include>
       </includes>
       <filtered>true</filtered>
     </fileSet>

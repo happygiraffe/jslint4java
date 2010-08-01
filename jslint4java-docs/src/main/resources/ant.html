@@ -123,7 +123,18 @@
       </tr>
       <tr>
         <td> type </td>
-        <td> One of <code>plain</code>, <code>xml</code> or <code>junit</code>.  The <code>xml</code> format is a custom invention of this project; it's probably more useful to use the <code>junit</code> format as it has interoperability with existing tools.</td>
+        <td>
+          <dl>
+            <dt><code>plain</code></dt>
+            <dd>Produces three lines of text output per error.  Shows location and evidence.</dd>
+            <dt><code>xml</code></dt>
+            <dd>Creates a single XML file describing all errors seen in the input.  This is a custom XML format for jslint4java.  You should prefer the JUnit xml formatter instead.</dd>
+            <dt><code>junit</code></dt>
+            <dd>Creates a directory full of junit xml files.  These can be integrated into existing continuous build systems such as <a href="http://hudson-ci.org/">hudson</a> or <a href="http://zutubi.com/products/pulse/">pulse</a>.</dd>
+            <dt><code>report</code></dt>
+            <dd>Makes an HTML file containing one <a href="http://www.jslint.com/lint.html#report">JSLint report</a> per input file.</dd>
+          </dl>
+        </td>
         <td> Yes </td>
       </tr>
       <tr>
@@ -131,7 +142,7 @@
         <td> A location to write the output to.
           <ul>
             <li>For the <code>plain</code> formatter, you can redirect output to a file.  If you leave this attribute out, then output will appear on the console.</li>
-            <li>For the <code>xml</code> formatter, you have to specify a file to write the output to.</li>
+            <li>For the <code>xml</code> and <code>report</code> formatters, you have to specify a file to write the output to.</li>
             <li>For the <code>junit</code> formatter, you have to specify a directory.  Each file linted will have one file created in that directory.</li>
           </ul>
         </td>
