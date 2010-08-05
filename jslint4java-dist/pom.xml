@@ -9,7 +9,7 @@
   <parent>
     <artifactId>jslint4java-parent</artifactId>
     <groupId>com.googlecode.jslint4java</groupId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.4.1</version>
   </parent>
   <profiles>
     <profile>
