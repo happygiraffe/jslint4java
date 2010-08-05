@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Root element -->
+<!ELEMENT jslint (file)*>
+
+<!-- Each file validated. -->
+<!ELEMENT file (issue)*>
+<!ATTLIST file
+    name CDATA #REQUIRED
+>
+
+<!-- Each issue in each file. -->
+<!ELEMENT issue EMPTY>
+<!ATTLIST issue
+    line     CDATA #REQUIRED
+    char     CDATA #REQUIRED
+    reason   CDATA #REQUIRED
+    evidence CDATA #IMPLIED
+>
