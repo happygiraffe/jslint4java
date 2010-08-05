@@ -1,6 +1,11 @@
 Revision history for jslint4java
 ================================
 
+1.4.1 (2010-08-05)
+------------------
+
+ * issue 40: StringIndexOutOfBoundsException on XmlResultFormatter.
+
 1.4 (2010-07-27)
 ----------------
 
