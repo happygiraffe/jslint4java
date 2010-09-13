@@ -1,6 +1,12 @@
 Revision history for jslint4java
 ================================
 
+1.4.2 (2010-09-13)
+------------------
+
+ * issue 42: numeric keys throw exception.
+ * Update JSLint to 2010-09-09.
+
 1.4.1 (2010-08-05)
 ------------------
 

@@ -1,5 +1,5 @@
 // jslint.js
-// 2010-07-14
+// 2010-09-08
 
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
@@ -958,10 +958,10 @@ var JSLINT = (function () {
     }
 
     String.prototype.entityify = function () {
-        return this.
-            replace(/&/g, '&amp;').
-            replace(/</g, '&lt;').
-            replace(/>/g, '&gt;');
+        return this
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
     };
 
     String.prototype.isAlpha = function () {
@@ -1169,10 +1169,10 @@ var JSLINT = (function () {
         return {
             init: function (source) {
                 if (typeof source === 'string') {
-                    lines = source.
-                        replace(/\r\n/g, '\n').
-                        replace(/\r/g, '\n').
-                        split('\n');
+                    lines = source
+                        .replace(/\r\n/g, '\n')
+                        .replace(/\r/g, '\n')
+                        .split('\n');
                 } else {
                     lines = source;
                 }
@@ -2120,6 +2120,14 @@ loop:   for (;;) {
         }
     }
 
+    function nobreak(left, right) {
+        left = left || token;
+        right = right || nexttoken;
+        if (left.character !== right.from || left.line !== right.line) {
+            warning("Unexpected space before '{a}'.", right, right.value);
+        }
+    }
+
     function nospace(left, right) {
         left = left || token;
         right = right || nexttoken;
@@ -2333,7 +2341,7 @@ loop:   for (;;) {
     function isPoorRelation(node) {
         return node &&
               ((node.type === '(number)' && +node.value === 0) ||
-               (node.type === '(string)' && node.value === ' ') ||
+               (node.type === '(string)' && node.value === '') ||
                 node.type === 'true' ||
                 node.type === 'false' ||
                 node.type === 'undefined' ||
@@ -3923,13 +3931,13 @@ loop:   for (;;) {
                         break;
                     }
                     if (nexttoken.value.indexOf('--') >= 0) {
-                        warning("Unexpected --.");
+                        error("Unexpected --.");
                     }
                     if (nexttoken.value.indexOf('<') >= 0) {
-                        warning("Unexpected <.");
+                        error("Unexpected <.");
                     }
                     if (nexttoken.value.indexOf('>') >= 0) {
-                        warning("Unexpected >.");
+                        error("Unexpected >.");
                     }
                 }
                 xmode = 'outer';
@@ -4059,7 +4067,7 @@ loop:   for (;;) {
         },
         led: function () {
             error("Expected an operator and instead saw '{a}'.",
-                    nexttoken, nexttoken.value);
+                nexttoken, nexttoken.value);
         }
     };
 
@@ -4221,8 +4229,7 @@ loop:   for (;;) {
     prefix('delete', function () {
         var p = parse(0);
         if (!p || (p.id !== '.' && p.id !== '[')) {
-            warning("Expected '{a}' and instead saw '{b}'.",
-                    nexttoken, '.', nexttoken.value);
+            warning("Variables should not be deleted.");
         }
         this.first = p;
         return this;
@@ -4325,13 +4332,17 @@ loop:   for (;;) {
 
     infix('.', function (left, that) {
         adjacent(prevtoken, token);
+        nobreak();
         var m = identifier();
         if (typeof m === 'string') {
             countMember(m);
         }
         that.left = left;
         that.right = m;
-        if (!option.evil && left && left.value === 'document' &&
+        if (left && left.value === 'arguments' &&
+                (m === 'callee' || m === 'caller')) {
+            warning("Avoid arguments.{a}.", left, m);
+        } else if (!option.evil && left && left.value === 'document' &&
                 (m === 'write' || m === 'writeln')) {
             warning("document.write can be a form of eval.", left);
         } else if (option.adsafe) {
@@ -4389,6 +4400,11 @@ loop:   for (;;) {
     infix('(', function (left, that) {
         adjacent(prevtoken, token);
         nospace();
+        if (option.immed && !left.immed && left.id === 'function') {
+            warning("Wrap an immediate function invocation in parentheses " +
+                "to assist the reader in understanding that the expression " +
+                "is the result of a function, and not the function itself.");
+        }
         var n = 0,
             p = [];
         if (left) {
@@ -4423,10 +4439,6 @@ loop:   for (;;) {
             }
         }
         advance(')');
-        if (option.immed && left.id === 'function' && nexttoken.id !== ')') {
-            warning("Wrap the entire immediate function invocation in parens.",
-                that);
-        }
         nospace(prevtoken, token);
         if (typeof left === 'object') {
             if (left.value === 'parseInt' && n === 1) {
@@ -4455,6 +4467,9 @@ loop:   for (;;) {
 
     prefix('(', function () {
         nospace();
+        if (nexttoken.id === 'function') {
+            nexttoken.immed = true;
+        }
         var v = parse(0);
         advance(')', this);
         nospace(prevtoken, token);
@@ -4545,17 +4560,23 @@ loop:   for (;;) {
 
 
     function property_name() {
-        var i = optionalidentifier(true);
-        if (!i) {
+        var id = optionalidentifier(true);
+        if (!id) {
             if (nexttoken.id === '(string)') {
-                i = nexttoken.value;
+                id = nexttoken.value;
+                if (option.adsafe &&
+                        (id.charAt(0) === '_' ||
+                         id.charAt(id.length - 1) === '_')) {
+                    warning("Unexpected {a} in '{b}'.", token,
+                        "dangling '_'", id);
+                }
                 advance();
             } else if (nexttoken.id === '(number)') {
-                i = nexttoken.value.toString();
+                id = nexttoken.value.toString();
                 advance();
             }
         }
-        return i;
+        return id;
     }
 
 
@@ -5276,27 +5297,30 @@ loop:   for (;;) {
                 o.safe = true;
             }
             if (o.safe) {
-                o.browser = false;
-                o.css     = false;
-                o.debug   = false;
-                o.devel   = false;
-                o.eqeqeq  = true;
-                o.evil    = false;
-                o.forin   = false;
-                o.nomen   = true;
-                o.on      = false;
-                o.rhino   = false;
-                o.safe    = true;
-                o.windows = false;
-                o.strict  = true;
-                o.sub     = false;
-                o.undef   = true;
+                o.browser =
+                o.css     =
+                o.debug   =
+                o.devel   =
+                o.evil    =
+                o.forin   =
+                o.on      =
+                o.rhino   =
+                o.windows =
+                o.sub     =
                 o.widget  = false;
-                predefined.Date = null;
-                predefined['eval'] = null;
-                predefined.Function = null;
+
+                o.eqeqeq  =
+                o.nomen   =
+                o.safe    =
+                o.strict  =
+                o.undef   = true;
+
+                predefined.Date =
+                predefined['eval'] =
+                predefined.Function =
                 predefined.Object = null;
-                predefined.ADSAFE = false;
+
+                predefined.ADSAFE =
                 predefined.lib = false;
             }
             option = o;
@@ -5636,7 +5660,7 @@ loop:   for (;;) {
     };
     itself.jslint = itself;
 
-    itself.edition = '2010-07-14';
+    itself.edition = '2010-09-08';
 
     return itself;
 
