@@ -6,7 +6,7 @@ Prerequisites:
  * Is NEWS.txt up to date?
  * Ensure that all branches are up to date (git fetch origin).
    * The release plugin does a plain "git push", which pushes all branches by default.  This will fail if any branch is behind. Typically, this means the gh-pages branch.
- * Is JAVA_HOME pointing at java 6?  We need to be compatible with Java 6.
+ * Is JAVA_HOME pointing at java 5?  We need to be compatible with Java 5.
 
 First, read your GPG passphrase into a variable.  Unfortunately, I can't make the GPG plugin read from stdin during the release, so it has to be done this way.
 

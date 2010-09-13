@@ -6,6 +6,8 @@ Revision history for jslint4java
 
  * issue 42: numeric keys throw exception.
  * Update JSLint to 2010-09-09.
+ * Update to JCommander 1.7.
+   * **[INCOMPATIBILITY]** This version is able to work with Java 5, so that is now the minimum version again.
 
 1.4.1 (2010-08-05)
 ------------------

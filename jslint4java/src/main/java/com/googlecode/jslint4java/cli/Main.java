@@ -134,6 +134,7 @@ class Main {
     private List<String> processOptions(String[] args) {
         JSLintFlags jslintFlags = new JSLintFlags();
         JCommander jc = new JCommander(new Object[] { flags, jslintFlags }, args);
+        jc.setProgramName("jslint4java");
         if (flags.help) {
             usage(jc);
         }
@@ -195,7 +196,6 @@ class Main {
 
     private void usage(JCommander jc) {
         jc.usage();
-        info("");
         info("using jslint version " + lint.getEdition());
         throw new DieException(null, 0);
     }
