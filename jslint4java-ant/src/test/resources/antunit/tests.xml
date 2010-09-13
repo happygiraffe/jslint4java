@@ -159,4 +159,12 @@ Tests for the JSLint ant task.
 		<au:assertResourceContains resource="${temp.dir}/report.html"
                                    value="&lt;html>&lt;head>&lt;/head>&lt;body>&lt;div class='file'>" />
 	</target>
+
+	<!-- issue 42: numeric keys cause a blowup. -->
+	<target name="testNumericKeys">
+		<jsl:jslint>
+			<!-- Should pass without blowup. -->
+			<fileset file="numeric-keys.js" />
+		</jsl:jslint>
+	</target>
 </project>

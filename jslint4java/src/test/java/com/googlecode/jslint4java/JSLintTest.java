@@ -113,13 +113,15 @@ public class JSLintTest {
 
     @Test
     public void testDataMembers() throws Exception {
-        JSLintResult result = lint("var obj = {\"a\":1, \"b\": 42};");
+        // issue 42: beware numeric keys…
+        JSLintResult result = lint("var obj = {\"a\":1, \"b\": 42, 3: \"c\"};");
         assertIssues(result.getIssues());
         Map<String, Integer> members = result.getMember();
-        assertThat(members.size(), is(2));
+        assertThat(members.size(), is(3));
         // It's a count of how many times we've seen each member.
         assertThat(members.get("a"), is(1));
         assertThat(members.get("b"), is(1));
+        assertThat(members.get("3"), is(0));  // Nope, I've no idea why it's zero either.
     }
 
     @Test

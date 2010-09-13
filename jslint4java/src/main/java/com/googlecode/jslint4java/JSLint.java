@@ -36,6 +36,7 @@ public class JSLint {
      * A helper class for interpreting the output of {@code JSLINT.data()}.
      */
     private static final class IdentifierConverter implements Util.Converter<JSIdentifier> {
+        @Override
         public JSIdentifier convert(Object obj) {
             Scriptable identifier = (Scriptable) obj;
             String name = Util.stringValue("name", identifier);
@@ -48,6 +49,7 @@ public class JSLint {
      * A helper class for interpreting the output of {@code JSLINT.data()}.
      */
     private static final class JSFunctionConverter implements Util.Converter<JSFunction> {
+        @Override
         public JSFunction convert(Object obj) {
             Scriptable scope = (Scriptable) obj;
             String name = Util.stringValue("name", scope);
@@ -152,7 +154,7 @@ public class JSLint {
         Object[] propertyIds = ScriptableObject.getPropertyIds(member);
         Map<String, Integer> members = new HashMap<String, Integer>(propertyIds.length);
         for (Object id : propertyIds) {
-            String k = (String) id;
+            String k = id.toString();
             members.put(k, Util.intValue(k, member));
         }
         return members;
