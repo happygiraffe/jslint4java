@@ -18,6 +18,9 @@ import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
+import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
+import com.googlecode.jslint4java.formatter.JUnitXmlFormatter;
+import com.googlecode.jslint4java.formatter.PlainFormatter;
 import com.googlecode.jslint4java.formatter.ReportFormatter;
 
 /**
@@ -76,8 +79,6 @@ class Main {
 
     private JSLint lint;
 
-    private final ReportFormatter reportFormatter = new ReportFormatter();
-
     private Main() throws IOException {
         lint = new JSLintBuilder().fromDefault();
     }
@@ -115,8 +116,14 @@ class Main {
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
             JSLintResult result = lint.lint(file, reader);
-            if (flags.report) {
-                info(reportFormatter.format(result));
+            if (flags.report.equals("plain")) {
+                info(new PlainFormatter().format(result));
+            } else if (flags.report.equals("jslint")) {
+                info(new JSLintXmlFormatter().format(result));
+            } else if (flags.report.equals("junit")) {
+                info(new JUnitXmlFormatter().format(result));
+            } else if (flags.report.equals("html")) {
+                info(new ReportFormatter().format(result));
             } else {
                 for (Issue issue : result.getIssues()) {
                     err(issue.toString());
