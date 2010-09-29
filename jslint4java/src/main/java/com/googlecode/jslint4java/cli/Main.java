@@ -200,7 +200,7 @@ class Main {
             formatter = new JUnitXmlFormatter();
         } else if (flags.report.equals("html")) {
             formatter = new ReportFormatter();
-        } else {
+        } else if (flags.report.equals("")) {
             // The original CLI behaviour: one-per-line, with prefix.
             formatter = new JSLintResultFormatter() {
                 public String format(JSLintResult result) {
@@ -214,6 +214,8 @@ class Main {
                     return sb.toString();
                 }
             };
+        } else {
+            die("unknown report type '" + flags.report + "'");
         }
 
     }

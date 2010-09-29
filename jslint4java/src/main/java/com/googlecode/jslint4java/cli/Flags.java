@@ -23,7 +23,7 @@ class Flags {
     public boolean help;
 
     @Parameter(names = "--report", description = "Display report in different formats: plain, jslint, junit and html")
-    public String report = null;
+    public String report = "";
 
     /**
      * All remaining files on the command line. The ones that actually need linting.
