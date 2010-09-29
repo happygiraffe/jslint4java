@@ -36,7 +36,6 @@ public class JSLint {
      * A helper class for interpreting the output of {@code JSLINT.data()}.
      */
     private static final class IdentifierConverter implements Util.Converter<JSIdentifier> {
-        @Override
         public JSIdentifier convert(Object obj) {
             Scriptable identifier = (Scriptable) obj;
             String name = Util.stringValue("name", identifier);
@@ -49,7 +48,6 @@ public class JSLint {
      * A helper class for interpreting the output of {@code JSLINT.data()}.
      */
     private static final class JSFunctionConverter implements Util.Converter<JSFunction> {
-        @Override
         public JSFunction convert(Object obj) {
             Scriptable scope = (Scriptable) obj;
             String name = Util.stringValue("name", scope);
