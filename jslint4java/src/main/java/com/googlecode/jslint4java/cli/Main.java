@@ -18,6 +18,7 @@ import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
+import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
 import com.googlecode.jslint4java.formatter.JUnitXmlFormatter;
 import com.googlecode.jslint4java.formatter.PlainFormatter;
@@ -77,6 +78,8 @@ class Main {
 
     private final Flags flags = new Flags();
 
+    private JSLintResultFormatter formatter;
+
     private JSLint lint;
 
     private Main() throws IOException {
@@ -85,11 +88,6 @@ class Main {
 
     private void die(String message) {
         throw new DieException(message, 1);
-    }
-
-    private void err(String message) {
-        System.out.println(PROGNAME + ":" + message);
-        setErrored(true);
     }
 
     /**
@@ -116,18 +114,9 @@ class Main {
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
             JSLintResult result = lint.lint(file, reader);
-            if (flags.report.equals("plain")) {
-                info(new PlainFormatter().format(result));
-            } else if (flags.report.equals("jslint")) {
-                info(new JSLintXmlFormatter().format(result));
-            } else if (flags.report.equals("junit")) {
-                info(new JUnitXmlFormatter().format(result));
-            } else if (flags.report.equals("html")) {
-                info(new ReportFormatter().format(result));
-            } else {
-                for (Issue issue : result.getIssues()) {
-                    err(issue.toString());
-                }
+            info(formatter.format(result));
+            if (!result.getIssues().isEmpty()) {
+                setErrored(true);
             }
         } catch (FileNotFoundException e) {
             die(file + ": No such file or directory.");
@@ -151,6 +140,7 @@ class Main {
         if (flags.jslint != null) {
             setJSLint(flags.jslint);
         }
+        setResultFormatter();
         for (ParameterDescription pd : jc.getParameters()) {
             Field field = pd.getField();
             // Is it declared on JSLintFlags?
@@ -199,6 +189,33 @@ class Main {
         } catch (IOException e) {
             die(e.getMessage());
         }
+    }
+
+    private void setResultFormatter() {
+        if (flags.report.equals("plain")) {
+            formatter = new PlainFormatter();
+        } else if (flags.report.equals("jslint")) {
+            formatter  = new JSLintXmlFormatter();
+        } else if (flags.report.equals("junit")) {
+            formatter = new JUnitXmlFormatter();
+        } else if (flags.report.equals("html")) {
+            formatter = new ReportFormatter();
+        } else {
+            // The original CLI behaviour: one-per-line, with prefix.
+            formatter = new JSLintResultFormatter() {
+                public String format(JSLintResult result) {
+                    StringBuilder sb = new StringBuilder();
+                    for (Issue issue : result.getIssues()) {
+                        sb.append(PROGNAME);
+                        sb.append(':');
+                        sb.append(issue.toString());
+                        sb.append('\n');
+                    }
+                    return sb.toString();
+                }
+            };
+        }
+
     }
 
     private void usage(JCommander jc) {
