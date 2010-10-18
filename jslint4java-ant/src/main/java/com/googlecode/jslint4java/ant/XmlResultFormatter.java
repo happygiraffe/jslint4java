@@ -37,7 +37,6 @@ public class XmlResultFormatter implements ResultFormatter {
     private final StringBuilder sb = new StringBuilder();
     private OutputStream out;
 
-    @Override
     public void begin() {
         if (out == null) {
             throw new BuildException("must specify destFile for xml output");
@@ -55,7 +54,6 @@ public class XmlResultFormatter implements ResultFormatter {
      *
      * @see com.googlecode.jslint4java.ant.ResultFormatter#end()
      */
-    @Override
     public void end() {
         sb.append("</jslint>");
         Writer w = null;
@@ -76,12 +74,10 @@ public class XmlResultFormatter implements ResultFormatter {
      * <i>line</i>, <i>char</i>, <i>reason</i> and <i>evidence</i> attributes. An element will be
      * created for all files, regardless of any issues being uncovered.
      */
-    @Override
     public void output(JSLintResult result) {
         sb.append(form.format(result));
     }
 
-    @Override
     public void setFile(File file) {
         try {
             out = new FileOutputStream(file);
@@ -90,7 +86,6 @@ public class XmlResultFormatter implements ResultFormatter {
         }
     }
 
-    @Override
     public void setStdout(OutputStream defaultOutputStream) {
         // Ignore, we never want to write to stdout.
     }
