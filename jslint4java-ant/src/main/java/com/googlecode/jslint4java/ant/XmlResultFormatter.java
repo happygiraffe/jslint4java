@@ -45,8 +45,9 @@ public class XmlResultFormatter implements ResultFormatter {
         if (sb.length() > 0) {
             sb.delete(0, sb.length() - 1);
         }
-        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-        sb.append("<jslint>\n");
+        if (form.header() != null) {
+            sb.append(form.header());
+        }
     }
 
     /**
@@ -55,7 +56,9 @@ public class XmlResultFormatter implements ResultFormatter {
      * @see com.googlecode.jslint4java.ant.ResultFormatter#end()
      */
     public void end() {
-        sb.append("</jslint>");
+        if (form.footer() != null) {
+            sb.append(form.footer());
+        }
         Writer w = null;
         try {
             w = new BufferedWriter(new OutputStreamWriter(out, "UTF8"));

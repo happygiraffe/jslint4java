@@ -16,12 +16,11 @@ import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.PlainFormatter;
 
 /**
- * Output all JSLint errors to the console. Shows the error, the line on which
- * it occurred and a pointer to the character at which it occurred.
+ * Output all JSLint errors to the console. Shows the error, the line on which it occurred and a
+ * pointer to the character at which it occurred.
  *
  * <p>
- * If a file is specified, all output will go there. If not, then all output
- * will go to stdout.
+ * If a file is specified, all output will go there. If not, then all output will go to stdout.
  *
  * @author dom
  */
@@ -36,9 +35,15 @@ public class PlainResultFormatter implements ResultFormatter {
         // Use the default system encoding, as that's likely what the console is
         // set to...
         w = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
+        if (form.header() != null) {
+            w.println(form.header());
+        }
     }
 
     public void end() {
+        if (form.footer() != null) {
+            w.println(form.footer());
+        }
         FileUtils.close(w);
         w = null;
     }
