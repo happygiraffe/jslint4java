@@ -1,5 +1,5 @@
 // jslint.js
-// 2010-09-08
+// 2010-10-16
 
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
@@ -147,8 +147,8 @@ SOFTWARE.
 /*members "\b", "\t", "\n", "\f", "\r", "!=", "!==", "\"", "%",
     "(begin)", "(breakage)", "(context)", "(error)", "(global)",
     "(identifier)", "(last)", "(line)", "(loopage)", "(name)", "(onevar)",
-    "(params)", "(scope)", "(verb)", "*", "+", "++", "-", "--", "\/",
-    "<", "<=", "==", "===", ">", ">=", ADSAFE, ActiveXObject,
+    "(params)", "(scope)", "(statement)", "(verb)", "*", "+", "++", "-",
+    "--", "\/", "<", "<=", "==", "===", ">", ">=", ADSAFE, ActiveXObject,
     Array, Boolean, COM, CScript, Canvas, CustomAnimation, Date, Debug, E,
     Enumerator, Error, EvalError, FadeAnimation, Flash, FormField, Frame,
     Function, HotKey, Image, JSON, LN10, LN2, LOG10E, LOG2E, MAX_VALUE,
@@ -237,8 +237,8 @@ SOFTWARE.
     seashell, section, select, serialize, setInterval, setTimeout, shift,
     showWidgetPreferences, sienna, silver, skyblue, slateblue, slategray,
     sleep, slice, small, snow, sort, source, span, spawn, speak, split,
-    springgreen, src, stack, status, steelblue, strict, strong, style,
-    styleproperty, sub, substr, sup, supplant, suppressUpdates, sync,
+    springgreen, src, stack, statement, status, steelblue, strict, strong,
+    style, styleproperty, sub, substr, sup, supplant, suppressUpdates, sync,
     system, table, "table-layout", tan, tbody, td, teal, tellWidget, test,
     "text-align", "text-decoration", "text-indent", "text-shadow",
     "text-transform", textarea, tfoot, th, thead, thistle, time, title,
@@ -1125,7 +1125,7 @@ var JSLINT = (function () {
 
         function it(type, value) {
             var i, t;
-            if (type === '(color)') {
+            if (type === '(color)' || type === '(range)') {
                 t = {type: type};
             } else if (type === '(punctuator)' ||
                     (type === '(identifier)' && is_own(syntax, value))) {
@@ -1605,6 +1605,9 @@ var JSLINT = (function () {
                                             if (option.regexp) {
                                                 warningAt("Insecure '{a}'.",
                                                         line, from + l, c);
+                                            } else if (s.charAt(l) === ']') {
+                                                errorAt("Unescaped '{a}'.",
+                                                    line, from, '^');
                                             }
                                         }
                                         q = false;
@@ -2280,13 +2283,8 @@ loop:   for (;;) {
 
     function reservevar(s, v) {
         return reserve(s, function () {
-            if (this.id === 'this' || this.id === 'arguments' ||
-                    this.id === 'eval') {
-                if (strict_mode && funct['(global)']) {
-                    warning("Strict violation.", this);
-                } else if (option.safe) {
-                    warning("ADsafe violation.", this);
-                }
+            if (typeof v === 'function') {
+                v(this);
             }
             return this;
         });
@@ -2356,7 +2354,9 @@ loop:   for (;;) {
             that.left = left;
             if (predefined[left.value] === false &&
                     scope[left.value]['(global)'] === true) {
-                warning('Read only.', left);
+                warning("Read only.", left);
+            } else if (left['function']) {
+                warning("'{a}' is a function.", left, left.value);
             }
             if (option.safe) {
                 l = left;
@@ -2391,6 +2391,7 @@ loop:   for (;;) {
         }, 20);
     }
 
+
     function bitwise(s, f, p) {
         var x = symbol(s, p);
         reserveName(x);
@@ -2404,6 +2405,7 @@ loop:   for (;;) {
         };
         return x;
     }
+
 
     function bitwiseassignop(s) {
         symbol(s, 20).exps = true;
@@ -2473,6 +2475,7 @@ loop:   for (;;) {
                     nexttoken, nexttoken.value);
         }
     }
+
 
     function reachable(s) {
         var i = 0, t;
@@ -2568,6 +2571,8 @@ loop:   for (;;) {
             advance();
             advance(';');
             strict_mode = true;
+            option.newcap = true;
+            option.undef = true;
             return true;
         } else {
             return false;
@@ -2681,14 +2686,10 @@ loop:   for (;;) {
         funct['(verb)'] = null;
         scope = s;
         inblock = b;
+        if (f && (!a || a.length === 0)) {
+            warning("Empty block.");
+        }
         return a;
-    }
-
-
-// An identity function, used by string and number tokens.
-
-    function idValue() {
-        return this;
     }
 
 
@@ -2717,6 +2718,7 @@ loop:   for (;;) {
         }
     }
 
+
 // CSS parsing.
 
 
@@ -2726,6 +2728,7 @@ loop:   for (;;) {
             return true;
         }
     }
+
 
     function cssNumber() {
         if (nexttoken.id === '-') {
@@ -2739,12 +2742,14 @@ loop:   for (;;) {
         }
     }
 
+
     function cssString() {
         if (nexttoken.type === '(string)') {
             advance();
             return true;
         }
     }
+
 
     function cssColor() {
         var i, number, value;
@@ -2804,6 +2809,7 @@ loop:   for (;;) {
         return false;
     }
 
+
     function cssLength() {
         if (nexttoken.id === '-') {
             advance('-');
@@ -2825,6 +2831,7 @@ loop:   for (;;) {
         return false;
     }
 
+
     function cssLineHeight() {
         if (nexttoken.id === '-') {
             advance('-');
@@ -2842,6 +2849,7 @@ loop:   for (;;) {
         return false;
     }
 
+
     function cssWidth() {
         if (nexttoken.identifier) {
             switch (nexttoken.value) {
@@ -2855,6 +2863,7 @@ loop:   for (;;) {
             return cssLength();
         }
     }
+
 
     function cssMargin() {
         if (nexttoken.identifier) {
@@ -2882,6 +2891,7 @@ loop:   for (;;) {
         return false;
     }
 
+
     function cssCommaList() {
         while (nexttoken.id !== ';') {
             if (!cssName() && !cssString()) {
@@ -2895,12 +2905,11 @@ loop:   for (;;) {
         }
     }
 
+
     function cssCounter() {
         if (nexttoken.identifier && nexttoken.value === 'counter') {
             advance();
             advance('(');
-            if (!nexttoken.identifier) {
-            }
             advance();
             if (nexttoken.id === ',') {
                 comma();
@@ -2962,6 +2971,7 @@ loop:   for (;;) {
         return false;
     }
 
+
     function cssUrl() {
         var c, url;
         if (nexttoken.identifier && nexttoken.value === 'url') {
@@ -2991,6 +3001,7 @@ loop:   for (;;) {
         return false;
     }
 
+
     cssAny = [cssUrl, function () {
         for (;;) {
             if (nexttoken.identifier) {
@@ -3015,6 +3026,7 @@ loop:   for (;;) {
             }
         }
     }];
+
 
     cssBorderStyle = [
         'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'ridge',
@@ -3241,6 +3253,7 @@ loop:   for (;;) {
         }
     }
 
+
     function styleValue(v) {
         var i = 0,
             n,
@@ -3376,7 +3389,8 @@ loop:   for (;;) {
 
     function styleSelector() {
         if (nexttoken.identifier) {
-            if (!is_own(htmltag, nexttoken.value)) {
+            if (!is_own(htmltag, option.cap ?
+                    nexttoken.value.toLowerCase() : nexttoken.value)) {
                 warning("Expected a tagName, and instead saw {a}.",
                     nexttoken, nexttoken.value);
             }
@@ -3404,6 +3418,7 @@ loop:   for (;;) {
                 case 'first-of-type':
                 case 'focus':
                 case 'hover':
+                case 'last-child':
                 case 'last-of-type':
                 case 'link':
                 case 'only-of-type':
@@ -3966,8 +3981,12 @@ loop:   for (;;) {
 
 // Build the syntax table by declaring the syntactic elements of the language.
 
-    type('(number)', idValue);
-    type('(string)', idValue);
+    type('(number)', function () {
+        return this;
+    });
+    type('(string)', function () {
+        return this;
+    });
 
     syntax['(identifier)'] = {
         type: '(identifier)',
@@ -3978,6 +3997,9 @@ loop:   for (;;) {
                 s = scope[v],
                 f;
             if (typeof s === 'function') {
+
+// Protection against accidental inheritance.
+
                 s = undefined;
             } else if (typeof s === 'boolean') {
                 f = funct;
@@ -3996,6 +4018,13 @@ loop:   for (;;) {
                 switch (funct[v]) {
                 case 'unused':
                     funct[v] = 'var';
+                    break;
+                case 'unction':
+                    funct[v] = 'function';
+                    this['function'] = true;
+                    break;
+                case 'function':
+                    this['function'] = true;
                     break;
                 case 'label':
                     warning("'{a}' is a statement label.", token, v);
@@ -4048,6 +4077,11 @@ loop:   for (;;) {
                     } else {
                         switch (s[v]) {
                         case 'function':
+                        case 'unction':
+                            this['function'] = true;
+                            s[v] = 'closure';
+                            funct[v] = s['(global)'] ? 'global' : 'outer';
+                            break;
                         case 'var':
                         case 'unused':
                             s[v] = 'closure';
@@ -4101,13 +4135,30 @@ loop:   for (;;) {
     reserve('catch');
     reserve('default').reach = true;
     reserve('finally');
-    reservevar('arguments');
-    reservevar('eval');
+    reservevar('arguments', function (x) {
+        if (strict_mode && funct['(global)']) {
+            warning("Strict violation.", x);
+        } else if (option.safe) {
+            warning("ADsafe violation.", x);
+        }
+    });
+    reservevar('eval', function (x) {
+        if (option.safe) {
+            warning("ADsafe violation.", x);
+        }
+    });
     reservevar('false');
     reservevar('Infinity');
     reservevar('NaN');
     reservevar('null');
-    reservevar('this');
+    reservevar('this', function (x) {
+        if (strict_mode && ((funct['(statement)'] &&
+                funct['(name)'].charAt(0) > 'Z') || funct['(global)'])) {
+            warning("Strict violation.", x);
+        } else if (option.safe) {
+            warning("ADsafe violation.", x);
+        }
+    });
     reservevar('true');
     reservevar('undefined');
     assignop('=', 'assign', 20);
@@ -4398,7 +4449,7 @@ loop:   for (;;) {
     }, 160, true);
 
     infix('(', function (left, that) {
-        adjacent(prevtoken, token);
+        nobreak(prevtoken, token);
         nospace();
         if (option.immed && !left.immed && left.id === 'function') {
             warning("Wrap an immediate function invocation in parentheses " +
@@ -4487,6 +4538,7 @@ loop:   for (;;) {
     });
 
     infix('[', function (left, that) {
+        nobreak(prevtoken, token);
         nospace();
         var e = parse(0), s;
         if (e && e.type === '(string)') {
@@ -4604,16 +4656,17 @@ loop:   for (;;) {
     }
 
 
-    function doFunction(i) {
+    function doFunction(i, statement) {
         var f, s = scope;
         scope = Object.create(s);
         funct = {
-            '(name)'    : i || '"' + anonname + '"',
-            '(line)'    : nexttoken.line,
-            '(context)' : funct,
-            '(breakage)': 0,
-            '(loopage)' : 0,
-            '(scope)'   : scope
+            '(name)'     : i || '"' + anonname + '"',
+            '(line)'     : nexttoken.line,
+            '(context)'  : funct,
+            '(breakage)' : 0,
+            '(loopage)'  : 0,
+            '(scope)'    : scope,
+            '(statement)': statement
         };
         f = funct;
         token.funct = funct;
@@ -4720,7 +4773,7 @@ loop:   for (;;) {
     }(delim('{')));
 
 
-    function varstatement(prefix) {
+    var varstatement = function varstatement(prefix) {
 
 // JavaScript does not have block scope. It only has function scope. So,
 // declaring a variable in a block can have unexpected consequences.
@@ -4765,7 +4818,7 @@ loop:   for (;;) {
             comma();
         }
         return this;
-    }
+    };
 
 
     stmt('var', varstatement).exps = true;
@@ -4779,8 +4832,8 @@ loop:   for (;;) {
         }
         var i = identifier();
         adjacent(token, nexttoken);
-        addlabel(i, 'unused');
-        doFunction(i);
+        addlabel(i, 'unction');
+        doFunction(i, true);
         if (nexttoken.id === '(' && nexttoken.line === token.line) {
             error(
 "Function statements are not invocable. Wrap the whole function invocation in parens.");
@@ -5399,12 +5452,12 @@ loop:   for (;;) {
                     if (token.id !== '@' || !nexttoken.identifier ||
                             nexttoken.value !== 'charset' || token.line !== 1 ||
                             token.from !== 1) {
-                        error('A css file should begin with @charset "UTF-8";');
+                        error("A css file should begin with @charset 'UTF-8';");
                     }
                     advance();
                     if (nexttoken.type !== '(string)' &&
                             nexttoken.value !== 'UTF-8') {
-                        error('A css file should begin with @charset "UTF-8";');
+                        error("A css file should begin with @charset 'UTF-8';");
                     }
                     advance();
                     advance(';');
@@ -5491,6 +5544,9 @@ loop:   for (;;) {
             for (n in f) {
                 if (is_own(f, n) && n.charAt(0) !== '(') {
                     v = f[n];
+                    if (v === 'unction') {
+                        v = 'unused';
+                    }
                     if (is_array(fu[v])) {
                         fu[v].push(n);
                         if (v === 'unused') {
@@ -5660,7 +5716,7 @@ loop:   for (;;) {
     };
     itself.jslint = itself;
 
-    itself.edition = '2010-09-08';
+    itself.edition = '2010-10-16';
 
     return itself;
 
