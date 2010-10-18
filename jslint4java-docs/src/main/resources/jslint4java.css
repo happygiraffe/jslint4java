@@ -173,6 +173,10 @@ ul {
 	padding-left: 2em;
 }
 
+.nobreak {
+	white-space: nowrap;
+}
+
 /* @end */
 
 /* @group jslint.com */
