@@ -32,6 +32,30 @@ import com.googlecode.jslint4java.formatter.ReportFormatter;
 class Main {
 
     /**
+     * The default command line output.
+     */
+    private static final class DefaultFormatter implements JSLintResultFormatter {
+        public String format(JSLintResult result) {
+            StringBuilder sb = new StringBuilder();
+            for (Issue issue : result.getIssues()) {
+                sb.append(PROGNAME);
+                sb.append(':');
+                sb.append(issue.toString());
+                sb.append('\n');
+            }
+            return sb.toString();
+        }
+
+        public String footer() {
+            return null;
+        }
+
+        public String header() {
+            return null;
+        }
+    }
+
+    /**
      * This is just to avoid calling {@link System#exit(int)} outside of main()…
      */
     @SuppressWarnings("serial")
@@ -195,25 +219,14 @@ class Main {
         if (flags.report.equals("plain")) {
             formatter = new PlainFormatter();
         } else if (flags.report.equals("jslint")) {
-            formatter  = new JSLintXmlFormatter();
+            formatter = new JSLintXmlFormatter();
         } else if (flags.report.equals("junit")) {
             formatter = new JUnitXmlFormatter();
         } else if (flags.report.equals("html")) {
             formatter = new ReportFormatter();
         } else if (flags.report.equals("")) {
             // The original CLI behaviour: one-per-line, with prefix.
-            formatter = new JSLintResultFormatter() {
-                public String format(JSLintResult result) {
-                    StringBuilder sb = new StringBuilder();
-                    for (Issue issue : result.getIssues()) {
-                        sb.append(PROGNAME);
-                        sb.append(':');
-                        sb.append(issue.toString());
-                        sb.append('\n');
-                    }
-                    return sb.toString();
-                }
-            };
+            formatter = new DefaultFormatter();
         } else {
             die("unknown report type '" + flags.report + "'");
         }

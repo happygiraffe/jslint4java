@@ -20,6 +20,11 @@ public class XmlFormatterTest {
         public String attr(String k, String v) {
             return super.attr(k, v);
         }
+
+        @Override
+        protected String root() {
+            return "root";
+        }
     }
 
     private final XF xf = new XF();

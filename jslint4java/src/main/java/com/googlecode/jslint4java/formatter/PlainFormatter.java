@@ -4,12 +4,17 @@ import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLintResult;
 
 /**
- * Output all JSLint errors to the console. Shows the error, the line on which
- * it occurred and a pointer to the character at which it occurred.
+ * Output all JSLint errors to the console. Shows the error, the line on which it occurred and a
+ * pointer to the character at which it occurred.
  *
  * @author dom
  */
 public class PlainFormatter implements JSLintResultFormatter {
+
+    /** No footer required. */
+    public String footer() {
+        return null;
+    }
 
     public String format(JSLintResult result) {
         StringBuilder sb = new StringBuilder();
@@ -17,6 +22,11 @@ public class PlainFormatter implements JSLintResultFormatter {
             sb.append(outputOneIssue(issue));
         }
         return sb.toString();
+    }
+
+    /** No footer required. */
+    public String header() {
+        return null;
     }
 
     private String outputOneIssue(Issue issue) {

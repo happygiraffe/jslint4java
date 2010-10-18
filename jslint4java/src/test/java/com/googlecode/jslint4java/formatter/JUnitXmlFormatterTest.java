@@ -1,5 +1,8 @@
 package com.googlecode.jslint4java.formatter;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Test;
 
@@ -9,6 +12,17 @@ import com.googlecode.jslint4java.JSLintResult;
 public class JUnitXmlFormatterTest {
 
     private final JSLintResultFormatter form = new JUnitXmlFormatter();
+
+    @Test
+    public void shouldHaveTestsuitesFooter() {
+        assertThat(form.footer(), is("</testsuites>"));
+    }
+
+
+    @Test
+    public void shouldHaveTestsuitesHeader() {
+        assertThat(form.header(), is("<testsuites>"));
+    }
 
     @Test
     public void testEscaping() throws Exception {

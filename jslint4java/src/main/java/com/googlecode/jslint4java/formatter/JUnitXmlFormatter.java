@@ -88,4 +88,9 @@ public class JUnitXmlFormatter extends XmlFormatter implements JSLintResultForma
         return size == 1 ? "" : "s";
     }
 
+    @Override
+    protected String root() {
+        return "testsuites";
+    }
+
 }

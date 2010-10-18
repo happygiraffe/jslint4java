@@ -22,4 +22,9 @@ public class ReportFormatter extends XmlFormatter implements JSLintResultFormatt
         return sb.toString();
     }
 
+    @Override
+    protected String root() {
+        return "html";
+    }
+
 }

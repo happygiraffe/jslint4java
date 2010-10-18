@@ -14,6 +14,16 @@ public class PlainFormatterTest {
     private final PlainFormatter rf = new PlainFormatter();
 
     @Test
+    public void shouldEmitNullFooter() {
+        assertThat(rf.footer(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldEmitNullHeader() {
+        assertThat(rf.header(), is(nullValue()));
+    }
+
+    @Test
     public void testExpectedOutputNoIssues() {
         JSLintResult result = new JSLintResult.ResultBuilder("foo/bar.js").build();
         String out = rf.format(result);

@@ -39,6 +39,16 @@ public class JSLintXmlFormatterTest {
     }
 
     @Test
+    public void shouldHaveJslintFooter() {
+        assertThat(form.footer(), is("</jslint>"));
+    }
+
+    @Test
+    public void shouldHaveJslintHeader() {
+        assertThat(form.header(), is("<jslint>"));
+    }
+
+    @Test
     public void testNoOutput() throws Exception {
         JSLintResult result = new JSLintResult.ResultBuilder("good.js").build();
         String expected = "<file name='good.js'/>";
