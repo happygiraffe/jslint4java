@@ -83,17 +83,27 @@ class Main {
      */
     public static void main(String[] args) throws IOException {
         try {
-            Main main = new Main();
-            for (String file : main.processOptions(args)) {
-                main.lintFile(file);
-            }
-            System.exit(main.isErrored() ? 1 : 0);
+            System.exit(new Main().run(args));
         } catch (DieException e) {
             if (e.getMessage() != null) {
                 System.err.println(PROGNAME + ": " + e.getMessage());
             }
             System.exit(e.getCode());
         }
+    }
+
+    private int run(String[] args) throws IOException {
+        List<String> files = processOptions(args);
+        if (formatter.header() != null) {
+            info(formatter.header());
+        }
+        for (String file : files) {
+            lintFile(file);
+        }
+        if (formatter.footer() != null) {
+            info(formatter.footer());
+        }
+        return isErrored() ? 1 : 0;
     }
 
     private Charset encoding = Charset.defaultCharset();
