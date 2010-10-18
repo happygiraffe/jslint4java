@@ -22,7 +22,7 @@ class Flags {
     @Parameter(names = "--help", description = "Display usage information")
     public boolean help;
 
-    @Parameter(names = "--report", description = "Display report in different formats: plain, jslint, junit and html")
+    @Parameter(names = "--report", description = "Display report in different formats: plain, xml, junit and report")
     public String report = "";
 
     /**

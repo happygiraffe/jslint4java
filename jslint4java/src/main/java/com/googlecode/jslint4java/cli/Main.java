@@ -228,11 +228,11 @@ class Main {
     private void setResultFormatter() {
         if (flags.report.equals("plain")) {
             formatter = new PlainFormatter();
-        } else if (flags.report.equals("jslint")) {
+        } else if (flags.report.equals("xml")) {
             formatter = new JSLintXmlFormatter();
         } else if (flags.report.equals("junit")) {
             formatter = new JUnitXmlFormatter();
-        } else if (flags.report.equals("html")) {
+        } else if (flags.report.equals("report")) {
             formatter = new ReportFormatter();
         } else if (flags.report.equals("")) {
             // The original CLI behaviour: one-per-line, with prefix.
