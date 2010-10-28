@@ -1,13 +1,13 @@
 Revision history for jslint4java
 ================================
 
-1.4.3 (2010-10-18)
+1.4.3 (2010-10-28)
 ------------------
 
  * issue 43: allow access to reports form the command line.
    * Thanks to rharding and stigkj for their assistance.
  * issue 44: stop IllegalAccessException warning from being emitted.
- * Update to JSLint 2010-10-16.
+ * Update to JSLint 2010-10-26.
 
 1.4.2 (2010-09-13)
 ------------------

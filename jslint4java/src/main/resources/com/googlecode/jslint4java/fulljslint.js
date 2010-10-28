@@ -1,5 +1,5 @@
 // jslint.js
-// 2010-10-16
+// 2010-10-26
 
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
@@ -1607,7 +1607,7 @@ var JSLINT = (function () {
                                                         line, from + l, c);
                                             } else if (s.charAt(l) === ']') {
                                                 errorAt("Unescaped '{a}'.",
-                                                    line, from, '^');
+                                                    line, from + l, '^');
                                             }
                                         }
                                         q = false;
@@ -4449,7 +4449,9 @@ loop:   for (;;) {
     }, 160, true);
 
     infix('(', function (left, that) {
-        nobreak(prevtoken, token);
+        if (prevtoken.id !== '}' && prevtoken.id !== ')') {
+            nobreak(prevtoken, token);
+        }
         nospace();
         if (option.immed && !left.immed && left.id === 'function') {
             warning("Wrap an immediate function invocation in parentheses " +
@@ -5716,7 +5718,7 @@ loop:   for (;;) {
     };
     itself.jslint = itself;
 
-    itself.edition = '2010-10-16';
+    itself.edition = '2010-10-26';
 
     return itself;
 
