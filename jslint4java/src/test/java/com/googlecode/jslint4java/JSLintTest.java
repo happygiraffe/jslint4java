@@ -184,6 +184,13 @@ public class JSLintTest {
     }
 
     @Test
+    public void testMaxLen() {
+        lint.addOption(Option.MAXLEN, "1");
+        JSLintResult result = lint("var foo = 42;");
+        assertIssues(result.getIssues(), "Line too long.");
+    }
+
+    @Test
     public void testNoProblems() throws IOException {
         List<Issue> problems = lint("var foo = 1;").getIssues();
         assertIssues(problems);
