@@ -1,6 +1,11 @@
 Revision history for jslint4java
 ================================
 
+1.4.4 (2010-11-08)
+------------------
+
+ * issue 45: Add support for “maxlen” option.  Thanks to pigulla for spotting.
+
 1.4.3 (2010-10-28)
 ------------------
 
