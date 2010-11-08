@@ -55,6 +55,9 @@ class JSLintFlags {
     @Parameter(names = "--maxerr", description = "The maximum number of warnings reported (default is 50)")
     public String maxerr = null;
 
+    @Parameter(names = "--maxlen", description = "Maximum line length")
+    public String maxlen = null;
+
     @Parameter(names = "--newcap", description = "If constructor names must be capitalized")
     public Boolean newcap = null;
 

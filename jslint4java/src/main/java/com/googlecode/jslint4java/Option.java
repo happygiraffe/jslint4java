@@ -60,6 +60,9 @@ public enum Option {
     /** The maximum number of warnings reported (default is 50) */
     MAXERR("The maximum number of warnings reported (default is 50)", Integer.class),
 
+    /** Maximum line length */
+    MAXLEN("Maximum line length", Integer.class),
+
     /** If constructor names must be capitalized */
     NEWCAP("If constructor names must be capitalized", Boolean.class),
 
