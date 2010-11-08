@@ -5,6 +5,9 @@ Revision history for jslint4java
 ------------------
 
  * issue 45: Add support for “maxlen” option.  Thanks to pigulla for spotting.
+ * Update dependencies:
+   * rhino 1.7R2
+   * JCommander 1.11
 
 1.4.3 (2010-10-28)
 ------------------
