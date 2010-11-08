@@ -110,8 +110,6 @@ class Main {
 
     private boolean errored = false;
 
-    private final Flags flags = new Flags();
-
     private JSLintResultFormatter formatter;
 
     private JSLint lint;
@@ -163,7 +161,8 @@ class Main {
 
     private List<String> processOptions(String[] args) {
         JSLintFlags jslintFlags = new JSLintFlags();
-        JCommander jc = new JCommander(new Object[] { flags, jslintFlags }, args);
+        Flags flags = new Flags();
+        JCommander jc = new JCommander(new Object[] { flags , jslintFlags }, args);
         jc.setProgramName("jslint4java");
         if (flags.help) {
             usage(jc);
@@ -174,7 +173,7 @@ class Main {
         if (flags.jslint != null) {
             setJSLint(flags.jslint);
         }
-        setResultFormatter();
+        setResultFormatter(flags.report);
         for (ParameterDescription pd : jc.getParameters()) {
             Field field = pd.getField();
             // Is it declared on JSLintFlags?
@@ -225,20 +224,20 @@ class Main {
         }
     }
 
-    private void setResultFormatter() {
-        if (flags.report.equals("plain")) {
-            formatter = new PlainFormatter();
-        } else if (flags.report.equals("xml")) {
-            formatter = new JSLintXmlFormatter();
-        } else if (flags.report.equals("junit")) {
-            formatter = new JUnitXmlFormatter();
-        } else if (flags.report.equals("report")) {
-            formatter = new ReportFormatter();
-        } else if (flags.report.equals("")) {
+    private void setResultFormatter(String reportType) {
+        if (reportType == null || reportType.equals("")) {
             // The original CLI behaviour: one-per-line, with prefix.
             formatter = new DefaultFormatter();
+        } else if (reportType.equals("plain")) {
+            formatter = new PlainFormatter();
+        } else if (reportType.equals("xml")) {
+            formatter = new JSLintXmlFormatter();
+        } else if (reportType.equals("junit")) {
+            formatter = new JUnitXmlFormatter();
+        } else if (reportType.equals("report")) {
+            formatter = new ReportFormatter();
         } else {
-            die("unknown report type '" + flags.report + "'");
+            die("unknown report type '" + reportType + "'");
         }
 
     }
