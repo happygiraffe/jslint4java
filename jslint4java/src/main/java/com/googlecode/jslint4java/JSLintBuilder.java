@@ -15,7 +15,6 @@ import org.mozilla.javascript.ScriptableObject;
  * Construct {@link JSLint} instances.
  *
  * @author hdm
- *
  */
 public class JSLintBuilder {
     private static final String JSLINT_FILE = "com/googlecode/jslint4java/fulljslint.js";
@@ -23,6 +22,7 @@ public class JSLintBuilder {
     private static final ContextFactory CONTEXT_FACTORY = new ContextFactory();
 
     private final ScriptableObject scope;
+
     private final Context ctx;
 
     public JSLintBuilder() {
@@ -50,11 +50,17 @@ public class JSLintBuilder {
      * Initialize the scope with a default jslint.js.
      *
      * @return a configured {@link JSLint}
-     * @throws IOException
-     *             if there are any problems reading the resource.
+     * @throws RuntimeException
+     *             if we fail to load the default jslint.js.
      */
-    public JSLint fromDefault() throws IOException {
-        return fromClasspathResource(JSLINT_FILE);
+    public JSLint fromDefault() {
+        try {
+            return fromClasspathResource(JSLINT_FILE);
+        } catch (IOException e) {
+            // We wrap and rethrow, as there's nothing a caller can do in this
+            // case.
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -80,7 +86,7 @@ public class JSLintBuilder {
      *            the name of the resource backed by the reader
      * @return a configured {@link JSLint}
      * @throws IOException
-     *             if there are any problems reading from {@code reader}.
+     *             if there are any problems reading from {@code reader} .
      */
     public JSLint fromReader(Reader reader, String name) throws IOException {
         ctx.evaluateReader(scope, reader, name, 1, null);
