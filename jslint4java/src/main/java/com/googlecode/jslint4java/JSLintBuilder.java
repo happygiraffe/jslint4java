@@ -2,10 +2,11 @@ package com.googlecode.jslint4java;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -25,13 +26,15 @@ public class JSLintBuilder {
 
     private final Context ctx;
 
+    private final Charset utf8 = Charset.forName("UTF-8");
+
     public JSLintBuilder() {
         ctx = CONTEXT_FACTORY.enterContext();
         scope = ctx.initStandardObjects();
     }
 
     /**
-     * Initialize the scope from a jslint.js found in the classpath.
+     * Initialize the scope from a jslint.js found in the classpath. Assumes a UTF-8 encoding.
      *
      * @param resource
      *            the location of jslint.js on the classpath.
@@ -40,9 +43,23 @@ public class JSLintBuilder {
      *             if there are any problems reading the resource.
      */
     public JSLint fromClasspathResource(String resource) throws IOException {
-        // TODO encoding?
+        return fromClasspathResource(resource, utf8);
+    }
+
+    /**
+     * Initialize the scope from a jslint.js found in the classpath.
+     *
+     * @param resource
+     *            the location of jslint.js on the classpath.
+     * @param encoding
+     *            the encoding of the resource.
+     * @return a configured {@link JSLint}
+     * @throws IOException
+     *             if there are any problems reading the resource.
+     */
+    public JSLint fromClasspathResource(String resource, Charset encoding) throws IOException {
         Reader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader()
-                .getResourceAsStream(resource)));
+                .getResourceAsStream(resource), encoding));
         return fromReader(reader, resource);
     }
 
@@ -64,7 +81,8 @@ public class JSLintBuilder {
     }
 
     /**
-     * Initialize the scope with the jslint.js passed in on the filesystem.
+     * Initialize the scope with the jslint.js passed in on the filesystem. Assumes a UTF-8
+     * encoding.
      *
      * @param f
      *            the path to jslint.js
@@ -73,7 +91,22 @@ public class JSLintBuilder {
      *             if the file can't be read.
      */
     public JSLint fromFile(File f) throws IOException {
-        Reader reader = new BufferedReader(new FileReader(f));
+        return fromFile(f, utf8);
+    }
+
+    /**
+     * Initialize the scope with the jslint.js passed in on the filesystem.
+     *
+     * @param f
+     *            the path to jslint.js
+     * @param encoding
+     *            the encoding of the file
+     * @return a configured {@link JSLint}
+     * @throws IOException
+     *             if the file can't be read.
+     */
+    public JSLint fromFile(File f, Charset encoding) throws IOException {
+        Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), encoding));
         return fromReader(reader, f.toString());
     }
 
