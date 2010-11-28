@@ -31,13 +31,6 @@ public class JSLintBuilder {
     }
 
     /**
-     * Return a configured {@link JSLint} object.
-     */
-    public JSLint create() {
-        return new JSLint(scope);
-    }
-
-    /**
      * Initialize the scope from a jslint.js found in the classpath.
      *
      * @param resource
