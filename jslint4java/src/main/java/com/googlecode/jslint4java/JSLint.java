@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -86,11 +87,14 @@ public class JSLint {
 
     private final Scriptable scope;
 
+    private final ContextFactory contextFactory;
+
     /**
      * Create a new {@link JSLint} object. You must pass in a {@link Scriptable}
      * which already has the {@code JSLINT} function defined.
      */
-    public JSLint(Scriptable scope) {
+    public JSLint(ContextFactory contextFactory, Scriptable scope) {
+        this.contextFactory = contextFactory;
         this.scope = scope;
     }
 

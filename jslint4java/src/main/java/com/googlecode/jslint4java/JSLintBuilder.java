@@ -20,7 +20,7 @@ import org.mozilla.javascript.ScriptableObject;
 public class JSLintBuilder {
     private static final String JSLINT_FILE = "com/googlecode/jslint4java/fulljslint.js";
 
-    private static final ContextFactory CONTEXT_FACTORY = new ContextFactory();
+    private final ContextFactory contextFactory = new ContextFactory();
 
     private final ScriptableObject scope;
 
@@ -29,7 +29,7 @@ public class JSLintBuilder {
     private final Charset utf8 = Charset.forName("UTF-8");
 
     public JSLintBuilder() {
-        ctx = CONTEXT_FACTORY.enterContext();
+        ctx = contextFactory.enterContext();
         scope = ctx.initStandardObjects();
     }
 
@@ -123,6 +123,6 @@ public class JSLintBuilder {
      */
     public JSLint fromReader(Reader reader, String name) throws IOException {
         ctx.evaluateReader(scope, reader, name, 1, null);
-        return new JSLint(scope);
+        return new JSLint(contextFactory, scope);
     }
 }
