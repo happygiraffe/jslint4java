@@ -86,7 +86,7 @@ public class JSLint {
 
     private final Map<Option, Object> options = new EnumMap<Option, Object>(Option.class);
 
-    private final Scriptable scope;
+    private final ScriptableObject scope;
 
     private final ContextFactory contextFactory;
 
@@ -94,9 +94,11 @@ public class JSLint {
      * Create a new {@link JSLint} object. You must pass in a {@link Scriptable}
      * which already has the {@code JSLINT} function defined.
      */
-    public JSLint(ContextFactory contextFactory, Scriptable scope) {
+    public JSLint(ContextFactory contextFactory, ScriptableObject scope) {
         this.contextFactory = contextFactory;
         this.scope = scope;
+        // We should no longer be updating this.
+        this.scope.sealObject();
     }
 
     /**
