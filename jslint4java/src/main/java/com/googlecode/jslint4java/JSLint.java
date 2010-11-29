@@ -119,6 +119,50 @@ public class JSLint {
         options.put(o, optionParser.parse(o.getType(), arg));
     }
 
+    /**
+     * Assemble the {@link JSLintResult} object.
+     */
+    private JSLintResult buildResults(String systemId, long startNanos, long endNanos) {
+        ResultBuilder b = new JSLintResult.ResultBuilder(systemId);
+        b.duration(TimeUnit.NANOSECONDS.toMillis(endNanos - startNanos));
+        for (Issue issue : readErrors(systemId)) {
+            b.addIssue(issue);
+        }
+
+        // Collect a report on what we've just linted.
+        b.report(callReport(false));
+
+        // Extract JSLINT.data() output and set it on the result.
+        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
+        Object o = lintScope.get("data", lintScope);
+        // Real JSLINT will always have this, but some of my test stubs don't.
+        if (o != UniqueTag.NOT_FOUND) {
+            Function reportFunc = (Function) o;
+            Scriptable data = (Scriptable) reportFunc.call(Context.getCurrentContext(), scope,
+                    scope, new Object[] {});
+            for (String global : Util.listValueOfType("globals", String.class, data)) {
+                b.addGlobal(global);
+            }
+            for (String url : Util.listValueOfType("urls", String.class, data)) {
+                b.addUrl(url);
+            }
+            for (Entry<String, Integer> member : getDataMembers(data).entrySet()) {
+                b.addMember(member.getKey(), member.getValue());
+            }
+            for (JSIdentifier id : Util.listValue("unused", data, new IdentifierConverter())) {
+                b.addUnused(id);
+            }
+            for (JSIdentifier id : Util.listValue("implieds", data, new IdentifierConverter())) {
+                b.addImplied(id);
+            }
+            b.json(Util.booleanValue("json", data));
+            for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {
+                b.addFunction(f);
+            }
+        }
+        return b.build();
+    }
+
     private String callReport(boolean errorsOnly) {
         Object[] args = new Object[] { Boolean.valueOf(errorsOnly) };
         Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
@@ -194,45 +238,7 @@ public class JSLint {
         long before = System.nanoTime();
         doLint(javaScript);
         long after = System.nanoTime();
-        ResultBuilder b = new JSLintResult.ResultBuilder(systemId);
-        b.duration(TimeUnit.NANOSECONDS.toMillis(after - before));
-        for (Issue issue : readErrors(systemId)) {
-            b.addIssue(issue);
-        }
-
-        // Collect a report on what we've just linted.
-        b.report(callReport(false));
-
-        // Extract JSLINT.data() output and set it on the result.
-        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
-        Object o = lintScope.get("data", lintScope);
-        // Real JSLINT will always have this, but some of my test stubs don't.
-        if (o != UniqueTag.NOT_FOUND) {
-            Function reportFunc = (Function) o;
-            Scriptable data = (Scriptable) reportFunc.call(Context.getCurrentContext(), scope,
-                    scope, new Object[] {});
-            for (String global : Util.listValueOfType("globals", String.class, data)) {
-                b.addGlobal(global);
-            }
-            for (String url : Util.listValueOfType("urls", String.class, data)) {
-                b.addUrl(url);
-            }
-            for (Entry<String, Integer> member : getDataMembers(data).entrySet()) {
-                b.addMember(member.getKey(), member.getValue());
-            }
-            for (JSIdentifier id : Util.listValue("unused", data, new IdentifierConverter())) {
-                b.addUnused(id);
-            }
-            for (JSIdentifier id : Util.listValue("implieds", data, new IdentifierConverter())) {
-                b.addImplied(id);
-            }
-            b.json(Util.booleanValue("json", data));
-            for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {
-                b.addFunction(f);
-            }
-        }
-
-        return b.build();
+        return buildResults(systemId, before, after);
     }
 
     /**
