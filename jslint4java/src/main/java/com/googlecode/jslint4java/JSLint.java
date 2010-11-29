@@ -126,6 +126,7 @@ public class JSLint {
     /**
      * Assemble the {@link JSLintResult} object.
      */
+    @NeedsContext
     private JSLintResult buildResults(String systemId, long startNanos, long endNanos) {
         ResultBuilder b = new JSLintResult.ResultBuilder(systemId);
         b.duration(TimeUnit.NANOSECONDS.toMillis(endNanos - startNanos));
@@ -167,6 +168,7 @@ public class JSLint {
         return b.build();
     }
 
+    @NeedsContext
     private String callReport(boolean errorsOnly) {
         Object[] args = new Object[] { Boolean.valueOf(errorsOnly) };
         Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
@@ -179,6 +181,7 @@ public class JSLint {
         return (String) reportFunc.call(Context.getCurrentContext(), scope, scope, args);
     }
 
+    @NeedsContext
     private void doLint(String javaScript) {
         String src = javaScript == null ? "" : javaScript;
         Object[] args = new Object[] { src, optionsAsJavaScriptObject() };
@@ -249,6 +252,7 @@ public class JSLint {
      * Turn the set of options into a JavaScript object, where the key is the
      * name of the option and the value is true.
      */
+    @NeedsContext
     private Scriptable optionsAsJavaScriptObject() {
         Scriptable opts = Context.getCurrentContext().newObject(scope);
         for (Entry<Option, Object> entry : options.entrySet()) {
