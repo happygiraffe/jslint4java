@@ -44,4 +44,29 @@ public class JSLintThreadSafetyTest {
         }
     }
 
+    @Test
+    public void canBuildInDifferentThread() throws Exception {
+        final JSLintBuilder builder = new JSLintBuilder();
+        final AtomicReference<Exception> kaboom = new AtomicReference<Exception>();
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    JSLint lint = builder.fromDefault();
+                    lint.lint("blort.js", JS);
+                } catch (Exception e) {
+                    kaboom.set(e);
+                }
+            }
+        });
+        t.start();
+        t.join();
+
+        if (kaboom.get() == null) {
+            assertTrue("LGTM", true);
+        } else {
+            // Wrap for stack trace.
+            throw new RuntimeException(kaboom.get());
+        }
+    }
+
 }
