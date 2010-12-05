@@ -18,41 +18,38 @@ public class JSLintThreadSafetyTest {
     @Test
     public void canRunSameInstanceInMultipleThreads() throws Exception {
         final JSLint lint = new JSLintBuilder().fromDefault();
-        final AtomicReference<Exception> kaboom = new AtomicReference<Exception>();
 
         // Check that the first one works.
         lint.lint("foo1", JS);
 
-        Thread t = new Thread(new Runnable() {
+        assertNoRaise(new Runnable() {
             public void run() {
-                try {
-                    // Now check it still works in a different thread.
-                    lint.lint("foo2", JS);
-                } catch (Exception e) {
-                    kaboom.set(e);
-                }
+                // Now check it still works in a different thread.
+                lint.lint("foo2", JS);
             }
         });
-        t.start();
-        t.join();
-
-        if (kaboom.get() == null) {
-            assertTrue("LGTM", true);
-        } else {
-            // Wrap so that this test gets mentioned in the stack trace.
-            throw new RuntimeException(kaboom.get());
-        }
     }
 
     @Test
     public void canBuildInDifferentThread() throws Exception {
         final JSLintBuilder builder = new JSLintBuilder();
+        assertNoRaise(new Runnable() {
+            public void run() {
+                JSLint lint = builder.fromDefault();
+                lint.lint("blort.js", JS);
+            }
+        });
+    }
+
+    /**
+     * Run <i>r</i> in a separate thread, and verify that it raises no exceptions.
+     */
+    private static void assertNoRaise(final Runnable r) throws InterruptedException {
         final AtomicReference<Exception> kaboom = new AtomicReference<Exception>();
         Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
-                    JSLint lint = builder.fromDefault();
-                    lint.lint("blort.js", JS);
+                    r.run();
                 } catch (Exception e) {
                     kaboom.set(e);
                 }
