@@ -10,14 +10,18 @@ import org.mozilla.javascript.ContextFactory;
 
 /**
  * An indication that this method requires access to the current JavaScript context. This indicates
- * that the method should contain within it a call to
- * {@link ContextFactory#call(org.mozilla.javascript.ContextAction)}.
+ * that the method should contain within it one of:
+ *
+ * <ul>
+ * <li>a call to {@link ContextFactory#call(org.mozilla.javascript.ContextAction)}.
+ * <li>A try/finally block calling {@link ContextFactory#enterContext()} and {@link Context#exit()}
+ * </ul>
  *
  * <p>
  * TODO: enforce this annotation programmatically.
  */
 @Retention(RetentionPolicy.SOURCE)
-@Target(ElementType.METHOD)
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 @Documented
 public @interface NeedsContext {
 }

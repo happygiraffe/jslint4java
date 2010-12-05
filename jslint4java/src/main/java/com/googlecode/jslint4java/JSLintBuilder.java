@@ -26,8 +26,14 @@ public class JSLintBuilder {
 
     private final Charset utf8 = Charset.forName("UTF-8");
 
+    @NeedsContext
     public JSLintBuilder() {
-        scope = contextFactory.enterContext().initStandardObjects();
+        try {
+            scope = contextFactory.enterContext().initStandardObjects();
+        }
+        finally {
+            Context.exit();
+        }
     }
 
     /**
@@ -118,9 +124,10 @@ public class JSLintBuilder {
      * @throws IOException
      *             if there are any problems reading from {@code reader} .
      */
+    @NeedsContext
     public JSLint fromReader(Reader reader, String name) throws IOException {
         try {
-            Context.getCurrentContext().evaluateReader(scope, reader, name, 1, null);
+            contextFactory.enterContext().evaluateReader(scope, reader, name, 1, null);
             return new JSLint(contextFactory, scope);
         } finally {
             Context.exit();
