@@ -22,19 +22,7 @@ public class JSLintBuilder {
 
     private final ContextFactory contextFactory = new ContextFactory();
 
-    private final ScriptableObject scope;
-
     private final Charset utf8 = Charset.forName("UTF-8");
-
-    @NeedsContext
-    public JSLintBuilder() {
-        try {
-            scope = contextFactory.enterContext().initStandardObjects();
-        }
-        finally {
-            Context.exit();
-        }
-    }
 
     /**
      * Initialize the scope from a jslint.js found in the classpath. Assumes a UTF-8 encoding.
@@ -127,7 +115,9 @@ public class JSLintBuilder {
     @NeedsContext
     public JSLint fromReader(Reader reader, String name) throws IOException {
         try {
-            contextFactory.enterContext().evaluateReader(scope, reader, name, 1, null);
+            Context cx = contextFactory.enterContext();
+            ScriptableObject scope = cx.initStandardObjects();
+            cx.evaluateReader(scope, reader, name, 1, null);
             return new JSLint(contextFactory, scope);
         } finally {
             Context.exit();
