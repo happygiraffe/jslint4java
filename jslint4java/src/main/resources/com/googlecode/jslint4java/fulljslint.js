@@ -1,5 +1,5 @@
 // jslint.js
-// 2010-10-26
+// 2010-12-23
 
 /*
 Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
@@ -33,11 +33,14 @@ SOFTWARE.
     The first parameter is either a string or an array of strings. If it is a
     string, it will be split on '\n' or '\r'. If it is an array of strings, it
     is assumed that each string represents one line. The source can be a
-    JavaScript text, or HTML text, or a Konfabulator text.
+    JavaScript text, or HTML text, or a JSON text, or a CSS text.
 
     The second parameter is an optional object of options which control the
-    operation of JSLINT. Most of the options are booleans: They are all are
-    optional and have a default value of false.
+    operation of JSLINT. Most of the options are booleans: They are all
+    optional and have a default value of false. One of the options, predef,
+    can be an array of names, which will be used to declare global variables,
+    or an object whose keys are used as global names, with a boolean value
+    that determines if they are assignable.
 
     If it checks out, JSLINT returns true. Otherwise, it returns false.
 
@@ -148,19 +151,20 @@ SOFTWARE.
     "(begin)", "(breakage)", "(context)", "(error)", "(global)",
     "(identifier)", "(last)", "(line)", "(loopage)", "(name)", "(onevar)",
     "(params)", "(scope)", "(statement)", "(verb)", "*", "+", "++", "-",
-    "--", "\/", "<", "<=", "==", "===", ">", ">=", ADSAFE, ActiveXObject,
-    Array, Boolean, COM, CScript, Canvas, CustomAnimation, Date, Debug, E,
-    Enumerator, Error, EvalError, FadeAnimation, Flash, FormField, Frame,
-    Function, HotKey, Image, JSON, LN10, LN2, LOG10E, LOG2E, MAX_VALUE,
-    MIN_VALUE, Math, MenuItem, MoveAnimation, NEGATIVE_INFINITY, Number,
-    Object, Option, PI, POSITIVE_INFINITY, Point, RangeError, Rectangle,
-    ReferenceError, RegExp, ResizeAnimation, RotateAnimation, SQRT1_2,
-    SQRT2, ScrollBar, String, Style, SyntaxError, System, Text, TextArea,
-    Timer, TypeError, URIError, URL, VBArray, WScript, Web, Window, XMLDOM,
-    XMLHttpRequest, "\\", a, abbr, acronym, addEventListener, address,
-    adsafe, alert, aliceblue, animator, antiquewhite, appleScript, applet,
-    apply, approved, aqua, aquamarine, area, arguments, arity, article,
-    aside, audio, autocomplete, azure, b, background,
+    "--", "\/", "<", "<=", "==", "===", ">", ">=", ADSAFE,
+    ActiveXObject, Array, Boolean, COM, CScript, Canvas, CustomAnimation,
+    Date, Debug, E, Enumerator, Error, EvalError, FadeAnimation, Flash,
+    FormField, Frame, Function, HotKey, Image, JSON, LN10, LN2, LOG10E,
+    LOG2E, MAX_VALUE, MIN_VALUE, Math, MenuItem, MoveAnimation,
+    NEGATIVE_INFINITY, Number, Object, Option, PI, POSITIVE_INFINITY, Point,
+    RangeError, Rectangle, ReferenceError, RegExp, ResizeAnimation,
+    RotateAnimation, SQRT1_2, SQRT2, ScrollBar, String, Style, SyntaxError,
+    System, Text, TextArea, Timer, TypeError, URIError, URL, VBArray,
+    WScript, Web, Window, XMLDOM, XMLHttpRequest, "\\", a, abbr, acronym,
+    activeborder, activecaption, addEventListener, address, adsafe, alert,
+    aliceblue, all, animator, antiquewhite, appleScript, applet, apply,
+    approved, appworkspace, aqua, aquamarine, area, arguments, arity,
+    article, aside, audio, autocomplete, azure, b, background,
     "background-attachment", "background-color", "background-image",
     "background-position", "background-repeat", base, bdo, beep, beige, big,
     bisque, bitwise, black, blanchedalmond, block, blockquote, blue,
@@ -170,37 +174,39 @@ SOFTWARE.
     "border-left-width", "border-right", "border-right-color",
     "border-right-style", "border-right-width", "border-spacing",
     "border-style", "border-top", "border-top-color", "border-top-style",
-    "border-top-width", "border-width", bottom, br, brown, browser,
-    burlywood, button, bytesToUIString, c, cadetblue, call, callee, caller,
-    canvas, cap, caption, "caption-side", cases, center, charAt, charCodeAt,
-    character, chartreuse, chocolate, chooseColor, chooseFile, chooseFolder,
-    cite, clear, clearInterval, clearTimeout, clip, close, closeWidget,
-    closed, closure, cm, code, col, colgroup, color, command, comment,
-    condition, confirm, console, constructor, content, convertPathToHFS,
-    convertPathToPlatform, coral, cornflowerblue, cornsilk,
-    "counter-increment", "counter-reset", create, crimson, css, cursor,
-    cyan, d, darkblue, darkcyan, darkgoldenrod, darkgray, darkgreen,
+    "border-top-width", "border-width", bottom, br, braille, brown, browser,
+    burlywood, button, buttonface, buttonhighlight, buttonshadow,
+    buttontext, bytesToUIString, c, cadetblue, call, callee, caller, canvas,
+    cap, caption, "caption-side", captiontext, cases, center, charAt,
+    charCodeAt, character, chartreuse, chocolate, chooseColor, chooseFile,
+    chooseFolder, cite, clear, clearInterval, clearTimeout, clip, close,
+    closeWidget, closed, closure, cm, code, col, colgroup, color, command,
+    comment, condition, confirm, console, constructor, content,
+    convertPathToHFS, convertPathToPlatform, coral, cornflowerblue,
+    cornsilk, "counter-increment", "counter-reset", create, crimson, css,
+    cursor, cyan, d, darkblue, darkcyan, darkgoldenrod, darkgray, darkgreen,
     darkkhaki, darkmagenta, darkolivegreen, darkorange, darkorchid, darkred,
     darksalmon, darkseagreen, darkslateblue, darkslategray, darkturquoise,
     darkviolet, data, datalist, dd, debug, decodeURI, decodeURIComponent,
     deeppink, deepskyblue, defaultStatus, defineClass, del, deserialize,
-    details, devel, dfn, dialog, dimension, dimgray, dir, direction,
-    display, div, dl, document, dodgerblue, dt, edition, else, em, embed,
-    empty, "empty-cells", encodeURI, encodeURIComponent, entityify, eqeqeq,
-    errors, es5, escape, eval, event, evidence, evil, ex, exception, exec, exps,
+    details, devel, dfn, dialog, dimgray, dir, direction, display, div, dl,
+    document, dodgerblue, dt, edition, else, em, embed, embossed, empty,
+    "empty-cells", encodeURI, encodeURIComponent, entityify, eqeqeq, errors,
+    es5, escape, eval, event, evidence, evil, ex, exception, exec, exps,
     fieldset, figure, filesystem, firebrick, first, float, floor,
-    floralwhite, focus, focusWidget, font, "font-face", "font-family",
-    "font-size", "font-size-adjust", "font-stretch", "font-style",
-    "font-variant", "font-weight", footer, forestgreen, forin, form,
-    fragment, frame, frames, frameset, from, fromCharCode, fuchsia, fud,
-    funct, function, functions, g, gainsboro, gc, getComputedStyle,
-    ghostwhite, global, globals, gold, goldenrod, gray, green, greenyellow,
-    h1, h2, h3, h4, h5, h6, hasOwnProperty, head, header, height, help,
-    hgroup, history, honeydew, hotpink, hr, 'hta:application', html,
-    i, iTunes, id, identifier,
-    iframe, img, immed, implieds, in, include, indent, indexOf, indianred,
-    indigo, init, input, ins, isAlpha, isApplicationRunning, isDigit,
-    isFinite, isNaN, ivory, join, jslint, json, kbd, keygen, khaki,
+    floralwhite, focus, focusWidget, font, "font-family", "font-size",
+    "font-size-adjust", "font-stretch", "font-style", "font-variant",
+    "font-weight", footer, forestgreen, forin, form, fragment, frame,
+    frames, frameset, from, fromCharCode, fuchsia, fud, funct, function,
+    functions, g, gainsboro, gc, getComputedStyle, ghostwhite, global,
+    globals, gold, goldenrod, gray, graytext, green, greenyellow, h1, h2,
+    h3, h4, h5, h6, handheld, hasOwnProperty, head, header, height, help,
+    hgroup, highlight, highlighttext, history, honeydew, hotpink, hr,
+    "hta:application", html, i, iTunes, id, identifier, iframe, img, immed,
+    implieds, in, inactiveborder, inactivecaption, inactivecaptiontext,
+    include, indent, indexOf, indianred, indigo, infobackground, infotext,
+    init, input, ins, isAlpha, isApplicationRunning, isArray, isDigit,
+    isFinite, isNaN, ivory, join, jslint, json, kbd, keygen, keys, khaki,
     konfabulatorVersion, label, labelled, lang, last, lavender,
     lavenderblush, lawngreen, laxbreak, lbp, led, left, legend,
     lemonchiffon, length, "letter-spacing", li, lib, lightblue, lightcoral,
@@ -211,9 +217,9 @@ SOFTWARE.
     "list-style-type", load, loadClass, location, log, m, magenta, map,
     margin, "margin-bottom", "margin-left", "margin-right", "margin-top",
     mark, "marker-offset", maroon, match, "max-height", "max-width", maxerr,
-    maxlen, md5, media, mediumaquamarine, mediumblue, mediumorchid,
-    mediumpurple, mediumseagreen, mediumslateblue, mediumspringgreen,
-    mediumturquoise, mediumvioletred, member, menu, message, meta, meter,
+    maxlen, md5, mediumaquamarine, mediumblue, mediumorchid, mediumpurple,
+    mediumseagreen, mediumslateblue, mediumspringgreen, mediumturquoise,
+    mediumvioletred, member, menu, menutext, message, meta, meter,
     midnightblue, "min-height", "min-width", mintcream, mistyrose, mm,
     moccasin, moveBy, moveTo, name, nav, navajowhite, navigator, navy, new,
     newcap, noframes, nomen, noscript, nud, object, ol, oldlace, olive,
@@ -222,53 +228,48 @@ SOFTWARE.
     option, orange, orangered, orchid, outer, outline, "outline-color",
     "outline-style", "outline-width", output, overflow, "overflow-x",
     "overflow-y", p, padding, "padding-bottom", "padding-left",
-    "padding-right", "padding-top", page, "page-break-after",
-    "page-break-before", palegoldenrod, palegreen, paleturquoise,
-    palevioletred, papayawhip, param, parent, parseFloat, parseInt,
-    passfail, pc, peachpuff, peru, pink, play, plum, plusplus, pop,
-    popupMenu, position, powderblue, pre, predef, preferenceGroups,
-    preferences, print, progress, prompt, prototype, pt, purple, push, px,
-    q, quit, quotes, random, range, raw, reach, readFile, readUrl, reason,
-    red, regexp, reloadWidget, removeEventListener, replace, report,
-    reserved, resizeBy, resizeTo, resolvePath, resumeUpdates, rhino, right,
-    rosybrown, royalblue, rp, rt, ruby, runCommand, runCommandInBg,
-    saddlebrown, safe, salmon, samp, sandybrown, saveAs, savePreferences,
-    screen, script, scroll, scrollBy, scrollTo, seagreen, seal, search,
-    seashell, section, select, serialize, setInterval, setTimeout, shift,
-    showWidgetPreferences, sienna, silver, skyblue, slateblue, slategray,
-    sleep, slice, small, snow, sort, source, span, spawn, speak, split,
-    springgreen, src, stack, statement, status, steelblue, strict, strong,
-    style, styleproperty, sub, substr, sup, supplant, suppressUpdates, sync,
-    system, table, "table-layout", tan, tbody, td, teal, tellWidget, test,
-    "text-align", "text-decoration", "text-indent", "text-shadow",
-    "text-transform", textarea, tfoot, th, thead, thistle, time, title,
+    "padding-right", "padding-top", "page-break-after", "page-break-before",
+    palegoldenrod, palegreen, paleturquoise, palevioletred, papayawhip,
+    param, parent, parseFloat, parseInt, passfail, pc, peachpuff, peru,
+    pink, play, plum, plusplus, pop, popupMenu, position, powderblue, pre,
+    predef, preferenceGroups, preferences, print, progress, projection,
+    prompt, prototype, pt, purple, push, px, q, quit, quotes, random, range,
+    raw, reach, readFile, readUrl, reason, red, regexp, reloadWidget,
+    removeEventListener, replace, report, reserved, resizeBy, resizeTo,
+    resolvePath, resumeUpdates, rhino, right, rosybrown, royalblue, rp, rt,
+    ruby, runCommand, runCommandInBg, saddlebrown, safe, salmon, samp,
+    sandybrown, saveAs, savePreferences, screen, script, scroll, scrollBy,
+    scrollTo, scrollbar, seagreen, seal, search, seashell, section, select,
+    serialize, setInterval, setTimeout, shift, showWidgetPreferences,
+    sienna, silver, skyblue, slateblue, slategray, sleep, slice, small,
+    snow, sort, source, span, spawn, speak, speech, split, springgreen, src,
+    stack, status, steelblue, strict, strong, style, styleproperty, sub,
+    substr, sup, supplant, suppressUpdates, sync, system, table,
+    "table-layout", tan, tbody, td, teal, tellWidget, test, "text-align",
+    "text-decoration", "text-indent", "text-shadow", "text-transform",
+    textarea, tfoot, th, thead, thistle, threeddarkshadow, threedface,
+    threedhighlight, threedlightshadow, threedshadow, time, title,
     toLowerCase, toString, toUpperCase, toint32, token, tomato, top, tr, tt,
-    turquoise, type, u, ul, undef, unescape, "unicode-bidi", unused,
-    unwatch, updateNow, urls, value, valueOf, var, version,
+    tty, turquoise, tv, type, u, ul, undef, unescape, "unicode-bidi",
+    unused, unwatch, updateNow, urls, value, valueOf, var, version,
     "vertical-align", video, violet, visibility, watch, wheat, white,
-    "white-space", whitesmoke, widget, width, windows, "word-spacing",
-    "word-wrap", yahooCheckLogin, yahooLogin, yahooLogout, yellow,
-    yellowgreen, "z-index"
+    "white-space", whitesmoke, widget, width, window, windowframe, windows,
+    windowtext, "word-spacing", "word-wrap", yahooCheckLogin, yahooLogin,
+    yahooLogout, yellow, yellowgreen, "z-index"
 */
 
 // We build the application inside a function so that we produce only a single
-// global variable. The function will be invoked, its return value is the JSLINT
-// application itself.
-
-"use strict";
+// global variable. That function will be invoked immediately, and its return
+// value is the JSLINT function itself.
 
 var JSLINT = (function () {
+    "use strict";
+
     var adsafe_id,      // The widget's ADsafe id.
         adsafe_may,     // The widget may load approved scripts.
         adsafe_went,    // ADSAFE.go has been called.
         anonname,       // The guessed name for anonymous functions.
         approved,       // ADsafe approved urls.
-
-        atrule = {
-            media      : true,
-            'font-face': true,
-            page       : true
-        },
 
 // These are operators that should not be used with the ! operator.
 
@@ -288,7 +289,7 @@ var JSLINT = (function () {
             '%': true
         },
 
-// These are members that should not be permitted in the safe subset.
+// These are property names that should not be permitted in the safe subset.
 
         banned = {              // the member names that ADsafe prohibits.
             'arguments'     : true,
@@ -530,7 +531,36 @@ var JSLINT = (function () {
             "white"                 : true,
             "whitesmoke"            : true,
             "yellow"                : true,
-            "yellowgreen"           : true
+            "yellowgreen"           : true,
+
+            "activeborder"          : true,
+            "activecaption"         : true,
+            "appworkspace"          : true,
+            "background"            : true,
+            "buttonface"            : true,
+            "buttonhighlight"       : true,
+            "buttonshadow"          : true,
+            "buttontext"            : true,
+            "captiontext"           : true,
+            "graytext"              : true,
+            "highlight"             : true,
+            "highlighttext"         : true,
+            "inactiveborder"        : true,
+            "inactivecaption"       : true,
+            "inactivecaptiontext"   : true,
+            "infobackground"        : true,
+            "infotext"              : true,
+            "menu"                  : true,
+            "menutext"              : true,
+            "scrollbar"             : true,
+            "threeddarkshadow"      : true,
+            "threedface"            : true,
+            "threedhighlight"       : true,
+            "threedlightshadow"     : true,
+            "threedshadow"          : true,
+            "window"                : true,
+            "windowframe"           : true,
+            "windowtext"            : true
         },
 
         cssBorderStyle,
@@ -548,6 +578,7 @@ var JSLINT = (function () {
             'px': true
         },
 
+        cssMedia,
         cssOverflow,
 
         devel = {
@@ -735,17 +766,6 @@ var JSLINT = (function () {
         },
 
         scope,      // The current scope
-
-        windows = {
-            ActiveXObject: false,
-            CScript      : false,
-            Debug        : false,
-            Enumerator   : false,
-            System       : false,
-            VBArray      : false,
-            WScript      : false
-        },
-
         src,
         stack,
 
@@ -788,13 +808,13 @@ var JSLINT = (function () {
             LN10                : true,
             LOG2E               : true,
             LOG10E              : true,
-            PI                  : true,
-            SQRT1_2             : true,
-            SQRT2               : true,
             MAX_VALUE           : true,
             MIN_VALUE           : true,
             NEGATIVE_INFINITY   : true,
-            POSITIVE_INFINITY   : true
+            PI                  : true,
+            POSITIVE_INFINITY   : true,
+            SQRT1_2             : true,
+            SQRT2               : true
         },
 
         strict_mode,
@@ -884,6 +904,16 @@ var JSLINT = (function () {
             yahooLogout             : true
         },
 
+        windows = {
+            ActiveXObject: false,
+            CScript      : false,
+            Debug        : false,
+            Enumerator   : false,
+            System       : false,
+            VBArray      : false,
+            WScript      : false
+        },
+
 //  xmode is used to adapt to the exceptions in html parsing.
 //  It can have these states:
 //      false   .js script file
@@ -897,8 +927,10 @@ var JSLINT = (function () {
         xmode,
         xquote,
 
+// Regular expressions. Some of these are stupidly long.
+
 // unsafe comment or string
-        ax = /@cc|<\/?|script|\]*s\]|<\s*!|&lt/i,
+        ax = /@cc|<\/?|script|\]\s*\]|<\s*!|&lt/i,
 // unsafe characters that are silently deleted by one or more browsers
         cx = /[\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/,
 // token
@@ -933,7 +965,24 @@ var JSLINT = (function () {
             styleproperty: ssx
         };
 
-    function F() {}
+
+    function F() {}     // Used by Object.create
+
+    function is_own(object, name) {
+
+// The object.hasOwnProperty method fails when the property under consideration
+// is named 'hasOwnProperty'. So we have to use this more convoluted form.
+
+        return Object.prototype.hasOwnProperty.call(object, name);
+    }
+
+// Provide critical ES5 functions to ES3.
+
+    if (typeof Array.isArray !== 'function') {
+        Array.isArray = function (o) {
+            return Object.prototype.toString.apply(o) === '[object Array]';
+        };
+    }
 
     if (typeof Object.create !== 'function') {
         Object.create = function (o) {
@@ -942,9 +991,74 @@ var JSLINT = (function () {
         };
     }
 
+    if (typeof Object.keys !== 'function') {
+        Object.keys = function (o) {
+            var a = [], k;
+            for (k in o) {
+                if (is_own(o, k)) {
+                    a.push(k);
+                }
+            }
+            return a;
+        };
+    }
 
-    function is_own(object, name) {
-        return Object.prototype.hasOwnProperty.call(object, name);
+// Non standard methods
+
+    if (typeof String.prototype.entityify !== 'function') {
+        String.prototype.entityify = function () {
+            return this
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        };
+    }
+
+    if (typeof String.prototype.isAlpha !== 'function') {
+        String.prototype.isAlpha = function () {
+            return (this >= 'a' && this <= 'z\uffff') ||
+                (this >= 'A' && this <= 'Z\uffff');
+        };
+    }
+
+    if (typeof String.prototype.isDigit !== 'function') {
+        String.prototype.isDigit = function () {
+            return (this >= '0' && this <= '9');
+        };
+    }
+
+    if (typeof String.prototype.supplant !== 'function') {
+        String.prototype.supplant = function (o) {
+            return this.replace(/\{([^{}]*)\}/g, function (a, b) {
+                var r = o[b];
+                return typeof r === 'string' || typeof r === 'number' ? r : a;
+            });
+        };
+    }
+
+    if (typeof String.prototype.name !== 'function') {
+        String.prototype.name = function () {
+
+// If the string looks like an identifier, then we can return it as is.
+// If the string contains no control characters, no quote characters, and no
+// backslash characters, then we can simply slap some quotes around it.
+// Otherwise we must also replace the offending characters with safe
+// sequences.
+
+            if (ix.test(this)) {
+                return this;
+            }
+            if (nx.test(this)) {
+                return '"' + this.replace(nxg, function (a) {
+                    var c = escapes[a];
+                    if (c) {
+                        return c;
+                    }
+                    return '\\u' + ('0000' + a.charCodeAt().toString(16)).slice(-4);
+                }) + '"';
+            }
+            return '"' + this + '"';
+        };
     }
 
 
@@ -956,55 +1070,6 @@ var JSLINT = (function () {
             }
         }
     }
-
-    String.prototype.entityify = function () {
-        return this
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    };
-
-    String.prototype.isAlpha = function () {
-        return (this >= 'a' && this <= 'z\uffff') ||
-            (this >= 'A' && this <= 'Z\uffff');
-    };
-
-
-    String.prototype.isDigit = function () {
-        return (this >= '0' && this <= '9');
-    };
-
-
-    String.prototype.supplant = function (o) {
-        return this.replace(/\{([^{}]*)\}/g, function (a, b) {
-            var r = o[b];
-            return typeof r === 'string' || typeof r === 'number' ? r : a;
-        });
-    };
-
-    String.prototype.name = function () {
-
-// If the string looks like an identifier, then we can return it as is.
-// If the string contains no control characters, no quote characters, and no
-// backslash characters, then we can simply slap some quotes around it.
-// Otherwise we must also replace the offending characters with safe
-// sequences.
-
-        if (ix.test(this)) {
-            return this;
-        }
-        if (nx.test(this)) {
-            return '"' + this.replace(nxg, function (a) {
-                var c = escapes[a];
-                if (c) {
-                    return c;
-                }
-                return '\\u' + ('0000' + a.charCodeAt().toString(16)).slice(-4);
-            }) + '"';
-        }
-        return '"' + this + '"';
-    };
-
 
     function assume() {
         if (!option.safe) {
@@ -1091,7 +1156,7 @@ var JSLINT = (function () {
 
 
 
-// lexical analysis
+// lexical analysis and token construction
 
     var lex = (function lex() {
         var character, from, line, s;
@@ -1304,9 +1369,13 @@ var JSLINT = (function () {
                                         character + j);
                                     break;
                                 case '\\':
-                                case '\'':
                                 case '"':
                                 case '/':
+                                    break;
+                                case '\'':
+                                    if (jsonmode) {
+                                        warningAt("Avoid \\'.", line, character);
+                                    }
                                     break;
                                 case 'b':
                                     c = '\b';
@@ -1327,6 +1396,9 @@ var JSLINT = (function () {
                                     esc(4);
                                     break;
                                 case 'v':
+                                    if (jsonmode) {
+                                        warningAt("Avoid \\v.", line, character);
+                                    }
                                     c = '\v';
                                     break;
                                 case 'x':
@@ -1364,21 +1436,6 @@ var JSLINT = (function () {
                             }
                         }
                     }
-//                     t = match(rx[xmode] || tx);
-//                     if (!t) {
-//                         if (xmode === 'html') {
-//                             return it('(error)', s.charAt(0));
-//                         } else {
-//                             t = '';
-//                             c = '';
-//                             while (s && s < '!') {
-//                                 s = s.substr(1);
-//                             }
-//                             if (s) {
-//                                 errorAt("Unexpected '{a}'.",
-//                                         line, character, s.substr(0, 1));
-//                             }
-//                         }
                     t = match(rx[xmode] || tx);
                     if (!t) {
                         t = '';
@@ -1429,8 +1486,7 @@ var JSLINT = (function () {
                             }
                             if (t.substr(t.length - 1) === '.') {
                                 warningAt(
-        "A trailing decimal point can be confused with a dot '{a}'.",
-                                        line, character, t);
+"A trailing decimal point can be confused with a dot '{a}'.", line, character, t);
                             }
                             return it('(number)', t);
                         }
@@ -1790,7 +1846,7 @@ klass:                                  do {
                                     line, character + l);
                             }
                             character += i;
-                            if (s[i + 2] !== '>') {
+                            if (s.charAt(i + 2) !== '>') {
                                 errorAt("Expected -->.", line, character);
                             }
                             character += 3;
@@ -1903,6 +1959,7 @@ klass:                                  do {
             obj = predefined;
             break;
         default:
+            error("What?");
         }
         t = lex.token();
 loop:   for (;;) {
@@ -2053,10 +2110,10 @@ loop:   for (;;) {
 
 
 // This is the heart of JSLINT, the Pratt parser. In addition to parsing, it
-// is looking for ad hoc lint patterns. We add to Pratt's model .fud, which is
-// like nud except that it is only used on the first token of a statement.
-// Having .fud makes it much easier to define JavaScript. I retained Pratt's
-// nomenclature.
+// is looking for ad hoc lint patterns. We add .fud to Pratt's model, which is
+// like .nud except that it is only used on the first token of a statement.
+// Having .fud makes it much easier to define statement-oriented languages like
+// JavaScript. I retained Pratt's nomenclature.
 
 // .nud     Null denotation
 // .fud     First null denotation
@@ -2064,9 +2121,9 @@ loop:   for (;;) {
 //  lbp     Left binding power
 //  rbp     Right binding power
 
-// They are key to the parsing method called Top Down Operator Precedence.
+// They are elements of the parsing method called Top Down Operator Precedence.
 
-    function parse(rbp, initial) {
+    function expression(rbp, initial) {
         var left;
         if (nexttoken.id === '(end)') {
             error("Unexpected early end of program.", token);
@@ -2141,7 +2198,6 @@ loop:   for (;;) {
         }
     }
 
-
     function nonadjacent(left, right) {
         if (option.white) {
             left = left || token;
@@ -2166,6 +2222,17 @@ loop:   for (;;) {
                         nexttoken, left.value);
             }
         }
+    }
+
+    function step_in() {
+        var old_indent = indent;
+        if (prevtoken.line !== token.line &&
+                indent + option.indent === token.from) {
+            indent = token.from;
+        }
+        return function step_out() {
+            return (indent = old_indent);
+        };
     }
 
     function indentation(bias) {
@@ -2250,7 +2317,7 @@ loop:   for (;;) {
         var x = symbol(s, 150);
         reserveName(x);
         x.nud = (typeof f === 'function') ? f : function () {
-            this.right = parse(150);
+            this.right = expression(150);
             this.arity = 'unary';
             if (this.id === '++' || this.id === '--') {
                 if (option.plusplus) {
@@ -2303,7 +2370,7 @@ loop:   for (;;) {
                 return f(left, this);
             } else {
                 this.left = left;
-                this.right = parse(p);
+                this.right = expression(p);
                 return this;
             }
         };
@@ -2316,7 +2383,7 @@ loop:   for (;;) {
         x.led = function (left) {
             nobreaknonadjacent(prevtoken, token);
             nonadjacent(token, nexttoken);
-            var right = parse(100);
+            var right = expression(100);
             if ((left && left.id === 'NaN') || (right && right.id === 'NaN')) {
                 warning("Use the isNaN function to compare with NaN.", this);
             } else if (f) {
@@ -2372,13 +2439,13 @@ loop:   for (;;) {
                     if (!left.left || left.left.value === 'arguments') {
                         warning('Bad assignment.', that);
                     }
-                    that.right = parse(19);
+                    that.right = expression(19);
                     return that;
                 } else if (left.identifier && !left.reserved) {
                     if (funct[left.value] === 'exception') {
                         warning("Do not assign to the exception parameter.", left);
                     }
-                    that.right = parse(19);
+                    that.right = expression(19);
                     return that;
                 }
                 if (left === syntax['function']) {
@@ -2400,7 +2467,7 @@ loop:   for (;;) {
                 warning("Unexpected use of '{a}'.", this, this.id);
             }
             this.left = left;
-            this.right = parse(p);
+            this.right = expression(p);
             return this;
         };
         return x;
@@ -2418,7 +2485,7 @@ loop:   for (;;) {
             if (left) {
                 if (left.id === '.' || left.id === '[' ||
                         (left.identifier && !left.reserved)) {
-                    parse(19);
+                    expression(19);
                     return that;
                 }
                 if (left === syntax['function']) {
@@ -2536,7 +2603,7 @@ loop:   for (;;) {
         if (!noindent) {
             indentation();
         }
-        r = parse(0, true);
+        r = expression(0, true);
 
 // Look for the final semicolon.
 
@@ -2568,6 +2635,9 @@ loop:   for (;;) {
 
     function use_strict() {
         if (nexttoken.value === 'use strict') {
+            if (strict_mode) {
+                warning("Unnecessary \"use strict\".");
+            }
             advance();
             advance(';');
             strict_mode = true;
@@ -2582,12 +2652,12 @@ loop:   for (;;) {
 
     function statements(begin) {
         var a = [], f, p;
-        if (begin && !use_strict() && option.strict) {
-            warning('Missing "use strict" statement.', nexttoken);
-        }
         if (option.adsafe) {
             switch (begin) {
             case 'script':
+
+// JSLint is also the static analizer for ADsafe. See www.ADsafe.org.
+
                 if (!adsafe_may) {
                     if (nexttoken.value !== 'ADSAFE' ||
                             peek(0).id !== '.' ||
@@ -2624,7 +2694,7 @@ loop:   for (;;) {
                     advance('(');
                     advance('(string)');
                     comma();
-                    f = parse(0);
+                    f = expression(0);
                     if (f.id !== 'function') {
                         error('The second argument to lib must be a function.', f);
                     }
@@ -2655,7 +2725,7 @@ loop:   for (;;) {
 
 
     function block(f) {
-        var a, b = inblock, old_indent = indent, s = scope, t;
+        var a, b = inblock, old_indent = indent, m = strict_mode, s = scope, t;
         inblock = f;
         scope = Object.create(scope);
         nonadjacent(token, nexttoken);
@@ -2667,10 +2737,12 @@ loop:   for (;;) {
                 while (!f && nexttoken.from > indent) {
                     indent += option.indent;
                 }
-                if (!f) {
-                    use_strict();
+                if (!f && !use_strict() && !m && option.strict &&
+                        funct['(context)']['(global)']) {
+                    warning("Missing \"use strict\" statement.");
                 }
                 a = statements();
+                strict_mode = m;
                 indent -= option.indent;
                 indentation();
             }
@@ -2720,7 +2792,6 @@ loop:   for (;;) {
 
 
 // CSS parsing.
-
 
     function cssName() {
         if (nexttoken.identifier) {
@@ -3029,13 +3100,26 @@ loop:   for (;;) {
 
 
     cssBorderStyle = [
-        'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'ridge',
-        'inset', 'outset'
+        'none', 'dashed', 'dotted', 'double', 'groove',
+        'hidden', 'inset', 'outset', 'ridge', 'solid'
     ];
 
     cssBreak = [
         'auto', 'always', 'avoid', 'left', 'right'
     ];
+
+    cssMedia = {
+        'all': true,
+        'braille': true,
+        'embossed': true,
+        'handheld': true,
+        'print': true,
+        'projection': true,
+        'screen': true,
+        'speech': true,
+        'tty': true,
+        'tv': true
+    };
 
     cssOverflow = [
         'auto', 'hidden', 'scroll', 'visible'
@@ -3507,18 +3591,9 @@ loop:   for (;;) {
     }
 
     function stylePattern() {
-        var name;
         if (nexttoken.id === '{') {
             warning("Expected a style pattern, and instead saw '{a}'.", nexttoken,
                 nexttoken.id);
-        } else if (nexttoken.id === '@') {
-            advance('@');
-            name = nexttoken.value;
-            if (nexttoken.identifier && atrule[name] === true) {
-                advance();
-                return name;
-            }
-            warning("Expected an at-rule, and instead saw @{a}.", nexttoken, name);
         }
         for (;;) {
             styleSelector();
@@ -3532,23 +3607,7 @@ loop:   for (;;) {
         }
     }
 
-    function styles() {
-        var i;
-        while (nexttoken.id === '@') {
-            i = peek();
-            if (i.identifier && i.value === 'import') {
-                advance('@');
-                advance();
-                if (!cssUrl()) {
-                    warning("Expected '{a}' and instead saw '{b}'.", nexttoken,
-                        'url', nexttoken.value);
-                    advance();
-                }
-                advance(';');
-            } else {
-                break;
-            }
-        }
+    function stylelist() {
         while (nexttoken.id !== '</' && nexttoken.id !== '(end)') {
             stylePattern();
             xmode = 'styleproperty';
@@ -3561,6 +3620,50 @@ loop:   for (;;) {
                 advance('}');
             }
         }
+    }
+
+    function styles() {
+        var i;
+        while (nexttoken.id === '@') {
+            i = peek();
+            advance('@');
+            if (nexttoken.identifier) {
+                switch (nexttoken.value) {
+                case 'import':
+                    advance();
+                    if (!cssUrl()) {
+                        warning("Expected '{a}' and instead saw '{b}'.",
+                            nexttoken, 'url', nexttoken.value);
+                        advance();
+                    }
+                    advance(';');
+                    break;
+                case 'media':
+                    advance();
+                    for (;;) {
+                        if (!nexttoken.identifier || cssMedia[nexttoken.value] === true) {
+                            error("Expected a CSS media type, and instead saw '{a}'.", nexttoken, nexttoken.id);
+                        }
+                        advance();
+                        if (nexttoken.id !== ',') {
+                            break;
+                        }
+                        advance(',');
+                    }
+                    advance('{');
+                    stylelist();
+                    advance('}');
+                    break;
+                default:
+                    warning("Expected an at-rule, and instead saw @{a}.",
+                        nexttoken, nexttoken.value);
+                }
+            } else {
+                warning("Expected an at-rule, and instead saw '{a}'.",
+                    nexttoken, nexttoken.value);
+            }
+        }
+        stylelist();
     }
 
 
@@ -3711,6 +3814,7 @@ loop:   for (;;) {
                 if (adsafe_went) {
                     error("ADsafe script violation.", token);
                 }
+                use_strict();
                 statements('script');
             }
             xmode = 'html';
@@ -3856,6 +3960,7 @@ loop:   for (;;) {
                         wmode = option.white;
                         option.white = false;
                         advance(q);
+                        use_strict();
                         statements('on');
                         option.white = wmode;
                         if (nexttoken.id !== q) {
@@ -4035,7 +4140,7 @@ loop:   for (;;) {
 // then we have an undefined variable.
 
             } else if (funct['(global)']) {
-                if (option.undef && predefined[v] !== 'boolean') {
+                if (option.undef && typeof predefined[v] !== 'boolean') {
                     warning("'{a}' is not defined.", token, v);
                 }
                 note_implied(token);
@@ -4177,9 +4282,9 @@ loop:   for (;;) {
     bitwiseassignop('>>>=', 'assignshiftrightunsigned', 20);
     infix('?', function (left, that) {
         that.left = left;
-        that.right = parse(10);
+        that.right = expression(10);
         advance(':');
-        that['else'] = parse(10);
+        that['else'] = expression(10);
         return that;
     }, 30);
 
@@ -4226,7 +4331,7 @@ loop:   for (;;) {
     infix('in', 'in', 120);
     infix('instanceof', 'instanceof', 120);
     infix('+', function (left, that) {
-        var right = parse(130);
+        var right = expression(130);
         if (left && right && left.id === '(string)' && right.id === '(string)') {
             left.value += right.value;
             left.character = right.character;
@@ -4242,28 +4347,28 @@ loop:   for (;;) {
     prefix('+', 'num');
     prefix('+++', function () {
         warning("Confusing pluses.");
-        this.right = parse(150);
+        this.right = expression(150);
         this.arity = 'unary';
         return this;
     });
     infix('+++', function (left) {
         warning("Confusing pluses.");
         this.left = left;
-        this.right = parse(130);
+        this.right = expression(130);
         return this;
     }, 130);
     infix('-', 'sub', 130);
     prefix('-', 'neg');
     prefix('---', function () {
         warning("Confusing minuses.");
-        this.right = parse(150);
+        this.right = expression(150);
         this.arity = 'unary';
         return this;
     });
     infix('---', function (left) {
         warning("Confusing minuses.");
         this.left = left;
-        this.right = parse(130);
+        this.right = expression(130);
         return this;
     }, 130);
     infix('*', 'mult', 140);
@@ -4278,7 +4383,7 @@ loop:   for (;;) {
     prefix('--', 'predec');
     syntax['--'].exps = true;
     prefix('delete', function () {
-        var p = parse(0);
+        var p = expression(0);
         if (!p || (p.id !== '.' && p.id !== '[')) {
             warning("Variables should not be deleted.");
         }
@@ -4291,11 +4396,11 @@ loop:   for (;;) {
         if (option.bitwise) {
             warning("Unexpected '{a}'.", this, '~');
         }
-        parse(150);
+        expression(150);
         return this;
     });
     prefix('!', function () {
-        this.right = parse(150);
+        this.right = expression(150);
         this.arity = 'unary';
         if (bang[this.right.id] === true) {
             warning("Confusing use of '{a}'.", this, '!');
@@ -4304,7 +4409,7 @@ loop:   for (;;) {
     });
     prefix('typeof', 'typeof');
     prefix('new', function () {
-        var c = parse(155), i;
+        var c = expression(155), i;
         if (c && c.id !== 'function') {
             if (c.identifier) {
                 c['new'] = true;
@@ -4319,21 +4424,6 @@ loop:   for (;;) {
                         advance('(');
                         if (nexttoken.id === ')') {
                             warning("Use the array literal notation [].", token);
-                        } else {
-                            i = parse(0);
-                            c.dimension = i;
-                            if ((i.id === '(number)' && /[.+\-Ee]/.test(i.value)) ||
-                                    (i.id === '-' && !i.right) ||
-                                    i.id === '(string)' || i.id === '[' ||
-                                    i.id === '{' || i.id === 'true' ||
-                                    i.id === 'false' ||
-                                    i.id === 'null' || i.id === 'undefined' ||
-                                    i.id === 'Infinity') {
-                                warning("Use the array literal notation [].", token);
-                            }
-                            if (nexttoken.id !== ')') {
-                                error("Use the array literal notation [].", token);
-                            }
                         }
                         advance(')');
                     }
@@ -4483,7 +4573,7 @@ loop:   for (;;) {
         }
         if (nexttoken.id !== ')') {
             for (;;) {
-                p[p.length] = parse(10);
+                p[p.length] = expression(10);
                 n += 1;
                 if (nexttoken.id !== ',') {
                     break;
@@ -4523,7 +4613,7 @@ loop:   for (;;) {
         if (nexttoken.id === 'function') {
             nexttoken.immed = true;
         }
-        var v = parse(0);
+        var v = expression(0);
         advance(')', this);
         nospace(prevtoken, token);
         if (option.immed && v.id === 'function') {
@@ -4542,7 +4632,7 @@ loop:   for (;;) {
     infix('[', function (left, that) {
         nobreak(prevtoken, token);
         nospace();
-        var e = parse(0), s;
+        var e = expression(0), s;
         if (e && e.type === '(string)') {
             if (option.safe && banned[e.value] === true) {
                 warning("ADsafe restricted word '{a}'.", that, e.value);
@@ -4574,7 +4664,7 @@ loop:   for (;;) {
     }, 160, true);
 
     prefix('[', function () {
-        var b = token.line !== nexttoken.line;
+        var step_out = step_in(), b = token.line !== nexttoken.line;
         this.first = [];
         if (b) {
             indent += option.indent;
@@ -4593,7 +4683,7 @@ loop:   for (;;) {
             if (b && token.line !== nexttoken.line) {
                 indentation();
             }
-            this.first.push(parse(10));
+            this.first.push(expression(10));
             if (nexttoken.id === ',') {
                 comma();
                 if (nexttoken.id === ']' && !option.es5) {
@@ -4609,6 +4699,7 @@ loop:   for (;;) {
             indentation();
         }
         advance(']', this);
+        step_out();
         return this;
     }, 160);
 
@@ -4688,7 +4779,7 @@ loop:   for (;;) {
 
     (function (x) {
         x.nud = function () {
-            var b, f, i, j, p, seen = {}, t;
+            var step_out = step_in(), b, f, i, j, p, seen = {}, t;
             b = token.line !== nexttoken.line;
             if (b) {
                 indent += option.indent;
@@ -4744,7 +4835,7 @@ loop:   for (;;) {
                     }
                     advance(':');
                     nonadjacent(token, nexttoken);
-                    parse(10);
+                    expression(10);
                 }
                 if (seen[i] === true) {
                     warning("Duplicate member '{a}'.", nexttoken, i);
@@ -4767,6 +4858,7 @@ loop:   for (;;) {
                 indentation();
             }
             advance('}', this);
+            step_out();
             return this;
         };
         x.fud = function () {
@@ -4780,14 +4872,14 @@ loop:   for (;;) {
 // JavaScript does not have block scope. It only has function scope. So,
 // declaring a variable in a block can have unexpected consequences.
 
-        var id, name, value;
+        var id, name, value, v = token;
 
         if (funct['(onevar)'] && option.onevar) {
             warning("Too many var statements.");
         } else if (!funct['(global)']) {
             funct['(onevar)'] = true;
         }
-        this.first = [];
+        v.first = [];
         for (;;) {
             nonadjacent(token, nexttoken);
             id = identifier();
@@ -4799,7 +4891,7 @@ loop:   for (;;) {
                 break;
             }
             name = token;
-            this.first.push(token);
+            v.first.push(token);
             if (nexttoken.id === '=') {
                 nonadjacent(token, nexttoken);
                 advance('=');
@@ -4811,7 +4903,7 @@ loop:   for (;;) {
                     error("Variable {a} was not declared correctly.",
                             nexttoken, nexttoken.value);
                 }
-                value = parse(0);
+                value = expression(0);
                 name.first = value;
             }
             if (nexttoken.id !== ',') {
@@ -4819,7 +4911,7 @@ loop:   for (;;) {
             }
             comma();
         }
-        return this;
+        return v;
     };
 
 
@@ -4829,7 +4921,7 @@ loop:   for (;;) {
     blockstmt('function', function () {
         if (inblock) {
             warning(
-"Function statements cannot be placed in blocks. Use a function expression or move the statement to the top of the outer function.", token);
+"Function statements should not be placed in blocks. Use a function expression or move the statement to the top of the outer function.", token);
 
         }
         var i = identifier();
@@ -4844,7 +4936,7 @@ loop:   for (;;) {
     });
 
     prefix('function', function () {
-        var i = optionalidentifier();
+        var step_out = step_in(), i = optionalidentifier();
         if (i) {
             adjacent(token, nexttoken);
         } else {
@@ -4854,6 +4946,7 @@ loop:   for (;;) {
         if (funct['(loopage)']) {
             warning("Don't make functions within a loop.");
         }
+        step_out();
         return this;
     });
 
@@ -4862,11 +4955,11 @@ loop:   for (;;) {
         advance('(');
         nonadjacent(this, t);
         nospace();
-        parse(20);
+        expression(20);
         if (nexttoken.id === '=') {
             warning("Expected a conditional expression and instead saw an assignment.");
             advance('=');
-            parse(20);
+            expression(20);
         }
         advance(')', t);
         nospace(prevtoken, token);
@@ -4926,11 +5019,11 @@ loop:   for (;;) {
         advance('(');
         nonadjacent(this, t);
         nospace();
-        parse(20);
+        expression(20);
         if (nexttoken.id === '=') {
             warning("Expected a conditional expression and instead saw an assignment.");
             advance('=');
-            parse(20);
+            expression(20);
         }
         advance(')', t);
         nospace(prevtoken, token);
@@ -4949,7 +5042,7 @@ loop:   for (;;) {
         advance('(');
         nonadjacent(this, t);
         nospace();
-        this.condition = parse(20);
+        this.condition = expression(20);
         advance(')', t);
         nospace(prevtoken, token);
         nonadjacent(token, nexttoken);
@@ -4976,7 +5069,7 @@ loop:   for (;;) {
                 }
                 indentation(-option.indent);
                 advance('case');
-                this.cases.push(parse(20));
+                this.cases.push(expression(20));
                 g = true;
                 advance(':');
                 funct['(verb)'] = 'case';
@@ -5049,11 +5142,11 @@ loop:   for (;;) {
             nonadjacent(token, t);
             advance('(');
             nospace();
-            parse(20);
+            expression(20);
             if (nexttoken.id === '=') {
                 warning("Expected a conditional expression and instead saw an assignment.");
                 advance('=');
-                parse(20);
+                expression(20);
             }
             advance(')', t);
             nospace(prevtoken, token);
@@ -5090,7 +5183,7 @@ loop:   for (;;) {
                 advance();
             }
             advance('in');
-            parse(20);
+            expression(20);
             advance(')', t);
             s = block(true);
             if (!f && (s.length > 1 || typeof s[0] !== 'object' ||
@@ -5107,7 +5200,7 @@ loop:   for (;;) {
                     varstatement();
                 } else {
                     for (;;) {
-                        parse(0, 'for');
+                        expression(0, 'for');
                         if (nexttoken.id !== ',') {
                             break;
                         }
@@ -5118,11 +5211,11 @@ loop:   for (;;) {
             nolinebreak(token);
             advance(';');
             if (nexttoken.id !== ';') {
-                parse(20);
+                expression(20);
                 if (nexttoken.id === '=') {
                     warning("Expected a conditional expression and instead saw an assignment.");
                     advance('=');
-                    parse(20);
+                    expression(20);
                 }
             }
             nolinebreak(token);
@@ -5133,7 +5226,7 @@ loop:   for (;;) {
             }
             if (nexttoken.id !== ')') {
                 for (;;) {
-                    parse(0, 'for');
+                    expression(0, 'for');
                     if (nexttoken.id !== ',') {
                         break;
                     }
@@ -5203,7 +5296,7 @@ loop:   for (;;) {
         }
         if (nexttoken.id !== ';' && !nexttoken.reach) {
             nonadjacent(token, nexttoken);
-            this.first = parse(20);
+            this.first = expression(20);
         }
         reachable('return');
         return this;
@@ -5213,7 +5306,7 @@ loop:   for (;;) {
     stmt('throw', function () {
         nolinebreak(this);
         nonadjacent(token, nexttoken);
-        this.first = parse(20);
+        this.first = expression(20);
         reachable('throw');
         return this;
     }).exps = true;
@@ -5338,14 +5431,21 @@ loop:   for (;;) {
 // The actual JSLINT function itself.
 
     var itself = function (s, o) {
-        var a, i;
+        var a, i, k;
         JSLINT.errors = [];
         predefined = Object.create(standard);
         if (o) {
             a = o.predef;
-            if (a instanceof Array) {
-                for (i = 0; i < a.length; i += 1) {
-                    predefined[a[i]] = true;
+            if (a) {
+                if (Array.isArray(a)) {
+                    for (i = 0; i < a.length; i += 1) {
+                        predefined[a[i]] = true;
+                    }
+                } else if (typeof a === 'object') {
+                    k = Object.keys(a);
+                    for (i = 0; i < k.length; i += 1) {
+                        predefined[k[i]] = !!a[k];
+                    }
                 }
             }
             if (o.adsafe) {
@@ -5367,7 +5467,6 @@ loop:   for (;;) {
                 o.eqeqeq  =
                 o.nomen   =
                 o.safe    =
-                o.strict  =
                 o.undef   = true;
 
                 predefined.Date =
@@ -5471,6 +5570,10 @@ loop:   for (;;) {
                         error("Expected '{a}' and instead saw '{b}'.",
                             nexttoken, '<div>', nexttoken.value);
                     }
+                    if (nexttoken.value === 'use strict') {
+                        warning("Use the function form of \"use strict\".");
+                        use_strict();
+                    }
                     statements('lib');
                 }
             }
@@ -5486,20 +5589,6 @@ loop:   for (;;) {
         }
         return JSLINT.errors.length === 0;
     };
-
-    function is_array(o) {
-        return Object.prototype.toString.apply(o) === '[object Array]';
-    }
-
-    function to_array(o) {
-        var a = [], k;
-        for (k in o) {
-            if (is_own(o, k)) {
-                a.push(k);
-            }
-        }
-        return a;
-    }
 
 
 // Data summary.
@@ -5532,7 +5621,7 @@ loop:   for (;;) {
             data.urls = urls;
         }
 
-        globals = to_array(scope);
+        globals = Object.keys(scope);
         if (globals.length > 0) {
             data.globals = globals;
         }
@@ -5549,7 +5638,7 @@ loop:   for (;;) {
                     if (v === 'unction') {
                         v = 'unused';
                     }
-                    if (is_array(fu[v])) {
+                    if (Array.isArray(fu[v])) {
                         fu[v].push(n);
                         if (v === 'unused') {
                             unused.push({
@@ -5608,7 +5697,6 @@ loop:   for (;;) {
                 o.push('</div>');
             }
         }
-
 
         if (data.errors || data.implieds || data.unused) {
             err = true;
@@ -5687,7 +5775,7 @@ loop:   for (;;) {
             }
 
             if (data.member) {
-                a = to_array(data.member);
+                a = Object.keys(data.member);
                 if (a.length) {
                     a = a.sort();
                     m = '<br><pre id=members>/*members ';
@@ -5718,7 +5806,7 @@ loop:   for (;;) {
     };
     itself.jslint = itself;
 
-    itself.edition = '2010-10-26';
+    itself.edition = '2010-12-23';
 
     return itself;
 
