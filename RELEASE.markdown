@@ -4,6 +4,9 @@ How to do a release
 Prerequisites:
 
  * Is NEWS.txt up to date?
+ * Ensure all dependencies are up to date?
+   * `mvn versions:display-dependency-updates`
+   * `mvn versions:display-plugin-updates`
  * Ensure that all branches are up to date (git fetch origin).
    * The release plugin does a plain "git push", which pushes all branches by default.  This will fail if any branch is behind. Typically, this means the gh-pages branch.
  * Is JAVA_HOME pointing at java 5?  We need to be compatible with Java 5.
