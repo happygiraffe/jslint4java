@@ -1,6 +1,13 @@
 Revision history for jslint4java
 ================================
 
+1.4.5 (2011-01-02)
+------------------
+
+ * issue 47: Make thread safe.
+ * issue 46: Clean API for JSLintBuilder.fromDefault().
+ * issue 48: Kill JSLintBuilder.create()
+
 1.4.4 (2010-11-08)
 ------------------
 
