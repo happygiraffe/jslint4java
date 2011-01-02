@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.NativeJavaArray;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.UniqueTag;
@@ -66,6 +68,27 @@ final class Util {
         }
         Object o = scope.get(name, scope);
         return o == Scriptable.NOT_FOUND ? 0 : (int) Context.toNumber(o);
+    }
+
+    /**
+     * Convert a Java object to a JavaScript one. This is basically like {@link Context#javaToJS}
+     * except that we convert arrays to real JavaScript arrays instead of {@link NativeJavaArray}
+     * instances. This is done in order to satisfy JSLint's implementation of
+     * {@code Array.isArray()}.
+     *
+     * @param o
+     *            Any Java object.
+     * @param scope
+     *            The scope within which the conversion is made.
+     * @return An equivalent JavaScript object.
+     */
+    static Object javaToJS(Object o, Scriptable scope) {
+        Class<?> cls = o.getClass();
+        if (cls.isArray()) {
+            return new NativeArray((Object[]) o);
+        } else {
+            return Context.javaToJS(o, scope);
+        }
     }
 
     /**

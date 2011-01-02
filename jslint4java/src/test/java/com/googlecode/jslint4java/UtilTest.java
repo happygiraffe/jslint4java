@@ -1,7 +1,11 @@
 package com.googlecode.jslint4java;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.util.List;
@@ -11,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -83,6 +88,18 @@ public class UtilTest {
     public void testIntValueOfUndefined() {
         cx.evaluateString(scope, "var foo;", "-", 1, null);
         assertThat(Util.intValue("foo", scope), is(0));
+    }
+
+    @Test
+    public void testJavaToJS_JSArrays() {
+        String[] ary = new String[] { "a", "b" };
+        Object result = Util.javaToJS(ary, scope);
+        assertThat(result, instanceOf(NativeArray.class));
+        // Woohoo—it got the correct class.  Now, let's check it works OK.
+        NativeArray nAry = (NativeArray) result;
+        assertThat(nAry.getLength(), is(2L));
+        assertThat(nAry.get(0, nAry), is((Object)"a"));
+        assertThat(nAry.get(1, nAry), is((Object)"b"));
     }
 
     @Test
