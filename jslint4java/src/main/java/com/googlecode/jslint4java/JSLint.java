@@ -275,7 +275,8 @@ public class JSLint {
                 Scriptable opts = cx.newObject(scope);
                 for (Entry<Option, Object> entry : options.entrySet()) {
                     String key = entry.getKey().getLowerName();
-                    Object value = Context.javaToJS(entry.getValue(), opts);
+                    // Use our "custom" version in order to get native arrays.
+                    Object value = Util.javaToJS(entry.getValue(), opts);
                     opts.put(key, opts, value);
                 }
                 return opts;
