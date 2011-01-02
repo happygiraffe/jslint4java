@@ -5,6 +5,7 @@ Revision history for jslint4java
 ------------------
 
  * Update to JSLint 2010-12-23.
+   * This outlaws a top-level "use strict"—stick it in a function instead.
 
 1.4.5 (2011-01-02)
 ------------------
