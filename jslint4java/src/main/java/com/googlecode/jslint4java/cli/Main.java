@@ -168,6 +168,7 @@ class Main {
         try {
 			jc.parse(args);
 		} catch (ParameterException e) {
+			info(e.getMessage());
 			usage(jc);
 		}
         if (flags.help) {
