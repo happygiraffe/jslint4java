@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
+import com.beust.jcommander.ParameterException;
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
@@ -162,8 +163,13 @@ class Main {
     private List<String> processOptions(String[] args) {
         JSLintFlags jslintFlags = new JSLintFlags();
         Flags flags = new Flags();
-        JCommander jc = new JCommander(new Object[] { flags , jslintFlags }, args);
+        JCommander jc = new JCommander(new Object[] { flags , jslintFlags });
         jc.setProgramName("jslint4java");
+        try {
+			jc.parse(args);
+		} catch (ParameterException e) {
+			usage(jc);
+		}
         if (flags.help) {
             usage(jc);
         }
