@@ -19,6 +19,9 @@ class JSLintFlags {
     @Parameter(names = "--cap", description = "If upper case html should be allowed")
     public Boolean cap = null;
 
+    @Parameter(names = "--continue", description = "If the continuation statement should be tolerated")
+    public Boolean continue = null;
+
     @Parameter(names = "--css", description = "If css workarounds should be tolerated")
     public Boolean css = null;
 
@@ -27,9 +30,6 @@ class JSLintFlags {
 
     @Parameter(names = "--devel", description = "If logging should be allowed (console, alert, etc.)")
     public Boolean devel = null;
-
-    @Parameter(names = "--eqeqeq", description = "If === should be required")
-    public Boolean eqeqeq = null;
 
     @Parameter(names = "--es5", description = "If es5 syntax should be allowed")
     public Boolean es5 = null;
@@ -43,14 +43,8 @@ class JSLintFlags {
     @Parameter(names = "--fragment", description = "If html fragments should be allowed")
     public Boolean fragment = null;
 
-    @Parameter(names = "--immed", description = "If immediate invocations must be wrapped in parens")
-    public Boolean immed = null;
-
     @Parameter(names = "--indent", description = "The number of spaces used for indentation (default is 4)")
     public String indent = null;
-
-    @Parameter(names = "--laxbreak", description = "If line breaks should not be checked")
-    public Boolean laxbreak = null;
 
     @Parameter(names = "--maxerr", description = "The maximum number of warnings reported (default is 50)")
     public String maxerr = null;

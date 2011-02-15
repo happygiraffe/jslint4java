@@ -15,8 +15,8 @@ opts = {
 File.open(ARGV[0]) do |fh|
   while line = fh.gets do
     # puts ">> #{line}"
-    if (line =~ /\s+boolOptions\s*=\s*\{/) ... (line =~ /\}/)
-      if md = line.match(/(\w+).*\/\/ (.*)/)
+    if (line =~ /\s+bool(O|_o)ptions\s*=\s*\{/) ... (line =~ /\}/)
+      if md = line.match(/'?(\w+)'?.*\/\/ (.*)/)
         opts[ md[1] ] = [md[2].capitalize, 'Boolean']
       end
     end

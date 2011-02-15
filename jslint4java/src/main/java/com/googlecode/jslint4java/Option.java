@@ -24,6 +24,9 @@ public enum Option {
     /** If upper case html should be allowed */
     CAP("If upper case html should be allowed", Boolean.class),
 
+    /** If the continuation statement should be tolerated */
+    CONTINUE("If the continuation statement should be tolerated", Boolean.class),
+
     /** If css workarounds should be tolerated */
     CSS("If css workarounds should be tolerated", Boolean.class),
 
@@ -32,9 +35,6 @@ public enum Option {
 
     /** If logging should be allowed (console, alert, etc.) */
     DEVEL("If logging should be allowed (console, alert, etc.)", Boolean.class),
-
-    /** If === should be required */
-    EQEQEQ("If === should be required", Boolean.class),
 
     /** If es5 syntax should be allowed */
     ES5("If es5 syntax should be allowed", Boolean.class),
@@ -48,14 +48,8 @@ public enum Option {
     /** If html fragments should be allowed */
     FRAGMENT("If html fragments should be allowed", Boolean.class),
 
-    /** If immediate invocations must be wrapped in parens */
-    IMMED("If immediate invocations must be wrapped in parens", Boolean.class),
-
     /** The number of spaces used for indentation (default is 4) */
     INDENT("The number of spaces used for indentation (default is 4)", Integer.class),
-
-    /** If line breaks should not be checked */
-    LAXBREAK("If line breaks should not be checked", Boolean.class),
 
     /** The maximum number of warnings reported (default is 50) */
     MAXERR("The maximum number of warnings reported (default is 50)", Integer.class),
