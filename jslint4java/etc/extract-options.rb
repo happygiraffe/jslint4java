@@ -65,7 +65,12 @@ update_file(ARGV[2], indent, opts) do |k,desc,type|
   if type != 'Boolean'
     type = 'String'
   end
+  field_name = k
+  # Work around the fact that this is a Java keyword.
+  if field_name == 'continue'
+    field_name = 'continue_'
+  end
   ["#{indent}@Parameter(names = \"--#{k}\", description = \"#{descEscaped}\")",
-   "#{indent}public #{type} #{k} = null;",
+   "#{indent}public #{type} #{field_name} = null;",
    ""]
 end

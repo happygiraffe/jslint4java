@@ -123,11 +123,18 @@ class Main {
         throw new DieException(message, 1);
     }
 
-    /**
-     * Fetch the named {@link Option}, or null if there is no matching one.
-     */
+	/**
+	 * Fetch the named {@link Option}, or null if there is no matching one. If
+	 * there is a trailing underscore, remove it, in order to work around jslint
+	 * having an option called “continue”, which is also a Java language
+	 * keyword. Yes, I should be using a hash rather than field names. Thank you
+	 * for that.
+	 */
     private Option getOption(String optName) {
         try {
+        	if (optName.endsWith("_")) {
+        		optName = optName.substring(0, optName.length() - 1);
+        	}
             return Option.valueOf(optName.toUpperCase(Locale.getDefault()));
         } catch (IllegalArgumentException e) {
             return null;

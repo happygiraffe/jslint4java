@@ -20,7 +20,7 @@ class JSLintFlags {
     public Boolean cap = null;
 
     @Parameter(names = "--continue", description = "If the continuation statement should be tolerated")
-    public Boolean continue = null;
+    public Boolean continue_ = null;
 
     @Parameter(names = "--css", description = "If css workarounds should be tolerated")
     public Boolean css = null;
