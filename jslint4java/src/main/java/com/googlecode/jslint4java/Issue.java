@@ -21,10 +21,8 @@ public class Issue {
             if (line == 0) {
                 line = 1;
             }
-            int col = Util.intValue("character", err);
-            if (col == 0) {
-                col = 1;
-            }
+            // As of 2011-02-09 this appears to be zero based.
+            int col = Util.intValue("character", err) + 1;
             return new IssueBuilder(systemId, line, col, Util.stringValue("reason", err))
                     .evidence(Util.stringValue("evidence", err)).raw(Util.stringValue("raw", err))
                     .a(Util.stringValue("a", err)).b(Util.stringValue("b", err))
