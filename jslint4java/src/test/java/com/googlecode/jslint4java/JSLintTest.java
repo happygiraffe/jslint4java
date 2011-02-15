@@ -19,7 +19,8 @@ import org.junit.Test;
  */
 public class JSLintTest {
 
-    private JSLint lint = null;
+    private static final String EXPECTED_SEMICOLON = "Expected ';' and instead saw '(end)'.";
+	private JSLint lint = null;
 
     // Check that the issues list matches zero or more reasons.
     private void assertIssues(List<Issue> issues, String... reasons) {
@@ -50,14 +51,14 @@ public class JSLintTest {
     public void testAccurateColumnNumbers() {
         List<Issue> issues = lint("var foo = 1").getIssues();
         // ....................... 123456789012
-        assertIssues(issues, "Missing semicolon.");
+        assertIssues(issues, EXPECTED_SEMICOLON);
         assertThat(issues.get(0).getCharacter(), is(12));
     }
 
     @Test
     public void testAccurateLineNumbers() {
         List<Issue> issues = lint("var foo = 1").getIssues();
-        assertIssues(issues, "Missing semicolon.");
+        assertIssues(issues, EXPECTED_SEMICOLON);
         assertThat(issues.get(0).getLine(), is(1));
     }
 
@@ -168,7 +169,7 @@ public class JSLintTest {
     public void testLintReader() throws Exception {
         Reader reader = new StringReader("var foo = 1");
         List<Issue> issues = lint(reader).getIssues();
-        assertIssues(issues, "Missing semicolon.");
+        assertIssues(issues, EXPECTED_SEMICOLON);
     }
 
     @Test
@@ -179,7 +180,7 @@ public class JSLintTest {
         // Just some nasty thing I threw together. :)
         JSLintResult result = lint("if (foo=42) {\n  println(\"bother\")\n}\n");
         assertIssues(result.getIssues(), "'foo' is not defined.",
-                "Expected a conditional expression and instead saw an assignment.",
+                "Missing space between 'foo' and '='.",
                 "Too many errors. (25% scanned).");
     }
 
@@ -206,7 +207,7 @@ public class JSLintTest {
     public void testOneProblem() throws IOException {
         // There is a missing semicolon here.
         List<Issue> problems = lint("var foo = 1").getIssues();
-        assertIssues(problems, "Missing semicolon.");
+        assertIssues(problems, EXPECTED_SEMICOLON);
     }
 
     /**
@@ -225,7 +226,7 @@ public class JSLintTest {
     public void testReportErrorsOnly() throws Exception {
         String html = lint.report("var foo = 42", true);
         assertThat(html, containsString("<div id=errors"));
-        assertThat(html, containsString("Missing semicolon"));
+        assertThat(html, containsString(EXPECTED_SEMICOLON));
     }
 
     @Test
@@ -239,7 +240,7 @@ public class JSLintTest {
     public void testReportInResult() throws Exception {
         String html = lint("var foo = 42").getReport();
         assertThat(html, containsString("<div id=errors"));
-        assertThat(html, containsString("Missing semicolon"));
+        assertThat(html, containsString(EXPECTED_SEMICOLON));
         assertThat(html, containsString("<div>"));
     }
 
@@ -281,6 +282,6 @@ public class JSLintTest {
         // This isn't the originally reported problem, but it tickles the
         // "can't continue" message.
         List<Issue> issues = lint("\"").getIssues();
-        assertIssues(issues, "Unclosed string.", "Stopping, unable to continue. (100% scanned).");
+        assertIssues(issues, "Unclosed string.", "Stopping. (100% scanned).");
     }
 }
