@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Locale;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
@@ -124,18 +123,11 @@ class Main {
     }
 
 	/**
-	 * Fetch the named {@link Option}, or null if there is no matching one. If
-	 * there is a trailing underscore, remove it, in order to work around jslint
-	 * having an option called “continue”, which is also a Java language
-	 * keyword. Yes, I should be using a hash rather than field names. Thank you
-	 * for that.
+	 * Fetch the named {@link Option}, or null if there is no matching one.
 	 */
     private Option getOption(String optName) {
         try {
-        	if (optName.endsWith("_")) {
-        		optName = optName.substring(0, optName.length() - 1);
-        	}
-            return Option.valueOf(optName.toUpperCase(Locale.getDefault()));
+            return Option.valueOf(optName);
         } catch (IllegalArgumentException e) {
             return null;
         }
