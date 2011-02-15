@@ -269,7 +269,7 @@ public class JSLintTest {
     @Test
     public void testSetOptionWithArgument() throws Exception {
         // This should only pass when indent=2.
-        String js = "var x = 0;\nif (true) {\n  x = 1;\n}";
+        String js = "var x = 0;\nif (!x) {\n  x = 1;\n}";
         lint.addOption(Option.WHITE);
         lint.addOption(Option.INDENT, "2");
         List<Issue> issues = lint(js).getIssues();
