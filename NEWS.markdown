@@ -4,7 +4,7 @@ Revision history for jslint4java
 1.4.7 (2011-02-15)
 ------------------
 
- * Update to JSLint 2011-02-14.
+ * Update to JSLint 2011-02-15.
    * This adds the `continue` option, whilst removing `eqeqeq`, `immed` and `laxbreak` options.
 
 1.4.6 (2011-01-02)
