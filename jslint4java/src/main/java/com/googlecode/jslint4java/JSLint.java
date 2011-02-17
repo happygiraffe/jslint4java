@@ -46,6 +46,18 @@ public class JSLint {
         }
     }
 
+	/**
+	 * A helper class for interpreting function parameter names. Note that we
+	 * use this to work around a change in JSLint's data structure, which
+	 * changed from being a single string to an object.
+	 */
+   private static final class JSFunctionParamConverter implements Util.Converter<String> {
+		public String convert(Object obj) {
+            Scriptable scope = (Scriptable) obj;
+            return Util.stringValue("value", scope);
+		}
+    }
+
     /**
      * A helper class for interpreting the output of {@code JSLINT.data()}.
      */
@@ -56,7 +68,7 @@ public class JSLint {
             int line = Util.intValue("line", scope);
             Builder b = new JSFunction.Builder(name, line);
             b.last(Util.intValue("last", scope));
-            for (String param : Util.listValueOfType("param", String.class, scope)) {
+            for (String param : Util.listValue("param", scope, new JSFunctionParamConverter())) {
                 b.addParam(param);
             }
             for (String closure : Util.listValueOfType("closure", String.class, scope)) {
