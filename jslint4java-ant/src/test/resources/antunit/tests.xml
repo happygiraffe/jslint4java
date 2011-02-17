@@ -79,7 +79,7 @@ Tests for the JSLint ant task.
         </au:expectfailure>
         <!-- This is not the exact same message reported, but was how I was
              able to trigger the same condition. -->
-        <au:assertLogContains text="Missing semicolon." />
+        <au:assertLogContains text="Expected ';' and instead saw '}'" />
     </target>
 
     <target name="testArbitraryResource">
