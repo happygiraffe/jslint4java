@@ -46,16 +46,16 @@ public class JSLint {
         }
     }
 
-	/**
-	 * A helper class for interpreting function parameter names. Note that we
-	 * use this to work around a change in JSLint's data structure, which
-	 * changed from being a single string to an object.
-	 */
-   private static final class JSFunctionParamConverter implements Util.Converter<String> {
-		public String convert(Object obj) {
+    /**
+     * A helper class for interpreting function parameter names. Note that we
+     * use this to work around a change in JSLint's data structure, which
+     * changed from being a single string to an object.
+     */
+    private static final class JSFunctionParamConverter implements Util.Converter<String> {
+        public String convert(Object obj) {
             Scriptable scope = (Scriptable) obj;
             return Util.stringValue("value", scope);
-		}
+        }
     }
 
     /**

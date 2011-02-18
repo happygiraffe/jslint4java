@@ -122,9 +122,9 @@ class Main {
         throw new DieException(message, 1);
     }
 
-	/**
-	 * Fetch the named {@link Option}, or null if there is no matching one.
-	 */
+    /**
+     * Fetch the named {@link Option}, or null if there is no matching one.
+     */
     private Option getOption(String optName) {
         try {
             return Option.valueOf(optName);

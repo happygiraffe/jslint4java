@@ -20,7 +20,7 @@ import org.junit.Test;
 public class JSLintTest {
 
     private static final String EXPECTED_SEMICOLON = "Expected ';' and instead saw '(end)'.";
-	private JSLint lint = null;
+    private JSLint lint = null;
 
     // Check that the issues list matches zero or more reasons.
     private void assertIssues(List<Issue> issues, String... reasons) {
