@@ -1,10 +1,10 @@
 Revision history for jslint4java
 ================================
 
-1.4.7 (2011-02-15)
+1.4.7 (2011-02-21)
 ------------------
 
- * Update to JSLint 2011-02-15.
+ * Update to JSLint 2011-02-20.
    * This adds the `continue` option, whilst removing `eqeqeq`, `immed` and `laxbreak` options.
    * JSLints interpretation of line and column numbers has changed.  I've tried to keep up.  Please [file a bug](http://code.google.com/p/jslint4java/issues) if errors aren't reported at the expected place.
 
