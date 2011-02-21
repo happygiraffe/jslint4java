@@ -100,7 +100,7 @@ Tests for the JSLint ant task.
             </jsl:jslint>
         </au:expectfailure>
         <!-- TODO This will always fail on windows. -->
-        <au:assertLogContains text="subdir/issue21.js:1:24: Missing semicolon." />
+        <au:assertLogContains text="subdir/issue21.js:2:17: Expected ';' and instead saw '(end)'" />
     </target>
 
     <!-- Run a stub linter that always fails over a good javascript file,

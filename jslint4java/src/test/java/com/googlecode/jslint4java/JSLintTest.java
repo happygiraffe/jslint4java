@@ -52,7 +52,8 @@ public class JSLintTest {
         List<Issue> issues = lint("var foo = 1").getIssues();
         // ....................... 123456789012
         assertIssues(issues, EXPECTED_SEMICOLON);
-        assertThat(issues.get(0).getCharacter(), is(12));
+        // JSLint now appears to report the column of the token before this error…
+        assertThat(issues.get(0).getCharacter(), is(11));
     }
 
     @Test

@@ -29,16 +29,16 @@ public class IssueTest {
     public void testEmptyError() throws Exception {
         Issue issue = IssueBuilder.fromJavaScript("foo.js", scope);
         assertThat(issue.getReason(), is(nullValue()));
-        assertThat(issue.getLine(), is(1));
-        assertThat(issue.getCharacter(), is(1));
+        assertThat(issue.getLine(), is(0));
+        assertThat(issue.getCharacter(), is(0));
     }
 
     @Test
     public void testNullError() throws Exception {
         Issue issue = IssueBuilder.fromJavaScript("foo.js", null);
         assertThat(issue.getReason(), is(nullValue()));
-        assertThat(issue.getLine(), is(1));
-        assertThat(issue.getCharacter(), is(1));
+        assertThat(issue.getLine(), is(0));
+        assertThat(issue.getCharacter(), is(0));
     }
 
     @Test
