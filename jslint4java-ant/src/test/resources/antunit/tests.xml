@@ -10,6 +10,9 @@ Tests for the JSLint ant task.
 	<!-- A temp location the tests can write to. -->
 	<property name="temp.dir" location="${basedir}/out"/>
 
+	<!-- The location to write test reports to. -->
+	<property name="test.report.dir" location="${basedir}/../../surefire-reports"/>
+
     <taskdef uri="antlib:org.apache.ant.antunit"
              resource="org/apache/ant/antunit/antlib.xml"
              classpath="${test.classpath}" />
@@ -27,9 +30,9 @@ Tests for the JSLint ant task.
             <file file="${ant.file}" />
             <!-- Add logLevel="info" attribute for debugging. -->
             <au:plainlistener />
-        	<!-- Record test results in the same places as JUnit. -->
-        	<!-- TODO: pass the location in from maven. -->
-        	<au:xmllistener logLevel="info" toDir="${basedir}/../../surefire-reports" />
+            <!-- Record test results in the same places as JUnit. -->
+            <!-- TODO: pass the location in from maven. -->
+            <au:xmllistener logLevel="info" toDir="${test.report.dir}" />
         </au:antunit>
     </target>
 
