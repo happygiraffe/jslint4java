@@ -63,6 +63,8 @@ import com.googlecode.jslint4java.Option;
  * not pass JSLint. Defaults to true.</dd>
  * <dt><code>options</code></dt>
  * <dd>Optional. A comma separated list of {@link Option} names. No default.</dd>
+ * <dt><code>warnOnNoFilesToLint</code>
+ * <dd>Optional. If JSLint should warn when there are no files to lint, instead of failing the build.
  * </dl>
  *
  * @author dom
@@ -70,6 +72,8 @@ import com.googlecode.jslint4java.Option;
  * @see FormatterElement
  */
 public class JSLintTask extends Task {
+
+    private static final String NO_FILES_TO_LINT = "no files to lint!";
 
     private final Union resources = new Union();
 
@@ -86,6 +90,9 @@ public class JSLintTask extends Task {
     private final Map<Option, String> options = new HashMap<Option, String>();
 
     private PredefElement predef = null;
+
+    // If you're not warning, you're dieing.
+    private boolean warnOnNoFilesToLint = false;
 
     /**
      * Check the contents of this {@link ResourceCollection}.
@@ -143,7 +150,12 @@ public class JSLintTask extends Task {
     @Override
     public void execute() throws BuildException {
         if (resources.size() == 0) {
-            throw new BuildException("no resources specified");
+            if (warnOnNoFilesToLint) {
+                log(NO_FILES_TO_LINT, Project.MSG_WARN);
+                return;
+            } else {
+                throw new BuildException("no resources specified");
+            }
         }
 
         JSLint lint = makeLint();
@@ -310,4 +322,10 @@ public class JSLintTask extends Task {
         }
     }
 
+    /**
+     * If set to true, then a warning will be produced instead of throwing a {@link BuildException}.
+     */
+    public void setWarnOnNoFilesToLint(boolean warnOnNoFilesToLint) {
+        this.warnOnNoFilesToLint = warnOnNoFilesToLint;
+    }
 }

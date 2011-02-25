@@ -170,4 +170,10 @@ Tests for the JSLint ant task.
 			<fileset file="numeric-keys.js" />
 		</jsl:jslint>
 	</target>
+
+	<!-- issue 53: allow warning on empty filesets. -->
+	<target name="testEmptyFileset">
+		<jsl:jslint warnOnNoFilesToLint="true">
+		</jsl:jslint>
+	</target>
 </project>
