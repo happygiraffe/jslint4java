@@ -63,8 +63,6 @@ import com.googlecode.jslint4java.Option;
  * not pass JSLint. Defaults to true.</dd>
  * <dt><code>options</code></dt>
  * <dd>Optional. A comma separated list of {@link Option} names. No default.</dd>
- * <dt><code>warnOnNoFilesToLint</code>
- * <dd>Optional. If JSLint should warn when there are no files to lint, instead of failing the build.
  * </dl>
  *
  * @author dom
@@ -90,9 +88,6 @@ public class JSLintTask extends Task {
     private final Map<Option, String> options = new HashMap<Option, String>();
 
     private PredefElement predef = null;
-
-    // If you're not warning, you're dieing.
-    private boolean warnOnNoFilesToLint = false;
 
     /**
      * Check the contents of this {@link ResourceCollection}.
@@ -150,7 +145,7 @@ public class JSLintTask extends Task {
     @Override
     public void execute() throws BuildException {
         if (resources.size() == 0) {
-            if (warnOnNoFilesToLint) {
+            if (!haltOnFailure) {
                 log(NO_FILES_TO_LINT, Project.MSG_WARN);
                 return;
             } else {
@@ -320,12 +315,5 @@ public class JSLintTask extends Task {
                 throw new BuildException("Unknown option " + optName);
             }
         }
-    }
-
-    /**
-     * If set to true, then a warning will be produced instead of throwing a {@link BuildException}.
-     */
-    public void setWarnOnNoFilesToLint(boolean warnOnNoFilesToLint) {
-        this.warnOnNoFilesToLint = warnOnNoFilesToLint;
     }
 }

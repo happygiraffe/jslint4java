@@ -173,7 +173,7 @@ Tests for the JSLint ant task.
 
 	<!-- issue 53: allow warning on empty filesets. -->
 	<target name="testEmptyFileset">
-		<jsl:jslint warnOnNoFilesToLint="true">
+		<jsl:jslint haltonfailure="false">
 		</jsl:jslint>
 	</target>
 </project>
