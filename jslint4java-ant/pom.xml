@@ -45,12 +45,12 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <ant antfile="${project.build.testOutputDirectory}/antunit/tests.xml" inheritAll="false" inheritRefs="false">
                   <property name="test.classpath" refid="maven.test.classpath" />
                   <property name="test.skipped" value="${maven.test.skip}" />
                 </ant>
-              </tasks>
+              </target>
             </configuration>
           </execution>
         </executions>
