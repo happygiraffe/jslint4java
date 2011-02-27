@@ -145,12 +145,8 @@ public class JSLintTask extends Task {
     @Override
     public void execute() throws BuildException {
         if (resources.size() == 0) {
-            if (!haltOnFailure) {
-                log(NO_FILES_TO_LINT, Project.MSG_WARN);
-                return;
-            } else {
-                throw new BuildException("no resources specified");
-            }
+            // issue 53: this isn't a fail, just a notice.
+            log(NO_FILES_TO_LINT);
         }
 
         JSLint lint = makeLint();

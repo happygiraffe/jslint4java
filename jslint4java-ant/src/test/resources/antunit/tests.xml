@@ -44,10 +44,10 @@ Tests for the JSLint ant task.
 		<delete dir="${temp.dir}" />
 	</target>
 
+	<!-- issue 53: we're OK with this. -->
     <target name="testNoResources">
-        <au:expectfailure expectedmessage="no resources specified">
-            <jsl:jslint />
-        </au:expectfailure>
+	    <jsl:jslint />
+    	<au:assertLogContains text="no files to lint!"/>
     </target>
 
     <target name="testFailsOnError">
@@ -168,12 +168,6 @@ Tests for the JSLint ant task.
 		<jsl:jslint>
 			<!-- Should pass without blowup. -->
 			<fileset file="numeric-keys.js" />
-		</jsl:jslint>
-	</target>
-
-	<!-- issue 53: allow warning on empty filesets. -->
-	<target name="testEmptyFileset">
-		<jsl:jslint haltonfailure="false">
 		</jsl:jslint>
 	</target>
 </project>
