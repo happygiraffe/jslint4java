@@ -52,6 +52,12 @@ public class FormatterElement {
             ResultFormatter getResultFormatter() {
                 return new ReportResultFormatter();
             }
+        },
+        checkstyle() {
+            @Override
+            ResultFormatter getResultFormatter() {
+                return new CheckstyleXmlResultFormatter();
+            }
         };
         abstract ResultFormatter getResultFormatter();
     }
@@ -65,9 +71,8 @@ public class FormatterElement {
      * element.
      */
     public ResultFormatter getResultFormatter() {
-        if (type == null) {
+        if (type == null)
             throw new BuildException("you must specify type");
-        }
         ResultFormatter rf = type.getResultFormatter();
         rf.setStdout(defaultOutputStream);
         if (destFile != null) {
