@@ -43,10 +43,10 @@ public class CheckstyleXmlFormatterTest {
         String name = "bad.js";
         Issue issue = new Issue.IssueBuilder(name, 1, 1, "this is not a daffodil").build();
         JSLintResult result = new JSLintResult.ResultBuilder(name).addIssue(issue).build();
-        String expected = "<file name=\"bad.js\">" +
-        		"<error line='1' column='1' severity='warning' message='this is not a daffodil'" +
-        		" source='com.googlecode.jslint4java.JSLint' />" +
-        		"</file>";
+        String expected = "<file name=\"bad.js\">"
+                + "<error line='1' column='1' severity='warning' message='this is not a daffodil'"
+                + " source='com.googlecode.jslint4java.JSLint' />"
+                + "</file>";
         XMLAssert.assertXMLEqual(expected, form.format(result));
     }
 }
