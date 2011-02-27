@@ -130,6 +130,8 @@
             <dd>Creates a single XML file describing all errors seen in the input.  This is a custom XML format for jslint4java.  You should prefer the JUnit xml formatter instead.</dd>
             <dt><code>junit</code></dt>
             <dd>Creates a directory full of junit xml files.  These can be integrated into existing continuous build systems such as <a href="http://hudson-ci.org/">hudson</a> or <a href="http://zutubi.com/products/pulse/">pulse</a>.</dd>
+            <dt><code>checkstyle</code></dt>
+            <dd>Creates a single file XML, listing all errors seen in the input.  This should be compatible with checkstyle's <a href="http://checkstyle.hg.sourceforge.net/hgweb/checkstyle/checkstyle/file/623dba645830/src/checkstyle/com/puppycrawl/tools/checkstyle/XMLLogger.java">XMLLogger</a>.</dd>
             <dt><code>report</code></dt>
             <dd>Makes an HTML file containing one <a href="http://www.jslint.com/lint.html#report">JSLint report</a> per input file.</dd>
           </dl>
