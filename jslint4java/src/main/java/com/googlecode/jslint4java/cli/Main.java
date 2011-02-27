@@ -18,6 +18,7 @@ import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
+import com.googlecode.jslint4java.formatter.CheckstyleXmlFormatter;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
 import com.googlecode.jslint4java.formatter.JUnitXmlFormatter;
@@ -213,9 +214,8 @@ class Main {
         if (flags.files.isEmpty()) {
             usage(jc);
             return null; // can never happen
-        } else {
+        } else
             return flags.files;
-        }
     }
 
     private void setErrored(boolean errored) {
@@ -242,6 +242,8 @@ class Main {
             formatter = new JUnitXmlFormatter();
         } else if (reportType.equals("report")) {
             formatter = new ReportFormatter();
+        } else if (reportType.equals("checkstyle")) {
+            formatter = new CheckstyleXmlFormatter();
         } else {
             die("unknown report type '" + reportType + "'");
         }
