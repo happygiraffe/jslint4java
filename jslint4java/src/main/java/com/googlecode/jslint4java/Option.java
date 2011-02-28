@@ -1,6 +1,8 @@
 package com.googlecode.jslint4java;
 
+import java.util.EnumSet;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * All available options for tuning the behaviour of JSLint.
@@ -151,6 +153,14 @@ public enum Option {
             }
         }
         return maxOptLen;
+    }
+
+    /**
+     * The set of options from “JavaScript: The Good Parts,” as seen on
+     * http://www.jslint.com/.
+     */
+    public Set<Option> theGoodParts() {
+        return EnumSet.of(WHITE, ONEVAR, UNDEF, NEWCAP, NOMEN, REGEXP, PLUSPLUS, BITWISE);
     }
 
     /**
