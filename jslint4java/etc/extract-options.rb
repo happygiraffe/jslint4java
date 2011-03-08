@@ -22,7 +22,7 @@ File.open(ARGV[0]) do |fh|
   while line = fh.gets do
     # The jslint options are now in a comment.  Use the first and last options
     # as delimiters.
-    if (line =~ /^\s{4}adsafe\s/) .. (line =~ /^\s{4}widget\s/)
+    if (line =~ /^\s{4}adsafe\s/) .. (line =~ /^\s*$/)
       if md = line.match(re)
         key = md[1]
         if md[3]
@@ -33,8 +33,8 @@ File.open(ARGV[0]) do |fh|
           type = opt_types[key]
         end
         opts[key] = [desc, type]
-      else
-        raise 'Bad option line "#{line}"'
+      elsif line.strip != ''
+        raise "Bad option line '#{line.strip}'"
       end
     end
   end
