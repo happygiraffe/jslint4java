@@ -7,7 +7,7 @@ import com.beust.jcommander.Parameter;
  */
 class JSLintFlags {
     // BEGIN-OPTIONS
-    @Parameter(names = "--adsafe", description = "If adsafe should be enforced")
+    @Parameter(names = "--adsafe", description = "If adsafe rules should be enforced")
     public Boolean ADSAFE = null;
 
     @Parameter(names = "--bitwise", description = "If bitwise operators should not be allowed")
@@ -37,19 +37,19 @@ class JSLintFlags {
     @Parameter(names = "--evil", description = "If eval should be allowed")
     public Boolean EVIL = null;
 
-    @Parameter(names = "--forin", description = "If for in statements must filter")
+    @Parameter(names = "--forin", description = "If for in statements need not filter")
     public Boolean FORIN = null;
 
     @Parameter(names = "--fragment", description = "If html fragments should be allowed")
     public Boolean FRAGMENT = null;
 
-    @Parameter(names = "--indent", description = "The number of spaces used for indentation (default is 4)")
+    @Parameter(names = "--indent", description = "The indentation factor")
     public String INDENT = null;
 
-    @Parameter(names = "--maxerr", description = "The maximum number of warnings reported (default is 50)")
+    @Parameter(names = "--maxerr", description = "The maximum number of errors to allow")
     public String MAXERR = null;
 
-    @Parameter(names = "--maxlen", description = "Maximum line length")
+    @Parameter(names = "--maxlen", description = "The maximum length of a source line")
     public String MAXLEN = null;
 
     @Parameter(names = "--newcap", description = "If constructor names must be capitalized")
@@ -70,7 +70,7 @@ class JSLintFlags {
     @Parameter(names = "--plusplus", description = "If increment/decrement should not be allowed")
     public Boolean PLUSPLUS = null;
 
-    @Parameter(names = "--predef", description = "The names of predefined global variables.")
+    @Parameter(names = "--predef", description = "The names of predefined global variables")
     public String PREDEF = null;
 
     @Parameter(names = "--regexp", description = "If the . should not be allowed in regexp literals")
@@ -94,7 +94,7 @@ class JSLintFlags {
     @Parameter(names = "--white", description = "If strict whitespace rules apply")
     public Boolean WHITE = null;
 
-    @Parameter(names = "--widget", description = "If the yahoo widgets globals should be predefined")
+    @Parameter(names = "--widget", description = " if the yahoo widgets globals should be predefined")
     public Boolean WIDGET = null;
 
     @Parameter(names = "--windows", description = "If ms windows-specigic globals should be predefined")

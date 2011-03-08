@@ -7,7 +7,7 @@ Revision history for jslint4java
  * Add OSGI bundle headers.
  * issue 52: Add checkstyle xml formatter.
  * issue 53: No files passed to the ant task is no longer an error (just an info message).
- * Update to JSLint 2011-02-20.
+ * Update to JSLint 2011-03-07.
    * This adds the `continue` option, whilst removing `eqeqeq`, `immed` and `laxbreak` options.
    * JSLints interpretation of line and column numbers has changed.  I've tried to keep up.  Please [file a bug](http://code.google.com/p/jslint4java/issues) if errors aren't reported at the expected place.
 

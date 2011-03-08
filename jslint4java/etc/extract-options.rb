@@ -4,28 +4,43 @@
 #
 
 opts = {
-  # Hard-code these, as they're not part of the boolean options.
-  "indent" => ['The number of spaces used for indentation (default is 4)', 'Integer'],
-  'maxerr' => ['The maximum number of warnings reported (default is 50)', 'Integer'],
-  'maxlen' => ['Maximum line length', 'Integer'],
-  # NB: Slight variant of original text.
-  'predef' => ['The names of predefined global variables.', 'StringArray'],
+  # Hard code, as not mentioned in the source list.
+  'predef' => ['The names of predefined global variables', 'StringArray'],
 }
 
-initial_opts_len = opts.length
+# The non-boolean option types.
+opt_types = {
+  'indent' => 'Integer',
+  'maxerr' => 'Integer',
+  'maxlen' => 'Integer',
+  'predef' => 'StringArray',
+}
 
 File.open(ARGV[0]) do |fh|
+  # To match an option declaration.
+  re = /^\s+'?(\w+)'?\s+(true,?\s(.*)|the.*)/
   while line = fh.gets do
-    # puts ">> #{line}"
-    if (line =~ /\s+bool(O|_o)ptions\s*=\s*\{/) ... (line =~ /\}/)
-      if md = line.match(/'?(\w+)'?.*\/\/ (.*)/)
-        opts[ md[1] ] = [md[2].capitalize, 'Boolean']
+    # The jslint options are now in a comment.  Use the first and last options
+    # as delimiters.
+    if (line =~ /^\s{4}adsafe\s/) .. (line =~ /^\s{4}widget\s/)
+      if md = line.match(re)
+        key = md[1]
+        if md[3]
+          desc = md[3].capitalize
+          type = 'Boolean'
+        else
+          desc = md[2].capitalize
+          type = opt_types[key]
+        end
+        opts[key] = [desc, type]
+      else
+        raise 'Bad option line "#{line}"'
       end
     end
   end
 end
 
-if opts.length == initial_opts_len
+if opts.length == 0
   raise 'Ooops, no options found!'
 end
 

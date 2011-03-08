@@ -14,8 +14,8 @@ import java.util.Set;
  */
 public enum Option {
     // BEGIN-OPTIONS
-    /** If adsafe should be enforced */
-    ADSAFE("If adsafe should be enforced", Boolean.class),
+    /** If adsafe rules should be enforced */
+    ADSAFE("If adsafe rules should be enforced", Boolean.class),
 
     /** If bitwise operators should not be allowed */
     BITWISE("If bitwise operators should not be allowed", Boolean.class),
@@ -44,20 +44,20 @@ public enum Option {
     /** If eval should be allowed */
     EVIL("If eval should be allowed", Boolean.class),
 
-    /** If for in statements must filter */
-    FORIN("If for in statements must filter", Boolean.class),
+    /** If for in statements need not filter */
+    FORIN("If for in statements need not filter", Boolean.class),
 
     /** If html fragments should be allowed */
     FRAGMENT("If html fragments should be allowed", Boolean.class),
 
-    /** The number of spaces used for indentation (default is 4) */
-    INDENT("The number of spaces used for indentation (default is 4)", Integer.class),
+    /** The indentation factor */
+    INDENT("The indentation factor", Integer.class),
 
-    /** The maximum number of warnings reported (default is 50) */
-    MAXERR("The maximum number of warnings reported (default is 50)", Integer.class),
+    /** The maximum number of errors to allow */
+    MAXERR("The maximum number of errors to allow", Integer.class),
 
-    /** Maximum line length */
-    MAXLEN("Maximum line length", Integer.class),
+    /** The maximum length of a source line */
+    MAXLEN("The maximum length of a source line", Integer.class),
 
     /** If constructor names must be capitalized */
     NEWCAP("If constructor names must be capitalized", Boolean.class),
@@ -77,8 +77,8 @@ public enum Option {
     /** If increment/decrement should not be allowed */
     PLUSPLUS("If increment/decrement should not be allowed", Boolean.class),
 
-    /** The names of predefined global variables. */
-    PREDEF("The names of predefined global variables.", StringArray.class),
+    /** The names of predefined global variables */
+    PREDEF("The names of predefined global variables", StringArray.class),
 
     /** If the . should not be allowed in regexp literals */
     REGEXP("If the . should not be allowed in regexp literals", Boolean.class),
@@ -101,8 +101,8 @@ public enum Option {
     /** If strict whitespace rules apply */
     WHITE("If strict whitespace rules apply", Boolean.class),
 
-    /** If the yahoo widgets globals should be predefined */
-    WIDGET("If the yahoo widgets globals should be predefined", Boolean.class),
+    /**  if the yahoo widgets globals should be predefined */
+    WIDGET(" if the yahoo widgets globals should be predefined", Boolean.class),
 
     /** If ms windows-specigic globals should be predefined */
     WINDOWS("If ms windows-specigic globals should be predefined", Boolean.class),
