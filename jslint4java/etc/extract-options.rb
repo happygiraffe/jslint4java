@@ -12,6 +12,8 @@ opts = {
   'predef' => ['The names of predefined global variables.', 'StringArray'],
 }
 
+initial_opts_len = opts.length
+
 File.open(ARGV[0]) do |fh|
   while line = fh.gets do
     # puts ">> #{line}"
@@ -21,6 +23,10 @@ File.open(ARGV[0]) do |fh|
       end
     end
   end
+end
+
+if opts.length == initial_opts_len
+  raise 'Ooops, no options found!'
 end
 
 def update_file(f, indent, opts)
