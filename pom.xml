@@ -214,11 +214,6 @@
               <goals>
                 <goal>manifest</goal>
               </goals>
-              <configuration>
-                <instructions>
-                  <Bundle-SymbolicName>${project.groupId}</Bundle-SymbolicName>
-                </instructions>
-              </configuration>
             </execution>
           </executions>
         </plugin>
