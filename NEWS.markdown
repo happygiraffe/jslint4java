@@ -1,9 +1,10 @@
 Revision history for jslint4java
 ================================
 
-1.4.7 (2011-02-21)
+1.4.7 (2011-03-08)
 ------------------
 
+ * Add OSGI bundle headers.
  * issue 52: Add checkstyle xml formatter.
  * issue 53: No files passed to the ant task is no longer an error (just an info message).
  * Update to JSLint 2011-02-20.
