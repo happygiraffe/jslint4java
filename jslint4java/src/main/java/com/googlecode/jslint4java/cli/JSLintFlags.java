@@ -94,7 +94,7 @@ class JSLintFlags {
     @Parameter(names = "--white", description = "If strict whitespace rules apply")
     public Boolean WHITE = null;
 
-    @Parameter(names = "--widget", description = " if the yahoo widgets globals should be predefined")
+    @Parameter(names = "--widget", description = "If the yahoo widgets globals should be predefined")
     public Boolean WIDGET = null;
 
     @Parameter(names = "--windows", description = "If ms windows-specigic globals should be predefined")

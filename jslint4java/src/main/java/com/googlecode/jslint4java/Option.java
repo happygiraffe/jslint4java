@@ -101,8 +101,8 @@ public enum Option {
     /** If strict whitespace rules apply */
     WHITE("If strict whitespace rules apply", Boolean.class),
 
-    /**  if the yahoo widgets globals should be predefined */
-    WIDGET(" if the yahoo widgets globals should be predefined", Boolean.class),
+    /** If the yahoo widgets globals should be predefined */
+    WIDGET("If the yahoo widgets globals should be predefined", Boolean.class),
 
     /** If ms windows-specigic globals should be predefined */
     WINDOWS("If ms windows-specigic globals should be predefined", Boolean.class),
