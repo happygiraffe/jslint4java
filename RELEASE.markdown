@@ -33,9 +33,9 @@ In case this barfs after the "git push" stage, edit release.properties and chang
 
 Log into the [OSS Nexus (staging repositories)](https://oss.sonatype.org/index.html#stagingRepositories), and follow the [release it](https://docs.sonatype.org/display/repository/sonatype+oss+maven+repository+usage+guide#SonatypeOSSMavenRepositoryUsageGuide-10.ReleaseIt) instructions from Sonatype.
 
-Now, create the distribution.
+Now, change into the source code that `release:deploy` made, and rebuild for the dist profile.
 
-    $ git checkout rel-$ver
+    $ cd target/checkout
     $ mvn -Pdist clean verify
 
 Create a source archive.
