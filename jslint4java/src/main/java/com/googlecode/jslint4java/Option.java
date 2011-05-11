@@ -62,6 +62,9 @@ public enum Option {
     /** If constructor names must be capitalized */
     NEWCAP("If constructor names must be capitalized", Boolean.class),
 
+    /** If node.js globals should be predefined */
+    NODE("If node.js globals should be predefined", Boolean.class),
+
     /** If names should be checked */
     NOMEN("If names should be checked", Boolean.class),
 
@@ -89,8 +92,8 @@ public enum Option {
     /** If use of some browser features should be restricted */
     SAFE("If use of some browser features should be restricted", Boolean.class),
 
-    /** Require the "use strict"; pragma */
-    STRICT("Require the \"use strict\"; pragma", Boolean.class),
+    /** Require the 'use strict'; pragma */
+    STRICT("Require the 'use strict'; pragma", Boolean.class),
 
     /** If all forms of subscript notation are tolerated */
     SUB("If all forms of subscript notation are tolerated", Boolean.class),
@@ -98,14 +101,17 @@ public enum Option {
     /** If variables should be declared before used */
     UNDEF("If variables should be declared before used", Boolean.class),
 
+    /** If unused parameters should be tolerated */
+    UNPARAM("If unused parameters should be tolerated", Boolean.class),
+
     /** If strict whitespace rules apply */
     WHITE("If strict whitespace rules apply", Boolean.class),
 
     /** If the yahoo widgets globals should be predefined */
     WIDGET("If the yahoo widgets globals should be predefined", Boolean.class),
 
-    /** If ms windows-specigic globals should be predefined */
-    WINDOWS("If ms windows-specigic globals should be predefined", Boolean.class),
+    /** If ms windows-specific globals should be predefined */
+    WINDOWS("If ms windows-specific globals should be predefined", Boolean.class),
 
     // END-OPTIONS
     ;

@@ -55,6 +55,9 @@ class JSLintFlags {
     @Parameter(names = "--newcap", description = "If constructor names must be capitalized")
     public Boolean NEWCAP = null;
 
+    @Parameter(names = "--node", description = "If node.js globals should be predefined")
+    public Boolean NODE = null;
+
     @Parameter(names = "--nomen", description = "If names should be checked")
     public Boolean NOMEN = null;
 
@@ -82,7 +85,7 @@ class JSLintFlags {
     @Parameter(names = "--safe", description = "If use of some browser features should be restricted")
     public Boolean SAFE = null;
 
-    @Parameter(names = "--strict", description = "Require the \"use strict\"; pragma")
+    @Parameter(names = "--strict", description = "Require the 'use strict'; pragma")
     public Boolean STRICT = null;
 
     @Parameter(names = "--sub", description = "If all forms of subscript notation are tolerated")
@@ -91,13 +94,16 @@ class JSLintFlags {
     @Parameter(names = "--undef", description = "If variables should be declared before used")
     public Boolean UNDEF = null;
 
+    @Parameter(names = "--unparam", description = "If unused parameters should be tolerated")
+    public Boolean UNPARAM = null;
+
     @Parameter(names = "--white", description = "If strict whitespace rules apply")
     public Boolean WHITE = null;
 
     @Parameter(names = "--widget", description = "If the yahoo widgets globals should be predefined")
     public Boolean WIDGET = null;
 
-    @Parameter(names = "--windows", description = "If ms windows-specigic globals should be predefined")
+    @Parameter(names = "--windows", description = "If ms windows-specific globals should be predefined")
     public Boolean WINDOWS = null;
 
     // END-OPTIONS

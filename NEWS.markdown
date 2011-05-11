@@ -1,6 +1,12 @@
 Revision history for jslint4java
 ================================
 
+1.4.8 (2011-05-11)
+------------------
+
+ * Update to JSLint 2011-03-07.
+   - This adds the `node` and `unparam` options.
+
 1.4.7 (2011-03-08)
 ------------------
 
