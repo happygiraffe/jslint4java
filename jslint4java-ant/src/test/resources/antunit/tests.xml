@@ -7,8 +7,11 @@
 Tests for the JSLint ant task.
     </description>
 
-	<!-- A temp location the tests can write to. -->
-	<property name="temp.dir" location="${basedir}/out"/>
+    <!-- A temp location the tests can write to. -->
+    <property name="temp.dir" location="${basedir}/out"/>
+
+    <!-- The location to write test reports to. -->
+    <property name="test.report.dir" location="${basedir}/../../surefire-reports"/>
 
     <taskdef uri="antlib:org.apache.ant.antunit"
              resource="org/apache/ant/antunit/antlib.xml"
@@ -27,24 +30,24 @@ Tests for the JSLint ant task.
             <file file="${ant.file}" />
             <!-- Add logLevel="info" attribute for debugging. -->
             <au:plainlistener />
-        	<!-- Record test results in the same places as JUnit. -->
-        	<!-- TODO: pass the location in from maven. -->
-        	<au:xmllistener logLevel="info" toDir="${basedir}/../../surefire-reports" />
+            <!-- Record test results in the same places as JUnit. -->
+            <!-- TODO: pass the location in from maven. -->
+            <au:xmllistener logLevel="info" toDir="${test.report.dir}" />
         </au:antunit>
     </target>
 
-	<target name="setUp">
-		<mkdir dir="${temp.dir}"/>
-	</target>
+    <target name="setUp">
+        <mkdir dir="${temp.dir}"/>
+    </target>
 
-	<target name="tearDown">
-		<delete dir="${temp.dir}" />
-	</target>
+    <target name="tearDown">
+        <delete dir="${temp.dir}" />
+    </target>
 
+    <!-- issue 53: we're OK with this. -->
     <target name="testNoResources">
-        <au:expectfailure expectedmessage="no resources specified">
-            <jsl:jslint />
-        </au:expectfailure>
+        <jsl:jslint />
+        <au:assertLogContains text="no files to lint!"/>
     </target>
 
     <target name="testFailsOnError">
@@ -79,7 +82,7 @@ Tests for the JSLint ant task.
         </au:expectfailure>
         <!-- This is not the exact same message reported, but was how I was
              able to trigger the same condition. -->
-        <au:assertLogContains text="Missing semicolon." />
+        <au:assertLogContains text="Expected ';' and instead saw '}'" />
     </target>
 
     <target name="testArbitraryResource">
@@ -99,8 +102,7 @@ Tests for the JSLint ant task.
                 <fileset dir="subdir" includes="*.js" />
             </jsl:jslint>
         </au:expectfailure>
-        <!-- TODO This will always fail on windows. -->
-        <au:assertLogContains text="subdir/issue21.js:1:24: Missing semicolon." />
+        <au:assertLogContains text="subdir${file.separator}issue21.js:1:26: Expected ';' and instead saw '(end)'" />
     </target>
 
     <!-- Run a stub linter that always fails over a good javascript file,
@@ -123,40 +125,48 @@ Tests for the JSLint ant task.
         </jsl:jslint>
     </target>
 
-	<!-- We should be able to set a property on failure. -->
-	<target name="testFailureProperty">
-		<jsl:jslint failureproperty="boom" haltonfailure="false">
-			<fileset file="bad.js"/>
-		</jsl:jslint>
-		<au:assertEquals expected="JSLint: 1 error in 1 file" actual="${boom}" />
-	</target>
+    <!-- We should be able to set a property on failure. -->
+    <target name="testFailureProperty">
+        <jsl:jslint failureproperty="boom" haltonfailure="false">
+            <fileset file="bad.js"/>
+        </jsl:jslint>
+        <au:assertEquals expected="JSLint: 1 error in 1 file" actual="${boom}" />
+    </target>
 
-	<!-- Check JUnit output appears in the right place with the right name. -->
-	<target name="testJUnitFormatter">
-		<echo message="in testJUnitFormatter" />
-		<jsl:jslint haltonfailure="false">
-			<formatter type="junit" destfile="${temp.dir}" />
-			<fileset dir="." includes="good.js" />
-		</jsl:jslint>
-		<!--
-		TODO: How can I work out the correct filename?
-		It's appearing as:
-		TEST-_Users_hdm_work_jslint4java_jslint4java-ant_target_test-classes_antunit_good.js.xml
-		It should be anchored at the root of the fileset, ideally.
-		<au:assertFileExists file="${temp.dir}/TEST-good.js.xml" />
-		-->
-	</target>
+    <!-- Check JUnit output appears in the right place with the right name. -->
+    <target name="testJUnitFormatter">
+        <echo message="in testJUnitFormatter" />
+        <jsl:jslint haltonfailure="false">
+            <formatter type="junit" destfile="${temp.dir}" />
+            <fileset dir="." includes="good.js" />
+        </jsl:jslint>
+        <!--
+        TODO: How can I work out the correct filename?
+        It's appearing as:
+        TEST-_Users_hdm_work_jslint4java_jslint4java-ant_target_test-classes_antunit_good.js.xml
+        It should be anchored at the root of the fileset, ideally.
+        <au:assertFileExists file="${temp.dir}/TEST-good.js.xml" />
+        -->
+    </target>
 
-	<!-- Check that the report formatter produces some output. -->
-	<target name="testReportFormatter">
-		<jsl:jslint haltonfailure="no">
-			<formatter type="report" destfile="${temp.dir}/report.html" />
-			<fileset file="good.js" />
-		</jsl:jslint>
-		<au:assertFileExists file="${temp.dir}/report.html" />
-		<!-- Can't figure out _exactly_ the filename… -->
-		<au:assertResourceContains resource="${temp.dir}/report.html" value="good.js" />
-		<au:assertResourceContains resource="${temp.dir}/report.html"
-                                   value="&lt;html>&lt;head>&lt;/head>&lt;body>&lt;div class='file'>" />
-	</target>
+    <!-- Check that the report formatter produces some output. -->
+    <target name="testReportFormatter">
+        <jsl:jslint haltonfailure="no">
+            <formatter type="report" destfile="${temp.dir}/report.html" />
+            <fileset file="good.js" />
+        </jsl:jslint>
+        <au:assertFileExists file="${temp.dir}/report.html" />
+        <!-- Can't figure out _exactly_ the filename… -->
+        <au:assertResourceContains resource="${temp.dir}/report.html" value="good.js" />
+        <au:assertResourceContains resource="${temp.dir}/report.html"
+            value="&lt;html>&lt;head>&lt;/head>&lt;body>&lt;div class='file'>" />
+    </target>
+
+    <!-- issue 42: numeric keys cause a blowup. -->
+    <target name="testNumericKeys">
+        <jsl:jslint>
+            <!-- Should pass without blowup. -->
+            <fileset file="numeric-keys.js" />
+        </jsl:jslint>
+    </target>
 </project>

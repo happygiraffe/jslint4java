@@ -1,6 +1,64 @@
 Revision history for jslint4java
 ================================
 
+1.4.8 (2011-05-11)
+------------------
+
+ * Update to JSLint 2011-03-07.
+   - This adds the `node` and `unparam` options.
+
+1.4.7 (2011-03-08)
+------------------
+
+ * Add OSGI bundle headers.
+ * issue 52: Add checkstyle xml formatter.
+ * issue 53: No files passed to the ant task is no longer an error (just an info message).
+ * Update to JSLint 2011-03-07.
+   * This adds the `continue` option, whilst removing `eqeqeq`, `immed` and `laxbreak` options.
+   * JSLints interpretation of line and column numbers has changed.  I've tried to keep up.  Please [file a bug](http://code.google.com/p/jslint4java/issues) if errors aren't reported at the expected place.
+
+1.4.6 (2011-01-02)
+------------------
+
+ * Update to JSLint 2010-12-23.
+   * This outlaws a top-level "use strict"—stick it in a function instead.
+
+1.4.5 (2011-01-02)
+------------------
+
+ * issue 47: Make thread safe.
+ * issue 46: Clean API for JSLintBuilder.fromDefault().
+ * issue 48: Kill JSLintBuilder.create()
+
+1.4.4 (2010-11-08)
+------------------
+
+ * issue 45: Add support for “maxlen” option.  Thanks to pigulla for spotting.
+ * Update dependencies:
+   * rhino 1.7R2
+   * JCommander 1.11
+
+1.4.3 (2010-10-28)
+------------------
+
+ * issue 43: allow access to reports form the command line.
+   * Thanks to rharding and stigkj for their assistance.
+ * issue 44: stop IllegalAccessException warning from being emitted.
+ * Update to JSLint 2010-10-26.
+
+1.4.2 (2010-09-13)
+------------------
+
+ * issue 42: numeric keys throw exception.
+ * Update JSLint to 2010-09-09.
+ * Update to JCommander 1.7.
+   * **[INCOMPATIBILITY]** This version is able to work with Java 5, so that is now the minimum version again.
+
+1.4.1 (2010-08-05)
+------------------
+
+ * issue 40: StringIndexOutOfBoundsException on XmlResultFormatter.
+
 1.4 (2010-07-27)
 ----------------
 

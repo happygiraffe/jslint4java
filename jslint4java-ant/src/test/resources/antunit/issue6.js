@@ -3,6 +3,6 @@ function info(str) {
 }
 
 var foo = '1';
-if (foo == '0') {
+if (foo === '0') {
     info('is zero')
 }

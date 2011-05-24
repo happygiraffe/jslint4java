@@ -71,6 +71,8 @@ import com.googlecode.jslint4java.Option;
  */
 public class JSLintTask extends Task {
 
+    private static final String NO_FILES_TO_LINT = "no files to lint!";
+
     private final Union resources = new Union();
 
     private final List<ResultFormatter> formatters = new ArrayList<ResultFormatter>();
@@ -143,7 +145,8 @@ public class JSLintTask extends Task {
     @Override
     public void execute() throws BuildException {
         if (resources.size() == 0) {
-            throw new BuildException("no resources specified");
+            // issue 53: this isn't a fail, just a notice.
+            log(NO_FILES_TO_LINT);
         }
 
         JSLint lint = makeLint();
@@ -309,5 +312,4 @@ public class JSLintTask extends Task {
             }
         }
     }
-
 }

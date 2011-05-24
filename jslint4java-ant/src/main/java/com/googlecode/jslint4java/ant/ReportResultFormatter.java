@@ -28,13 +28,15 @@ public class ReportResultFormatter implements ResultFormatter {
         if (out == null) {
             throw new BuildException("destFile not specified");
         }
-        sb.append("<html>");
-        sb.append("<head></head>");
-        sb.append("<body>");
+        if (formatter.header() != null) {
+            sb.append(formatter.header());
+        }
     }
 
     public void end() {
-        sb.append("</body></html>");
+        if (formatter.footer() != null) {
+            sb.append(formatter.footer());
+        }
         Writer w = null;
         try {
             w = new BufferedWriter(new OutputStreamWriter(out, "UTF8"));

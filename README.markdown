@@ -36,7 +36,23 @@ If you wish to use jslint4java from within Java, please use a maven dependency:
       <version>${project.version}</version>
     </dependency>
 
-If you have any comments or queries, please send them to dom [at] happygiraffe.net.
+If you have any comments or queries, please send them to `dom [at] happygiraffe.net`.
 
 This software is licenced under the BSD licence (see LICENCE.txt).
 
+Patches
+=======
+
+If you'd like to change jslint4java, the best way to do so is via github.  Fork the [main repository](https://github.com/happygiraffe/jslint4java), make your changes and submit a [pull request](http://help.github.com/pull-requests/).
+
+If you don't wish to use github, just clone the repository and submit patches over email.
+
+    $ git clone git://github.com/happygiraffe/jslint4java.git
+    $ … hack, hack, hack …
+    $ git send-email origin
+
+Please try to follow the existing code style when making changes.
+
+You should ensure that the existing test and build works before submitting patches:
+
+    $ mvn -Pdist clean verify

@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextAction;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -45,6 +47,18 @@ public class JSLint {
     }
 
     /**
+     * A helper class for interpreting function parameter names. Note that we
+     * use this to work around a change in JSLint's data structure, which
+     * changed from being a single string to an object.
+     */
+    private static final class JSFunctionParamConverter implements Util.Converter<String> {
+        public String convert(Object obj) {
+            Scriptable scope = (Scriptable) obj;
+            return Util.stringValue("value", scope);
+        }
+    }
+
+    /**
      * A helper class for interpreting the output of {@code JSLINT.data()}.
      */
     private static final class JSFunctionConverter implements Util.Converter<JSFunction> {
@@ -54,7 +68,7 @@ public class JSLint {
             int line = Util.intValue("line", scope);
             Builder b = new JSFunction.Builder(name, line);
             b.last(Util.intValue("last", scope));
-            for (String param : Util.listValueOfType("param", String.class, scope)) {
+            for (String param : Util.listValue("param", scope, new JSFunctionParamConverter())) {
                 b.addParam(param);
             }
             for (String closure : Util.listValueOfType("closure", String.class, scope)) {
@@ -84,14 +98,19 @@ public class JSLint {
 
     private final Map<Option, Object> options = new EnumMap<Option, Object>(Option.class);
 
-    private final Scriptable scope;
+    private final ScriptableObject scope;
+
+    private final ContextFactory contextFactory;
 
     /**
      * Create a new {@link JSLint} object. You must pass in a {@link Scriptable}
      * which already has the {@code JSLINT} function defined.
      */
-    public JSLint(Scriptable scope) {
+    public JSLint(ContextFactory contextFactory, ScriptableObject scope) {
+        this.contextFactory = contextFactory;
         this.scope = scope;
+        // We should no longer be updating this.
+        this.scope.sealObject();
     }
 
     /**
@@ -119,25 +138,85 @@ public class JSLint {
         options.put(o, optionParser.parse(o.getType(), arg));
     }
 
-    private String callReport(boolean errorsOnly) {
-        Object[] args = new Object[] { Boolean.valueOf(errorsOnly) };
-        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
-        Object report = lintScope.get("report", lintScope);
-        // Shouldn't happen ordinarily, but some of my tests don't have it.
-        if (report == UniqueTag.NOT_FOUND) {
-            return "";
-        }
-        Function reportFunc = (Function) report;
-        return (String) reportFunc.call(Context.getCurrentContext(), scope, scope, args);
+    /**
+     * Assemble the {@link JSLintResult} object.
+     */
+    @NeedsContext
+    private JSLintResult buildResults(final String systemId, final long startNanos, final long endNanos) {
+        return (JSLintResult) contextFactory.call(new ContextAction() {
+            public Object run(Context cx) {
+                ResultBuilder b = new JSLintResult.ResultBuilder(systemId);
+                b.duration(TimeUnit.NANOSECONDS.toMillis(endNanos - startNanos));
+                for (Issue issue : readErrors(systemId)) {
+                    b.addIssue(issue);
+                }
+
+                // Collect a report on what we've just linted.
+                b.report(callReport(false));
+
+                // Extract JSLINT.data() output and set it on the result.
+                Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
+                Object o = lintScope.get("data", lintScope);
+                // Real JSLINT will always have this, but some of my test stubs don't.
+                if (o != UniqueTag.NOT_FOUND) {
+                    Function reportFunc = (Function) o;
+                    Scriptable data = (Scriptable) reportFunc.call(cx, scope,
+                            scope, new Object[] {});
+                    for (String global : Util.listValueOfType("globals", String.class, data)) {
+                        b.addGlobal(global);
+                    }
+                    for (String url : Util.listValueOfType("urls", String.class, data)) {
+                        b.addUrl(url);
+                    }
+                    for (Entry<String, Integer> member : getDataMembers(data).entrySet()) {
+                        b.addMember(member.getKey(), member.getValue());
+                    }
+                    for (JSIdentifier id : Util.listValue("unused", data, new IdentifierConverter())) {
+                        b.addUnused(id);
+                    }
+                    for (JSIdentifier id : Util.listValue("implieds", data, new IdentifierConverter())) {
+                        b.addImplied(id);
+                    }
+                    b.json(Util.booleanValue("json", data));
+                    for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {
+                        b.addFunction(f);
+                    }
+                }
+                return b.build();
+            }
+        });
     }
 
-    private void doLint(String javaScript) {
-        String src = javaScript == null ? "" : javaScript;
-        Object[] args = new Object[] { src, optionsAsJavaScriptObject() };
-        Function lintFunc = (Function) scope.get("JSLINT", scope);
-        // JSLINT actually returns a boolean, but we ignore it as we always go
-        // and look at the errors in more detail.
-        lintFunc.call(Context.getCurrentContext(), scope, scope, args);
+    @NeedsContext
+    private String callReport(final boolean errorsOnly) {
+        return (String) contextFactory.call(new ContextAction() {
+            public Object run(Context cx) {
+                Object[] args = new Object[] { Boolean.valueOf(errorsOnly) };
+                Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
+                Object report = lintScope.get("report", lintScope);
+                // Shouldn't happen ordinarily, but some of my tests don't have it.
+                if (report == UniqueTag.NOT_FOUND) {
+                    return "";
+                }
+                Function reportFunc = (Function) report;
+                return reportFunc.call(cx, scope, scope, args);
+            }
+        });
+    }
+
+    @NeedsContext
+    private void doLint(final String javaScript) {
+        contextFactory.call(new ContextAction() {
+            public Object run(Context cx) {
+                String src = javaScript == null ? "" : javaScript;
+                Object[] args = new Object[] { src, optionsAsJavaScriptObject() };
+                Function lintFunc = (Function) scope.get("JSLINT", scope);
+                // JSLINT actually returns a boolean, but we ignore it as we always go
+                // and look at the errors in more detail.
+                lintFunc.call(cx, scope, scope, args);
+                return null;
+            }
+        });
     }
 
     /**
@@ -152,7 +231,7 @@ public class JSLint {
         Object[] propertyIds = ScriptableObject.getPropertyIds(member);
         Map<String, Integer> members = new HashMap<String, Integer>(propertyIds.length);
         for (Object id : propertyIds) {
-            String k = (String) id;
+            String k = id.toString();
             members.put(k, Util.intValue(k, member));
         }
         return members;
@@ -194,59 +273,27 @@ public class JSLint {
         long before = System.nanoTime();
         doLint(javaScript);
         long after = System.nanoTime();
-        ResultBuilder b = new JSLintResult.ResultBuilder(systemId);
-        b.duration(TimeUnit.NANOSECONDS.toMillis(after - before));
-        for (Issue issue : readErrors(systemId)) {
-            b.addIssue(issue);
-        }
-
-        // Collect a report on what we've just linted.
-        b.report(callReport(false));
-
-        // Extract JSLINT.data() output and set it on the result.
-        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
-        Object o = lintScope.get("data", lintScope);
-        // Real JSLINT will always have this, but some of my test stubs don't.
-        if (o != UniqueTag.NOT_FOUND) {
-            Function reportFunc = (Function) o;
-            Scriptable data = (Scriptable) reportFunc.call(Context.getCurrentContext(), scope,
-                    scope, new Object[] {});
-            for (String global : Util.listValueOfType("globals", String.class, data)) {
-                b.addGlobal(global);
-            }
-            for (String url : Util.listValueOfType("urls", String.class, data)) {
-                b.addUrl(url);
-            }
-            for (Entry<String, Integer> member : getDataMembers(data).entrySet()) {
-                b.addMember(member.getKey(), member.getValue());
-            }
-            for (JSIdentifier id : Util.listValue("unused", data, new IdentifierConverter())) {
-                b.addUnused(id);
-            }
-            for (JSIdentifier id : Util.listValue("implieds", data, new IdentifierConverter())) {
-                b.addImplied(id);
-            }
-            b.json(Util.booleanValue("json", data));
-            for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {
-                b.addFunction(f);
-            }
-        }
-
-        return b.build();
+        return buildResults(systemId, before, after);
     }
 
     /**
      * Turn the set of options into a JavaScript object, where the key is the
      * name of the option and the value is true.
      */
+    @NeedsContext
     private Scriptable optionsAsJavaScriptObject() {
-        Scriptable opts = Context.getCurrentContext().newObject(scope);
-        for (Entry<Option, Object> entry : options.entrySet()) {
-            String key = entry.getKey().getLowerName();
-            Object value = Context.javaToJS(entry.getValue(), opts);
-            opts.put(key, opts, value);
-        }
-        return opts;
+        return (Scriptable) contextFactory.call(new ContextAction() {
+            public Object run(Context cx) {
+                Scriptable opts = cx.newObject(scope);
+                for (Entry<Option, Object> entry : options.entrySet()) {
+                    String key = entry.getKey().getLowerName();
+                    // Use our "custom" version in order to get native arrays.
+                    Object value = Util.javaToJS(entry.getValue(), opts);
+                    opts.put(key, opts, value);
+                }
+                return opts;
+            }
+        });
     }
 
     private List<Issue> readErrors(String systemId) {

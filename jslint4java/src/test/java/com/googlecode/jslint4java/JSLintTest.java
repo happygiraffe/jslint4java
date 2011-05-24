@@ -19,6 +19,7 @@ import org.junit.Test;
  */
 public class JSLintTest {
 
+    private static final String EXPECTED_SEMICOLON = "Expected ';' and instead saw '(end)'.";
     private JSLint lint = null;
 
     // Check that the issues list matches zero or more reasons.
@@ -50,14 +51,14 @@ public class JSLintTest {
     public void testAccurateColumnNumbers() {
         List<Issue> issues = lint("var foo = 1").getIssues();
         // ....................... 123456789012
-        assertIssues(issues, "Missing semicolon.");
+        assertIssues(issues, EXPECTED_SEMICOLON);
         assertThat(issues.get(0).getCharacter(), is(12));
     }
 
     @Test
     public void testAccurateLineNumbers() {
         List<Issue> issues = lint("var foo = 1").getIssues();
-        assertIssues(issues, "Missing semicolon.");
+        assertIssues(issues, EXPECTED_SEMICOLON);
         assertThat(issues.get(0).getLine(), is(1));
     }
 
@@ -113,13 +114,15 @@ public class JSLintTest {
 
     @Test
     public void testDataMembers() throws Exception {
-        JSLintResult result = lint("var obj = {\"a\":1, \"b\": 42};");
+        // issue 42: beware numeric keys…
+        JSLintResult result = lint("var obj = {\"a\":1, \"b\": 42, 3: \"c\"};");
         assertIssues(result.getIssues());
         Map<String, Integer> members = result.getMember();
-        assertThat(members.size(), is(2));
+        assertThat(members.size(), is(3));
         // It's a count of how many times we've seen each member.
         assertThat(members.get("a"), is(1));
         assertThat(members.get("b"), is(1));
+        assertThat(members.get("3"), is(0));  // Nope, I've no idea why it's zero either.
     }
 
     @Test
@@ -166,7 +169,7 @@ public class JSLintTest {
     public void testLintReader() throws Exception {
         Reader reader = new StringReader("var foo = 1");
         List<Issue> issues = lint(reader).getIssues();
-        assertIssues(issues, "Missing semicolon.");
+        assertIssues(issues, EXPECTED_SEMICOLON);
     }
 
     @Test
@@ -176,9 +179,16 @@ public class JSLintTest {
         lint.addOption(Option.MAXERR, "2");
         // Just some nasty thing I threw together. :)
         JSLintResult result = lint("if (foo=42) {\n  println(\"bother\")\n}\n");
-        assertIssues(result.getIssues(), "'foo' is not defined.",
-                "Expected a conditional expression and instead saw an assignment.",
+        assertIssues(result.getIssues(), "'foo' has not been fully defined yet.",
+                "Missing space between 'foo' and '='.",
                 "Too many errors. (25% scanned).");
+    }
+
+    @Test
+    public void testMaxLen() {
+        lint.addOption(Option.MAXLEN, "1");
+        JSLintResult result = lint("var foo = 42;");
+        assertIssues(result.getIssues(), "Line too long.");
     }
 
     @Test
@@ -197,7 +207,7 @@ public class JSLintTest {
     public void testOneProblem() throws IOException {
         // There is a missing semicolon here.
         List<Issue> problems = lint("var foo = 1").getIssues();
-        assertIssues(problems, "Missing semicolon.");
+        assertIssues(problems, EXPECTED_SEMICOLON);
     }
 
     /**
@@ -216,7 +226,7 @@ public class JSLintTest {
     public void testReportErrorsOnly() throws Exception {
         String html = lint.report("var foo = 42", true);
         assertThat(html, containsString("<div id=errors"));
-        assertThat(html, containsString("Missing semicolon"));
+        assertThat(html, containsString(EXPECTED_SEMICOLON));
     }
 
     @Test
@@ -230,7 +240,7 @@ public class JSLintTest {
     public void testReportInResult() throws Exception {
         String html = lint("var foo = 42").getReport();
         assertThat(html, containsString("<div id=errors"));
-        assertThat(html, containsString("Missing semicolon"));
+        assertThat(html, containsString(EXPECTED_SEMICOLON));
         assertThat(html, containsString("<div>"));
     }
 
@@ -259,7 +269,7 @@ public class JSLintTest {
     @Test
     public void testSetOptionWithArgument() throws Exception {
         // This should only pass when indent=2.
-        String js = "var x = 0;\nif (true) {\n  x = 1;\n}";
+        String js = "var x = 0;\nif (!x) {\n  x = 1;\n}";
         lint.addOption(Option.WHITE);
         lint.addOption(Option.INDENT, "2");
         List<Issue> issues = lint(js).getIssues();
@@ -272,6 +282,6 @@ public class JSLintTest {
         // This isn't the originally reported problem, but it tickles the
         // "can't continue" message.
         List<Issue> issues = lint("\"").getIssues();
-        assertIssues(issues, "Unclosed string.", "Stopping, unable to continue. (100% scanned).");
+        assertIssues(issues, "Unclosed string.", "Stopping.  (100% scanned).");
     }
 }

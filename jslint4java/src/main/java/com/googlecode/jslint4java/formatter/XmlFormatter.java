@@ -3,7 +3,7 @@ package com.googlecode.jslint4java.formatter;
 /**
  * A convenience super-class for generating XML through a {@link StringBuilder}.
  */
-public class XmlFormatter {
+public abstract class XmlFormatter {
 
     protected String attr(String key, String value) {
         if (key == null) {
@@ -31,5 +31,18 @@ public class XmlFormatter {
     private String escapeAttr(String str) {
         return escape(str).replaceAll("\"", "&quot;").replaceAll("\'", "&apos;");
     }
+
+    public String footer() {
+        return "</" + root() + ">";
+    }
+
+    public String header() {
+        return "<" + root() + ">";
+    }
+
+    /**
+     * The name of the root element.
+     */
+    protected abstract String root();
 
 }

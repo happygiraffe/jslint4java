@@ -10,7 +10,7 @@ import com.beust.jcommander.ParameterException;
 /**
  * A utility for using {@link Charset} with JCommander.
  */
-class CharsetConverter implements IStringConverter<Charset> {
+public class CharsetConverter implements IStringConverter<Charset> {
 
     public Charset convert(String value) {
         try {

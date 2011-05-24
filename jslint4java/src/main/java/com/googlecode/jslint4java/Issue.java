@@ -16,19 +16,17 @@ public class Issue {
 
         /** Build from a JavaScript context */
         public static Issue fromJavaScript(String systemId, Scriptable err) {
-            // Correct the line / column numbers so that they're never zero.
+            // These used to be zero-based, but now _appear_ to be one-based.
             int line = Util.intValue("line", err);
-            if (line == 0) {
-                line = 1;
-            }
             int col = Util.intValue("character", err);
-            if (col == 0) {
-                col = 1;
-            }
             return new IssueBuilder(systemId, line, col, Util.stringValue("reason", err))
-                    .evidence(Util.stringValue("evidence", err)).raw(Util.stringValue("raw", err))
-                    .a(Util.stringValue("a", err)).b(Util.stringValue("b", err))
-                    .c(Util.stringValue("c", err)).d(Util.stringValue("d", err)).build();
+                    .evidence(Util.stringValue("evidence", err))
+                    .raw(Util.stringValue("raw", err))
+                    .a(Util.stringValue("a", err))
+                    .b(Util.stringValue("b", err))
+                    .c(Util.stringValue("c", err))
+                    .d(Util.stringValue("d", err))
+                    .build();
         }
 
         private String a;

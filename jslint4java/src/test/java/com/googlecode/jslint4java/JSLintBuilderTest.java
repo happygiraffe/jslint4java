@@ -1,7 +1,8 @@
 package com.googlecode.jslint4java;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.StringReader;
@@ -49,5 +50,12 @@ public class JSLintBuilderTest {
         String jslint = "function JSLINT() {JSLINT.errors=[];return true}";
         StringReader reader = new StringReader(jslint);
         assertJSLintOK(builder.fromReader(reader, "stubjslint.js"));
+    }
+
+    @Test
+    public void canBuildMultipleLintersFromSameInstance() throws Exception {
+        assertJSLintOK(builder.fromDefault());
+        // Making another linter from the same builder should be fine.
+        assertJSLintOK(builder.fromDefault());
     }
 }

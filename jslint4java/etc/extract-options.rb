@@ -4,22 +4,44 @@
 #
 
 opts = {
-  # Hard-code these, as they're not part of the boolean options.
-  "indent" => ['The number of spaces used for indentation (default is 4)', 'Integer'],
-  'maxerr' => ['The maximum number of warnings reported (default is 50)', 'Integer'],
-  # NB: Slight variant of original text.
-  'predef' => ['The names of predefined global variables.', 'StringArray'],
+  # Hard code, as not mentioned in the source list.
+  'predef' => ['The names of predefined global variables', 'StringArray'],
+}
+
+# The non-boolean option types.
+opt_types = {
+  'indent' => 'Integer',
+  'maxerr' => 'Integer',
+  'maxlen' => 'Integer',
+  'predef' => 'StringArray',
 }
 
 File.open(ARGV[0]) do |fh|
+  # To match an option declaration.
+  re = /^\/\/\s+'?(\w+)'?\s+(true,?\s+(.*)|the.*)/
   while line = fh.gets do
-    # puts ">> #{line}"
-    if (line =~ /\s+boolOptions\s*=\s*\{/) ... (line =~ /\}/)
-      if md = line.match(/(\w+).*\/\/ (.*)/)
-        opts[ md[1] ] = [md[2].capitalize, 'Boolean']
+    # The jslint options are now in a comment.  Use the first and last options
+    # as delimiters.
+    if (line =~ /^\/\/\s{5}adsafe\s/) .. (line =~ /^\s*$/)
+      if md = line.match(re)
+        key = md[1]
+        if md[3]
+          desc = md[3].capitalize
+          type = 'Boolean'
+        else
+          desc = md[2].capitalize
+          type = opt_types[key]
+        end
+        opts[key] = [desc, type]
+      elsif line.strip != ''
+        raise "Bad option line '#{line.strip}'"
       end
     end
   end
+end
+
+if opts.length == 0
+  raise 'Ooops, no options found!'
 end
 
 def update_file(f, indent, opts)
@@ -65,6 +87,6 @@ update_file(ARGV[2], indent, opts) do |k,desc,type|
     type = 'String'
   end
   ["#{indent}@Parameter(names = \"--#{k}\", description = \"#{descEscaped}\")",
-   "#{indent}public #{type} #{k} = null;",
+   "#{indent}public #{type} #{k.upcase} = null;",
    ""]
 end

@@ -7,101 +7,104 @@ import com.beust.jcommander.Parameter;
  */
 class JSLintFlags {
     // BEGIN-OPTIONS
-    @Parameter(names = "--adsafe", description = "If adsafe should be enforced")
-    public Boolean adsafe = null;
+    @Parameter(names = "--adsafe", description = "If adsafe rules should be enforced")
+    public Boolean ADSAFE = null;
 
     @Parameter(names = "--bitwise", description = "If bitwise operators should not be allowed")
-    public Boolean bitwise = null;
+    public Boolean BITWISE = null;
 
     @Parameter(names = "--browser", description = "If the standard browser globals should be predefined")
-    public Boolean browser = null;
+    public Boolean BROWSER = null;
 
     @Parameter(names = "--cap", description = "If upper case html should be allowed")
-    public Boolean cap = null;
+    public Boolean CAP = null;
+
+    @Parameter(names = "--continue", description = "If the continuation statement should be tolerated")
+    public Boolean CONTINUE = null;
 
     @Parameter(names = "--css", description = "If css workarounds should be tolerated")
-    public Boolean css = null;
+    public Boolean CSS = null;
 
     @Parameter(names = "--debug", description = "If debugger statements should be allowed")
-    public Boolean debug = null;
+    public Boolean DEBUG = null;
 
     @Parameter(names = "--devel", description = "If logging should be allowed (console, alert, etc.)")
-    public Boolean devel = null;
-
-    @Parameter(names = "--eqeqeq", description = "If === should be required")
-    public Boolean eqeqeq = null;
+    public Boolean DEVEL = null;
 
     @Parameter(names = "--es5", description = "If es5 syntax should be allowed")
-    public Boolean es5 = null;
+    public Boolean ES5 = null;
 
     @Parameter(names = "--evil", description = "If eval should be allowed")
-    public Boolean evil = null;
+    public Boolean EVIL = null;
 
-    @Parameter(names = "--forin", description = "If for in statements must filter")
-    public Boolean forin = null;
+    @Parameter(names = "--forin", description = "If for in statements need not filter")
+    public Boolean FORIN = null;
 
     @Parameter(names = "--fragment", description = "If html fragments should be allowed")
-    public Boolean fragment = null;
+    public Boolean FRAGMENT = null;
 
-    @Parameter(names = "--immed", description = "If immediate invocations must be wrapped in parens")
-    public Boolean immed = null;
+    @Parameter(names = "--indent", description = "The indentation factor")
+    public String INDENT = null;
 
-    @Parameter(names = "--indent", description = "The number of spaces used for indentation (default is 4)")
-    public String indent = null;
+    @Parameter(names = "--maxerr", description = "The maximum number of errors to allow")
+    public String MAXERR = null;
 
-    @Parameter(names = "--laxbreak", description = "If line breaks should not be checked")
-    public Boolean laxbreak = null;
-
-    @Parameter(names = "--maxerr", description = "The maximum number of warnings reported (default is 50)")
-    public String maxerr = null;
+    @Parameter(names = "--maxlen", description = "The maximum length of a source line")
+    public String MAXLEN = null;
 
     @Parameter(names = "--newcap", description = "If constructor names must be capitalized")
-    public Boolean newcap = null;
+    public Boolean NEWCAP = null;
+
+    @Parameter(names = "--node", description = "If node.js globals should be predefined")
+    public Boolean NODE = null;
 
     @Parameter(names = "--nomen", description = "If names should be checked")
-    public Boolean nomen = null;
+    public Boolean NOMEN = null;
 
     @Parameter(names = "--on", description = "If html event handlers should be allowed")
-    public Boolean on = null;
+    public Boolean ON = null;
 
     @Parameter(names = "--onevar", description = "If only one var statement per function should be allowed")
-    public Boolean onevar = null;
+    public Boolean ONEVAR = null;
 
     @Parameter(names = "--passfail", description = "If the scan should stop on first error")
-    public Boolean passfail = null;
+    public Boolean PASSFAIL = null;
 
     @Parameter(names = "--plusplus", description = "If increment/decrement should not be allowed")
-    public Boolean plusplus = null;
+    public Boolean PLUSPLUS = null;
 
-    @Parameter(names = "--predef", description = "The names of predefined global variables.")
-    public String predef = null;
+    @Parameter(names = "--predef", description = "The names of predefined global variables")
+    public String PREDEF = null;
 
     @Parameter(names = "--regexp", description = "If the . should not be allowed in regexp literals")
-    public Boolean regexp = null;
+    public Boolean REGEXP = null;
 
     @Parameter(names = "--rhino", description = "If the rhino environment globals should be predefined")
-    public Boolean rhino = null;
+    public Boolean RHINO = null;
 
     @Parameter(names = "--safe", description = "If use of some browser features should be restricted")
-    public Boolean safe = null;
+    public Boolean SAFE = null;
 
-    @Parameter(names = "--strict", description = "Require the \"use strict\"; pragma")
-    public Boolean strict = null;
+    @Parameter(names = "--strict", description = "Require the 'use strict'; pragma")
+    public Boolean STRICT = null;
 
     @Parameter(names = "--sub", description = "If all forms of subscript notation are tolerated")
-    public Boolean sub = null;
+    public Boolean SUB = null;
 
     @Parameter(names = "--undef", description = "If variables should be declared before used")
-    public Boolean undef = null;
+    public Boolean UNDEF = null;
+
+    @Parameter(names = "--unparam", description = "If unused parameters should be tolerated")
+    public Boolean UNPARAM = null;
 
     @Parameter(names = "--white", description = "If strict whitespace rules apply")
-    public Boolean white = null;
+    public Boolean WHITE = null;
 
     @Parameter(names = "--widget", description = "If the yahoo widgets globals should be predefined")
-    public Boolean widget = null;
+    public Boolean WIDGET = null;
 
-    @Parameter(names = "--windows", description = "If ms windows-specigic globals should be predefined")
-    public Boolean windows = null;
+    @Parameter(names = "--windows", description = "If ms windows-specific globals should be predefined")
+    public Boolean WINDOWS = null;
 
     // END-OPTIONS
 }

@@ -36,4 +36,9 @@ public class JSLintXmlFormatter extends XmlFormatter implements JSLintResultForm
         return sb.toString();
     }
 
+    @Override
+    protected String root() {
+        return "jslint";
+    }
+
 }

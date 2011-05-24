@@ -24,6 +24,16 @@ public class ReportFormatterTest {
     }
 
     @Test
+    public void shouldHaveHtmlFooter() {
+        assertThat(form.footer(), is("</body></html>"));
+    }
+
+    @Test
+    public void shouldHaveHtmlHeader() {
+        assertThat(form.header(), is("<html><head></head><body>"));
+    }
+
+    @Test
     public void testEscaping() throws Exception {
         JSLintResult result = mockResult("'a<b&c>d\".js");
         String expected = "<h1 id='&apos;a&lt;b&amp;c>d&quot;.js'>'a&lt;b&amp;c>d\".js</h1>";

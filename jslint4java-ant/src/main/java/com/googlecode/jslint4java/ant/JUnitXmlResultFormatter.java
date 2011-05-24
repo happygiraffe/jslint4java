@@ -17,6 +17,7 @@ import com.googlecode.jslint4java.formatter.JUnitXmlFormatter;
 
 /**
  * Output the result of a JSLint run as a JUnit XML file.
+ *
  * @see JUnitXmlFormatter
  */
 public class JUnitXmlResultFormatter implements ResultFormatter {
@@ -48,7 +49,13 @@ public class JUnitXmlResultFormatter implements ResultFormatter {
         Writer w = null;
         try {
             w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
+            if (form.header() != null) {
+                w.write(form.header());
+            }
             w.write(form.format(result));
+            if (form.footer() != null) {
+                w.write(form.footer());
+            }
         } catch (IOException e) {
             throw new BuildException(e);
         } finally {
@@ -65,8 +72,8 @@ public class JUnitXmlResultFormatter implements ResultFormatter {
     }
 
     /**
-     * Make a filename for the test case by following the usual JUnit
-     * conventions and replacing non alphanumeric chars with underscores.
+     * Make a filename for the test case by following the usual JUnit conventions and replacing non
+     * alphanumeric chars with underscores.
      */
     private String testFileName(JSLintResult result) {
         return "TEST-" + result.getName().replaceAll("[^\\w.-]", "_") + ".xml";

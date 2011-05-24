@@ -22,8 +22,8 @@ class Flags {
     @Parameter(names = "--help", description = "Display usage information")
     public boolean help;
 
-    @Parameter(names = "--report", description = "Display HTML report")
-    public boolean report = false;
+    @Parameter(names = "--report", description = "Display report in different formats: plain, xml, junit, checkstyle and report")
+    public String report;
 
     /**
      * All remaining files on the command line. The ones that actually need linting.

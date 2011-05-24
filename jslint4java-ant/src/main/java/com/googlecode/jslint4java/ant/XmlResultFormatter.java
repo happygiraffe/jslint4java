@@ -33,18 +33,29 @@ import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
  */
 public class XmlResultFormatter implements ResultFormatter {
 
-    private final JSLintResultFormatter form = new JSLintXmlFormatter();
+    private final JSLintResultFormatter form;
     private final StringBuilder sb = new StringBuilder();
     private OutputStream out;
 
+    public XmlResultFormatter() {
+        form = createFormatter();
+    }
+
+    /** Create and return the {@link JSLintResultFormatter} used by this ant result formatter. */
+    protected JSLintResultFormatter createFormatter() {
+        return new JSLintXmlFormatter();
+    }
+
     public void begin() {
-        if (out == null) {
+        if (out == null)
             throw new BuildException("must specify destFile for xml output");
-        }
         // Clear, just in case this object gets reused.
-        sb.delete(0, sb.length() - 1);
-        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-        sb.append("<jslint>\n");
+        if (sb.length() > 0) {
+            sb.delete(0, sb.length() - 1);
+        }
+        if (form.header() != null) {
+            sb.append(form.header());
+        }
     }
 
     /**
@@ -53,7 +64,9 @@ public class XmlResultFormatter implements ResultFormatter {
      * @see com.googlecode.jslint4java.ant.ResultFormatter#end()
      */
     public void end() {
-        sb.append("</jslint>");
+        if (form.footer() != null) {
+            sb.append(form.footer());
+        }
         Writer w = null;
         try {
             w = new BufferedWriter(new OutputStreamWriter(out, "UTF8"));

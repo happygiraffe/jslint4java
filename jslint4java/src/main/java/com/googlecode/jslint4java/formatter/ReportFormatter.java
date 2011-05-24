@@ -7,6 +7,11 @@ import com.googlecode.jslint4java.JSLintResult;
  */
 public class ReportFormatter extends XmlFormatter implements JSLintResultFormatter {
 
+    @Override
+    public String footer() {
+        return "</body></html>";
+    }
+
     public String format(JSLintResult result) {
         String name = result.getName();
         StringBuilder sb = new StringBuilder();
@@ -20,6 +25,16 @@ public class ReportFormatter extends XmlFormatter implements JSLintResultFormatt
         sb.append("</div>"); // try to fix somewhat crappy JSLint markup.
         sb.append("</div>"); // close the file div.
         return sb.toString();
+    }
+
+    @Override
+    public String header() {
+        return "<html><head></head><body>";
+    }
+
+    @Override
+    protected String root() {
+        return "html";
     }
 
 }

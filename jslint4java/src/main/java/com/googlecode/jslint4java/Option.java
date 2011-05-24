@@ -1,6 +1,8 @@
 package com.googlecode.jslint4java;
 
+import java.util.EnumSet;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * All available options for tuning the behaviour of JSLint.
@@ -12,8 +14,8 @@ import java.util.Locale;
  */
 public enum Option {
     // BEGIN-OPTIONS
-    /** If adsafe should be enforced */
-    ADSAFE("If adsafe should be enforced", Boolean.class),
+    /** If adsafe rules should be enforced */
+    ADSAFE("If adsafe rules should be enforced", Boolean.class),
 
     /** If bitwise operators should not be allowed */
     BITWISE("If bitwise operators should not be allowed", Boolean.class),
@@ -24,6 +26,9 @@ public enum Option {
     /** If upper case html should be allowed */
     CAP("If upper case html should be allowed", Boolean.class),
 
+    /** If the continuation statement should be tolerated */
+    CONTINUE("If the continuation statement should be tolerated", Boolean.class),
+
     /** If css workarounds should be tolerated */
     CSS("If css workarounds should be tolerated", Boolean.class),
 
@@ -33,35 +38,32 @@ public enum Option {
     /** If logging should be allowed (console, alert, etc.) */
     DEVEL("If logging should be allowed (console, alert, etc.)", Boolean.class),
 
-    /** If === should be required */
-    EQEQEQ("If === should be required", Boolean.class),
-
     /** If es5 syntax should be allowed */
     ES5("If es5 syntax should be allowed", Boolean.class),
 
     /** If eval should be allowed */
     EVIL("If eval should be allowed", Boolean.class),
 
-    /** If for in statements must filter */
-    FORIN("If for in statements must filter", Boolean.class),
+    /** If for in statements need not filter */
+    FORIN("If for in statements need not filter", Boolean.class),
 
     /** If html fragments should be allowed */
     FRAGMENT("If html fragments should be allowed", Boolean.class),
 
-    /** If immediate invocations must be wrapped in parens */
-    IMMED("If immediate invocations must be wrapped in parens", Boolean.class),
+    /** The indentation factor */
+    INDENT("The indentation factor", Integer.class),
 
-    /** The number of spaces used for indentation (default is 4) */
-    INDENT("The number of spaces used for indentation (default is 4)", Integer.class),
+    /** The maximum number of errors to allow */
+    MAXERR("The maximum number of errors to allow", Integer.class),
 
-    /** If line breaks should not be checked */
-    LAXBREAK("If line breaks should not be checked", Boolean.class),
-
-    /** The maximum number of warnings reported (default is 50) */
-    MAXERR("The maximum number of warnings reported (default is 50)", Integer.class),
+    /** The maximum length of a source line */
+    MAXLEN("The maximum length of a source line", Integer.class),
 
     /** If constructor names must be capitalized */
     NEWCAP("If constructor names must be capitalized", Boolean.class),
+
+    /** If node.js globals should be predefined */
+    NODE("If node.js globals should be predefined", Boolean.class),
 
     /** If names should be checked */
     NOMEN("If names should be checked", Boolean.class),
@@ -78,8 +80,8 @@ public enum Option {
     /** If increment/decrement should not be allowed */
     PLUSPLUS("If increment/decrement should not be allowed", Boolean.class),
 
-    /** The names of predefined global variables. */
-    PREDEF("The names of predefined global variables.", StringArray.class),
+    /** The names of predefined global variables */
+    PREDEF("The names of predefined global variables", StringArray.class),
 
     /** If the . should not be allowed in regexp literals */
     REGEXP("If the . should not be allowed in regexp literals", Boolean.class),
@@ -90,8 +92,8 @@ public enum Option {
     /** If use of some browser features should be restricted */
     SAFE("If use of some browser features should be restricted", Boolean.class),
 
-    /** Require the "use strict"; pragma */
-    STRICT("Require the \"use strict\"; pragma", Boolean.class),
+    /** Require the 'use strict'; pragma */
+    STRICT("Require the 'use strict'; pragma", Boolean.class),
 
     /** If all forms of subscript notation are tolerated */
     SUB("If all forms of subscript notation are tolerated", Boolean.class),
@@ -99,14 +101,17 @@ public enum Option {
     /** If variables should be declared before used */
     UNDEF("If variables should be declared before used", Boolean.class),
 
+    /** If unused parameters should be tolerated */
+    UNPARAM("If unused parameters should be tolerated", Boolean.class),
+
     /** If strict whitespace rules apply */
     WHITE("If strict whitespace rules apply", Boolean.class),
 
     /** If the yahoo widgets globals should be predefined */
     WIDGET("If the yahoo widgets globals should be predefined", Boolean.class),
 
-    /** If ms windows-specigic globals should be predefined */
-    WINDOWS("If ms windows-specigic globals should be predefined", Boolean.class),
+    /** If ms windows-specific globals should be predefined */
+    WINDOWS("If ms windows-specific globals should be predefined", Boolean.class),
 
     // END-OPTIONS
     ;
@@ -154,6 +159,14 @@ public enum Option {
             }
         }
         return maxOptLen;
+    }
+
+    /**
+     * The set of options from “JavaScript: The Good Parts,” as seen on
+     * http://www.jslint.com/.
+     */
+    public Set<Option> theGoodParts() {
+        return EnumSet.of(WHITE, ONEVAR, UNDEF, NEWCAP, NOMEN, REGEXP, PLUSPLUS, BITWISE);
     }
 
     /**
