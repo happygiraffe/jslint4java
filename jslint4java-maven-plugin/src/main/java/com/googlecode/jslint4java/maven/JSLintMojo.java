@@ -90,7 +90,6 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
-    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!sourceDirectory.exists()) {
             getLog().warn(sourceDirectory + " does not exist");
