@@ -136,7 +136,6 @@ public class JSLintMojo extends AbstractMojo {
         List<File> files = new FileLister(sourceDirectory, includes, excludes).files();
         getLog().debug("files=" + files);
 
-        // How I wish for Java 5.
         return files;
     }
 
