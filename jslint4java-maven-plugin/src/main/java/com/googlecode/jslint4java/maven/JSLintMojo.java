@@ -122,7 +122,7 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     /**
-     * Process includes and excludes to work out which files we ae interested in. Originally nicked
+     * Process includes and excludes to work out which files we are interested in. Originally nicked
      * from CheckstyleReport, now looks nothing like it.
      *
      * @return a {@link List} of {@link File}s.
