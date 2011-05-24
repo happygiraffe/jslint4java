@@ -1,6 +1,7 @@
 package com.googlecode.jslint4java.maven;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,9 +22,10 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        File pom = new File(JSLintMojoTest.class.getResource(POM_XML).toURI());
-        assertNotNull(pom);
-        assertTrue(pom.exists());
+        URL pomResource = JSLintMojoTest.class.getResource(POM_XML);
+        assertNotNull("Can't find '" + POM_XML + "' resource", pomResource);
+        File pom = new File(pomResource.toURI());
+        assertTrue(pom + " doesn't exist?", pom.exists());
         baseDir = pom.getParentFile();
         mojo = (JSLintMojo) lookupMojo("check", pom);
     }
