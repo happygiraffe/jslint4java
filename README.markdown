@@ -52,3 +52,7 @@ If you don't wish to use github, just clone the repository and submit patches ov
     $ git send-email origin
 
 Please try to follow the existing code style when making changes.
+
+You should ensure that the existing test and build works before submitting patches:
+
+    $ mvn -Pdist clean verify
