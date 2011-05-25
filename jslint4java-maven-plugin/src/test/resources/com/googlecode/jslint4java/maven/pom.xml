@@ -11,7 +11,9 @@
         <artifactId>jslint4java-maven-plugin</artifactId>
         <version>1.5-SNAPSHOT</version>
         <configuration>
-          <!-- ??? -->
+          <options>
+            <undef>true</undef>
+          </options>
         </configuration>
       </plugin>
     </plugins>

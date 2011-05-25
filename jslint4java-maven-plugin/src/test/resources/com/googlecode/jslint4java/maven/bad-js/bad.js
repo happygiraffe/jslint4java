@@ -1,1 +1,1 @@
-alert(42)
+encodeURIComponent('a+b')
