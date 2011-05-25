@@ -48,8 +48,9 @@ public class JSLintMojo extends AbstractMojo {
     private final List<String> excludes = new ArrayList<String>();
 
     /**
-     * Specifies the the source files to be used for JSLint (relative to {@link #sourceDirectory}).
-     * If none are given, defaults to <code>**&#47;*.js</code>.
+     * Specifies the the source files to be used for JSLint (relative to
+     * {@link #sourceDirectory}). If none are given, defaults to
+     * <code>**&#47;*.js</code>.
      *
      * @parameter property="includes"
      */
@@ -60,7 +61,8 @@ public class JSLintMojo extends AbstractMojo {
     /**
      * Specifies the location of the source directory to be used for JSLint.
      *
-     * @parameter expression="${jslint.sourceDirectory}" default-value="${basedir}/src/main/webapp"
+     * @parameter expression="${jslint.sourceDirectory}"
+     *            default-value="${basedir}/src/main/webapp"
      *            property="sourceDirectory"
      * @required
      */
@@ -72,6 +74,14 @@ public class JSLintMojo extends AbstractMojo {
      * @parameter
      */
     private final Map<String, String> options = new HashMap<String, String>();
+
+    /**
+     * What encoding should we use to read the JavaScript files?  Defaults to UTF-8.
+     *
+     * @parameter expression="${encoding}"
+     *            default-value="${project.build.sourceEncoding}"
+     */
+    private String encoding = "UTF-8";
 
     private final JSLintResultFormatter formatter = new PlainFormatter();
 
@@ -122,8 +132,8 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     /**
-     * Process includes and excludes to work out which files we are interested in. Originally nicked
-     * from CheckstyleReport, now looks nothing like it.
+     * Process includes and excludes to work out which files we are interested
+     * in. Originally nicked from CheckstyleReport, now looks nothing like it.
      *
      * @return a {@link List} of {@link File}s.
      */
@@ -140,6 +150,11 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     // Visible for testing only.
+    String getEncoding() {
+        return encoding;
+    }
+
+    // Visible for testing only.
     Map<String, String> getOptions() {
         return options;
     }
@@ -149,7 +164,7 @@ public class JSLintMojo extends AbstractMojo {
         InputStream stream = null;
         try {
             stream = new FileInputStream(file);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, getEncoding()));
             return lintReader(file.toString(), reader);
         } catch (FileNotFoundException e) {
             throw new MojoExecutionException("file not found: " + file, e);
@@ -190,6 +205,10 @@ public class JSLintMojo extends AbstractMojo {
         for (String line : report.split("\n")) {
             getLog().info(line);
         }
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     public void setExcludes(List<String> excludes) {

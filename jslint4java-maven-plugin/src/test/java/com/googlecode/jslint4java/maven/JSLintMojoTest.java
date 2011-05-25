@@ -69,4 +69,8 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
             assertTrue(true);
         }
     }
+
+    public void testDefaultEncoding() {
+        assertEquals("UTF-8", mojo.getEncoding());
+    }
 }
