@@ -50,6 +50,13 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         }
     }
 
+    // Check the stuff we specified is actually there.
+    public void testOptionsFromPom() {
+        Map<String, String> options = mojo.getOptions();
+        assertEquals(1, options.size());
+        assertEquals("true", options.get("undef"));
+    }
+
     public void testOptions() throws Exception {
         mojo.setSourceDirectory(baseRelative("good-js"));
         Map<String,String> options = new HashMap<String, String>();

@@ -139,6 +139,11 @@ public class JSLintMojo extends AbstractMojo {
         return files;
     }
 
+    // Visible for testing only.
+    Map<String, String> getOptions() {
+        return options;
+    }
+
     private JSLintResult lintFile(File file) throws MojoExecutionException {
         getLog().debug("lint " + file);
         InputStream stream = null;
