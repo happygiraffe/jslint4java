@@ -1,14 +1,18 @@
 package com.googlecode.jslint4java.maven;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,12 +23,14 @@ import java.util.Map.Entry;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.IOUtil;
 
 import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
+import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
 import com.googlecode.jslint4java.formatter.PlainFormatter;
 
 /**
@@ -35,9 +41,10 @@ import com.googlecode.jslint4java.formatter.PlainFormatter;
  * @phase verify
  */
 // TODO Support alternate jslint
-// TODO Write JUnit XML reports out
 // TODO Support HTML reports (site plugin mojo?)
 public class JSLintMojo extends AbstractMojo {
+
+    private static final String JSLINT_XML = "jslint.xml";
 
     /**
      * Specifies the the source files to be excluded for JSLint (relative to
@@ -83,7 +90,13 @@ public class JSLintMojo extends AbstractMojo {
      */
     private String encoding = "UTF-8";
 
-    private final JSLintResultFormatter formatter = new PlainFormatter();
+    /**
+     * Base directory for report output.
+     *
+     * @parameter expression="${jslint.outputDirectory}"
+     *            default-value="${project.build.directory}"
+     */
+    private File outputDirectory = new File("target");
 
     public JSLintMojo() throws IOException {
         jsLint = new JSLintBuilder().fromDefault();
@@ -198,12 +211,34 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     private void logIssues(JSLintResult result) {
-        String report = formatter.format(result);
-        if (report.equals("")) {
+        if (result.getIssues().isEmpty()) {
             return;
         }
+        logIssuesToConsole(result);
+        logIssuesToFile(result);
+    }
+
+    private void logIssuesToConsole(JSLintResult result) {
+        JSLintResultFormatter formatter = new PlainFormatter();
+        String report = formatter.format(result);
         for (String line : report.split("\n")) {
             getLog().info(line);
+        }
+    }
+
+    private void logIssuesToFile(JSLintResult result) {
+        JSLintResultFormatter formatter = new JSLintXmlFormatter();
+        File reportFile = new File(outputDirectory, JSLINT_XML).getAbsoluteFile();
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(reportFile);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos,
+                    Charset.forName("UTF-8")));
+            writeReport(result, formatter, writer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtil.close(fos);
         }
     }
 
@@ -226,8 +261,25 @@ public class JSLintMojo extends AbstractMojo {
         this.options.putAll(options);
     }
 
+    public void setOutputDirectory(File outputDirectory) {
+        this.outputDirectory = outputDirectory;
+    }
+
     public void setSourceDirectory(File sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
+    }
+
+    private void writeReport(JSLintResult result, JSLintResultFormatter formatter,
+            BufferedWriter writer) throws IOException {
+        String header = formatter.header();
+        if (header != null) {
+            writer.write(header);
+        }
+        writer.write(formatter.format(result));
+        String footer = formatter.footer();
+        if (footer != null) {
+            writer.write(footer);
+        }
     }
 
 }

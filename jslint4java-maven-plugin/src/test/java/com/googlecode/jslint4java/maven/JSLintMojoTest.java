@@ -60,6 +60,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         baseDir = pom.getParentFile();
         mojo = (JSLintMojo) lookupMojo("check", pom);
         mojo.setLog(logger);
+        mojo.setOutputDirectory(tempDir);
     }
 
     private void setUpTempDir() throws IOException {
@@ -109,7 +110,17 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
             }
             fail("Didn't find error text in logs: " + expected);
         }
+    }
 
+    public void testLogToFile() throws Exception {
+        useBadSource();
+        try {
+            mojo.execute();
+            fail("should have failed");
+        } catch (MojoFailureException e) {
+            File expectedFile = new File(tempDir, "jslint.xml");
+            assertTrue(expectedFile + " exists", expectedFile.exists());
+        }
     }
 
     public void testOptions() throws Exception {
