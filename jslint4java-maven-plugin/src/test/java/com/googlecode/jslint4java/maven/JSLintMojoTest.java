@@ -18,6 +18,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     private static final String POM_XML = "pom.xml";
     private File baseDir;
     private JSLintMojo mojo;
+    private final FakeLog logger = new FakeLog();
 
     private File baseRelative(String child) {
         return new File(baseDir, child);
@@ -32,6 +33,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         assertTrue(pom + " doesn't exist?", pom.exists());
         baseDir = pom.getParentFile();
         mojo = (JSLintMojo) lookupMojo("check", pom);
+        mojo.setLog(logger);
     }
 
     @Override
@@ -59,8 +61,6 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     }
 
     public void testLogToConsole() throws Exception {
-        FakeLog logger = new FakeLog();
-        mojo.setLog(logger);
         useBadSource();
         try {
             mojo.execute();
