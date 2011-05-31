@@ -100,6 +100,16 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
+    private void applyOptions() {
+        for (Entry<String, String> entry : options.entrySet()) {
+            if (entry.getValue() == null || entry.getValue().equals("")) {
+                continue;
+            }
+            Option option = Option.valueOf(entry.getKey().toUpperCase(Locale.ENGLISH));
+            jsLint.addOption(option, entry.getValue());
+        }
+    }
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!sourceDirectory.exists()) {
             getLog().warn(sourceDirectory + " does not exist");
@@ -121,14 +131,9 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
-    private void applyOptions() {
-        for (Entry<String, String> entry : options.entrySet()) {
-            if (entry.getValue() == null || entry.getValue().equals("")) {
-                continue;
-            }
-            Option option = Option.valueOf(entry.getKey().toUpperCase(Locale.ENGLISH));
-            jsLint.addOption(option, entry.getValue());
-        }
+    // Visible for testing only.
+    String getEncoding() {
+        return encoding;
     }
 
     /**
@@ -147,11 +152,6 @@ public class JSLintMojo extends AbstractMojo {
         getLog().debug("files=" + files);
 
         return files;
-    }
-
-    // Visible for testing only.
-    String getEncoding() {
-        return encoding;
     }
 
     // Visible for testing only.
