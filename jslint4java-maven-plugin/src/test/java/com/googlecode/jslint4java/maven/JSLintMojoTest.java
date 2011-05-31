@@ -1,6 +1,9 @@
 package com.googlecode.jslint4java.maven;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,26 +22,56 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     private File baseDir;
     private JSLintMojo mojo;
     private final FakeLog logger = new FakeLog();
+    private File tempDir;
 
     private File baseRelative(String child) {
         return new File(baseDir, child);
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    /**
+     * Delete recursively.
+     *
+     * @see {@code http://stackoverflow.com/questions/779519/delete-files-recursively-in-java/779529#779529}
+     */
+    private void delete(File f) throws FileNotFoundException {
+        if (f.isDirectory()) {
+            for (File kid : f.listFiles()) {
+                delete(kid);
+            }
+        }
+        if (!f.delete()) {
+            throw new FileNotFoundException("Failed to delete file " + f);
+        }
+    }
+
+    private File getPom() throws URISyntaxException {
         URL pomResource = JSLintMojoTest.class.getResource(POM_XML);
         assertNotNull("Can't find '" + POM_XML + "' resource", pomResource);
         File pom = new File(pomResource.toURI());
         assertTrue(pom + " doesn't exist?", pom.exists());
+        return pom;
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        setUpTempDir();
+        File pom = getPom();
         baseDir = pom.getParentFile();
         mojo = (JSLintMojo) lookupMojo("check", pom);
         mojo.setLog(logger);
     }
 
+    private void setUpTempDir() throws IOException {
+        tempDir = File.createTempFile(getClass().getName() + "-", "");
+        tempDir.delete();
+        tempDir.mkdir();
+    }
+
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
+        delete(tempDir);
     }
 
     public void testBasics() throws Exception {
