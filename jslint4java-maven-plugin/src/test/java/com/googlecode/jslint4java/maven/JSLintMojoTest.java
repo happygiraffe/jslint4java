@@ -8,6 +8,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.AssertionFailedError;
+
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 
@@ -41,6 +44,15 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         }
         if (!f.delete()) {
             throw new FileNotFoundException("Failed to delete file " + f);
+        }
+    }
+
+    public MojoFailureException executeMojoExpectingFailure() throws MojoExecutionException {
+        try {
+            mojo.execute();
+            throw new AssertionFailedError("expected failure but saw none");
+        } catch (MojoFailureException e) {
+            return e;
         }
     }
 
@@ -85,42 +97,30 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     }
 
     public void testFailure() throws Exception {
-        try {
-            useBadSource();
-            mojo.execute();
-            fail("Should have one error.");
-        } catch (MojoFailureException e) {
-            assertEquals("JSLint found 1 problems in 1 files", e.getMessage());
-        }
+        useBadSource();
+        MojoFailureException e = executeMojoExpectingFailure();
+        assertEquals("JSLint found 1 problems in 1 files", e.getMessage());
     }
 
     public void testLogToConsole() throws Exception {
         useBadSource();
-        try {
-            mojo.execute();
-            fail("should have failed");
-        } catch (MojoFailureException e) {
-            assertTrue("we logged something", !logger.loggedItems.isEmpty());
-            String expected = "bad.js:1:26: Expected ';' and instead saw '(end)'.";
-            for (FakeLog.LogItem item : logger.loggedItems) {
-                if (item.msg.toString().contains(expected)) {
-                    assertTrue("Found expected log message", true);
-                    return;
-                }
+        executeMojoExpectingFailure();
+        assertTrue("we logged something", !logger.loggedItems.isEmpty());
+        String expected = "bad.js:1:26: Expected ';' and instead saw '(end)'.";
+        for (FakeLog.LogItem item : logger.loggedItems) {
+            if (item.msg.toString().contains(expected)) {
+                assertTrue("Found expected log message", true);
+                return;
             }
-            fail("Didn't find error text in logs: " + expected);
         }
+        fail("Didn't find error text in logs: " + expected);
     }
 
     public void testLogToFile() throws Exception {
         useBadSource();
-        try {
-            mojo.execute();
-            fail("should have failed");
-        } catch (MojoFailureException e) {
-            File expectedFile = new File(tempDir, "jslint.xml");
-            assertTrue(expectedFile + " exists", expectedFile.exists());
-        }
+        executeMojoExpectingFailure();
+        File expectedFile = new File(tempDir, "jslint.xml");
+        assertTrue(expectedFile + " exists", expectedFile.exists());
     }
 
     public void testOptions() throws Exception {
@@ -128,12 +128,8 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         Map<String, String> options = new HashMap<String, String>();
         options.put("strict", "true");
         mojo.setOptions(options);
-        try {
-            mojo.execute();
-            fail("should have failed due to lack of 'use strict'");
-        } catch (MojoFailureException e) {
-            assertTrue(true);
-        }
+        executeMojoExpectingFailure();
+        assertTrue(true);
     }
 
     // Check the stuff we specified is actually there.
