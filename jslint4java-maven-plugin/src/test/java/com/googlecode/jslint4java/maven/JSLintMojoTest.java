@@ -11,6 +11,10 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 // Urgh, JUnit 3. :(
 public class JSLintMojoTest extends AbstractMojoTestCase {
 
+    /** A directory containing a file with an error in. */
+    private static final String BAD_JS = "bad-js";
+    /** A directory containing javascript with no lint errors. */
+    private static final String GOOD_JS = "good-js";
     private static final String POM_XML = "pom.xml";
     private File baseDir;
     private JSLintMojo mojo;
@@ -36,7 +40,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     }
 
     public void testBasics() throws Exception {
-        mojo.setSourceDirectory(baseRelative("good-js"));
+        useGoodSource();
         mojo.execute();
     }
 
@@ -46,7 +50,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
 
     public void testFailure() throws Exception {
         try {
-            mojo.setSourceDirectory(baseRelative("bad-js"));
+            useBadSource();
             mojo.execute();
             fail("Should have one error.");
         } catch (MojoFailureException e) {
@@ -55,7 +59,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     }
 
     public void testOptions() throws Exception {
-        mojo.setSourceDirectory(baseRelative("good-js"));
+        useGoodSource();
         Map<String,String> options = new HashMap<String, String>();
         options.put("strict", "true");
         mojo.setOptions(options);
@@ -72,5 +76,13 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         Map<String, String> options = mojo.getOptions();
         assertEquals(1, options.size());
         assertEquals("true", options.get("undef"));
+    }
+
+    private void useBadSource() {
+        mojo.setSourceDirectory(baseRelative(BAD_JS));
+    }
+
+    private void useGoodSource() {
+        mojo.setSourceDirectory(baseRelative(GOOD_JS));
     }
 }
