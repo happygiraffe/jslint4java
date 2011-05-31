@@ -40,6 +40,10 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         mojo.execute();
     }
 
+    public void testDefaultEncoding() {
+        assertEquals("UTF-8", mojo.getEncoding());
+    }
+
     public void testFailure() throws Exception {
         try {
             mojo.setSourceDirectory(baseRelative("bad-js"));
@@ -48,13 +52,6 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         } catch (MojoFailureException e) {
             assertEquals("JSLint found 1 problems in 1 files", e.getMessage());
         }
-    }
-
-    // Check the stuff we specified is actually there.
-    public void testOptionsFromPom() {
-        Map<String, String> options = mojo.getOptions();
-        assertEquals(1, options.size());
-        assertEquals("true", options.get("undef"));
     }
 
     public void testOptions() throws Exception {
@@ -70,7 +67,10 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         }
     }
 
-    public void testDefaultEncoding() {
-        assertEquals("UTF-8", mojo.getEncoding());
+    // Check the stuff we specified is actually there.
+    public void testOptionsFromPom() {
+        Map<String, String> options = mojo.getOptions();
+        assertEquals(1, options.size());
+        assertEquals("true", options.get("undef"));
     }
 }
