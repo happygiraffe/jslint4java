@@ -58,9 +58,30 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         }
     }
 
+    public void testLogToConsole() throws Exception {
+        FakeLog logger = new FakeLog();
+        mojo.setLog(logger);
+        useBadSource();
+        try {
+            mojo.execute();
+            fail("should have failed");
+        } catch (MojoFailureException e) {
+            assertTrue("we logged something", !logger.loggedItems.isEmpty());
+            String expected = "bad.js:1:26: Expected ';' and instead saw '(end)'.";
+            for (FakeLog.LogItem item : logger.loggedItems) {
+                if (item.msg.toString().contains(expected)) {
+                    assertTrue("Found expected log message", true);
+                    return;
+                }
+            }
+            fail("Didn't find error text in logs: " + expected);
+        }
+
+    }
+
     public void testOptions() throws Exception {
         useGoodSource();
-        Map<String,String> options = new HashMap<String, String>();
+        Map<String, String> options = new HashMap<String, String>();
         options.put("strict", "true");
         mojo.setOptions(options);
         try {
