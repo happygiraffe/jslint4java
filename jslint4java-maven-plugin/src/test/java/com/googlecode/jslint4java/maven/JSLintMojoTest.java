@@ -1,16 +1,24 @@
 package com.googlecode.jslint4java.maven;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import junit.framework.AssertionFailedError;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.codehaus.plexus.util.IOUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -55,6 +63,17 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         File pom = new File(pomResource.toURI());
         assertTrue(pom + " doesn't exist?", pom.exists());
         return pom;
+    }
+
+    private String readFile(File reportFile) throws FileNotFoundException, IOException {
+        InputStreamReader reader = null;
+        try {
+            reader = new InputStreamReader(new FileInputStream(reportFile),
+                    Charset.forName("UTF-8"));
+            return IOUtil.toString(reader);
+        } finally {
+            IOUtil.close(reader);
+        }
     }
 
     @Before
@@ -114,6 +133,18 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         File expectedFile = new File(temp.getRoot(), "jslint.xml");
         assertTrue(expectedFile + " exists", expectedFile.exists());
         assertTrue("xml report has non-zero length", expectedFile.length() > 0);
+    }
+
+    @Test
+    public void testLogToFileContents() throws Exception {
+        useGoodSource();
+        mojo.execute();
+        File report = new File(temp.getRoot(), "jslint.xml");
+        assertTrue(report + " exists", report.exists());
+        Matcher m  = Pattern.compile("<file\\s").matcher(readFile(report));
+        assertTrue("found first <file", m.find());
+        assertTrue("found second <file", m.find());
+        assertFalse("no more <file", m.find());
     }
 
     @Test

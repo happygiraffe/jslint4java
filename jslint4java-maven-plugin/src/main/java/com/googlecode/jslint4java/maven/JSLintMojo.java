@@ -204,11 +204,11 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     private void logIssues(JSLintResult result, ReportWriter reporter) {
+        reporter.report(result);
         if (result.getIssues().isEmpty()) {
             return;
         }
         logIssuesToConsole(result);
-        reporter.report(result);
     }
 
     private void logIssuesToConsole(JSLintResult result) {
