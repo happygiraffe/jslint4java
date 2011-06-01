@@ -242,6 +242,9 @@ public class JSLintMojo extends AbstractMojo {
         File reportFile = new File(outputDirectory, JSLINT_XML).getAbsoluteFile();
         FileOutputStream fos = null;
         try {
+            if (!outputDirectory.exists()) {
+                outputDirectory.mkdir();
+            }
             fos = new FileOutputStream(reportFile);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos,
                     Charset.forName("UTF-8")));

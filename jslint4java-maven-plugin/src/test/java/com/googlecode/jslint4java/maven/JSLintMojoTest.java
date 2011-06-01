@@ -124,6 +124,11 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         assertTrue(expectedFile + " exists", expectedFile.exists());
     }
 
+    public void testLogToFileMakesDirectory() throws Exception {
+        assertTrue(tempDir.delete());
+        testLogToFile();
+    }
+
     public void testOptions() throws Exception {
         useGoodSource();
         Map<String, String> options = new HashMap<String, String>();
