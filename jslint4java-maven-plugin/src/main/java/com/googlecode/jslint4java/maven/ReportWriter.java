@@ -55,7 +55,7 @@ public class ReportWriter {
         }
     }
 
-    // Visible for testing.
+    /** The file the report is written to. */
     public File getReportFile() {
         return reportFile;
     }
