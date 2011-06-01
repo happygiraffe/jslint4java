@@ -13,8 +13,13 @@ import junit.framework.AssertionFailedError;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-// Urgh, JUnit 3. :(
+@RunWith(JUnit4.class)
 public class JSLintMojoTest extends AbstractMojoTestCase {
 
     private static final String GOAL = "lint";
@@ -65,8 +70,9 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         return pom;
     }
 
+    @Before
     @Override
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         setUpTempDir();
         File pom = getPom();
@@ -82,27 +88,32 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         tempDir.mkdir();
     }
 
+    @After
     @Override
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         delete(tempDir);
     }
 
+    @Test
     public void testBasics() throws Exception {
         useGoodSource();
         mojo.execute();
     }
 
+    @Test
     public void testDefaultEncoding() {
         assertEquals("UTF-8", mojo.getEncoding());
     }
 
+    @Test
     public void testFailure() throws Exception {
         useBadSource();
         MojoFailureException e = executeMojoExpectingFailure();
         assertEquals("JSLint found 1 problems in 1 files", e.getMessage());
     }
 
+    @Test
     public void testLogToConsole() throws Exception {
         useBadSource();
         executeMojoExpectingFailure();
@@ -117,6 +128,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         fail("Didn't find error text in logs: " + expected);
     }
 
+    @Test
     public void testLogToFile() throws Exception {
         useBadSource();
         executeMojoExpectingFailure();
@@ -125,11 +137,13 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         assertTrue("xml report has non-zero length", expectedFile.length() > 0);
     }
 
+    @Test
     public void testLogToFileMakesDirectory() throws Exception {
         assertTrue(tempDir.delete());
         testLogToFile();
     }
 
+    @Test
     public void testLogToFileOnSuccess() throws Exception {
         useGoodSource();
         mojo.execute();
@@ -138,6 +152,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         assertTrue("xml report has non-zero length", expectedFile.length() > 0);
     }
 
+    @Test
     public void testOptions() throws Exception {
         useGoodSource();
         Map<String, String> options = new HashMap<String, String>();
@@ -148,6 +163,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     }
 
     // Check the stuff we specified is actually there.
+    @Test
     public void testOptionsFromPom() {
         Map<String, String> options = mojo.getOptions();
         assertEquals(1, options.size());
