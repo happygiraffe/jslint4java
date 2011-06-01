@@ -240,19 +240,18 @@ public class JSLintMojo extends AbstractMojo {
     private void logIssuesToFile(JSLintResult result) {
         JSLintResultFormatter formatter = new JSLintXmlFormatter();
         File reportFile = new File(outputDirectory, JSLINT_XML).getAbsoluteFile();
-        FileOutputStream fos = null;
+        BufferedWriter writer = null;
         try {
             if (!outputDirectory.exists()) {
                 outputDirectory.mkdir();
             }
-            fos = new FileOutputStream(reportFile);
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos,
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(reportFile),
                     Charset.forName("UTF-8")));
             writer.write(buildReport(result, formatter));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            IOUtil.close(fos);
+            IOUtil.close(writer);
         }
     }
 

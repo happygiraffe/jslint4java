@@ -122,6 +122,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         executeMojoExpectingFailure();
         File expectedFile = new File(tempDir, "jslint.xml");
         assertTrue(expectedFile + " exists", expectedFile.exists());
+        assertTrue("xml report has non-zero length", expectedFile.length() > 0);
     }
 
     public void testLogToFileMakesDirectory() throws Exception {
