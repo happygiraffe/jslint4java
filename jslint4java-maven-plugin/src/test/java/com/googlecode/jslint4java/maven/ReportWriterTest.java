@@ -51,10 +51,10 @@ public class ReportWriterTest {
         assertThat(parent.exists(), is(true));
     }
 
-    private String readReport(ReportWriter rw) throws FileNotFoundException, IOException {
+    private String readFile(File reportFile) throws FileNotFoundException, IOException {
         InputStreamReader reader = null;
         try {
-            reader = new InputStreamReader(new FileInputStream(rw.getReportFile()),
+            reader = new InputStreamReader(new FileInputStream(reportFile),
                     Charset.forName("UTF-8"));
             return IOUtil.toString(reader);
         } finally {
@@ -69,7 +69,7 @@ public class ReportWriterTest {
         // Create a result with no problems.
         rw.report(new ResultBuilder("foo.js").build());
         rw.close();
-        String report = readReport(rw);
+        String report = readFile(rw.getReportFile());
         assertThat(report, containsString("<jslint>"));
         assertThat(report, containsString("<file name='foo.js'>"));
         assertThat(report, containsString("</jslint>"));
