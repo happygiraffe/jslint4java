@@ -27,6 +27,7 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+// NB: Even though this is being run with JUnit 4, the asserts are still largely JUnit 3.  Yay inheritance!
 @RunWith(JUnit4.class)
 public class JSLintMojoTest extends AbstractMojoTestCase {
 
