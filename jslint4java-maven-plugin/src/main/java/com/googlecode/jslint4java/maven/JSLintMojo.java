@@ -161,10 +161,7 @@ public class JSLintMojo extends AbstractMojo {
         getLog().debug("includes=" + includes);
         getLog().debug("excludes=" + excludes);
 
-        List<File> files = new FileLister(sourceDirectory, includes, excludes).files();
-        getLog().debug("files=" + files);
-
-        return files;
+        return new FileLister(sourceDirectory, includes, excludes).files();
     }
 
     // Visible for testing only.
