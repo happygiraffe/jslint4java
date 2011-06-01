@@ -37,7 +37,7 @@ import com.googlecode.jslint4java.formatter.PlainFormatter;
  * Validates JavaScript using jslint4java.
  *
  * @author dom
- * @goal check
+ * @goal lint
  * @phase verify
  */
 // TODO Support alternate jslint

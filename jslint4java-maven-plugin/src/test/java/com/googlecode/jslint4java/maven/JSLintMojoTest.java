@@ -17,6 +17,7 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 // Urgh, JUnit 3. :(
 public class JSLintMojoTest extends AbstractMojoTestCase {
 
+    private static final String GOAL = "lint";
     /** A directory containing a file with an error in. */
     private static final String BAD_JS = "bad-js";
     /** A directory containing javascript with no lint errors. */
@@ -70,7 +71,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         setUpTempDir();
         File pom = getPom();
         baseDir = pom.getParentFile();
-        mojo = (JSLintMojo) lookupMojo("check", pom);
+        mojo = (JSLintMojo) lookupMojo(GOAL, pom);
         mojo.setLog(logger);
         mojo.setOutputDirectory(tempDir);
     }
