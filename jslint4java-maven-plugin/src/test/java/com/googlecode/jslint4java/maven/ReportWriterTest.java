@@ -31,4 +31,13 @@ public class ReportWriterTest {
         assertThat(rw.getReportFile().exists(), is(true));
         assertThat(rw.getReportFile().length(), is(not(0L)));
     }
+
+    @Test
+    public void makesParentDirectory() {
+        File parent = new File(tmpf.getRoot(), "somedir");
+        ReportWriter rw = new ReportWriter(new File(parent, "report.xml"), formatter);
+        rw.open();
+        rw.close();
+        assertThat(parent.exists(), is(true));
+    }
 }
