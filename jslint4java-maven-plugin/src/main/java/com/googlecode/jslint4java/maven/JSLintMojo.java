@@ -93,6 +93,13 @@ public class JSLintMojo extends AbstractMojo {
      */
     private File outputDirectory = new File("target");
 
+    /**
+     * Fail the build if JSLint detects any problems.
+     *
+     * @parameter expression="${jslint.failOnError}" default-value="true"
+     */
+    private boolean failOnError = true;
+
     public JSLintMojo() throws IOException {
         jsLint = new JSLintBuilder().fromDefault();
     }
@@ -144,7 +151,7 @@ public class JSLintMojo extends AbstractMojo {
         } finally {
             reporter.close();
         }
-        if (failures > 0) {
+        if (failOnError && failures > 0) {
             throw new MojoFailureException("JSLint found " + failures + " problems in "
                     + files.size() + " files");
         }
@@ -244,6 +251,10 @@ public class JSLintMojo extends AbstractMojo {
 
     public void setSourceDirectory(File sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
+    }
+
+    public void setFailOnError(boolean b) {
+        failOnError  = b;
     }
 
 }

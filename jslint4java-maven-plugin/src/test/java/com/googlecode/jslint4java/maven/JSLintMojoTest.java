@@ -113,6 +113,14 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     }
 
     @Test
+    public void testFailOnError() throws Exception {
+        useBadSource();
+        mojo.setFailOnError(false);
+        mojo.execute();
+        assertTrue("executed without a MojoFailureException", true);
+    }
+
+    @Test
     public void testLogToConsole() throws Exception {
         useBadSource();
         executeMojoExpectingFailure();
