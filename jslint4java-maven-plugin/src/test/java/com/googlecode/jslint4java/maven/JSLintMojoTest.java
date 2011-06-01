@@ -45,6 +45,16 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     private JSLintMojo mojo;
     private final FakeLog logger = new FakeLog();
 
+    private void assertLogContains(String expected) {
+        for (FakeLog.LogItem item : logger.loggedItems) {
+            if (item.msg.toString().contains(expected)) {
+                assertTrue("Found expected log message", true);
+                return;
+            }
+        }
+        fail("Didn't find error text in logs: " + expected);
+    }
+
     private File baseRelative(String child) {
         return new File(baseDir, child);
     }
@@ -106,6 +116,14 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     }
 
     @Test
+    public void testFailOnError() throws Exception {
+        useBadSource();
+        mojo.setFailOnError(false);
+        mojo.execute();
+        assertLogContains("JSLint found 1 problems in 1 files");
+    }
+
+    @Test
     public void testFailure() throws Exception {
         useBadSource();
         MojoFailureException e = executeMojoExpectingFailure();
@@ -113,26 +131,11 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     }
 
     @Test
-    public void testFailOnError() throws Exception {
-        useBadSource();
-        mojo.setFailOnError(false);
-        mojo.execute();
-        assertTrue("executed without a MojoFailureException", true);
-    }
-
-    @Test
     public void testLogToConsole() throws Exception {
         useBadSource();
         executeMojoExpectingFailure();
         assertTrue("we logged something", !logger.loggedItems.isEmpty());
-        String expected = "bad.js:1:26: Expected ';' and instead saw '(end)'.";
-        for (FakeLog.LogItem item : logger.loggedItems) {
-            if (item.msg.toString().contains(expected)) {
-                assertTrue("Found expected log message", true);
-                return;
-            }
-        }
-        fail("Didn't find error text in logs: " + expected);
+        assertLogContains("bad.js:1:26: Expected ';' and instead saw '(end)'.");
     }
 
     @Test

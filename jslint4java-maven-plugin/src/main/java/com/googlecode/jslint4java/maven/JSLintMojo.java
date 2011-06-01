@@ -151,9 +151,13 @@ public class JSLintMojo extends AbstractMojo {
         } finally {
             reporter.close();
         }
-        if (failOnError && failures > 0) {
-            throw new MojoFailureException("JSLint found " + failures + " problems in "
-                    + files.size() + " files");
+        if (failures > 0) {
+            String message = "JSLint found " + failures + " problems in " + files.size() + " files";
+            if (failOnError) {
+                throw new MojoFailureException(message);
+            } else {
+                getLog().info(message);
+            }
         }
     }
 
