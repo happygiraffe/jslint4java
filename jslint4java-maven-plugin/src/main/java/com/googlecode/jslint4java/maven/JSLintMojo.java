@@ -98,6 +98,8 @@ public class JSLintMojo extends AbstractMojo {
      */
     private File outputDirectory = new File("target");
 
+    private final JSLintResultFormatter xmlFormatter = new JSLintXmlFormatter();
+
     public JSLintMojo() throws IOException {
         jsLint = new JSLintBuilder().fromDefault();
     }
@@ -123,18 +125,16 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
-    private String buildReport(JSLintResult result, JSLintResultFormatter formatter) {
-        StringBuilder sb = new StringBuilder();
-        String header = formatter.header();
-        if (header != null) {
-            sb.append(header);
+    private void closeXmlReportFile(BufferedWriter bw) {
+        try {
+            if (xmlFormatter.footer() != null) {
+                bw.write(xmlFormatter.footer());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtil.close(bw);
         }
-        sb.append(formatter.format(result));
-        String footer = formatter.footer();
-        if (footer != null) {
-            sb.append(footer);
-        }
-        return sb.toString();
     }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -151,7 +151,17 @@ public class JSLintMojo extends AbstractMojo {
             throw new MojoExecutionException("Error listing files", e);
         }
         applyOptions();
-        int failures = lintFiles(files);
+        int failures = 0;
+        BufferedWriter writer = openXmlReportFile();
+        try {
+            for (File file : files) {
+                JSLintResult result = lintFile(file);
+                failures += result.getIssues().size();
+                logIssues(result, writer);
+            }
+        } finally {
+            closeXmlReportFile(writer);
+        }
         if (failures > 0) {
             throw new MojoFailureException("JSLint found " + failures + " problems in "
                     + files.size() + " files");
@@ -207,26 +217,16 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
-    private int lintFiles(List<File> files) throws MojoExecutionException {
-        int failures = 0;
-        for (File file : files) {
-            JSLintResult result = lintFile(file);
-            failures += result.getIssues().size();
-            logIssues(result);
-        }
-        return failures;
-    }
-
     private JSLintResult lintReader(String name, Reader reader) throws IOException {
         return jsLint.lint(name, reader);
     }
 
-    private void logIssues(JSLintResult result) {
+    private void logIssues(JSLintResult result, BufferedWriter writer) {
         if (result.getIssues().isEmpty()) {
             return;
         }
         logIssuesToConsole(result);
-        logIssuesToFile(result);
+        logIssuesToFile(result, writer);
     }
 
     private void logIssuesToConsole(JSLintResult result) {
@@ -237,21 +237,28 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
-    private void logIssuesToFile(JSLintResult result) {
-        JSLintResultFormatter formatter = new JSLintXmlFormatter();
-        File reportFile = new File(outputDirectory, JSLINT_XML).getAbsoluteFile();
-        BufferedWriter writer = null;
+    private void logIssuesToFile(JSLintResult result, BufferedWriter writer) {
         try {
-            if (!outputDirectory.exists()) {
-                outputDirectory.mkdir();
-            }
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(reportFile),
-                    Charset.forName("UTF-8")));
-            writer.write(buildReport(result, formatter));
+            writer.write(xmlFormatter.format(result));
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            IOUtil.close(writer);
+        }
+    }
+
+    private BufferedWriter openXmlReportFile() {
+        File reportFile = new File(outputDirectory, JSLINT_XML).getAbsoluteFile();
+        if (!outputDirectory.exists()) {
+            outputDirectory.mkdir();
+        }
+        try {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(reportFile),
+                    Charset.forName("UTF-8")));
+            if (xmlFormatter.header() != null) {
+                bw.write(xmlFormatter.header());
+            }
+            return bw;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
