@@ -123,6 +123,20 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
+    private String buildReport(JSLintResult result, JSLintResultFormatter formatter) {
+        StringBuilder sb = new StringBuilder();
+        String header = formatter.header();
+        if (header != null) {
+            sb.append(header);
+        }
+        sb.append(formatter.format(result));
+        String footer = formatter.footer();
+        if (footer != null) {
+            sb.append(footer);
+        }
+        return sb.toString();
+    }
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!sourceDirectory.exists()) {
             getLog().warn(sourceDirectory + " does not exist");
@@ -231,7 +245,7 @@ public class JSLintMojo extends AbstractMojo {
             fos = new FileOutputStream(reportFile);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos,
                     Charset.forName("UTF-8")));
-            writeReport(result, formatter, writer);
+            writer.write(buildReport(result, formatter));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -264,19 +278,6 @@ public class JSLintMojo extends AbstractMojo {
 
     public void setSourceDirectory(File sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
-    }
-
-    private void writeReport(JSLintResult result, JSLintResultFormatter formatter,
-            BufferedWriter writer) throws IOException {
-        String header = formatter.header();
-        if (header != null) {
-            writer.write(header);
-        }
-        writer.write(formatter.format(result));
-        String footer = formatter.footer();
-        if (footer != null) {
-            writer.write(footer);
-        }
     }
 
 }
