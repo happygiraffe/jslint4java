@@ -98,12 +98,12 @@ public class JSLintMojo extends AbstractMojo {
     private String encoding = "UTF-8";
 
     /**
-     * Base directory for report output.
+     * Base folder for report output.
      *
-     * @parameter expression="${jslint.outputDirectory}"
+     * @parameter expression="${jslint.outputFolder}"
      *            default-value="${project.build.directory}"
      */
-    private File outputDirectory = new File("target");
+    private File outputFolder = new File("target");
 
     /**
      * Fail the build if JSLint detects any problems.
@@ -145,7 +145,7 @@ public class JSLintMojo extends AbstractMojo {
         applyOptions();
         List<File> files = getFilesToProcess();
         int failures = 0;
-        ReportWriter reporter = new ReportWriter(new File(outputDirectory, JSLINT_XML), new JSLintXmlFormatter());
+        ReportWriter reporter = new ReportWriter(new File(outputFolder, JSLINT_XML), new JSLintXmlFormatter());
         try {
             reporter.open();
             for (File file : files) {
@@ -272,8 +272,8 @@ public class JSLintMojo extends AbstractMojo {
         this.options.putAll(options);
     }
 
-    public void setOutputDirectory(File outputDirectory) {
-        this.outputDirectory = outputDirectory;
+    public void setOutputFolder(File outputFolder) {
+        this.outputFolder = outputFolder;
     }
 
     public void setSourceFolders(List<File> sourceFolders) {

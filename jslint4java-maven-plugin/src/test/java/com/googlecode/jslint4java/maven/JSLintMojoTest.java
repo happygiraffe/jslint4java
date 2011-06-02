@@ -96,7 +96,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         baseDir = pom.getParentFile();
         mojo = (JSLintMojo) lookupMojo(GOAL, pom);
         mojo.setLog(logger);
-        mojo.setOutputDirectory(temp.getRoot());
+        mojo.setOutputFolder(temp.getRoot());
     }
 
     @After
