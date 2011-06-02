@@ -39,6 +39,8 @@ import com.googlecode.jslint4java.formatter.PlainFormatter;
 // TODO Support HTML reports (site plugin mojo?)
 public class JSLintMojo extends AbstractMojo {
 
+    private static final String DEFAULT_INCLUDES = "**/*.js";
+
     private static final String JSLINT_XML = "jslint.xml";
 
     /**
@@ -109,9 +111,9 @@ public class JSLintMojo extends AbstractMojo {
      *
      * @param includes
      */
-    private void applyDefaultIncludes(List<String> includes) {
+    private void applyDefaults() {
         if (includes.isEmpty()) {
-            includes.add("**/*.js");
+            includes.add(DEFAULT_INCLUDES);
         }
     }
 
@@ -126,13 +128,13 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        applyDefaults();
         if (!sourceDirectory.exists()) {
             getLog().warn(sourceDirectory + " does not exist");
             return;
         }
         List<File> files = null;
         try {
-            applyDefaultIncludes(includes);
             files = getFilesToProcess(includes, excludes);
         } catch (IOException e) {
             // Looking in FileUtils, this is a "can never happen". *sigh*
