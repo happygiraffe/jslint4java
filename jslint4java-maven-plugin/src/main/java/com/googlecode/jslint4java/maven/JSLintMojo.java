@@ -45,7 +45,7 @@ public class JSLintMojo extends AbstractMojo {
 
     /**
      * Specifies the the source files to be excluded for JSLint (relative to
-     * {@link #sourceDirectory}). Maven applies its own defaults.
+     * {@link #defaultSourceFolder}). Maven applies its own defaults.
      *
      * @parameter property="excludes"
      */
@@ -53,7 +53,7 @@ public class JSLintMojo extends AbstractMojo {
 
     /**
      * Specifies the the source files to be used for JSLint (relative to
-     * {@link #sourceDirectory}). If none are given, defaults to
+     * {@link #defaultSourceFolder}). If none are given, defaults to
      * <code>**&#47;*.js</code>.
      *
      * @parameter property="includes"
@@ -63,14 +63,24 @@ public class JSLintMojo extends AbstractMojo {
     private final JSLint jsLint;
 
     /**
-     * Specifies the location of the source directory to be used for JSLint.
+     * Specifies the location of the default source folder to be used for
+     * JSLint. Note that this is just used for filling in the default, as it
+     * resolves the default value correctly. Anything you specify will override
+     * it.
      *
-     * @parameter expression="${jslint.sourceDirectory}"
-     *            default-value="${basedir}/src/main/webapp"
-     *            property="sourceDirectory"
+     * @parameter default-value="${basedir}/src/main/webapp"
+     * @readonly
      * @required
      */
-    private File sourceDirectory;
+    private File defaultSourceFolder;
+
+    /**
+     * Which locations should JSLint look for JavaScript files in? Defaults to
+     * ${basedir}/src/main/webapp.
+     *
+     * @parameter
+     */
+    private final List<File> sourceFolders = new ArrayList<File>();
 
     /**
      * Which JSLint {@link Option}s to set.
@@ -115,6 +125,9 @@ public class JSLintMojo extends AbstractMojo {
         if (includes.isEmpty()) {
             includes.add(DEFAULT_INCLUDES);
         }
+        if (sourceFolders.isEmpty()) {
+            sourceFolders.add(defaultSourceFolder);
+        }
     }
 
     private void applyOptions() {
@@ -129,18 +142,8 @@ public class JSLintMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         applyDefaults();
-        if (!sourceDirectory.exists()) {
-            getLog().warn(sourceDirectory + " does not exist");
-            return;
-        }
-        List<File> files = null;
-        try {
-            files = getFilesToProcess(includes, excludes);
-        } catch (IOException e) {
-            // Looking in FileUtils, this is a "can never happen". *sigh*
-            throw new MojoExecutionException("Error listing files", e);
-        }
         applyOptions();
+        List<File> files = getFilesToProcess();
         int failures = 0;
         ReportWriter reporter = new ReportWriter(new File(outputDirectory, JSLINT_XML), new JSLintXmlFormatter());
         try {
@@ -174,13 +177,23 @@ public class JSLintMojo extends AbstractMojo {
      *
      * @return a {@link List} of {@link File}s.
      */
-    private List<File> getFilesToProcess(List<String> includes, List<String> excludes)
-            throws IOException {
+    private List<File> getFilesToProcess() throws MojoExecutionException {
         // Defaults.
         getLog().debug("includes=" + includes);
         getLog().debug("excludes=" + excludes);
 
-        return new FileLister(sourceDirectory, includes, excludes).files();
+        List<File> files = new ArrayList<File>();
+        for (File folder : sourceFolders) {
+            getLog().debug("searching " + folder);
+            try {
+                files.addAll(new FileLister(folder, includes, excludes).files());
+            } catch (IOException e) {
+                // Looking in FileUtils, this is a "can never happen". *sigh*
+                throw new MojoExecutionException("Error listing files", e);
+            }
+        }
+
+        return files;
     }
 
     // Visible for testing only.
@@ -232,6 +245,10 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
+    public void setDefaultSourceFolder(File defaultSourceFolder) {
+        this.defaultSourceFolder = defaultSourceFolder;
+    }
+
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
@@ -239,6 +256,10 @@ public class JSLintMojo extends AbstractMojo {
     public void setExcludes(List<String> excludes) {
         this.excludes.clear();
         this.excludes.addAll(excludes);
+    }
+
+    public void setFailOnError(boolean b) {
+        failOnError  = b;
     }
 
     public void setIncludes(List<String> includes) {
@@ -255,12 +276,9 @@ public class JSLintMojo extends AbstractMojo {
         this.outputDirectory = outputDirectory;
     }
 
-    public void setSourceDirectory(File sourceDirectory) {
-        this.sourceDirectory = sourceDirectory;
-    }
-
-    public void setFailOnError(boolean b) {
-        failOnError  = b;
+    public void setSourceFolders(List<File> sourceFolders) {
+        this.sourceFolders.clear();
+        this.sourceFolders.addAll(sourceFolders);
     }
 
 }
