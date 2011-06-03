@@ -179,7 +179,7 @@ public class JSLintTest {
         lint.addOption(Option.MAXERR, "2");
         // Just some nasty thing I threw together. :)
         JSLintResult result = lint("if (foo=42) {\n  println(\"bother\")\n}\n");
-        assertIssues(result.getIssues(), "'foo' has not been fully defined yet.",
+        assertIssues(result.getIssues(), "'foo' was used before it was defined.",
                 "Missing space between 'foo' and '='.",
                 "Too many errors. (25% scanned).");
     }
