@@ -96,16 +96,6 @@ public class JSLintTest {
     }
 
     @Test
-    public void testDataImplieds() throws Exception {
-        JSLintResult result = lint("foo();");
-        assertIssues(result.getIssues());
-        List<JSIdentifier> implieds = result.getImplieds();
-        assertThat(implieds.size(), is(1));
-        assertThat(implieds.get(0).getName(), is("foo"));
-        assertThat(implieds.get(0).getLine(), is(1));
-    }
-
-    @Test
     public void testDataJsonness() throws Exception {
         JSLintResult result = lint("{\"a\":100}");
         assertIssues(result.getIssues());
@@ -123,16 +113,6 @@ public class JSLintTest {
         assertThat(members.get("a"), is(1));
         assertThat(members.get("b"), is(1));
         assertThat(members.get("3"), is(0));  // Nope, I've no idea why it's zero either.
-    }
-
-    @Test
-    public void testDataUnused() throws Exception {
-        JSLintResult result = lint("function f() {var foo = 2;}");
-        assertIssues(result.getIssues());
-        List<JSIdentifier> unused = result.getUnused();
-        assertThat(unused.size(), is(1));
-        assertThat(unused.get(0).getName(), is("foo"));
-        assertThat(unused.get(0).getLine(), is(1));
     }
 
     @Test

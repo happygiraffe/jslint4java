@@ -35,18 +35,6 @@ public class JSLint {
     // }
 
     /**
-     * A helper class for interpreting the output of {@code JSLINT.data()}.
-     */
-    private static final class IdentifierConverter implements Util.Converter<JSIdentifier> {
-        public JSIdentifier convert(Object obj) {
-            Scriptable identifier = (Scriptable) obj;
-            String name = Util.stringValue("name", identifier);
-            int line = Util.intValue("line", identifier);
-            return new JSIdentifier(name, line);
-        }
-    }
-
-    /**
      * A helper class for interpreting function parameter names. Note that we
      * use this to work around a change in JSLint's data structure, which
      * changed from being a single string to an object.
@@ -170,12 +158,6 @@ public class JSLint {
                     }
                     for (Entry<String, Integer> member : getDataMembers(data).entrySet()) {
                         b.addMember(member.getKey(), member.getValue());
-                    }
-                    for (JSIdentifier id : Util.listValue("unused", data, new IdentifierConverter())) {
-                        b.addUnused(id);
-                    }
-                    for (JSIdentifier id : Util.listValue("implieds", data, new IdentifierConverter())) {
-                        b.addImplied(id);
                     }
                     b.json(Util.booleanValue("json", data));
                     for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {

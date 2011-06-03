@@ -22,13 +22,11 @@ public class JSLintResult {
         private long duration;
         private final List<JSFunction> functions = new ArrayList<JSFunction>();
         private final List<String> globals = new ArrayList<String>();
-        private final List<JSIdentifier> implieds = new ArrayList<JSIdentifier>();
         private final List<Issue> issues = new ArrayList<Issue>();
         private boolean json;
         private final Map<String, Integer> member = new HashMap<String, Integer>();
         private final String name;
         private String report;
-        private final List<JSIdentifier> unused = new ArrayList<JSIdentifier>();
         private final List<String> urls = new ArrayList<String>();
 
         public ResultBuilder(String name) {
@@ -45,11 +43,6 @@ public class JSLintResult {
             return this;
         }
 
-        public ResultBuilder addImplied(JSIdentifier id) {
-            implieds.add(id);
-            return this;
-        }
-
         public ResultBuilder addIssue(Issue issue) {
             issues.add(issue);
             return this;
@@ -57,11 +50,6 @@ public class JSLintResult {
 
         public ResultBuilder addMember(String name, int count) {
             member.put(name, count);
-            return this;
-        }
-
-        public ResultBuilder addUnused(JSIdentifier id) {
-            unused.add(id);
             return this;
         }
 
@@ -94,13 +82,11 @@ public class JSLintResult {
     private final long duration;
     private final List<JSFunction> functions = new ArrayList<JSFunction>();
     private final List<String> globals = new ArrayList<String>();
-    private final List<JSIdentifier> implieds = new ArrayList<JSIdentifier>();
     private final List<Issue> issues = new ArrayList<Issue>();
     private final boolean json;
     private final Map<String, Integer> member = new HashMap<String, Integer>();
     private final String name;
     private final String report;
-    private final List<JSIdentifier> unused = new ArrayList<JSIdentifier>();
     private final List<String> urls = new ArrayList<String>();
 
     private JSLintResult(ResultBuilder b) {
@@ -109,11 +95,9 @@ public class JSLintResult {
         issues.addAll(b.issues);
         functions.addAll(b.functions);
         globals.addAll(b.globals);
-        implieds.addAll(b.implieds);
         json = b.json;
         member.putAll(b.member);
         report = b.report;
-        unused.addAll(b.unused);
         urls.addAll(b.urls);
     }
 
@@ -130,11 +114,6 @@ public class JSLintResult {
     /** List all names defined in the global namespace. */
     public List<String> getGlobals() {
         return globals;
-    }
-
-    /** List all names with implied definitions. */
-    public List<JSIdentifier> getImplieds() {
-        return implieds;
     }
 
     /**
@@ -157,11 +136,6 @@ public class JSLintResult {
     /** An HTML report of the source file. */
     public String getReport() {
         return report;
-    }
-
-    /** A list of unused names. */
-    public List<JSIdentifier> getUnused() {
-        return unused;
     }
 
     /** A list of URLs encountered (when parsing HTML). */
