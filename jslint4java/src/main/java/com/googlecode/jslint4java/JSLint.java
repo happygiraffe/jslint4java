@@ -74,6 +74,9 @@ public class JSLint {
             for (String unused : Util.listValueOfType("unused", String.class, scope)) {
                 b.addUnused(unused);
             }
+            for (String undef : Util.listValueOfType("undef", String.class, scope)) {
+                b.addUndef(undef);
+            }
             for (String global : Util.listValueOfType("global", String.class, scope)) {
                 b.addGlobal(global);
             }

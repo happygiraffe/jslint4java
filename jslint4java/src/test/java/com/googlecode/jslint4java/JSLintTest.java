@@ -68,7 +68,7 @@ public class JSLintTest {
      */
     @Test
     public void testDataFunctions() throws Exception {
-        JSLintResult result = lint("var z = 5;function foo(x) {var y = x+z;return y;}");
+        JSLintResult result = lint("var z = 5;function foo(x) {var y = x+z;alert(y);return y;}");
         assertIssues(result.getIssues());
         List<JSFunction> functions = result.getFunctions();
         assertThat(functions.size(), is(1));
@@ -83,6 +83,8 @@ public class JSLintTest {
         // TODO: test getException()
         // TODO: test getOuter()
         // TODO: test getUnused()
+        assertThat(f1.getUndef().size(), is(1));
+        assertThat(f1.getUndef().get(0), is("alert"));
         assertThat(f1.getGlobal().size(), is(1));
         assertThat(f1.getGlobal().get(0), is("z"));
         // TODO: test getLabel()

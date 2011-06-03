@@ -26,6 +26,7 @@ public class JSFunction {
         private final List<String> outers = new ArrayList<String>();
         private final List<String> params = new ArrayList<String>();
         private final List<String> unuseds = new ArrayList<String>();
+        private final List<String> undefs = new ArrayList<String>();
         private final List<String> vars = new ArrayList<String>();
 
         public Builder(String name, int line) {
@@ -68,6 +69,11 @@ public class JSFunction {
             return this;
         }
 
+        public Builder addUndef(String unused) {
+            undefs.add(unused);
+            return this;
+        }
+
         public Builder addVar(String var) {
             vars.add(var);
             return this;
@@ -93,6 +99,7 @@ public class JSFunction {
     private final List<String> outer = new ArrayList<String>();
     private final List<String> params = new ArrayList<String>();
     private final List<String> unused = new ArrayList<String>();
+    private final List<String> undef = new ArrayList<String>();
     private final List<String> vars = new ArrayList<String>();
 
     private JSFunction(Builder builder) {
@@ -106,6 +113,7 @@ public class JSFunction {
         outer.addAll(builder.outers);
         params.addAll(builder.params);
         unused.addAll(builder.unuseds);
+        undef.addAll(builder.undefs);
         vars.addAll(builder.vars);
     }
 
@@ -164,6 +172,13 @@ public class JSFunction {
      */
     public List<String> getUnused() {
         return unused;
+    }
+
+    /**
+     *
+     */
+    public List<String> getUndef() {
+        return undef;
     }
 
     /**
