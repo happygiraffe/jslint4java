@@ -18,7 +18,7 @@ import org.mozilla.javascript.ScriptableObject;
  * @author hdm
  */
 public class JSLintBuilder {
-    private static final String JSLINT_FILE = "com/googlecode/jslint4java/fulljslint.js";
+    private static final String JSLINT_FILE = "com/googlecode/jslint4java/jslint.js";
 
     private final ContextFactory contextFactory = new ContextFactory();
 

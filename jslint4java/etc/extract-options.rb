@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Pull out the list of options from fulljslint.js.
+# Pull out the list of options from jslint.js.
 #
 
 opts = {
