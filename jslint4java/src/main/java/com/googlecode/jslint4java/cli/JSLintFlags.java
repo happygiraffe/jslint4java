@@ -91,6 +91,9 @@ class JSLintFlags {
     @Parameter(names = "--sub", description = "If all forms of subscript notation are tolerated")
     public Boolean SUB = null;
 
+    @Parameter(names = "--type", description = "If types can be used inconsistently")
+    public Boolean TYPE = null;
+
     @Parameter(names = "--undef", description = "If variables should be declared before used")
     public Boolean UNDEF = null;
 

@@ -98,6 +98,9 @@ public enum Option {
     /** If all forms of subscript notation are tolerated */
     SUB("If all forms of subscript notation are tolerated", Boolean.class),
 
+    /** If types can be used inconsistently */
+    TYPE("If types can be used inconsistently", Boolean.class),
+
     /** If variables should be declared before used */
     UNDEF("If variables should be declared before used", Boolean.class),
 

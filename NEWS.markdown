@@ -5,7 +5,8 @@ Revision history for jslint4java
 ------------------
 
  * Add a maven plugin.
- * Update to JSLint 2011-05-20.
+ * Update to JSLint 2011-06-01.
+   - This adds the `type` option.
 
 1.4.8 (2011-05-11)
 ------------------
