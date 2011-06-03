@@ -1,5 +1,5 @@
 // jslint.js
-// 2011-05-10
+// 2011-05-20
 
 // Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// WARNING: JSLint will hurt your feelings.
 
 // JSLINT is a global function. It takes two parameters.
 
@@ -208,21 +209,21 @@
 
 // For example:
 
-/*properties "\b", "\t", "\n", "\f", "\r", "!=", "!==", "\"", "%",
-    "&", "'", "(begin)", "(breakage)", "(context)", "(error)",
-    "(global)", "(identifier)", "(line)", "(loopage)", "(name)", "(onevar)",
-    "(params)", "(scope)", "(statement)", "(token)", "(verb)", ")", "*",
-    "+", "-", "/", ";", "<", "<<", "<=", "==", "===", ">",
-    ">=", ">>", ">>>", ADSAFE, ActiveXObject, Array,
-    Boolean, Buffer, COM, CScript, Canvas, CustomAnimation, Date, Debug, E,
-    Enumerator, Error, EvalError, FadeAnimation, Flash, FormField, Frame,
-    Function, HotKey, Image, JSON, LN10, LN2, LOG10E, LOG2E, MAX_VALUE,
-    MIN_VALUE, Math, MenuItem, MoveAnimation, NEGATIVE_INFINITY, Number,
-    Object, Option, PI, POSITIVE_INFINITY, Point, RangeError, Rectangle,
-    ReferenceError, RegExp, ResizeAnimation, RotateAnimation, SQRT1_2,
-    SQRT2, ScrollBar, Storage, String, Style, SyntaxError, System, Text,
-    TextArea, Timer, TypeError, URIError, URL, VBArray, WScript, Web,
-    Window, XMLDOM, XMLHttpRequest, "\\", "^", __dirname, __filename, a,
+/*properties '\b', '\t', '\n', '\f', '\r', '!=', '!==', '"', '%',
+    '&', '\'', '(begin)', '(breakage)', '(complexity)', '(context)',
+    '(error)', '(global)', '(identifier)', '(line)', '(loopage)', '(name)',
+    '(onevar)', '(params)', '(scope)', '(statement)', '(token)', '(verb)',
+    ')', '*', '+', '-', '/', ';', '<', '<<', '<=', '==', '===',
+    '>', '>=', '>>', '>>>', ADSAFE, ActiveXObject,
+    Array, Boolean, Buffer, COM, CScript, Canvas, CustomAnimation, Date,
+    Debug, E, Enumerator, Error, EvalError, FadeAnimation, Flash, FormField,
+    Frame, Function, HotKey, Image, JSON, LN10, LN2, LOG10E, LOG2E,
+    MAX_VALUE, MIN_VALUE, Math, MenuItem, MoveAnimation, NEGATIVE_INFINITY,
+    Number, Object, Option, PI, POSITIVE_INFINITY, Point, RangeError,
+    Rectangle, ReferenceError, RegExp, ResizeAnimation, RotateAnimation,
+    SQRT1_2, SQRT2, ScrollBar, Storage, String, Style, SyntaxError, System,
+    Text, TextArea, Timer, TypeError, URIError, URL, VBArray, WScript, Web,
+    Window, XMLDOM, XMLHttpRequest, '\\', '^', __dirname, __filename, a,
     a_function, a_label, a_not_allowed, a_not_defined, a_scope, abbr,
     acronym, activeborder, activecaption, address, adsafe, adsafe_a,
     adsafe_autocomplete, adsafe_bad_id, adsafe_div, adsafe_fragment,
@@ -234,29 +235,29 @@
     aquamarine, area, arguments, arity, article, aside, assign,
     assign_exception, assignment_function_expression, at, attribute_case_a,
     audio, autocomplete, avoid_a, azure, b, background,
-    "background-attachment", "background-color", "background-image",
-    "background-position", "background-repeat", bad_assignment, bad_color_a,
+    'background-attachment', 'background-color', 'background-image',
+    'background-position', 'background-repeat', bad_assignment, bad_color_a,
     bad_constructor, bad_entity, bad_html, bad_id_a, bad_in_a,
     bad_invocation, bad_name_a, bad_new, bad_number, bad_operand, bad_type,
     bad_url, bad_wrap, base, bdo, beep, beige, big, bisque, bitwise, black,
     blanchedalmond, block, blockquote, blue, blueviolet, body, border,
-    "border-bottom", "border-bottom-color", "border-bottom-style",
-    "border-bottom-width", "border-collapse", "border-color", "border-left",
-    "border-left-color", "border-left-style", "border-left-width",
-    "border-right", "border-right-color", "border-right-style",
-    "border-right-width", "border-spacing", "border-style", "border-top",
-    "border-top-color", "border-top-style", "border-top-width",
-    "border-width", bottom, br, braille, brown, browser, burlywood, button,
+    'border-bottom', 'border-bottom-color', 'border-bottom-style',
+    'border-bottom-width', 'border-collapse', 'border-color', 'border-left',
+    'border-left-color', 'border-left-style', 'border-left-width',
+    'border-right', 'border-right-color', 'border-right-style',
+    'border-right-width', 'border-spacing', 'border-style', 'border-top',
+    'border-top-color', 'border-top-style', 'border-top-width',
+    'border-width', bottom, br, braille, brown, browser, burlywood, button,
     buttonface, buttonhighlight, buttonshadow, buttontext, bytesToUIString,
     c, cadetblue, call, callee, caller, canvas, cap, caption,
-    "caption-side", captiontext, center, charAt, charCodeAt, character,
+    'caption-side', captiontext, center, charAt, charCodeAt, character,
     chartreuse, chocolate, chooseColor, chooseFile, chooseFolder, cite,
     clear, clearInterval, clearTimeout, clip, closeWidget, closure, cm,
     code, col, colgroup, color, combine_var, command, comment, comments,
     concat, conditional_assignment, confirm, confusing_a, confusing_regexp,
     console, constructor, constructor_name_a, content, continue, control_a,
     convertPathToHFS, convertPathToPlatform, coral, cornflowerblue,
-    cornsilk, "counter-increment", "counter-reset", create, crimson, css,
+    cornsilk, 'counter-increment', 'counter-reset', create, crimson, css,
     cursor, cyan, d, dangerous_comment, dangling_a, darkblue, darkcyan,
     darkgoldenrod, darkgray, darkgreen, darkkhaki, darkmagenta,
     darkolivegreen, darkorange, darkorchid, darkred, darksalmon,
@@ -265,7 +266,7 @@
     deepskyblue, defineClass, del, deleted, deserialize, details, devel,
     dfn, dialog, dimgray, dir, direction, display, disrupt, div, dl,
     document, dodgerblue, dt, duplicate_a, edge, edition, else, em, embed,
-    embossed, empty, "empty-cells", empty_block, empty_case, empty_class,
+    embossed, empty, 'empty-cells', empty_block, empty_case, empty_class,
     encodeURI, encodeURIComponent, entityify, errors, es5, escape, eval,
     event, evidence, evil, ex, exception, exec, expected_a,
     expected_a_at_b_c, expected_a_b, expected_a_b_from_c_d, expected_at_a,
@@ -277,89 +278,89 @@
     expected_positive_a, expected_pseudo_a, expected_selector_a,
     expected_small_a, expected_space_a_b, expected_string_a,
     expected_style_attribute, expected_style_pattern, expected_tagname_a,
-    fieldset, figure, filesystem, filter, firebrick, first, float, floor,
-    floralwhite, focusWidget, font, "font-family", "font-size",
-    "font-size-adjust", "font-stretch", "font-style", "font-variant",
-    "font-weight", footer, for_if, forestgreen, forin, form, fragment,
-    frame, frames, frameset, from, fromCharCode, fuchsia, fud, funct,
-    function, function_block, function_eval, function_loop,
-    function_statement, function_strict, functions, g, gainsboro, gc,
-    ghostwhite, global, globals, gold, goldenrod, gray, graytext,
-    green, greenyellow, h1, h2, h3, h4, h5, h6, handheld, hasOwnProperty,
-    head, header, height, help, hgroup, highlight, highlighttext, history,
-    honeydew, hotpink, hr, "hta:application", html, html_confusion_a,
-    html_handlers, i, iTunes, id, identifier, identifier_function, iframe,
-    img, immed, implied_evil, implieds, in, inactiveborder, inactivecaption,
-    inactivecaptiontext, include, indent, indexOf, indianred, indigo,
-    infix_in, infobackground, infotext, init, input, ins, insecure_a,
-    isAlpha, isApplicationRunning, isArray, isDigit, isFinite, isNaN, ivory,
-    join, jslint, json, kbd, keygen, keys, khaki, konfabulatorVersion,
-    label, label_a_b, labeled, lang, lastIndexOf, lavender, lavenderblush,
-    lawngreen, lbp, leading_decimal_a, led, left, legend, lemonchiffon,
-    length, "letter-spacing", li, lib, lightblue, lightcoral, lightcyan,
-    lightgoldenrodyellow, lightgreen, lightpink, lightsalmon, lightseagreen,
-    lightskyblue, lightslategray, lightsteelblue, lightyellow, lime,
-    limegreen, line, "line-height", linen, link, "list-style",
-    "list-style-image", "list-style-position", "list-style-type", load,
-    loadClass, localStorage, location, log, m, magenta, map, margin,
-    "margin-bottom", "margin-left", "margin-right", "margin-top", mark,
-    "marker-offset", maroon, match, "max-height", "max-width", maxerr,
-    maxlen, md5, mediumaquamarine, mediumblue, mediumorchid, mediumpurple,
-    mediumseagreen, mediumslateblue, mediumspringgreen, mediumturquoise,
-    mediumvioletred, member, menu, menutext, message, meta, meter,
-    midnightblue, "min-height", "min-width", mintcream, missing_a,
-    missing_a_after_b, missing_option, missing_property, missing_space_a_b,
-    missing_url, missing_use_strict, mistyrose, mixed, mm, moccasin, mode,
-    module, move_invocation, move_var, name, name_function, nav,
-    navajowhite, navigator, navy, nested_comment, newcap, next, node,
-    noframes, nomen, noscript, not, not_a_constructor, not_a_defined,
-    not_a_function, not_a_label, not_a_scope, not_greater, nud, object, ol,
-    oldlace, olive, olivedrab, on, onevar, opacity, open, openURL, opera,
-    optgroup, option, orange, orangered, orchid, outer, outline,
-    "outline-color", "outline-style", "outline-width", output, overflow,
-    "overflow-x", "overflow-y", p, padding, "padding-bottom",
-    "padding-left", "padding-right", "padding-top", "page-break-after",
-    "page-break-before", palegoldenrod, palegreen, paleturquoise,
-    palevioletred, papayawhip, param, parameter_a_get_b, parameter_set_a,
-    paren, parent, parseFloat, parseInt, passfail, pc, peachpuff, peru,
-    pink, play, plum, plusplus, pop, popupMenu, position, postscript,
-    powderblue, pre, predef, preferenceGroups, preferences, prev, print,
-    process, progress, projection, prompt, prototype, pt, purple, push, px,
-    q, querystring, quit, quote, quotes, radix, random, range, raw,
-    readFile, readUrl, read_only, reason, red, redefinition_a, regexp,
-    reloadWidget, replace, report, require, reserved, reserved_a,
-    resolvePath, resumeUpdates, rhino, right, rosybrown, royalblue, rp, rt,
-    ruby, runCommand, runCommandInBg, saddlebrown, safe, salmon, samp,
-    sandybrown, saveAs, savePreferences, scanned_a_b, screen, script,
-    scrollbar, seagreen, seal, search, seashell, second, section, select,
-    serialize, sessionStorage, setInterval, setTimeout, shift,
-    showWidgetPreferences, sienna, silver, skyblue, slash_equal, slateblue,
-    slategray, sleep, slice, small, snow, sort, source, span, spawn, speak,
-    speech, split, springgreen, src, stack, statement_block, steelblue,
-    stopping, strange_loop, strict, strong, style, styleproperty, sub,
-    subscript, substr, sup, supplant, suppressUpdates, sync, system, table,
-    "table-layout", tag_a_in_b, tan, tbody, td, teal, tellWidget, test,
-    "text-align", "text-decoration", "text-indent", "text-shadow",
-    "text-transform", textarea, tfoot, th, thead, third, thistle,
-    threeddarkshadow, threedface, threedhighlight, threedlightshadow,
-    threedshadow, thru, time, title, toLowerCase, toString, toUpperCase,
-    toint32, token, tomato, too_long, too_many, top, tr, trailing_decimal_a,
-    tree, tt, tty, turquoise, tv, type, typeof, u, ul, unclosed,
-    unclosed_comment, unclosed_regexp, undef, unescape, unescaped_a,
-    unexpected_a, unexpected_char_a_b, unexpected_comment,
-    unexpected_property_a, unexpected_space_a_b, "unicode-bidi",
-    unnecessary_initialize, unnecessary_use, unreachable_a_b,
-    unrecognized_style_attribute_a, unrecognized_tag_a, unparam, unsafe, unused,
-    unwatch, updateNow, url, urls, use_array, use_braces, use_object, use_param,
-    used_before_a, util, value, valueOf, var, var_a_not, version,
-    "vertical-align", video, violet, visibility, was, watch,
+    exports, f, fieldset, figure, filesystem, filter, firebrick, first,
+    float, floor, floralwhite, focusWidget, font, 'font-family',
+    'font-size', 'font-size-adjust', 'font-stretch', 'font-style',
+    'font-variant', 'font-weight', footer, forEach, for_if, forestgreen,
+    forin, form, fragment, frame, frames, frameset, from, fromCharCode,
+    fuchsia, fud, funct, function, function_block, function_eval,
+    function_loop, function_statement, function_strict, functions, g,
+    gainsboro, gc, ghostwhite, global, globals, gold, goldenrod, gray,
+    graytext, green, greenyellow, h1, h2, h3, h4, h5, h6, handheld,
+    hasOwnProperty, head, header, height, help, hgroup, highlight,
+    highlighttext, history, honeydew, hotpink, hr, 'hta:application', html,
+    html_confusion_a, html_handlers, i, iTunes, id, identifier,
+    identifier_function, iframe, img, immed, implied_evil, implieds, in,
+    inactiveborder, inactivecaption, inactivecaptiontext, include, indent,
+    indexOf, indianred, indigo, infix_in, infobackground, infotext, init,
+    input, ins, insecure_a, isAlpha, isApplicationRunning, isArray, isDigit,
+    isFinite, isNaN, ivory, join, jslint, json, kbd, keygen, keys, khaki,
+    konfabulatorVersion, label, label_a_b, labeled, lang, lastIndexOf,
+    lavender, lavenderblush, lawngreen, lbp, leading_decimal_a, led, left,
+    legend, lemonchiffon, length, 'letter-spacing', li, lib, lightblue,
+    lightcoral, lightcyan, lightgoldenrodyellow, lightgreen, lightpink,
+    lightsalmon, lightseagreen, lightskyblue, lightslategray,
+    lightsteelblue, lightyellow, lime, limegreen, line, 'line-height',
+    linen, link, 'list-style', 'list-style-image', 'list-style-position',
+    'list-style-type', load, loadClass, localStorage, location, log, m,
+    magenta, map, margin, 'margin-bottom', 'margin-left', 'margin-right',
+    'margin-top', mark, 'marker-offset', maroon, match, 'max-height',
+    'max-width', maxerr, maxlen, md5, mediumaquamarine, mediumblue,
+    mediumorchid, mediumpurple, mediumseagreen, mediumslateblue,
+    mediumspringgreen, mediumturquoise, mediumvioletred, member, menu,
+    menutext, message, meta, meter, midnightblue, 'min-height', 'min-width',
+    mintcream, missing_a, missing_a_after_b, missing_option,
+    missing_property, missing_space_a_b, missing_url, missing_use_strict,
+    mistyrose, mixed, mm, moccasin, mode, module, move_invocation, move_var,
+    n, name, name_function, nav, navajowhite, navigator, navy,
+    nested_comment, newcap, next, node, noframes, nomen, noscript, not,
+    not_a_constructor, not_a_defined, not_a_function, not_a_label,
+    not_a_scope, not_greater, nud, object, ol, oldlace, olive, olivedrab,
+    on, onevar, opacity, open, openURL, opera, optgroup, option, orange,
+    orangered, orchid, outer, outline, 'outline-color', 'outline-style',
+    'outline-width', output, overflow, 'overflow-x', 'overflow-y', p,
+    padding, 'padding-bottom', 'padding-left', 'padding-right',
+    'padding-top', 'page-break-after', 'page-break-before', palegoldenrod,
+    palegreen, paleturquoise, palevioletred, papayawhip, param,
+    parameter_a_get_b, parameter_set_a, paren, parent, parseFloat, parseInt,
+    passfail, pc, peachpuff, peru, pink, play, plum, plusplus, pop,
+    popupMenu, position, postscript, powderblue, pre, predef,
+    preferenceGroups, preferences, prev, print, process, progress,
+    projection, prompt, prototype, pt, purple, push, px, q, querystring,
+    quit, quote, quotes, r, radix, random, range, raw, readFile, readUrl,
+    read_only, reason, red, redefinition_a, regexp, reloadWidget, replace,
+    report, require, reserved, reserved_a, resolvePath, resumeUpdates,
+    rhino, right, rosybrown, royalblue, rp, rt, ruby, runCommand,
+    runCommandInBg, saddlebrown, safe, salmon, samp, sandybrown, saveAs,
+    savePreferences, scanned_a_b, screen, script, scrollbar, seagreen, seal,
+    search, seashell, second, section, select, serialize, sessionStorage,
+    setInterval, setTimeout, shift, showWidgetPreferences, sienna, silver,
+    skyblue, slash_equal, slateblue, slategray, sleep, slice, small, snow,
+    sort, source, span, spawn, speak, speech, split, springgreen, src,
+    stack, statement_block, steelblue, stopping, strange_loop, strict,
+    strong, style, styleproperty, sub, subscript, substr, sup, supplant,
+    suppressUpdates, sync, system, t, table, 'table-layout', tag_a_in_b,
+    tan, tbody, td, teal, tellWidget, test, 'text-align', 'text-decoration',
+    'text-indent', 'text-shadow', 'text-transform', textarea, tfoot, th,
+    thead, third, thistle, threeddarkshadow, threedface, threedhighlight,
+    threedlightshadow, threedshadow, thru, time, title, toLowerCase,
+    toString, toUpperCase, toint32, token, tomato, too_long, too_many, top,
+    tr, trailing_decimal_a, tree, tt, tty, turquoise, tv, type, typeof, u,
+    ul, unclosed, unclosed_comment, unclosed_regexp, undef, unescape,
+    unescaped_a, unexpected_a, unexpected_char_a_b, unexpected_comment,
+    unexpected_property_a, unexpected_space_a_b, 'unicode-bidi',
+    unnecessary_initialize, unnecessary_use, unparam, unreachable_a_b,
+    unrecognized_style_attribute_a, unrecognized_tag_a, unsafe, unused,
+    unwatch, updateNow, url, urls, use_array, use_braces, use_object,
+    use_param, used_before_a, value, valueOf, var, var_a_not, version,
+    'vertical-align', video, violet, visibility, was, watch,
     weird_assignment, weird_condition, weird_new, weird_program,
-    weird_relation, weird_ternary, wheat, white, "white-space", whitesmoke,
-    widget, width, window, windowframe, windows, windowtext, "word-spacing",
-    "word-wrap", wrap, wrap_immediate, wrap_regexp, write_is_wrong,
+    weird_relation, weird_ternary, wheat, white, 'white-space', whitesmoke,
+    widget, width, window, windowframe, windows, windowtext, 'word-spacing',
+    'word-wrap', wrap, wrap_immediate, wrap_regexp, write_is_wrong,
     yahooCheckLogin, yahooLogin, yahooLogout, yellow, yellowgreen,
-    "z-index", "|", "~"
- */
+    'z-index', '|', '~'
+*/
 
 // The global directive is used to declare global variables that can
 // be accessed by the program. If a declaration is true, then the variable
@@ -852,6 +853,17 @@ var JSLINT = (function () {
         css_media,
         css_overflow,
 
+        descapes = {
+            'b': '\b',
+            't': '\t',
+            'n': '\n',
+            'f': '\f',
+            'r': '\r',
+            '"': '"',
+            '/': '/',
+            '\\': '\\'
+        },
+
         devel = {
             alert           : false,
             confirm         : false,
@@ -1012,6 +1024,7 @@ var JSLINT = (function () {
             clearInterval: false,
             clearTimeout : false,
             console      : false,
+            exports      : false,
             global       : false,
             module       : false,
             process      : false,
@@ -1019,7 +1032,6 @@ var JSLINT = (function () {
             require      : false,
             setInterval  : false,
             setTimeout   : false,
-            util         : false,
             __filename   : false,
             __dirname    : false
         },
@@ -1277,10 +1289,26 @@ var JSLINT = (function () {
 
     if (typeof Array.prototype.filter !== 'function') {
         Array.prototype.filter = function (f) {
+            var i, length = this.length, result = [], value;
+            for (i = 0; i < length; i += 1) {
+                try {
+                    value = this[i];
+                    if (f(value)) {
+                        result.push(value);
+                    }
+                } catch (ignore) {
+                }
+            }
+            return result;
+        };
+    }
+
+    if (typeof Array.prototype.forEach !== 'function') {
+        Array.prototype.forEach = function (f) {
             var i, length = this.length, result = [];
             for (i = 0; i < length; i += 1) {
                 try {
-                    result.push(f(this[i]));
+                    f(this[i]);
                 } catch (ignore) {
                 }
             }
@@ -1710,29 +1738,10 @@ var JSLINT = (function () {
                                 case xquote:
                                     warn_at('bad_html', line, character + j);
                                     break;
-                                case '\\':
-                                case '"':
-                                case '/':
-                                    break;
                                 case '\'':
                                     if (json_mode) {
                                         warn_at('unexpected_a', line, character, '\\\'');
                                     }
-                                    break;
-                                case 'b':
-                                    c = '\b';
-                                    break;
-                                case 'f':
-                                    c = '\f';
-                                    break;
-                                case 'n':
-                                    c = '\n';
-                                    break;
-                                case 'r':
-                                    c = '\r';
-                                    break;
-                                case 't':
-                                    c = '\t';
                                     break;
                                 case 'u':
                                     hex(4);
@@ -1750,7 +1759,10 @@ var JSLINT = (function () {
                                     hex(2);
                                     break;
                                 default:
-                                    warn_at('unexpected_a', line, character, '\\');
+                                    c = descapes[c];
+                                    if (typeof c !== 'string') {
+                                        warn_at('unexpected_a', line, character, '\\');
+                                    }
                                 }
                             }
                         }
@@ -4151,7 +4163,7 @@ loop:   for (;;) {
             edge();
             id = identifier();
             params.push(token);
-            add_label(id, option.unparam ? 'unparam' : 'parameter');
+            add_label(id, option.unparam ? 'parameter' : 'unparam');
             if (next_token.id === ',') {
                 comma();
             } else {
@@ -4161,6 +4173,76 @@ loop:   for (;;) {
                 return params;
             }
         }
+    }
+
+
+    function complexity(exp) {
+        var score = 0;
+        if (exp) {
+            if (Array.isArray(exp)) {
+                exp.forEach(function (tok) {
+                    score += complexity(tok);
+                });
+            } else {
+                switch (exp.arity) {
+                case 'statement':
+                    switch (exp.id) {
+                    case 'if':
+                        score += complexity(exp.first) + complexity(exp.block) +
+                            complexity(exp['else']) + 1;
+                        break;
+                    case 'while':
+                    case 'do':
+                        if (exp.first.id !== 'true' && exp.first.value !== 1) {
+                            score += 1;
+                        }
+                        score += complexity(exp.first) + complexity(exp.block);
+                        break;
+                    case 'for':
+                        if (exp.second !== undefined &&
+                                exp.second.id !== 'true' &&
+                                exp.second.value !== 1) {
+                            score += 1;
+                        }
+                        score += complexity(exp.first) + complexity(exp.second) +
+                            complexity(exp.third) + complexity(exp.block);
+                        break;
+                    case 'switch':
+                        score += complexity(exp.first) +
+                            complexity(exp.second) + exp.second.length;
+                        if (exp.second[exp.second.length - 1].id === 'default') {
+                            score -= 1;
+                        }
+                        break;
+                    case 'try':
+                        if (exp.second) {
+                            score += 1;
+                        }
+                        if (exp.third) {
+                            score += 1;
+                        }
+                        score += complexity(exp.first) + complexity(exp.second) +
+                            complexity(exp.third) + complexity(exp.block);
+                        break;
+                    }
+                    break;
+                case 'prefix':
+                    score += complexity(exp.first);
+                    break;
+                case 'case':
+                case 'infix':
+                    score += complexity(exp.first) + complexity(exp.second);
+                    if (exp.id === '&&' || exp.id === '||') {
+                        score += 1;
+                    }
+                    break;
+                case 'ternary':
+                    score += complexity(exp.first) + complexity(exp.second) + complexity(exp.third);
+                    break;
+                }
+            }
+        }
+        return score;
     }
 
 
@@ -4191,6 +4273,7 @@ loop:   for (;;) {
         func.first = funct['(params)'] = function_params();
         one_space();
         func.block = block(false);
+        funct['(complexity)'] = complexity(func.block) + 1;
         funct      = funct['(context)'];
         properties = old_properties;
         option     = old_option;
@@ -4543,6 +4626,7 @@ loop:   for (;;) {
         while (next_token.id === 'case') {
             the_case = next_token;
             the_case.first = [];
+            the_case.arity = 'case';
             spaces();
             edge('case');
             advance('case');
@@ -4586,6 +4670,7 @@ loop:   for (;;) {
         if (next_token.id === 'default') {
             spaces();
             the_case = next_token;
+            the_case.arity = 'case';
             edge('case');
             advance('default');
             discard();
@@ -6515,6 +6600,7 @@ loop:   for (;;) {
             function_data.name = the_function['(name)'];
             function_data.param = the_function['(params)'];
             function_data.line = the_function['(line)'];
+            function_data['(complexity)'] = the_function['(complexity)'];
             data.functions.push(function_data);
         }
 
@@ -6540,19 +6626,20 @@ loop:   for (;;) {
         var err, evidence, i, j, key, keys, length, mem = '', name, names,
             output = [], snippets, the_function, warning;
 
-        function detail(h, array) {
-            var comma_needed, i, singularity;
-            if (array) {
+        function detail(h, value) {
+            var comma_needed, singularity;
+            if (Array.isArray(value)) {
                 output.push('<div><i>' + h + '</i> ');
-                array = array.sort();
-                for (i = 0; i < array.length; i += 1) {
-                    if (array[i] !== singularity) {
-                        singularity = array[i];
+                value = value.sort().forEach(function (item) {
+                    if (item !== singularity) {
+                        singularity = item;
                         output.push((comma_needed ? ', ' : '') + singularity);
                         comma_needed = true;
                     }
-                }
+                });
                 output.push('</div>');
+            } else if (value) {
+                output.push('<div><i>' + h + '</i> ' + value + '</div>');
             }
         }
 
@@ -6635,6 +6722,7 @@ loop:   for (;;) {
                 detail('Outer', the_function.outer);
                 detail('Global', the_function.global);
                 detail('Label', the_function.label);
+                detail('Complexity', the_function['(complexity)']);
             }
 
             if (data.member) {
@@ -6670,7 +6758,7 @@ loop:   for (;;) {
     };
     itself.jslint = itself;
 
-    itself.edition = '2011-05-10';
+    itself.edition = '2011-05-20';
 
     return itself;
 

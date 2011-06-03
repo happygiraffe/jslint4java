@@ -5,6 +5,7 @@ Revision history for jslint4java
 ------------------
 
  * Add a maven plugin.
+ * Update to JSLint 2011-05-20.
 
 1.4.8 (2011-05-11)
 ------------------
