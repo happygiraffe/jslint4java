@@ -18,6 +18,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
+import org.apache.tools.ant.types.LogLevel;
 import org.apache.tools.ant.types.Resource;
 import org.apache.tools.ant.types.ResourceCollection;
 import org.apache.tools.ant.types.resources.Union;
@@ -88,6 +89,12 @@ public class JSLintTask extends Task {
     private final Map<Option, String> options = new HashMap<Option, String>();
 
     private PredefElement predef = null;
+    private String[] filters = new String[0];
+    
+    public void setFilter(String filterString) {
+    	filterString = filterString.replace(" ", "");
+    	this.filters = filterString.split(",");
+    }
 
     /**
      * Check the contents of this {@link ResourceCollection}.
@@ -148,7 +155,7 @@ public class JSLintTask extends Task {
             // issue 53: this isn't a fail, just a notice.
             log(NO_FILES_TO_LINT);
         }
-
+        
         JSLint lint = makeLint();
         applyOptions(lint);
 
@@ -216,6 +223,9 @@ public class JSLintTask extends Task {
             String name = resource.toString();
             JSLintResult result = lint.lint(name, new BufferedReader(new InputStreamReader(stream,
                     encoding)));
+            
+            result = new JSLintResultFilterer().filterResults(result, this.filters);
+            
             log("Found " + result.getIssues().size() + " issues in " + name, Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
                 rf.output(result);

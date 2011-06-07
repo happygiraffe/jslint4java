@@ -51,6 +51,11 @@
         <td> A comma separated list of options to pass to JSLint. </td>
         <td> No </td>
       </tr>
+      <tr>
+        <td> filter </td>
+        <td> A comma separated list of error messages to filter from the JSLint report. </td>
+        <td> No </td>
+      </tr>      
     </table>
     <p>
       The valid list of options is defined by the
@@ -96,6 +101,20 @@
     <p>
       If a parameter is required (as in the case of <em>indent</em>), then it can
       be supplied by appending an equals and the value.  e.g. <code>indent=2</code>.
+    </p>
+    
+    <h3 id="filtering-errors">Filtering Errors</h3>
+    
+    <p>
+    	JSLint can produce some 'errors' that may not be of interest to you - especially if JSLint is run on a project 
+    	as part of a continuous integration build. 
+    	<a href="https://github.com/douglascrockford/JSLint/blob/master/jslint.js#L459">The list of filters</a> can be found 
+    	inside <code>jslint.js</code> - each key to the <code>bundle</code> map is the filter name for that error message. (e.g. <code>a_function</code>, <code>a_label</code>)
+    </p>
+
+    <p>
+    	There is a special filter named <code>ignore_triple_equals</code> which will filter errors about <code>===</code> and <code>!==</code>. 
+    	The filter <code>expected_a_b</code> will also filter this error, but will also remove warnings about <code>"expected ';' but was ')'"</code> and others.
     </p>
 
     <h2 id="Parameters_specified_as_nested_elements">Parameters specified as nested elements</h2>
@@ -221,7 +240,18 @@
     &lt;formatter type="plain" /&gt;
     &lt;fileset dir="web/js" includes="*.js" /&gt;
   &lt;/jslint&gt;</pre>
+    
+    <p>
+      To check a directory for all <code>.js</code> files, and emit all errors besides 
+      "Mixed spaces and tabs" and  "Move 'var' declarations to the top of the function" 
+      to the console:
+    </p>
 
+    <pre class="prettyprint" id="example-filtering-messages">  &lt;jslint filter="mixed, move_var"&gt;
+    &lt;formatter type="plain" /&gt;
+    &lt;fileset dir="web/js" includes="*.js" /&gt;
+  &lt;/jslint&gt;</pre>   
+  
     <p>
       To check a directory for all <code>.js</code> files, excluding packed files.
       Send any problems to a file <code>jslint.out</code>.
@@ -254,6 +284,7 @@
       <code>$$</code> function that Prototype uses, you'd have to say
       <code>&lt;predef&gt;$$$$&lt;/predef&gt;</code>!
     </p>
+ 
 
     <script type="text/javascript">prettyPrint()</script>
   </body>

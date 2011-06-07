@@ -58,7 +58,70 @@ Tests for the JSLint ant task.
             </jsl:jslint>
         </au:expectfailure>
     </target>
-
+	
+	  <!-- excluding jsLint errors based on a filter list -->
+	  <target name="testFilter">
+	    <jsl:jslint filter="weird_condition">
+      		<formatter type="plain" />
+          <fileset file="filters-single.js" />
+      </jsl:jslint>
+	  </target>
+	
+	<target name="testNonMatchingFilter">
+		<au:expectfailure expectedmessage="JSLint: 1 error in 1 file">
+		    <jsl:jslint filter="use_array">
+	      		<formatter type="plain" />
+	          <fileset file="filters-single.js" />
+	      </jsl:jslint>
+		</au:expectfailure>
+	</target>
+	
+	<target name="testNoFilter">
+		<au:expectfailure expectedmessage="JSLint: 1 error in 1 file">
+	    <jsl:jslint>
+	    		<formatter type="plain" />
+	        <fileset file="filters-single.js" />
+	    </jsl:jslint>
+		</au:expectfailure>
+  </target>
+	
+  <target name="testMultipleFilters">
+    <jsl:jslint filter="weird_condition,strange_loop">
+    		<formatter type="plain" />
+        <fileset file="filters-multiple.js" />
+    </jsl:jslint>
+  </target>	
+	
+  <target name="testMultipleFiltersWithSpacing">
+    <jsl:jslint filter="weird_condition, strange_loop">
+    		<formatter type="plain" />
+        <fileset file="filters-multiple.js" />
+    </jsl:jslint>
+  </target>	
+	
+  <target name="testMultipleFiltersWithNonMatchingFilter">
+  	<jsl:jslint filter="weird_condition, strange_loop, some_nonexistant_filter_blahah">
+  			<formatter type="plain" />
+    	  <fileset file="filters-multiple.js" />
+  	</jsl:jslint>
+  </target>	
+	
+  <target name="testMultipleFiltersWithWeirdFilterString">
+  	<jsl:jslint filter="weird_condition, strange_loop, , ;, , ;,     , 5">
+  			<formatter type="plain" />
+    	  <fileset file="filters-multiple.js" />
+  	</jsl:jslint>
+  </target>	
+	
+  <target name="testMultipleFiltersWithError">
+  	<au:expectfailure expectedmessage="JSLint: 1 error in 1 file">
+    	<jsl:jslint filter="weird_condition, strange_loop, some_nonexistant_filter_blahah">
+    			<formatter type="plain" />
+      	  <fileset file="filters-multiple-with-errors.js" />
+    	</jsl:jslint>
+  	</au:expectfailure>
+  </target>	
+	
     <target name="testSuccess">
         <jsl:jslint>
             <fileset file="good.js" />
