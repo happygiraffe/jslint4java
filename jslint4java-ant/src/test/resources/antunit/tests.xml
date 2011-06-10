@@ -169,4 +169,11 @@ Tests for the JSLint ant task.
             <fileset file="numeric-keys.js" />
         </jsl:jslint>
     </target>
+
+    <!-- issue 57: should be able to parse BOMs. -->
+    <target name="testBOM">
+        <jsl:jslint>
+          <fileset file="bom.js" />
+        </jsl:jslint>
+    </target>
 </project>
