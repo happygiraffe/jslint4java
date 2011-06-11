@@ -1,8 +1,6 @@
 package com.googlecode.jslint4java;
 
-import java.util.EnumSet;
 import java.util.Locale;
-import java.util.Set;
 
 /**
  * All available options for tuning the behaviour of JSLint.
@@ -17,8 +15,8 @@ public enum Option {
     /** If adsafe rules should be enforced */
     ADSAFE("If adsafe rules should be enforced", Boolean.class),
 
-    /** If bitwise operators should not be allowed */
-    BITWISE("If bitwise operators should not be allowed", Boolean.class),
+    /** If bitwise operators should be allowed */
+    BITWISE("If bitwise operators should be allowed", Boolean.class),
 
     /** If the standard browser globals should be predefined */
     BROWSER("If the standard browser globals should be predefined", Boolean.class),
@@ -59,32 +57,29 @@ public enum Option {
     /** The maximum length of a source line */
     MAXLEN("The maximum length of a source line", Integer.class),
 
-    /** If constructor names must be capitalized */
-    NEWCAP("If constructor names must be capitalized", Boolean.class),
+    /** If constructor names capitalization is ignored */
+    NEWCAP("If constructor names capitalization is ignored", Boolean.class),
 
     /** If node.js globals should be predefined */
     NODE("If node.js globals should be predefined", Boolean.class),
 
-    /** If names should be checked */
-    NOMEN("If names should be checked", Boolean.class),
+    /** If names may have dangling _ */
+    NOMEN("If names may have dangling _", Boolean.class),
 
     /** If html event handlers should be allowed */
     ON("If html event handlers should be allowed", Boolean.class),
 
-    /** If only one var statement per function should be allowed */
-    ONEVAR("If only one var statement per function should be allowed", Boolean.class),
-
     /** If the scan should stop on first error */
     PASSFAIL("If the scan should stop on first error", Boolean.class),
 
-    /** If increment/decrement should not be allowed */
-    PLUSPLUS("If increment/decrement should not be allowed", Boolean.class),
+    /** If increment/decrement should be allowed */
+    PLUSPLUS("If increment/decrement should be allowed", Boolean.class),
 
     /** The names of predefined global variables */
     PREDEF("The names of predefined global variables", StringArray.class),
 
-    /** If the . should not be allowed in regexp literals */
-    REGEXP("If the . should not be allowed in regexp literals", Boolean.class),
+    /** If the . should be allowed in regexp literals */
+    REGEXP("If the . should be allowed in regexp literals", Boolean.class),
 
     /** If the rhino environment globals should be predefined */
     RHINO("If the rhino environment globals should be predefined", Boolean.class),
@@ -92,8 +87,8 @@ public enum Option {
     /** If use of some browser features should be restricted */
     SAFE("If use of some browser features should be restricted", Boolean.class),
 
-    /** Require the 'use strict'; pragma */
-    STRICT("Require the 'use strict'; pragma", Boolean.class),
+    /** If the 'use strict'; pragma is optional */
+    SLOPPY("If the 'use strict'; pragma is optional", Boolean.class),
 
     /** If all forms of subscript notation are tolerated */
     SUB("If all forms of subscript notation are tolerated", Boolean.class),
@@ -101,14 +96,17 @@ public enum Option {
     /** If types can be used inconsistently */
     TYPE("If types can be used inconsistently", Boolean.class),
 
-    /** If variables should be declared before used */
-    UNDEF("If variables should be declared before used", Boolean.class),
+    /** If variables can be declared out of order */
+    UNDEF("If variables can be declared out of order", Boolean.class),
 
     /** If unused parameters should be tolerated */
     UNPARAM("If unused parameters should be tolerated", Boolean.class),
 
-    /** If strict whitespace rules apply */
-    WHITE("If strict whitespace rules apply", Boolean.class),
+    /** If multiple var statements per function should be allowed */
+    VARS("If multiple var statements per function should be allowed", Boolean.class),
+
+    /** If sloppy whitespace is tolerated */
+    WHITE("If sloppy whitespace is tolerated", Boolean.class),
 
     /** If the yahoo widgets globals should be predefined */
     WIDGET("If the yahoo widgets globals should be predefined", Boolean.class),
@@ -162,14 +160,6 @@ public enum Option {
             }
         }
         return maxOptLen;
-    }
-
-    /**
-     * The set of options from “JavaScript: The Good Parts,” as seen on
-     * http://www.jslint.com/.
-     */
-    public Set<Option> theGoodParts() {
-        return EnumSet.of(WHITE, ONEVAR, UNDEF, NEWCAP, NOMEN, REGEXP, PLUSPLUS, BITWISE);
     }
 
     /**

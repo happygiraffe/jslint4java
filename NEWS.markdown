@@ -5,8 +5,12 @@ Revision history for jslint4java
 ------------------
 
  * Add a maven plugin.
- * Update to JSLint 2011-06-06.
-   - This adds the `type` option.
+ * Update to JSLint 2011-06-08.
+   - This adds the `type`  and `vars` options.
+   - The nature of the boolean options has been inverted.
+   - The `onevar` option has been removed.
+   - The `strict` option has been replaced with `sloppy`.
+   - The goodParts() api has been removed (it's the default now).
 
 1.4.8 (2011-05-11)
 ------------------

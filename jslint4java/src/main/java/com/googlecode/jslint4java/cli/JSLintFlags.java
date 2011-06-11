@@ -10,7 +10,7 @@ class JSLintFlags {
     @Parameter(names = "--adsafe", description = "If adsafe rules should be enforced")
     public Boolean ADSAFE = null;
 
-    @Parameter(names = "--bitwise", description = "If bitwise operators should not be allowed")
+    @Parameter(names = "--bitwise", description = "If bitwise operators should be allowed")
     public Boolean BITWISE = null;
 
     @Parameter(names = "--browser", description = "If the standard browser globals should be predefined")
@@ -52,31 +52,28 @@ class JSLintFlags {
     @Parameter(names = "--maxlen", description = "The maximum length of a source line")
     public String MAXLEN = null;
 
-    @Parameter(names = "--newcap", description = "If constructor names must be capitalized")
+    @Parameter(names = "--newcap", description = "If constructor names capitalization is ignored")
     public Boolean NEWCAP = null;
 
     @Parameter(names = "--node", description = "If node.js globals should be predefined")
     public Boolean NODE = null;
 
-    @Parameter(names = "--nomen", description = "If names should be checked")
+    @Parameter(names = "--nomen", description = "If names may have dangling _")
     public Boolean NOMEN = null;
 
     @Parameter(names = "--on", description = "If html event handlers should be allowed")
     public Boolean ON = null;
 
-    @Parameter(names = "--onevar", description = "If only one var statement per function should be allowed")
-    public Boolean ONEVAR = null;
-
     @Parameter(names = "--passfail", description = "If the scan should stop on first error")
     public Boolean PASSFAIL = null;
 
-    @Parameter(names = "--plusplus", description = "If increment/decrement should not be allowed")
+    @Parameter(names = "--plusplus", description = "If increment/decrement should be allowed")
     public Boolean PLUSPLUS = null;
 
     @Parameter(names = "--predef", description = "The names of predefined global variables")
     public String PREDEF = null;
 
-    @Parameter(names = "--regexp", description = "If the . should not be allowed in regexp literals")
+    @Parameter(names = "--regexp", description = "If the . should be allowed in regexp literals")
     public Boolean REGEXP = null;
 
     @Parameter(names = "--rhino", description = "If the rhino environment globals should be predefined")
@@ -85,8 +82,8 @@ class JSLintFlags {
     @Parameter(names = "--safe", description = "If use of some browser features should be restricted")
     public Boolean SAFE = null;
 
-    @Parameter(names = "--strict", description = "Require the 'use strict'; pragma")
-    public Boolean STRICT = null;
+    @Parameter(names = "--sloppy", description = "If the 'use strict'; pragma is optional")
+    public Boolean SLOPPY = null;
 
     @Parameter(names = "--sub", description = "If all forms of subscript notation are tolerated")
     public Boolean SUB = null;
@@ -94,13 +91,16 @@ class JSLintFlags {
     @Parameter(names = "--type", description = "If types can be used inconsistently")
     public Boolean TYPE = null;
 
-    @Parameter(names = "--undef", description = "If variables should be declared before used")
+    @Parameter(names = "--undef", description = "If variables can be declared out of order")
     public Boolean UNDEF = null;
 
     @Parameter(names = "--unparam", description = "If unused parameters should be tolerated")
     public Boolean UNPARAM = null;
 
-    @Parameter(names = "--white", description = "If strict whitespace rules apply")
+    @Parameter(names = "--vars", description = "If multiple var statements per function should be allowed")
+    public Boolean VARS = null;
+
+    @Parameter(names = "--white", description = "If sloppy whitespace is tolerated")
     public Boolean WHITE = null;
 
     @Parameter(names = "--widget", description = "If the yahoo widgets globals should be predefined")
