@@ -3,7 +3,6 @@ package com.googlecode.jslint4java.ant;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -26,6 +25,7 @@ import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
+import com.googlecode.jslint4java.UnicodeBomInputStream;
 
 /**
  * Run {@link JSLint} over a tree of files in order to pick holes in your
@@ -210,20 +210,21 @@ public class JSLintTask extends Task {
      */
     private int lintStream(JSLint lint, Resource resource) throws UnsupportedEncodingException,
             IOException {
-        InputStream stream = null;
+        BufferedReader reader = null;
         try {
-            stream = resource.getInputStream();
+            UnicodeBomInputStream stream = new UnicodeBomInputStream(resource.getInputStream());
+            stream.skipBOM();
+            reader = new BufferedReader(new InputStreamReader(stream, encoding));
             String name = resource.toString();
-            JSLintResult result = lint.lint(name, new BufferedReader(new InputStreamReader(stream,
-                    encoding)));
+            JSLintResult result = lint.lint(name, reader);
             log("Found " + result.getIssues().size() + " issues in " + name, Project.MSG_VERBOSE);
             for (ResultFormatter rf : formatters) {
                 rf.output(result);
             }
             return result.getIssues().size();
         } finally {
-            if (stream != null) {
-                stream.close();
+            if (reader != null) {
+                reader.close();
             }
         }
     }

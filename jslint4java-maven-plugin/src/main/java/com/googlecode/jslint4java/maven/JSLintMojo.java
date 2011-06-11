@@ -24,6 +24,7 @@ import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
+import com.googlecode.jslint4java.UnicodeBomInputStream;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
 import com.googlecode.jslint4java.formatter.PlainFormatter;
@@ -203,10 +204,10 @@ public class JSLintMojo extends AbstractMojo {
 
     private JSLintResult lintFile(File file) throws MojoExecutionException {
         getLog().debug("lint " + file);
-        InputStream stream = null;
+        BufferedReader reader = null;
         try {
-            stream = new FileInputStream(file);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, getEncoding()));
+            InputStream stream = new UnicodeBomInputStream(new FileInputStream(file));
+            reader = new BufferedReader(new InputStreamReader(stream, getEncoding()));
             return lintReader(file.toString(), reader);
         } catch (FileNotFoundException e) {
             throw new MojoExecutionException("file not found: " + file, e);
@@ -216,9 +217,9 @@ public class JSLintMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("problem whilst linting " + file, e);
         } finally {
-            if (stream != null) {
+            if (reader != null) {
                 try {
-                    stream.close();
+                    reader.close();
                 } catch (IOException e) {
                 }
             }
