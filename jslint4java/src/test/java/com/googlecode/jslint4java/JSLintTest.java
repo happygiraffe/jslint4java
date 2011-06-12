@@ -45,6 +45,10 @@ public class JSLintTest {
     @Before
     public void setUp() throws IOException {
         lint = new JSLintBuilder().fromDefault();
+        // Turn off a few options.  These used to be the default.
+        lint.addOption(Option.SLOPPY);
+        lint.addOption(Option.UNDEF);
+        lint.addOption(Option.WHITE);
     }
 
     @Test
@@ -68,7 +72,7 @@ public class JSLintTest {
      */
     @Test
     public void testDataFunctions() throws Exception {
-        JSLintResult result = lint("var z = 5;function foo(x) {var y = x+z;alert(y);return y;}");
+        JSLintResult result = lint("var z = 5; function foo(x) {var y = x+z;alert(y);return y;}");
         assertIssues(result.getIssues());
         List<JSFunction> functions = result.getFunctions();
         assertThat(functions.size(), is(1));
@@ -156,8 +160,8 @@ public class JSLintTest {
 
     @Test
     public void testMaxErr() throws Exception {
-        lint.addOption(Option.WHITE);
-        lint.addOption(Option.UNDEF);
+        lint.addOption(Option.WHITE, "false");
+        lint.addOption(Option.UNDEF, "false");
         lint.addOption(Option.MAXERR, "2");
         // Just some nasty thing I threw together. :)
         JSLintResult result = lint("if (foo=42) {\n  println(\"bother\")\n}\n");

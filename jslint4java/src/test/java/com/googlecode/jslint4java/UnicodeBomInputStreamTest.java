@@ -50,6 +50,7 @@ public class UnicodeBomInputStreamTest {
         is2.skipBOM();
         InputStreamReader isr = new InputStreamReader(is2, Charset.forName("UTF-8"));
         JSLint jsLint = new JSLintBuilder().fromDefault();
+        jsLint.addOption(Option.UNDEF);
         JSLintResult result = jsLint.lint("bom.js", isr);
         assertThat(result.getIssues().size(), is(0));
     }
