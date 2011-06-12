@@ -3,5 +3,5 @@
  */
 
 function x() {
-    return x();
+return x();
 }

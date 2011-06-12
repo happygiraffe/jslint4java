@@ -28,6 +28,8 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import com.googlecode.jslint4java.Option;
+
 // NB: Even though this is being run with JUnit 4, the asserts are still largely JUnit 3.  Yay inheritance!
 @RunWith(JUnit4.class)
 public class JSLintMojoTest extends AbstractMojoTestCase {
@@ -96,6 +98,8 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         baseDir = pom.getParentFile();
         mojo = (JSLintMojo) lookupMojo(GOAL, pom);
         mojo.setLog(logger);
+        // We don't care about "use strict" for these tests.
+        mojo.addOption(Option.SLOPPY, "true");
         mojo.setOutputFolder(temp.getRoot());
     }
 
@@ -154,7 +158,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         mojo.execute();
         File report = new File(temp.getRoot(), "jslint.xml");
         assertTrue(report + " exists", report.exists());
-        Matcher m  = Pattern.compile("<file\\s").matcher(readFile(report));
+        Matcher m = Pattern.compile("<file\\s").matcher(readFile(report));
         assertTrue("found first <file", m.find());
         assertTrue("found second <file", m.find());
         assertFalse("no more <file", m.find());
@@ -179,7 +183,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     public void testOptions() throws Exception {
         useGoodSource();
         Map<String, String> options = new HashMap<String, String>();
-        options.put("strict", "true");
+        options.put("sloppy", "false");
         mojo.setOptions(options);
         executeMojoExpectingFailure();
         assertTrue(true);
@@ -189,8 +193,11 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     @Test
     public void testOptionsFromPom() {
         Map<String, String> options = mojo.getOptions();
-        assertEquals(1, options.size());
+        System.out.println(options);
+        assertEquals(2, options.size());
         assertEquals("true", options.get("undef"));
+        // This actually comes from our setUp() call…
+        assertEquals("true", options.get("sloppy"));
     }
 
     private void useBadSource() {

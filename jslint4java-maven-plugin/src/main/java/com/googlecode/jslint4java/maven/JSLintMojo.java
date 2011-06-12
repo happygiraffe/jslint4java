@@ -117,6 +117,11 @@ public class JSLintMojo extends AbstractMojo {
         jsLint = new JSLintBuilder().fromDefault();
     }
 
+    /** Add a single option.  For testing only. */
+    void addOption(Option sloppy, String value) {
+        options.put(sloppy.name().toLowerCase(Locale.ENGLISH), value);
+    }
+
     /**
      * Set the default includes.
      *
@@ -131,12 +136,17 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
-    private void applyOptions() {
+    private void applyOptions() throws MojoExecutionException {
         for (Entry<String, String> entry : options.entrySet()) {
             if (entry.getValue() == null || entry.getValue().equals("")) {
                 continue;
             }
-            Option option = Option.valueOf(entry.getKey().toUpperCase(Locale.ENGLISH));
+            Option option;
+            try {
+                option = Option.valueOf(entry.getKey().toUpperCase(Locale.ENGLISH));
+            } catch (IllegalArgumentException e) {
+                throw new MojoExecutionException("unknown option: " + entry.getKey());
+            }
             jsLint.addOption(option, entry.getValue());
         }
     }
