@@ -49,18 +49,20 @@ def update_file(f, indent, opts)
   File.open(f) do |fh|
     while line = fh.gets do
       if line =~ /\/\/\s*BEGIN-OPTIONS/
+        begin_options = line.rstrip
         # Skip up to the end of the options section.
         while line !~ /\/\/\s*END-OPTIONS/
           line = fh.gets
         end
+        end_options = line.rstrip
 
         # And start rewriting.
-        contents << "#{indent}// BEGIN-OPTIONS"
+        contents << begin_options
         opts.keys.sort.map do |k|
           # key, desc, type
           contents << yield(k, opts[k][0], opts[k][1])
         end
-        contents << "#{indent}// END-OPTIONS"
+        contents << end_options
       else
         contents << line.rstrip()
       end
@@ -89,4 +91,8 @@ update_file(ARGV[2], indent, opts) do |k,desc,type|
   ["#{indent}@Parameter(names = \"--#{k}\", description = \"#{descEscaped}\")",
    "#{indent}public #{type} #{k.upcase} = null;",
    ""]
+end
+
+update_file(ARGV[3], "", opts) do |k,desc,type|
+  ["#{indent}<dt>#{k} <dd>#{desc}"]
 end

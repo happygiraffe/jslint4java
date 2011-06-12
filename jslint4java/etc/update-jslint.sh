@@ -20,6 +20,7 @@ fi
 $dir/extract-options.rb \
   $resourceDir/$pkgDir/$jslint \
   $javaDir/$pkgDir/Option.java \
-  $javaDir/$pkgDir/cli/JSLintFlags.java
+  $javaDir/$pkgDir/cli/JSLintFlags.java \
+  $dir/../../jslint4java-docs/src/main/resources/ant.html
 
 echo "Please update jslint4java-docs now!"
