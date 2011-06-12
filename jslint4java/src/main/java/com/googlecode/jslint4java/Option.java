@@ -36,6 +36,9 @@ public enum Option {
     /** If logging should be allowed (console, alert, etc.) */
     DEVEL("If logging should be allowed (console, alert, etc.)", Boolean.class),
 
+    /** If == should be allowed */
+    EQEQ("If == should be allowed", Boolean.class),
+
     /** If es5 syntax should be allowed */
     ES5("If es5 syntax should be allowed", Boolean.class),
 

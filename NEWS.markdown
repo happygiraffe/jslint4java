@@ -5,12 +5,17 @@ Revision history for jslint4java
 ------------------
 
  * Add a maven plugin.
- * Update to JSLint 2011-06-08.
-   - This adds the `type`  and `vars` options.
-   - The nature of the boolean options has been inverted.
-   - The `onevar` option has been removed.
-   - The `strict` option has been replaced with `sloppy`.
-   - The goodParts() api has been removed (it's the default now).
+ * Update to JSLint 2011-06-11
+   - The nature of the boolean options has been inverted--beware!
+   - New options:
+     - `sloppy`, which is the inverse of `strict`.
+     - `type`, for simple type checking.
+     - `vars`, to tolerate multiple `var` declarations per function.
+     - `eqeq`, to tolerate "==" and "!=".
+  - Removed options:
+    - `onevar`
+    - `strict`
+ * The goodParts() api has been removed (it's the default now).
 
 1.4.8 (2011-05-11)
 ------------------

@@ -31,6 +31,9 @@ class JSLintFlags {
     @Parameter(names = "--devel", description = "If logging should be allowed (console, alert, etc.)")
     public Boolean DEVEL = null;
 
+    @Parameter(names = "--eqeq", description = "If == should be allowed")
+    public Boolean EQEQ = null;
+
     @Parameter(names = "--es5", description = "If es5 syntax should be allowed")
     public Boolean ES5 = null;
 
