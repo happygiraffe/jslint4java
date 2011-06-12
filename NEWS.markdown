@@ -1,20 +1,28 @@
 Revision history for jslint4java
 ================================
 
-1.5.0 (2011-06-03)
+1.5.0 (2011-06-12)
 ------------------
 
  * Add a maven plugin.
  * Update to JSLint 2011-06-11
    - The nature of the boolean options has been inverted--beware!
+     - `bitwise` now enables the use of bitwise operators.
+     - `newcap` now means “ignore capitalisation of constructors”
+     - `plusplus` now means “incr” and “decr” operators are tolerated.
+     - `regexp` now means allow the use of “.” in regexes.
+     - `undef` now means you can declare variables out of order.
+     - `white` now means acceptance of non-compliant whitespace.
    - New options:
      - `sloppy`, which is the inverse of `strict`.
-     - `type`, for simple type checking.
-     - `vars`, to tolerate multiple `var` declarations per function.
+     - `type`, for simple type consistency checking.
+     - `vars`, to tolerate multiple `var` declarations per function (replaces `onevar`).
      - `eqeq`, to tolerate "==" and "!=".
+     - `node`, to predefine node.js globals.
+     - `unparam`, to allow unused parameters.
   - Removed options:
-    - `onevar`
-    - `strict`
+     - `onevar`
+     - `strict`
  * The goodParts() api has been removed (it's the default now).
  * issue 57: cope with a BOM in files.
 
