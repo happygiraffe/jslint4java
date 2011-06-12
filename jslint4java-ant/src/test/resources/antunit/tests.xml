@@ -37,22 +37,27 @@ Tests for the JSLint ant task.
     </target>
 
     <target name="setUp">
+        <echo message='BEGIN ${ant.project.invoked-targets}' />
         <mkdir dir="${temp.dir}"/>
     </target>
 
     <target name="tearDown">
         <delete dir="${temp.dir}" />
+        <echo message='END   ${ant.project.invoked-targets}' />
     </target>
 
     <!-- issue 53: we're OK with this. -->
     <target name="testNoResources">
-        <jsl:jslint />
+        <jsl:jslint>
+            <formatter type="plain" />
+        </jsl:jslint>
         <au:assertLogContains text="no files to lint!"/>
     </target>
 
     <target name="testFailsOnError">
-        <au:expectfailure expectedmessage="JSLint: 1 error in 1 file">
+        <au:expectfailure expectedmessage="JSLint: 2 errors in 1 file">
             <jsl:jslint>
+                <formatter type="plain" />
                 <fileset file="good.js" />
                 <fileset file="bad.js" />
             </jsl:jslint>
@@ -61,21 +66,23 @@ Tests for the JSLint ant task.
 
     <target name="testSuccess">
         <jsl:jslint>
+            <formatter type="plain" />
             <fileset file="good.js" />
         </jsl:jslint>
     </target>
 
-    <!-- This should turn off the undef option. -->
+    <!-- Check we can supply a value to an option. -->
     <target name="testOptionParams">
-        <jsl:jslint options="undef=false">
+        <jsl:jslint options="undef=true">
+            <formatter type="plain" />
             <fileset file="undef.js" />
         </jsl:jslint>
     </target>
 
     <!-- http://code.google.com/p/jslint4java/issues/detail?id=6 -->
     <target name="testIssue6">
-        <au:expectfailure expectedmessage="JSLint: 2 errors in 1 file">
-            <jsl:jslint options="browser,undef,passfail">
+        <au:expectfailure expectedmessage="JSLint: 1 error in 1 file">
+            <jsl:jslint options="browser,sloppy,white">
                 <formatter type="plain" />
                 <fileset file="issue6.js" />
             </jsl:jslint>
@@ -128,15 +135,17 @@ Tests for the JSLint ant task.
     <!-- We should be able to set a property on failure. -->
     <target name="testFailureProperty">
         <jsl:jslint failureproperty="boom" haltonfailure="false">
+            <formatter type="plain" />
             <fileset file="bad.js"/>
         </jsl:jslint>
-        <au:assertEquals expected="JSLint: 1 error in 1 file" actual="${boom}" />
+        <au:assertEquals expected="JSLint: 2 errors in 1 file" actual="${boom}" />
     </target>
 
     <!-- Check JUnit output appears in the right place with the right name. -->
     <target name="testJUnitFormatter">
         <echo message="in testJUnitFormatter" />
         <jsl:jslint haltonfailure="false">
+            <formatter type="plain" />
             <formatter type="junit" destfile="${temp.dir}" />
             <fileset dir="." includes="good.js" />
         </jsl:jslint>
@@ -152,6 +161,7 @@ Tests for the JSLint ant task.
     <!-- Check that the report formatter produces some output. -->
     <target name="testReportFormatter">
         <jsl:jslint haltonfailure="no">
+            <formatter type="plain" />
             <formatter type="report" destfile="${temp.dir}/report.html" />
             <fileset file="good.js" />
         </jsl:jslint>
@@ -165,6 +175,7 @@ Tests for the JSLint ant task.
     <!-- issue 42: numeric keys cause a blowup. -->
     <target name="testNumericKeys">
         <jsl:jslint>
+            <formatter type="plain" />
             <!-- Should pass without blowup. -->
             <fileset file="numeric-keys.js" />
         </jsl:jslint>
@@ -172,7 +183,8 @@ Tests for the JSLint ant task.
 
     <!-- issue 57: should be able to parse BOMs. -->
     <target name="testBOM">
-        <jsl:jslint>
+        <jsl:jslint options="undef">
+          <formatter type="plain" />
           <fileset file="bom.js" />
         </jsl:jslint>
     </target>
