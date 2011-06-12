@@ -16,6 +16,7 @@ Revision history for jslint4java
     - `onevar`
     - `strict`
  * The goodParts() api has been removed (it's the default now).
+ * issue 57: cope with a BOM in files.
 
 1.4.8 (2011-05-11)
 ------------------
