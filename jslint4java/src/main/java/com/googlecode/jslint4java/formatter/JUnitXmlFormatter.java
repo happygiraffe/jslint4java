@@ -71,7 +71,7 @@ public class JUnitXmlFormatter extends XmlFormatter implements JSLintResultForma
             sb.append(">");
             for (Issue issue : issues) {
                 sb.append(escape(issue.toString()));
-                sb.append("\n");
+                sb.append(System.getProperty("line.separator"));
             }
             sb.append("</failure>");
         }
