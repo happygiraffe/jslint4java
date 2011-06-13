@@ -40,7 +40,8 @@ public class UnicodeBomInputStreamTest {
         is2.skipBOM();
         InputStreamReader isr = new InputStreamReader(is2, Charset.forName("UTF-8"));
         String s = Util.readerToString(isr);
-        assertThat(s, is("// This file starts with a UTF-8 BOM.\nalert(\"Hello BOM\");\n"));
+        String nl = System.getProperty("line.separator");
+        assertThat(s, is("// This file starts with a UTF-8 BOM." + nl + "alert(\"Hello BOM\");" + nl));
     }
 
     @Test
