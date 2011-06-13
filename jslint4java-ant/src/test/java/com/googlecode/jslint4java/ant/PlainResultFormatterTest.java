@@ -56,7 +56,7 @@ public class PlainResultFormatterTest {
         issues.add(issue);
         runFormatter(file);
         // Build up the expected output in a cross-platform manner.
-        String nl = "\n"; // PlainFormatter uses this.
+        String nl = System.getProperty("line.separator");
         StringBuilder sb = new StringBuilder(file.toString());
         sb.append(":1:1: no clucking");
         sb.append(nl);
@@ -79,7 +79,7 @@ public class PlainResultFormatterTest {
         issues.add(issue);
         runFormatter(file);
         // Build up the expected output in a cross-platform manner.
-        String nl = "\n"; // PlainFormatter uses this.
+        String nl = System.getProperty("line.separator");
         StringBuilder sb = new StringBuilder(file.toString());
         sb.append(":1:1: fatality");
         sb.append(nl);

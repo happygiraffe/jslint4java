@@ -30,6 +30,7 @@ public class PlainFormatter implements JSLintResultFormatter {
     }
 
     private String outputOneIssue(Issue issue) {
+        String nl = System.getProperty("line.separator");
         StringBuilder sb = new StringBuilder();
         sb.append(issue.getSystemId());
         sb.append(':');
@@ -39,14 +40,15 @@ public class PlainFormatter implements JSLintResultFormatter {
         // NB: space before reason to look like javac!
         sb.append(": ");
         sb.append(issue.getReason());
-        sb.append("\n");
+        sb.append(nl);
         String evidence = issue.getEvidence();
         if (evidence != null && !"".equals(evidence)) {
             sb.append(evidence);
-            sb.append("\n");
+            sb.append(nl);
             // character is now one-based.
             sb.append(spaces(issue.getCharacter() - 1));
-            sb.append("^\n");
+            sb.append("^");
+            sb.append(nl);
         }
         return sb.toString();
     }
