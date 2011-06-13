@@ -1,6 +1,7 @@
 package com.googlecode.jslint4java.formatter;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLintResult;
@@ -80,7 +81,7 @@ public class JUnitXmlFormatter extends XmlFormatter implements JSLintResultForma
     }
 
     private String formatTimeAsSeconds(long duration) {
-        return String.format("%.3f", duration / 1000.0);
+        return String.format(Locale.ENGLISH, "%.3f", duration / 1000.0);
     }
 
     // Return an "s" for any size other than one. Crap i18n, I know.
