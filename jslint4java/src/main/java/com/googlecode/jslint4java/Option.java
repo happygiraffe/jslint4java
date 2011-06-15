@@ -24,6 +24,9 @@ public enum Option {
     /** If upper case html should be allowed */
     CAP("If upper case html should be allowed", Boolean.class),
 
+    /** If types can be used inconsistently */
+    CONFUSION("If types can be used inconsistently", Boolean.class),
+
     /** If the continuation statement should be tolerated */
     CONTINUE("If the continuation statement should be tolerated", Boolean.class),
 
@@ -95,9 +98,6 @@ public enum Option {
 
     /** If all forms of subscript notation are tolerated */
     SUB("If all forms of subscript notation are tolerated", Boolean.class),
-
-    /** If types can be used inconsistently */
-    TYPE("If types can be used inconsistently", Boolean.class),
 
     /** If variables can be declared out of order */
     UNDEF("If variables can be declared out of order", Boolean.class),

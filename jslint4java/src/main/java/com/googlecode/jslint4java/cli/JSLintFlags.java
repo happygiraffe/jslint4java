@@ -19,6 +19,9 @@ class JSLintFlags {
     @Parameter(names = "--cap", description = "If upper case html should be allowed")
     public Boolean CAP = null;
 
+    @Parameter(names = "--confusion", description = "If types can be used inconsistently")
+    public Boolean CONFUSION = null;
+
     @Parameter(names = "--continue", description = "If the continuation statement should be tolerated")
     public Boolean CONTINUE = null;
 
@@ -90,9 +93,6 @@ class JSLintFlags {
 
     @Parameter(names = "--sub", description = "If all forms of subscript notation are tolerated")
     public Boolean SUB = null;
-
-    @Parameter(names = "--type", description = "If types can be used inconsistently")
-    public Boolean TYPE = null;
 
     @Parameter(names = "--undef", description = "If variables can be declared out of order")
     public Boolean UNDEF = null;

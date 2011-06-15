@@ -118,7 +118,8 @@ public class JSLintTest {
         // It's a count of how many times we've seen each member.
         assertThat(members.get("a"), is(1));
         assertThat(members.get("b"), is(1));
-        assertThat(members.get("3"), is(0));  // Nope, I've no idea why it's zero either.
+        // JSLint changed and now reports all numeric entries like this.
+        assertThat(members.get("(number)"), is(1));
     }
 
     @Test

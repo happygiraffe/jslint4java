@@ -5,7 +5,7 @@ Revision history for jslint4java
 ------------------
 
  * Add a maven plugin.
- * Update to JSLint 2011-06-11
+ * Update to JSLint 2011-06-14
    - The nature of the boolean options has been inverted--beware!
      - `bitwise` now enables the use of bitwise operators.
      - `newcap` now means “ignore capitalisation of constructors”
@@ -15,7 +15,7 @@ Revision history for jslint4java
      - `white` now means acceptance of non-compliant whitespace.
    - New options:
      - `sloppy`, which is the inverse of `strict`.
-     - `type`, for simple type consistency checking.
+     - `confusion`, allows inconsistent types.
      - `vars`, to tolerate multiple `var` declarations per function (replaces `onevar`).
      - `eqeq`, to tolerate "==" and "!=".
      - `node`, to predefine node.js globals.
