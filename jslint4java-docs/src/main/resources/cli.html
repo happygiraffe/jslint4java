@@ -90,7 +90,7 @@ $
     </ol>
 
     <p>Most command line flags are boolean.  If you wish to pass a value to a flag
-      (e.g. <code>--indent</code>), add it using an equals.  For example:</p>
+      (e.g. <code>--indent</code>), it must be separated by whitespace.  For example:</p>
 
       <pre class="prettyprint"><span class="nocode">$ cat happy.js
 var x;
@@ -99,7 +99,7 @@ if (x) {
 }
 $ java -jar jslint4java-${project.version}.jar --white happy.js
 jslint:happy.js:2:2:Expected 'x' to have an indentation of 4 instead of 2.
-$ java -jar jslint4java-${project.version}.jar --white --indent=2 happy.js
+$ java -jar jslint4java-${project.version}.jar --white --indent 2 happy.js
 $
 </span></pre>
 
@@ -113,7 +113,7 @@ foo(bar(42));
 $ java -jar jslint4java-${project.version}.jar --undef globals.js
 jslint:globals.js:1:1:'foo' is not defined.
 jslint:globals.js:1:5:'bar' is not defined.
-$ java -jar jslint4java-${project.version}.jar --undef --predef=foo,bar globals.js
+$ java -jar jslint4java-${project.version}.jar --undef --predef foo,bar globals.js
 $
 </span></pre>
 
@@ -180,7 +180,7 @@ $
     <p id="option-jslint">
       You can specify an alternative <code>jslint.js</code> in case the version
       supplied doesn't suit you (for example there is a newer version available).
-      To use another jslint, specify <code>--jslint=/some/where/jslint.js</code>
+      To use another jslint, specify <code>--jslint /some/where/jslint.js</code>
       on the command line.
     </p>
 
