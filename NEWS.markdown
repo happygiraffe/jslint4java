@@ -5,7 +5,7 @@ Revision history for jslint4java
 ------------------
 
  * Add a maven plugin.
- * Update to JSLint 2011-06-18.
+ * Update to JSLint 2011-06-20.
    - The nature of the boolean options has been inverted--beware!
      - `bitwise` now enables the use of bitwise operators.
      - `newcap` now means “ignore capitalisation of constructors”
