@@ -71,12 +71,12 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         }
     }
 
-    private File getPom() throws URISyntaxException {
-        URL pomResource = JSLintMojoTest.class.getResource(POM_XML);
-        assertNotNull("Can't find '" + POM_XML + "' resource", pomResource);
-        File pom = new File(pomResource.toURI());
-        assertTrue(pom + " doesn't exist?", pom.exists());
-        return pom;
+    private File getResourceFile(String filename) throws URISyntaxException {
+        URL resource = JSLintMojoTest.class.getResource(filename);
+        assertNotNull("Can't find '" + filename + "' resource", resource);
+        File file = new File(resource.toURI());
+        assertTrue(file + " doesn't exist?", file.exists());
+        return file;
     }
 
     private String readFile(File reportFile) throws FileNotFoundException, IOException {
@@ -94,7 +94,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        File pom = getPom();
+        File pom = getResourceFile(POM_XML);
         baseDir = pom.getParentFile();
         mojo = (JSLintMojo) lookupMojo(GOAL, pom);
         mojo.setLog(logger);
