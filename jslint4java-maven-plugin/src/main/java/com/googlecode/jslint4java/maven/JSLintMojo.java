@@ -7,8 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,8 +61,6 @@ public class JSLintMojo extends AbstractMojo {
      */
     private final List<String> includes = new ArrayList<String>();
 
-    private final JSLint jsLint;
-
     /**
      * Specifies the location of the default source folder to be used for
      * JSLint. Note that this is just used for filling in the default, as it
@@ -113,9 +111,12 @@ public class JSLintMojo extends AbstractMojo {
      */
     private boolean failOnError = true;
 
-    public JSLintMojo() throws IOException {
-        jsLint = new JSLintBuilder().fromDefault();
-    }
+    /**
+     * An alternative JSLint to use.
+     *
+     * @parameter expression="${jslint.source}"
+     */
+    private File jslintSource;
 
     /** Add a single option.  For testing only. */
     void addOption(Option sloppy, String value) {
@@ -136,7 +137,7 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
-    private void applyOptions() throws MojoExecutionException {
+    private void applyOptions(JSLint jsLint) throws MojoExecutionException {
         for (Entry<String, String> entry : options.entrySet()) {
             if (entry.getValue() == null || entry.getValue().equals("")) {
                 continue;
@@ -152,15 +153,16 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        JSLint jsLint = applyJSlintSource();
         applyDefaults();
-        applyOptions();
+        applyOptions(jsLint);
         List<File> files = getFilesToProcess();
         int failures = 0;
         ReportWriter reporter = new ReportWriter(new File(outputFolder, JSLINT_XML), new JSLintXmlFormatter());
         try {
             reporter.open();
             for (File file : files) {
-                JSLintResult result = lintFile(file);
+                JSLintResult result = lintFile(jsLint, file);
                 failures += result.getIssues().size();
                 logIssues(result, reporter);
             }
@@ -174,6 +176,19 @@ public class JSLintMojo extends AbstractMojo {
             } else {
                 getLog().info(message);
             }
+        }
+    }
+
+    private JSLint applyJSlintSource() throws MojoExecutionException {
+        JSLintBuilder builder = new JSLintBuilder();
+        if (jslintSource != null) {
+            try {
+                return builder.fromFile(jslintSource, Charset.forName(encoding));
+            } catch (IOException e) {
+                throw new MojoExecutionException("Cant' load jslint.js", e);
+            }
+        } else {
+            return builder.fromDefault();
         }
     }
 
@@ -212,13 +227,13 @@ public class JSLintMojo extends AbstractMojo {
         return options;
     }
 
-    private JSLintResult lintFile(File file) throws MojoExecutionException {
+    private JSLintResult lintFile(JSLint jsLint, File file) throws MojoExecutionException {
         getLog().debug("lint " + file);
         BufferedReader reader = null;
         try {
             InputStream stream = new UnicodeBomInputStream(new FileInputStream(file));
             reader = new BufferedReader(new InputStreamReader(stream, getEncoding()));
-            return lintReader(file.toString(), reader);
+            return jsLint.lint(file.toString(), reader);
         } catch (FileNotFoundException e) {
             throw new MojoExecutionException("file not found: " + file, e);
         } catch (UnsupportedEncodingException e) {
@@ -234,10 +249,6 @@ public class JSLintMojo extends AbstractMojo {
                 }
             }
         }
-    }
-
-    private JSLintResult lintReader(String name, Reader reader) throws IOException {
-        return jsLint.lint(name, reader);
     }
 
     private void logIssues(JSLintResult result, ReportWriter reporter) {
@@ -276,6 +287,11 @@ public class JSLintMojo extends AbstractMojo {
     public void setIncludes(List<String> includes) {
         this.includes.clear();
         this.includes.addAll(includes);
+    }
+
+    /** The location of the JSLint source file. */
+    public void setJslint(File jslintSource) {
+        this.jslintSource = jslintSource;
     }
 
     public void setOptions(Map<String, String> options) {

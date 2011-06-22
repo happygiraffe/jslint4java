@@ -109,6 +109,16 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         super.tearDown();
     }
 
+    // Given the rate that JSLint changes at this is no bad thing.
+    @Test
+    public void testAlternateJSLint() throws Exception {
+        // This always returns "OK"
+        mojo.setJslint(getResourceFile("dummy-jslint.js"));
+        useBadSource();
+        mojo.execute();
+        // Should be no exception raised.
+    }
+
     @Test
     public void testBasics() throws Exception {
         useGoodSource();
