@@ -166,11 +166,11 @@ class Main {
         JCommander jc = new JCommander(new Object[] { flags , jslintFlags });
         jc.setProgramName("jslint4java");
         try {
-			jc.parse(args);
-		} catch (ParameterException e) {
-			info(e.getMessage());
-			usage(jc);
-		}
+            jc.parse(args);
+        } catch (ParameterException e) {
+            info(e.getMessage());
+            usage(jc);
+        }
         if (flags.help) {
             usage(jc);
         }
@@ -214,8 +214,9 @@ class Main {
         if (flags.files.isEmpty()) {
             usage(jc);
             return null; // can never happen
-        } else
+        } else {
             return flags.files;
+        }
     }
 
     private void setErrored(boolean errored) {
