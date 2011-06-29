@@ -203,7 +203,6 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     @Test
     public void testOptionsFromPom() {
         Map<String, String> options = mojo.getOptions();
-        System.out.println(options);
         assertEquals(2, options.size());
         assertEquals("true", options.get("undef"));
         // This actually comes from our setUp() call…
