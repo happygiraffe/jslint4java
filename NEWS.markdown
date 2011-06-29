@@ -5,7 +5,7 @@ Revision history for jslint4java
 ------------------
 
  * Add a maven plugin.
- * Update to JSLint 2011-06-20.
+ * Update to JSLint 2011-06-22.
    - The nature of the boolean options has been inverted--beware!
      - `bitwise` now enables the use of bitwise operators.
      - `newcap` now means “ignore capitalisation of constructors”
@@ -19,6 +19,7 @@ Revision history for jslint4java
      - `vars`, to tolerate multiple `var` declarations per function (replaces `onevar`).
      - `eqeq`, to tolerate "==" and "!=".
      - `node`, to predefine node.js globals.
+     - `properties`, to require declaration of all properties.
      - `unparam`, to allow unused parameters.
   - Removed options:
      - `onevar`

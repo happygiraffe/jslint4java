@@ -28,7 +28,7 @@ public class OptionTest {
     // This is useful for formatting lists of options...
     @Test
     public void testMaximumNameLength() throws Exception {
-        assertThat(Option.maximumNameLength(), is(9));
+        assertThat(Option.maximumNameLength(), is(10));
     }
 
 }

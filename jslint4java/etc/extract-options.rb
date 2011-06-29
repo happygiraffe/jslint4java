@@ -75,9 +75,10 @@ end
 
 indent = "    "
 update_file(ARGV[1], indent, opts) do |k,desc,type|
-  descEscaped = desc.gsub(/"/, '\\"')
-  ["#{indent}/** #{desc} */",
-   "#{indent}#{k.upcase}(\"#{descEscaped}\", #{type}.class),",
+  descJavaEscaped = desc.gsub(/"/, '\\"')
+  descJavadocEscaped = desc.gsub(/\*\//, '*&#47;')
+  ["#{indent}/** #{descJavadocEscaped} */",
+   "#{indent}#{k.upcase}(\"#{descJavaEscaped}\", #{type}.class),",
    ""]
 end
 

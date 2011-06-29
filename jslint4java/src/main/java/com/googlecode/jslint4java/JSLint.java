@@ -56,7 +56,7 @@ public class JSLint {
             int line = Util.intValue("line", scope);
             Builder b = new JSFunction.Builder(name, line);
             b.last(Util.intValue("last", scope));
-            for (String param : Util.listValue("param", scope, new JSFunctionParamConverter())) {
+            for (String param : Util.listValue("params", scope, new JSFunctionParamConverter())) {
                 b.addParam(param);
             }
             for (String closure : Util.listValueOfType("closure", String.class, scope)) {

@@ -79,6 +79,9 @@ class JSLintFlags {
     @Parameter(names = "--predef", description = "The names of predefined global variables")
     public String PREDEF = null;
 
+    @Parameter(names = "--properties", description = "If all property names must be declared with /*properties*/")
+    public Boolean PROPERTIES = null;
+
     @Parameter(names = "--regexp", description = "If the . should be allowed in regexp literals")
     public Boolean REGEXP = null;
 

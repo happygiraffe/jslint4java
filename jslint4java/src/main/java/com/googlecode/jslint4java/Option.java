@@ -84,6 +84,9 @@ public enum Option {
     /** The names of predefined global variables */
     PREDEF("The names of predefined global variables", StringArray.class),
 
+    /** If all property names must be declared with /*properties*&#47; */
+    PROPERTIES("If all property names must be declared with /*properties*/", Boolean.class),
+
     /** If the . should be allowed in regexp literals */
     REGEXP("If the . should be allowed in regexp literals", Boolean.class),
 
