@@ -5,7 +5,9 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class OptionParserTest {
 
@@ -20,8 +22,13 @@ public class OptionParserTest {
 
     private final OptionParser optionParser = new OptionParser();
 
-    @Test(expected = RuntimeException.class)
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Test
     public void testNoSuchMethod() throws Exception {
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("System.valueOf");
         optionParser.parse(System.class, "foo");
     }
 
@@ -35,13 +42,16 @@ public class OptionParserTest {
         assertThat(optionParser.parse(Integer.class, "2"), is(2));
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void testParseIntegerFailure() throws Exception {
+        thrown.expect(NumberFormatException.class);
         optionParser.parse(Integer.class, "foo");
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testRuntimeExceptionWrapping() throws Exception {
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("IOException: burble");
         optionParser.parse(Foo.class, "foo");
     }
 }
