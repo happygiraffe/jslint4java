@@ -5,7 +5,9 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
@@ -261,6 +263,22 @@ public class JSLintTest {
         lint.addOption(Option.INDENT, "2");
         List<Issue> issues = lint(js).getIssues();
         assertIssues(issues);
+    }
+
+    /** issue 62: tabs getting munged. */
+    @Test
+    public void testTabSanity() {
+        String js = "var\ti = 0;\n";
+        JSLintResult result = lint(js);
+        assertIssues(result.getIssues());
+    }
+
+    @Test
+    public void testTabSanityFromReader() throws IOException {
+        byte[] js = "var\ti = 0;\n".getBytes("UTF-8");
+        InputStreamReader reader = new InputStreamReader(new ByteArrayInputStream(js), "UTF-8");
+        JSLintResult result = lint(reader);
+        assertIssues(result.getIssues());
     }
 
     // http://code.google.com/p/jslint4java/issues/detail?id=1
