@@ -47,7 +47,6 @@ public class JSLintTest {
         lint = new JSLintBuilder().fromDefault();
         // Turn off a few options.  These used to be the default.
         lint.addOption(Option.SLOPPY);
-        lint.addOption(Option.WHITE);
     }
 
     @Test
@@ -72,7 +71,7 @@ public class JSLintTest {
     @Test
     public void testDataFunctions() throws Exception {
         lint.addOption(Option.UNDEF);
-        JSLintResult result = lint("var z = 5; function foo(x) {var y = x+z;alert(y);return y;}");
+        JSLintResult result = lint("var z = 5; function foo(x) {var y = x + z; alert(y); return y; }");
         assertIssues(result.getIssues());
         List<JSFunction> functions = result.getFunctions();
         assertThat(functions.size(), is(1));
@@ -111,7 +110,7 @@ public class JSLintTest {
     @Test
     public void testDataMembers() throws Exception {
         // issue 42: beware numeric keys…
-        JSLintResult result = lint("var obj = {\"a\":1, \"b\": 42, 3: \"c\"};");
+        JSLintResult result = lint("var obj = {\"a\": 1, \"b\": 42, 3: \"c\"};");
         assertIssues(result.getIssues());
         Map<String, Integer> members = result.getMember();
         assertThat(members.size(), is(3));
