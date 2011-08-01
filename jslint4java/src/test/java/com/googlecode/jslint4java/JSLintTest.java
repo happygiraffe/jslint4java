@@ -263,12 +263,30 @@ public class JSLintTest {
         assertIssues(issues);
     }
 
-    /** issue 62: tabs getting munged. */
+    /**
+     * issue 62: tabs getting munged. The root cause here is that JSLint expands
+     * tabs to spaces. It does this on the basis of the <i>indent</i> option, at
+     * initialisation time (if you have a /*jslint comment to alter the ident,
+     * it doesn't affect the tab expansion).
+     *
+     * <p>
+     * Now, it turns out that jslint.com always defaults <i>indent</i> to four.
+     * We have no default, so it gets set to zero. That means that the tab
+     * expansion value gets set to "". Which means {@code var\ti} ends up as
+     * {@code vari}. In order to avoid this, we need to ensure we always pass in
+     * a default of four.
+     *
+     * <p>
+     * Just to make life even more interesting, I forgot that we set
+     * "default options" in setUp (including <i>indent</i>) which meant the
+     * behaviour didn't show the first time.
+     */
     @Test
     public void testTabSanity() {
         // We need to turn on undefined variable checking here.
         lint.resetOptions();
         lint.addOption(Option.SLOPPY);
+        // This is coming out as "vari"...
         String js = "var\ti = 0;\n";
         JSLintResult result = lint(js);
         assertIssues(result.getIssues());
