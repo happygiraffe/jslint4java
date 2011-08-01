@@ -34,6 +34,12 @@ public class JSLint {
     // org.mozilla.javascript.tools.debugger.Main.mainEmbedded(null);
     // }
 
+    /** What should {@code indent} be set to by default? */
+    private static final String DEFAULT_INDENT = "4";
+
+    /** What should {@code maxerr} be set to by default? */
+    private static final String DEFAULT_MAXERR = "50";
+
     /**
      * A helper class for interpreting function parameter names. Note that we
      * use this to work around a change in JSLint's data structure, which
@@ -127,6 +133,19 @@ public class JSLint {
     public void addOption(Option o, String arg) {
         OptionParser optionParser = new OptionParser();
         options.put(o, optionParser.parse(o.getType(), arg));
+    }
+
+    /**
+     * Set options that should always be present. This mirrors what jslint.com
+     * does.
+     */
+    private void applyDefaultOptions() {
+        if (!options.containsKey(Option.INDENT)) {
+            addOption(Option.INDENT, DEFAULT_INDENT);
+        }
+        if (!options.containsKey(Option.MAXERR)) {
+            addOption(Option.MAXERR, DEFAULT_MAXERR);
+        }
     }
 
     /**
@@ -269,6 +288,7 @@ public class JSLint {
     private Scriptable optionsAsJavaScriptObject() {
         return (Scriptable) contextFactory.call(new ContextAction() {
             public Object run(Context cx) {
+                applyDefaultOptions();
                 Scriptable opts = cx.newObject(scope);
                 for (Entry<Option, Object> entry : options.entrySet()) {
                     String key = entry.getKey().getLowerName();
