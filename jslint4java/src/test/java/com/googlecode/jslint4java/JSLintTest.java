@@ -47,7 +47,6 @@ public class JSLintTest {
         lint = new JSLintBuilder().fromDefault();
         // Turn off a few options.  These used to be the default.
         lint.addOption(Option.SLOPPY);
-        lint.addOption(Option.UNDEF);
         lint.addOption(Option.WHITE);
     }
 
@@ -72,6 +71,7 @@ public class JSLintTest {
      */
     @Test
     public void testDataFunctions() throws Exception {
+        lint.addOption(Option.UNDEF);
         JSLintResult result = lint("var z = 5; function foo(x) {var y = x+z;alert(y);return y;}");
         assertIssues(result.getIssues());
         List<JSFunction> functions = result.getFunctions();
