@@ -10,8 +10,8 @@
   </parent>
   <dependencies>
     <dependency>
-      <groupId>rhino</groupId>
-      <artifactId>js</artifactId>
+      <groupId>org.mozilla</groupId>
+      <artifactId>rhino</artifactId>
     </dependency>
     <dependency>
       <groupId>com.beust</groupId>
