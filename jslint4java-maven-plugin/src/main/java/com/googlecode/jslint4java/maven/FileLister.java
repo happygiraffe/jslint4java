@@ -31,6 +31,9 @@ public class FileLister {
     }
 
     public List<File> files() throws IOException {
+        if (!sourceDirectory.exists()) {
+            return new ArrayList<File>();
+        }
         String includesStr = StringUtils.join(includes.iterator(), ",");
         String excludesStr = StringUtils.join(excludes.iterator(), ",");
         @SuppressWarnings("unchecked")

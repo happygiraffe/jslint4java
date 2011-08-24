@@ -11,9 +11,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class FileListerTest {
+
+    @Rule
+    public TemporaryFolder tmpf = new TemporaryFolder();
 
     private File sourceDirectory;
 
@@ -78,6 +83,14 @@ public class FileListerTest {
     public void testNoIncludesMeansNoFiles() throws Exception {
         List<File> files = files(list(), list());
         assertFilesAre(files);
+    }
+
+    @Test
+    public void testNonExistentDirectory() throws IOException {
+        File doesnotexist = new File(tmpf.getRoot(), "doesnotexist");
+        FileLister fileLister = new FileLister(doesnotexist, list("*.txt"), list());
+        // We should return an empty list, not blow up with an IllegalStateException.
+        assertFilesAre(fileLister.files());
     }
 
     @Test
