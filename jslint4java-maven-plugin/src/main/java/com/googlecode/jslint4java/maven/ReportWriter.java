@@ -52,7 +52,7 @@ public class ReportWriter {
     private void ensureReportDirectoryExists() {
         File parent = reportFile.getAbsoluteFile().getParentFile();
         if (!parent.exists()) {
-            parent.mkdir();
+            parent.mkdirs();
         }
     }
 

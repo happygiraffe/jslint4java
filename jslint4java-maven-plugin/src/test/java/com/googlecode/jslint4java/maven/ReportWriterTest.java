@@ -44,7 +44,8 @@ public class ReportWriterTest {
 
     @Test
     public void makesParentDirectory() {
-        File parent = new File(tmpf.getRoot(), "somedir");
+        // issue 65: ensure we make *all* intervening directories.
+        File parent = new File(new File(tmpf.getRoot(), "some"), "dir");
         ReportWriter rw = new ReportWriter(new File(parent, REPORT_XML), formatter);
         rw.open();
         rw.close();
