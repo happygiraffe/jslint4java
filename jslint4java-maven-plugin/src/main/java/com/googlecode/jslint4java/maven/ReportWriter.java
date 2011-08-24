@@ -38,7 +38,8 @@ public class ReportWriter {
     /** End the report. */
     public void close() {
         try {
-            if (formatter.footer() != null) {
+            // writer may be null if we exploded whilst creating it.
+            if (formatter.footer() != null && writer != null) {
                 writer.write(formatter.footer());
             }
         } catch (IOException e) {

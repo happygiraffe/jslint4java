@@ -51,6 +51,28 @@ public class ReportWriterTest {
         assertThat(parent.exists(), is(true));
     }
 
+    /**
+     * issue 65: If we configure an invalid report xml, we should blow up with a
+     * {@link RuntimeException} (wrapping a
+     * {@link FileNotFoundException}). Instead, we're blowing up with an
+     * {@link NullPointerException}when we try to close().
+     */
+    @Test
+    public void closeDoesntHideFileNotFoundExceptionWithNullPointerException() throws IOException {
+        // This is guaranteed to fail as it's a file not a directory.
+        File f  = tmpf.newFile("bob");
+        ReportWriter rw = new ReportWriter(new File(f, REPORT_XML), formatter);
+        try {
+            rw.open();
+        } catch (RuntimeException e) {
+            // Check we've got the correctly wrapped exception.
+            assertThat(e.getCause(), is(FileNotFoundException.class));
+        } finally {
+            // This shouldn't blow up with an NPE.
+            rw.close();
+        }
+    }
+
     private String readFile(File reportFile) throws FileNotFoundException, IOException {
         InputStreamReader reader = null;
         try {
