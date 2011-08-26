@@ -79,7 +79,7 @@ public class JSLintMojo extends AbstractMojo {
      *
      * @parameter
      */
-    private final List<File> sourceFolders = new ArrayList<File>();
+    private File[] sourceFolders = new File[] {};
 
     /**
      * Which JSLint {@link Option}s to set.
@@ -132,8 +132,8 @@ public class JSLintMojo extends AbstractMojo {
         if (includes.isEmpty()) {
             includes.add(DEFAULT_INCLUDES);
         }
-        if (sourceFolders.isEmpty()) {
-            sourceFolders.add(defaultSourceFolder);
+        if (sourceFolders.length == 0) {
+            sourceFolders = new File[] { defaultSourceFolder };
         }
     }
 
@@ -304,8 +304,7 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     public void setSourceFolders(List<File> sourceFolders) {
-        this.sourceFolders.clear();
-        this.sourceFolders.addAll(sourceFolders);
+        this.sourceFolders = sourceFolders.toArray(new File[sourceFolders.size()]);
     }
 
 }
