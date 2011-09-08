@@ -4,7 +4,7 @@ Revision history for jslint4java
 2.0.1 (2011-08-01)
 ------------------
 
- * Update to JSLint 2011-07-19.
+ * Update to JSLint 2011-08-15.
 
 2.0.0 (2011-06-12)
 ------------------
