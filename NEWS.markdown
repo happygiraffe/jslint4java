@@ -1,9 +1,12 @@
 Revision history for jslint4java
 ================================
 
-2.0.1 (2011-08-01)
+2.0.1 (2011-09-08)
 ------------------
 
+ * issue 62: Set default indent correctly.
+ * issue 64: Make the maven plugin work with older maven versions.
+ * issue 65: Don't blow up when the maven plugin writes a report.
  * Update to JSLint 2011-08-15.
 
 2.0.0 (2011-06-12)
