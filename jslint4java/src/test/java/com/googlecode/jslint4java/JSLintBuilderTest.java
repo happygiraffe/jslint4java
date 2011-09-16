@@ -1,14 +1,16 @@
 package com.googlecode.jslint4java;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.StringReader;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class JSLintBuilderTest {
 
@@ -16,6 +18,9 @@ public class JSLintBuilderTest {
     private static final String STUB_JSLINT = "com/googlecode/jslint4java/stubjslint.js";
 
     private final JSLintBuilder builder = new JSLintBuilder();
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     /**
      * A minimal test that a JSLint looks OK. Just tests we can lint an empty
@@ -57,5 +62,15 @@ public class JSLintBuilderTest {
         assertJSLintOK(builder.fromDefault());
         // Making another linter from the same builder should be fine.
         assertJSLintOK(builder.fromDefault());
+    }
+
+    @Test
+    public void timeOutThrowsException() {
+        thrown.expect(TimeLimitedContextFactory.TimeExceededException.class);
+        // Hopefully 0ns should be short enough to trigger a timeout. I'm
+        // betting that we have enough ops in parsing JSLint to trigger the
+        // context factory's periodic checks.
+        JSLint lint = builder.timeout(0, TimeUnit.NANOSECONDS).fromDefault();
+        lint.lint("-", "alert(42)");
     }
 }

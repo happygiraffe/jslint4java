@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -22,10 +23,11 @@ public class JSLintBuilder {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private final ContextFactory contextFactory = new ContextFactory();
+    private ContextFactory contextFactory = new ContextFactory();
 
     /**
-     * Initialize the scope from a jslint.js found in the classpath. Assumes a UTF-8 encoding.
+     * Initialize the scope from a jslint.js found in the classpath. Assumes a
+     * UTF-8 encoding.
      *
      * @param resource
      *            the location of jslint.js on the classpath.
@@ -72,8 +74,8 @@ public class JSLintBuilder {
     }
 
     /**
-     * Initialize the scope with the jslint.js passed in on the filesystem. Assumes a UTF-8
-     * encoding.
+     * Initialize the scope with the jslint.js passed in on the filesystem.
+     * Assumes a UTF-8 encoding.
      *
      * @param f
      *            the path to jslint.js
@@ -122,5 +124,30 @@ public class JSLintBuilder {
         } finally {
             Context.exit();
         }
+    }
+
+    /**
+     * Set this JSLint instance to time out after maxTimeInSeconds.
+     *
+     * @param maxTimeInSeconds
+     *            maximum execution time in seconds.
+     * @return this
+     */
+    public JSLintBuilder timeout(long maxTimeInSeconds) {
+        return timeout(maxTimeInSeconds, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Set this JSLint instance to timeout after maxTime.
+     *
+     * @param maxTime
+     *            The maximum execution time.
+     * @param timeUnit
+     *            The unit of maxTime.
+     * @return this
+     */
+    public JSLintBuilder timeout(long maxTime, TimeUnit timeUnit) {
+        contextFactory = new TimeLimitedContextFactory(maxTime, timeUnit);
+        return this;
     }
 }
