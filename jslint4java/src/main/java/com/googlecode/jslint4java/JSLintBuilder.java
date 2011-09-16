@@ -20,9 +20,9 @@ import org.mozilla.javascript.ScriptableObject;
 public class JSLintBuilder {
     private static final String JSLINT_FILE = "com/googlecode/jslint4java/jslint.js";
 
-    private final ContextFactory contextFactory = new ContextFactory();
+    private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private final Charset utf8 = Charset.forName("UTF-8");
+    private final ContextFactory contextFactory = new ContextFactory();
 
     /**
      * Initialize the scope from a jslint.js found in the classpath. Assumes a UTF-8 encoding.
@@ -34,7 +34,7 @@ public class JSLintBuilder {
      *             if there are any problems reading the resource.
      */
     public JSLint fromClasspathResource(String resource) throws IOException {
-        return fromClasspathResource(resource, utf8);
+        return fromClasspathResource(resource, UTF8);
     }
 
     /**
@@ -82,7 +82,7 @@ public class JSLintBuilder {
      *             if the file can't be read.
      */
     public JSLint fromFile(File f) throws IOException {
-        return fromFile(f, utf8);
+        return fromFile(f, UTF8);
     }
 
     /**
