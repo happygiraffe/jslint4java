@@ -188,4 +188,13 @@ Tests for the JSLint ant task.
           <fileset file="bom.js" />
         </jsl:jslint>
     </target>
+
+    <target name="testTimeout">
+        <au:expectfailure expectedmessage="TimeExceededException">
+            <!-- Use a custom jslint.js which calls Thread.sleep(). -->
+            <jsl:jslint timeout="1" jslint="sleepy-lint.js">
+                <fileset file="good.js" />
+            </jsl:jslint>
+        </au:expectfailure>
+    </target>
 </project>
