@@ -115,6 +115,8 @@ class Main {
 
     private JSLint lint;
 
+    private final JSLintBuilder lintBuilder = new JSLintBuilder();
+
     private void die(String message) {
         throw new DieException(message, 1);
     }
@@ -158,14 +160,13 @@ class Main {
 
     private JSLint makeLint(Flags flags) {
         try {
-            JSLintBuilder builder = new JSLintBuilder();
             if (flags.timeout > 0) {
-                builder.timeout(flags.timeout);
+                lintBuilder.timeout(flags.timeout);
             }
             if (flags.jslint != null) {
-                return builder.fromFile(new File(flags.jslint));
+                return lintBuilder.fromFile(new File(flags.jslint));
             } else {
-                return builder.fromDefault();
+                return lintBuilder.fromDefault();
             }
         } catch (IOException e) {
             die(e.getMessage());
@@ -264,6 +265,9 @@ class Main {
 
     private void version() {
         // TODO: display jslint4java version as well.
+        if (lint == null) {
+            lint = lintBuilder.fromDefault();
+        }
         info("using jslint version " + lint.getEdition());
         throw new DieException(null, 0);
     }
