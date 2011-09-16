@@ -118,6 +118,13 @@ public class JSLintMojo extends AbstractMojo {
      */
     private File jslintSource;
 
+    /**
+     * How many seconds JSLint is allowed to run.
+     *
+     * @parameter expression="${jslint.timeout}"
+     */
+    private long timeout;
+
     /** Add a single option.  For testing only. */
     void addOption(Option sloppy, String value) {
         options.put(sloppy.name().toLowerCase(Locale.ENGLISH), value);
@@ -181,6 +188,9 @@ public class JSLintMojo extends AbstractMojo {
 
     private JSLint applyJSlintSource() throws MojoExecutionException {
         JSLintBuilder builder = new JSLintBuilder();
+        if (timeout > 0) {
+            builder.timeout(timeout);
+        }
         if (jslintSource != null) {
             try {
                 return builder.fromFile(jslintSource, Charset.forName(encoding));
