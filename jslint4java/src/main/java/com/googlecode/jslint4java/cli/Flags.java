@@ -25,6 +25,9 @@ class Flags {
     @Parameter(names = "--report", description = "Display report in different formats: plain, xml, junit, checkstyle and report")
     public String report;
 
+    @Parameter(names = "--timeout", description = "Maximum number of seconds JSLint can run for")
+    public long timeout = 0;
+
     @Parameter(names = "--version", description = "Show the version of JSLint in use.")
     public boolean version;
 

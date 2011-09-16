@@ -115,10 +115,6 @@ class Main {
 
     private JSLint lint;
 
-    private Main() throws IOException {
-        lint = new JSLintBuilder().fromDefault();
-    }
-
     private void die(String message) {
         throw new DieException(message, 1);
     }
@@ -160,6 +156,23 @@ class Main {
         }
     }
 
+    private JSLint makeLint(Flags flags) {
+        try {
+            JSLintBuilder builder = new JSLintBuilder();
+            if (flags.timeout > 0) {
+                builder.timeout(flags.timeout);
+            }
+            if (flags.jslint != null) {
+                return builder.fromFile(new File(flags.jslint));
+            } else {
+                return builder.fromDefault();
+            }
+        } catch (IOException e) {
+            die(e.getMessage());
+        }
+        return null;
+    }
+
     private List<String> processOptions(String[] args) {
         JSLintFlags jslintFlags = new JSLintFlags();
         Flags flags = new Flags();
@@ -180,9 +193,7 @@ class Main {
         if (flags.encoding != null) {
             encoding = flags.encoding;
         }
-        if (flags.jslint != null) {
-            setJSLint(flags.jslint);
-        }
+        lint = makeLint(flags);
         setResultFormatter(flags.report);
         for (ParameterDescription pd : jc.getParameters()) {
             Field field = pd.getField();
@@ -224,14 +235,6 @@ class Main {
 
     private void setErrored(boolean errored) {
         this.errored = errored;
-    }
-
-    private void setJSLint(String jslint) {
-        try {
-            lint = new JSLintBuilder().fromFile(new File(jslint));
-        } catch (IOException e) {
-            die(e.getMessage());
-        }
     }
 
     private void setResultFormatter(String reportType) {
