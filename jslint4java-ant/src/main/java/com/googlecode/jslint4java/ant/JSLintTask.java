@@ -63,6 +63,8 @@ import com.googlecode.jslint4java.UnicodeBomInputStream;
  * not pass JSLint. Defaults to true.</dd>
  * <dt><code>options</code></dt>
  * <dd>Optional. A comma separated list of {@link Option} names. No default.</dd>
+ * <dt><code>timeout</code>
+ * <dd>Optional. The maximum amount of time that JSLint can run.
  * </dl>
  *
  * @author dom
@@ -88,6 +90,8 @@ public class JSLintTask extends Task {
     private final Map<Option, String> options = new HashMap<Option, String>();
 
     private PredefElement predef = null;
+
+    private long timeout = 0;
 
     /**
      * Check the contents of this {@link ResourceCollection}.
@@ -234,10 +238,14 @@ public class JSLintTask extends Task {
      */
     public JSLint makeLint() throws BuildException {
         try {
+            JSLintBuilder builder = new JSLintBuilder();
+            if (timeout > 0) {
+                builder.timeout(timeout);
+            }
             if (jslintSource == null) {
-                return new JSLintBuilder().fromDefault();
+                return builder.fromDefault();
             } else {
-                return new JSLintBuilder().fromFile(jslintSource);
+                return builder.fromFile(jslintSource);
             }
         } catch (IOException e) {
             throw new BuildException(e);
@@ -312,5 +320,10 @@ public class JSLintTask extends Task {
                 throw new BuildException("Unknown option " + optName);
             }
         }
+    }
+
+    /** Set the maximum time JSLint can run for in seconds. */
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 }
