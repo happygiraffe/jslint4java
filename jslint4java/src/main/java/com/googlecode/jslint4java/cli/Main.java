@@ -171,6 +171,9 @@ class Main {
             info(e.getMessage());
             usage(jc);
         }
+        if (flags.version) {
+            version();
+        }
         if (flags.help) {
             usage(jc);
         }
@@ -253,6 +256,11 @@ class Main {
 
     private void usage(JCommander jc) {
         jc.usage();
+        version();
+    }
+
+    private void version() {
+        // TODO: display jslint4java version as well.
         info("using jslint version " + lint.getEdition());
         throw new DieException(null, 0);
     }

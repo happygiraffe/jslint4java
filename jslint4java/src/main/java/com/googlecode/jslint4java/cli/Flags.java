@@ -25,8 +25,12 @@ class Flags {
     @Parameter(names = "--report", description = "Display report in different formats: plain, xml, junit, checkstyle and report")
     public String report;
 
+    @Parameter(names = "--version", description = "Show the version of JSLint in use.")
+    public boolean version;
+
     /**
-     * All remaining files on the command line. The ones that actually need linting.
+     * All remaining files on the command line. The ones that actually need
+     * linting.
      */
     @Parameter(description = "file.js ...")
     public List<String> files = new ArrayList<String>();
