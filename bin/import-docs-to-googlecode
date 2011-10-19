@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Import javadocs from the latest release to googlecode svn.
+# Import javadocs from the latest release to googlecode git.
 # This allows them to be made publically available in a fairly simple fashion.
 #
 
@@ -18,25 +18,17 @@ version=${name#jslint4java-}
 tmpd=$(mktemp -d -t $me.XXXXXX)
 trap "test -d '$tmpd' && rm -rf '$tmpd'" EXIT HUP INT QUIT TERM
 
-# Check properties are set up correctly.
-if ! egrep -q '^[[:space:]]*\*.html\b' ~/.subversion/config; then
-    cat <<EOF
-$me: please set up auto-props in ~/.subversion/config:
+set -e
 
-    [miscellany]
-    enable-auto-props = yes
-    [auto-props]
-    *.html = svn:eol-style=native;svn:mime-type=text/html
-    *.css = svn:eol-style=native;svn:mime-type=text/css
-    *.js = svn:eol-style=native;svn:mime-type=text/javascript
+git clone \
+  https://code.google.com/p/jslint4java.docs/ \
+  $tmpd
+unzip -q $distfile '*/docs/*' -d $tmpd
+cd $tmpd
+mv $tmpd/$name/docs $tmpd/$version
+git add $version
+git commit -m "Import $name docs."
+git push origin
 
-EOF
-    exit 1
-fi
-
-unzip -q $distfile -d $tmpd
-cd $tmpd/$name/docs
-svn import \
-    --auto-props \
-    --message "Import $name docs." \
-    https://jslint4java.googlecode.com/svn/docs/$version
+echo
+echo "http://docs.jslint4java.googlecode.com/git/$version/index.html"
