@@ -58,6 +58,18 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         fail("Didn't find error text in logs: " + expected);
     }
 
+    /**
+     * Check the file exists and is not empty.
+     *
+     * @return the expected file, for further inspection.
+     */
+    private File assertFileExists(String filename) {
+        File expectedFile = new File(temp.getRoot(), filename);
+        assertTrue(expectedFile + " exists", expectedFile.exists());
+        assertTrue("file has non-zero length", expectedFile.length() > 0);
+        return expectedFile;
+    }
+
     private File baseRelative(String child) {
         return new File(baseDir, child);
     }
@@ -157,17 +169,14 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     public void testLogToFile() throws Exception {
         useBadSource();
         executeMojoExpectingFailure();
-        File expectedFile = new File(temp.getRoot(), "jslint.xml");
-        assertTrue(expectedFile + " exists", expectedFile.exists());
-        assertTrue("xml report has non-zero length", expectedFile.length() > 0);
+        assertFileExists("jslint.xml");
     }
 
     @Test
     public void testLogToFileContents() throws Exception {
         useGoodSource();
         mojo.execute();
-        File report = new File(temp.getRoot(), "jslint.xml");
-        assertTrue(report + " exists", report.exists());
+        File report = assertFileExists("jslint.xml");
         Matcher m = Pattern.compile("<file\\s").matcher(readFile(report));
         assertTrue("found first <file", m.find());
         assertTrue("found second <file", m.find());
@@ -184,9 +193,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     public void testLogToFileOnSuccess() throws Exception {
         useGoodSource();
         mojo.execute();
-        File expectedFile = new File(temp.getRoot(), "jslint.xml");
-        assertTrue(expectedFile + " exists", expectedFile.exists());
-        assertTrue("xml report has non-zero length", expectedFile.length() > 0);
+        assertFileExists("jslint.xml");
     }
 
     @Test
