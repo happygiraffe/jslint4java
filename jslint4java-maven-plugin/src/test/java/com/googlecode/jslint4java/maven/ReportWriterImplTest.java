@@ -20,7 +20,7 @@ import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
 
-public class ReportWriterTest {
+public class ReportWriterImplTest {
 
     private static final String REPORT_XML = "report.xml";
 
@@ -29,13 +29,13 @@ public class ReportWriterTest {
 
     private final JSLintResultFormatter formatter = new JSLintXmlFormatter();
 
-    private ReportWriter createReportWriter(String filename) {
-        return new ReportWriter(new File(tmpf.getRoot(), filename), formatter);
+    private ReportWriterImpl createReportWriter(String filename) {
+        return new ReportWriterImpl(new File(tmpf.getRoot(), filename), formatter);
     }
 
     @Test
     public void createsNonEmptyFile() {
-        ReportWriter rw = createReportWriter(REPORT_XML);
+        ReportWriterImpl rw = createReportWriter(REPORT_XML);
         rw.open();
         rw.close();
         assertThat(rw.getReportFile().exists(), is(true));
@@ -46,7 +46,7 @@ public class ReportWriterTest {
     public void makesParentDirectory() {
         // issue 65: ensure we make *all* intervening directories.
         File parent = new File(new File(tmpf.getRoot(), "some"), "dir");
-        ReportWriter rw = new ReportWriter(new File(parent, REPORT_XML), formatter);
+        ReportWriter rw = new ReportWriterImpl(new File(parent, REPORT_XML), formatter);
         rw.open();
         rw.close();
         assertThat(parent.exists(), is(true));
@@ -62,7 +62,7 @@ public class ReportWriterTest {
     public void closeDoesntHideFileNotFoundExceptionWithNullPointerException() throws IOException {
         // This is guaranteed to fail as it's a file not a directory.
         File f  = tmpf.newFile("bob");
-        ReportWriter rw = new ReportWriter(new File(f, REPORT_XML), formatter);
+        ReportWriter rw = new ReportWriterImpl(new File(f, REPORT_XML), formatter);
         try {
             rw.open();
         } catch (RuntimeException e) {
@@ -87,7 +87,7 @@ public class ReportWriterTest {
 
     @Test
     public void reportContentsSanity() throws Exception {
-        ReportWriter rw = createReportWriter(REPORT_XML);
+        ReportWriterImpl rw = createReportWriter(REPORT_XML);
         rw.open();
         // Create a result with no problems.
         rw.report(new ResultBuilder("foo.js").build());

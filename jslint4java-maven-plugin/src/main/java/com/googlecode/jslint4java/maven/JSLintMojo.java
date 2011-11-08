@@ -279,7 +279,7 @@ public class JSLintMojo extends AbstractMojo {
 
     private ReportWriter makeReportWriter() {
         JSLintXmlFormatter formatter = new JSLintXmlFormatter();
-        return new ReportWriter(new File(outputFolder, JSLINT_XML), formatter);
+        return new ReportWriterImpl(new File(outputFolder, JSLINT_XML), formatter);
     }
 
     public void setDefaultSourceFolder(File defaultSourceFolder) {
