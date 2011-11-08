@@ -25,9 +25,12 @@ import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
 import com.googlecode.jslint4java.UnicodeBomInputStream;
+import com.googlecode.jslint4java.formatter.CheckstyleXmlFormatter;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
+import com.googlecode.jslint4java.formatter.JUnitXmlFormatter;
 import com.googlecode.jslint4java.formatter.PlainFormatter;
+import com.googlecode.jslint4java.formatter.ReportFormatter;
 
 /**
  * Validates JavaScript using jslint4java.
@@ -40,9 +43,21 @@ import com.googlecode.jslint4java.formatter.PlainFormatter;
 // TODO Support HTML reports (site plugin mojo?)
 public class JSLintMojo extends AbstractMojo {
 
+    /** Where to write the HTML report. */
+    private static final String REPORT_HTML = "report.html";
+
+    /** Where to write the plain text report. */
+    private static final String REPORT_TXT = "report.txt";
+
+    /** Where to write the checkstyle report. */
+    private static final String CHECKSTYLE_XML = "checkstyle.xml";
+
     private static final String DEFAULT_INCLUDES = "**/*.js";
 
     private static final String JSLINT_XML = "jslint.xml";
+
+    /** Where to write the junit report. */
+    private static final String JUNIT_XML = "junit.xml";
 
     /**
      * Specifies the the source files to be excluded for JSLint (relative to
@@ -278,8 +293,17 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     private ReportWriter makeReportWriter() {
-        JSLintXmlFormatter formatter = new JSLintXmlFormatter();
-        return new ReportWriterImpl(new File(outputFolder, JSLINT_XML), formatter);
+        ReportWriterImpl f1 = new ReportWriterImpl(new File(outputFolder, JSLINT_XML),
+                new JSLintXmlFormatter());
+        ReportWriterImpl f2 = new ReportWriterImpl(new File(outputFolder, JUNIT_XML),
+                new JUnitXmlFormatter());
+        ReportWriterImpl f3 = new ReportWriterImpl(new File(outputFolder, CHECKSTYLE_XML),
+                new CheckstyleXmlFormatter());
+        ReportWriterImpl f4 = new ReportWriterImpl(new File(outputFolder, REPORT_TXT),
+                new PlainFormatter());
+        ReportWriterImpl f5 = new ReportWriterImpl(new File(outputFolder, REPORT_HTML),
+                new ReportFormatter());
+        return new MultiReportWriter(f1, f2, f3, f4, f5);
     }
 
     public void setDefaultSourceFolder(File defaultSourceFolder) {
