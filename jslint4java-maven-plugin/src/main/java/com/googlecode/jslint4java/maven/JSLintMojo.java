@@ -165,7 +165,7 @@ public class JSLintMojo extends AbstractMojo {
         applyOptions(jsLint);
         List<File> files = getFilesToProcess();
         int failures = 0;
-        ReportWriter reporter = new ReportWriter(new File(outputFolder, JSLINT_XML), new JSLintXmlFormatter());
+        ReportWriter reporter = makeReportWriter();
         try {
             reporter.open();
             for (File file : files) {
@@ -275,6 +275,11 @@ public class JSLintMojo extends AbstractMojo {
         for (String line : report.split("\n")) {
             getLog().info(line);
         }
+    }
+
+    private ReportWriter makeReportWriter() {
+        JSLintXmlFormatter formatter = new JSLintXmlFormatter();
+        return new ReportWriter(new File(outputFolder, JSLINT_XML), formatter);
     }
 
     public void setDefaultSourceFolder(File defaultSourceFolder) {
