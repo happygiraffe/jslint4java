@@ -150,8 +150,17 @@ $ mvn jslint4java:lint
 
       <tr>
         <td><code>&lt;outputDirectory&gt;</code></td>
-        <td>Where to write the <code>jslint.xml</code> report file.</td>
-        <td><code>${project.build.directory}</code></td>
+        <td>Where to write the report files.  JSLint generates the same report in several
+        different formats.
+        <dl>
+        <dt><code>jslint.xml</code><dd>jslint4java's own XML format.
+        <dt><code>junit.xml</code><dd>JUnit style reports.
+        <dt><code>checkstyle.xml</code><dd>Checkstyle reports format.
+        <dt><code>report.html</code><dd>JSLint's own HTML report.
+        <dt><code>report.txt</code><dd>A plain text report.
+        </dl>
+        </td>
+        <td><code>${project.build.directory}/jslint4java</code></td>
       </tr>
 
       <tr>
