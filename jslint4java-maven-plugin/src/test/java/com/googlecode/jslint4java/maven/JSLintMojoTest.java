@@ -170,6 +170,11 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         useBadSource();
         executeMojoExpectingFailure();
         assertFileExists("jslint.xml");
+        // Additional reports we should always generate.
+        assertFileExists("checkstyle.xml");
+        assertFileExists("junit.xml");
+        assertFileExists("report.html");
+        assertFileExists("report.txt");
     }
 
     @Test
