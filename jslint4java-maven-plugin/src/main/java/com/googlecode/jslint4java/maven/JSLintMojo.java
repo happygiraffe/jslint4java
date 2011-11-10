@@ -115,7 +115,7 @@ public class JSLintMojo extends AbstractMojo {
      * Base folder for report output.
      *
      * @parameter expression="${jslint.outputFolder}"
-     *            default-value="${project.build.directory}"
+     *            default-value="${project.build.directory}/jslint4java"
      */
     private File outputFolder = new File("target");
 
