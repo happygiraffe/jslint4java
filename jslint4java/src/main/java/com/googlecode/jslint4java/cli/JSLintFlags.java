@@ -7,9 +7,6 @@ import com.beust.jcommander.Parameter;
  */
 class JSLintFlags {
     // BEGIN-OPTIONS
-    @Parameter(names = "--adsafe", description = "If adsafe rules should be enforced")
-    public Boolean ADSAFE = null;
-
     @Parameter(names = "--bitwise", description = "If bitwise operators should be allowed")
     public Boolean BITWISE = null;
 
@@ -87,9 +84,6 @@ class JSLintFlags {
 
     @Parameter(names = "--rhino", description = "If the rhino environment globals should be predefined")
     public Boolean RHINO = null;
-
-    @Parameter(names = "--safe", description = "If use of some browser features should be restricted")
-    public Boolean SAFE = null;
 
     @Parameter(names = "--sloppy", description = "If the 'use strict'; pragma is optional")
     public Boolean SLOPPY = null;

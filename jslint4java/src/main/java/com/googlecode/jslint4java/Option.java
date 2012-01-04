@@ -12,9 +12,6 @@ import java.util.Locale;
  */
 public enum Option {
     // BEGIN-OPTIONS
-    /** If adsafe rules should be enforced */
-    ADSAFE("If adsafe rules should be enforced", Boolean.class),
-
     /** If bitwise operators should be allowed */
     BITWISE("If bitwise operators should be allowed", Boolean.class),
 
@@ -92,9 +89,6 @@ public enum Option {
 
     /** If the rhino environment globals should be predefined */
     RHINO("If the rhino environment globals should be predefined", Boolean.class),
-
-    /** If use of some browser features should be restricted */
-    SAFE("If use of some browser features should be restricted", Boolean.class),
 
     /** If the 'use strict'; pragma is optional */
     SLOPPY("If the 'use strict'; pragma is optional", Boolean.class),

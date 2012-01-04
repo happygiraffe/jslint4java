@@ -1,6 +1,12 @@
 Revision history for jslint4java
 ================================
 
+2.0.2 (2012-01-05)
+------------------
+
+ * Update to JSLint 2011-12-21.
+   - This removes the `adsafe` and `safe` options.
+
 2.0.1 (2011-10-19)
 ------------------
 
