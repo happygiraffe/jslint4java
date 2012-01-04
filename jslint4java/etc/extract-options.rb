@@ -24,7 +24,7 @@ File.open(ARGV[0]) do |fh|
   while line = fh.gets do
     # The jslint options are now in a comment.  Use the first and last options
     # as delimiters.
-    if (line =~ /^\/\/\s{5}adsafe\s/) .. (line =~ /^\s*$/)
+    if (line =~ /^\/\/\s{5}bitwise\s/) .. (line =~ /^\s*$/)
       if md = line.match(re)
         key = md[1]
         if md[3]
