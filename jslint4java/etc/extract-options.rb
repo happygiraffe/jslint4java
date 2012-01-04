@@ -3,10 +3,12 @@
 # Pull out the list of options from jslint.js.
 #
 
-opts = {
+PREDEFINED_OPTS = {
   # Hard code, as not mentioned in the source list.
   'predef' => ['The names of predefined global variables', 'StringArray'],
 }
+
+opts = PREDEFINED_OPTS.clone
 
 # The non-boolean option types.
 opt_types = {
@@ -40,7 +42,7 @@ File.open(ARGV[0]) do |fh|
   end
 end
 
-if opts.length == 0
+if opts.length == PREDEFINED_OPTS.length
   raise 'Ooops, no options found!'
 end
 
