@@ -103,7 +103,7 @@ public class JSLint {
      * Create a new {@link JSLint} object. You must pass in a {@link Scriptable}
      * which already has the {@code JSLINT} function defined.
      */
-    public JSLint(ContextFactory contextFactory, ScriptableObject scope) {
+    JSLint(ContextFactory contextFactory, ScriptableObject scope) {
         this.contextFactory = contextFactory;
         this.scope = scope;
         // We should no longer be updating this.
