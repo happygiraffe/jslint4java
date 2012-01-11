@@ -26,6 +26,7 @@ import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
  * A utility class to check JavaScript source code for potential problems.
  *
  * @author dom
+ * @see JSLintBuilder Construction of JSLint
  */
 public class JSLint {
 
@@ -101,7 +102,8 @@ public class JSLint {
 
     /**
      * Create a new {@link JSLint} object. You must pass in a {@link Scriptable}
-     * which already has the {@code JSLINT} function defined.
+     * which already has the {@code JSLINT} function defined. You are expected
+     * to use {@link JSLintBuilder} rather than calling this constructor.
      */
     JSLint(ContextFactory contextFactory, ScriptableObject scope) {
         this.contextFactory = contextFactory;
