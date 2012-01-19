@@ -18,6 +18,7 @@ import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.Option;
+import com.googlecode.jslint4java.UnicodeBomInputStream;
 import com.googlecode.jslint4java.formatter.CheckstyleXmlFormatter;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
@@ -143,7 +144,8 @@ class Main {
     private void lintFile(String file) throws IOException {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
+            reader = new BufferedReader(new InputStreamReader(new UnicodeBomInputStream(
+                    new FileInputStream(file)).skipBOM(), encoding));
             JSLintResult result = lint.lint(file, reader);
             info(formatter.format(result));
             if (!result.getIssues().isEmpty()) {
