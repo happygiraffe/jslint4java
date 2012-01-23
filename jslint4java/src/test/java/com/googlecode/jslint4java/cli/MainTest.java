@@ -12,7 +12,6 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +20,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
 public class MainTest {
@@ -79,7 +79,7 @@ public class MainTest {
 
         public void setInput(String input) {
             origIn = System.in;
-            System.setIn(new ByteArrayInputStream(input.getBytes(Charset.forName(UTF_8))));
+            System.setIn(new ByteArrayInputStream(input.getBytes(Charsets.UTF_8)));
         }
     }
 
