@@ -62,6 +62,13 @@ public class MainTest {
     }
 
     @Test
+    public void testBom() throws IOException, URISyntaxException {
+        String path = pathTo("bom.js");
+        int exit = runLint("--predef", "alert", path);
+        assertLintOutput(exit, 0, NO_OUTPUT, NO_OUTPUT);
+    }
+
+    @Test
     public void testOneBad() throws IOException, URISyntaxException {
         String path = pathTo("bad.js");
 
