@@ -38,13 +38,20 @@ class Main {
      */
     private static final class DefaultFormatter implements JSLintResultFormatter {
         public String format(JSLintResult result) {
+            if (result.getIssues().isEmpty()) {
+                return "";
+            }
+            String nl = System.getProperty("line.separator");
             StringBuilder sb = new StringBuilder();
             for (Issue issue : result.getIssues()) {
                 sb.append(PROGNAME);
                 sb.append(':');
                 sb.append(issue.toString());
-                sb.append('\n');
+                sb.append(nl);
             }
+            // Strip trailing newline if present.  The interface is wrong; we should return
+            // a list of lines, not a String.
+            sb.delete(sb.length() - nl.length(), sb.length());
             return sb.toString();
         }
 
@@ -148,7 +155,10 @@ class Main {
             reader = new BufferedReader(new InputStreamReader(new UnicodeBomInputStream(
                     new FileInputStream(file)).skipBOM(), encoding));
             JSLintResult result = lint.lint(file, reader);
-            info(formatter.format(result));
+            String msg = formatter.format(result);
+            if (msg.length() > 0) {
+                info(msg);
+            }
             if (!result.getIssues().isEmpty()) {
                 setErrored(true);
             }
