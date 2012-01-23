@@ -94,7 +94,8 @@ class Main {
         }
     }
 
-    private int run(String[] args) throws IOException {
+    // @VisibleForTesting.
+    int run(String[] args) throws IOException {
         List<String> files = processOptions(args);
         if (formatter.header() != null) {
             info(formatter.header());
