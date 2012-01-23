@@ -18,6 +18,7 @@ import com.google.common.base.Joiner;
 
 public class MainTest {
 
+    private static final String NEWLINE = System.getProperty("line.separator");
     private static final String RESOURCE_PREFIX = "com/googlecode/jslint4java/";
     private static final List<String> NO_OUTPUT = new ArrayList<String>();
 
@@ -28,9 +29,9 @@ public class MainTest {
 
     private void assertLintOutput(int actualExit, int expectedExit, List<String> expectedStdoutLines,
             List<String> expectedStderrLines) throws IOException, URISyntaxException {
-        Joiner newlineJoiner = Joiner.on("\n");
-        assertThat(stdio.getStdout(), is(newlineJoiner.join(expectedStdoutLines)));
-        assertThat(stdio.getStderr(), is(newlineJoiner.join(expectedStderrLines)));
+        Joiner nl = Joiner.on(NEWLINE);
+        assertThat(stdio.getStdout(), is(nl.join(expectedStdoutLines)));
+        assertThat(stdio.getStderr(), is(nl.join(expectedStderrLines)));
         // Do this last so that we see stdout/stderr errors first.
         assertThat(actualExit, is(expectedExit));
     }
