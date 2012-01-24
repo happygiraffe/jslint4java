@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -27,6 +28,9 @@ public class MainTest {
 
     @Rule
     public StdioResource stdio = new StdioResource();
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     private final Main main = new Main();
 
@@ -69,6 +73,20 @@ public class MainTest {
         String path = pathTo("bom.js");
         int exit = runLint("--predef", "alert", path);
         assertLintOutput(exit, 0, NO_OUTPUT, NO_OUTPUT);
+    }
+
+    @Test
+    public void testFileNotFound() throws Exception {
+        File nonexistent = tempFolder.newFile("nonexistent.js");
+        String path = nonexistent.getAbsolutePath();
+        try {
+            assertThat(nonexistent.delete(), is(true));
+            runLint(path);
+            fail("should have thrown DieException");
+        } catch (DieException e) {
+            assertThat(e.getCode(), is(1));
+            assertThat(e.getMessage(), is(path + ": No such file or directory."));
+        }
     }
 
     @Test
