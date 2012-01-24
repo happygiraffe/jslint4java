@@ -1,8 +1,10 @@
 package com.googlecode.jslint4java.cli;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.containsString;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,6 +88,22 @@ public class MainTest {
         } catch (DieException e) {
             assertThat(e.getCode(), is(1));
             assertThat(e.getMessage(), is(path + ": No such file or directory."));
+        }
+    }
+
+    @Test
+    public void testHelp() throws Exception {
+        try {
+            runLint("--help");
+            fail("should have thrown DieException");
+        } catch (DieException e) {
+            assertThat(e.getCode(), is(0));
+            assertThat(e.getMessage(), nullValue());
+            assertThat(stdio.getStderr(), is(""));
+            String stdout = stdio.getStdout();
+            assertThat(stdout, containsString("Usage: jslint4java [options] file.js ..."));
+            assertThat(stdout, containsString("--help"));
+            assertThat(stdout, containsString("using jslint version"));
         }
     }
 
