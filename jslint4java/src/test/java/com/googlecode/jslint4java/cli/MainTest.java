@@ -175,6 +175,19 @@ public class MainTest {
         assertLintOutput(exit, 1, expectedDefaultReportForBadJs(path), NO_OUTPUT);
     }
 
+    /** Does the junit report look OK? */
+    @Test
+    public void testReportJunit() throws IOException, URISyntaxException {
+        String path = pathTo("bad.js");
+        int exit = runLint("--report", "junit", path);
+        assertStdoutContains("<testsuites>");
+        assertStdoutContains("<testsuite ");
+        assertStdoutContains("<testcase ");
+        assertStdoutContains(path + ":1:1:'alert' was used before it was defined.\n");
+        assertStdoutContains(path + ":1:10:Expected ';' and instead saw '(end)'.\n");
+        assertThat(exit, is(1));
+    }
+
     /**
      * Does the plain report look OK?
      */
