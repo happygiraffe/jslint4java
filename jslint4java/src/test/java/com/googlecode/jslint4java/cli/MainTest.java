@@ -122,6 +122,20 @@ public class MainTest {
     }
 
     @Test
+    public void testHelpShownWhenNoFiles() throws Exception {
+        try {
+            runLint();
+            fail("should have thrown DieException");
+        } catch (DieException e) {
+            assertThat(e.getCode(), is(0));
+            assertThat(e.getMessage(), nullValue());
+            assertThat(stdio.getStderr(), is(""));
+            String stdout = stdio.getStdout();
+            assertThat(stdout, containsString("Usage: jslint4java [options] file.js ..."));
+        }
+    }
+
+    @Test
     public void testOneBad() throws IOException, URISyntaxException {
         String path = pathTo("bad.js");
 
