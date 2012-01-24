@@ -78,6 +78,20 @@ public class MainTest {
     }
 
     @Test
+    public void testBadFlag() throws Exception {
+        try {
+            runLint("--xyzzy");
+            fail("should have thrown DieException");
+        } catch (DieException e) {
+            // TODO: should be one not zero
+            assertThat(e.getCode(), is(0));
+            assertThat(e.getMessage(), nullValue());
+            assertThat(stdio.getStderr(), is(""));
+            assertThat(stdio.getStdout(), containsString("Unknown option: --xyzzy"));
+        }
+    }
+
+    @Test
     public void testFileNotFound() throws Exception {
         File nonexistent = tempFolder.newFile("nonexistent.js");
         String path = nonexistent.getAbsolutePath();
