@@ -58,6 +58,10 @@ public class MainTest {
         assertThat(actualExit, is(expectedExit));
     }
 
+    private void assertStdoutContains(String expected) {
+        assertThat(stdio.getStdout(), containsString(expected));
+    }
+
     /** All because join() won't append a trailing newline. */
     private Iterable<String> maybeAddTrailer(List<String> lines) {
         if (lines.isEmpty()) {
@@ -122,10 +126,9 @@ public class MainTest {
             fail("should have thrown DieException");
         } catch (DieException e) {
             assertDiedHappily(e);
-            String stdout = stdio.getStdout();
-            assertThat(stdout, containsString("Usage: jslint4java [options] file.js ..."));
-            assertThat(stdout, containsString("--help"));
-            assertThat(stdout, containsString("using jslint version"));
+            assertStdoutContains("Usage: jslint4java [options] file.js ...");
+            assertStdoutContains("--help");
+            assertStdoutContains("using jslint version");
         }
     }
 
@@ -136,9 +139,7 @@ public class MainTest {
             fail("should have thrown DieException");
         } catch (DieException e) {
             assertDiedHappily(e);
-            assertThat(stdio.getStderr(), is(""));
-            String stdout = stdio.getStdout();
-            assertThat(stdout, containsString("Usage: jslint4java [options] file.js ..."));
+            assertStdoutContains("Usage: jslint4java [options] file.js ...");
         }
     }
 
