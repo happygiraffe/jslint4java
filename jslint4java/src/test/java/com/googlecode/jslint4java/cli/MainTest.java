@@ -62,6 +62,13 @@ public class MainTest {
         assertThat(stdio.getStdout(), containsString(expected));
     }
 
+    /** The default errors from bad.js. */
+    private List<String> expectedStdoutForBadJs(String path) {
+        return ImmutableList.of(
+                "jslint:" + path + ":1:1:'alert' was used before it was defined.",
+                "jslint:" + path + ":1:10:Expected ';' and instead saw '(end)'.");
+    }
+
     /** All because join() won't append a trailing newline. */
     private Iterable<String> maybeAddTrailer(List<String> lines) {
         if (lines.isEmpty()) {
@@ -153,12 +160,18 @@ public class MainTest {
     @Test
     public void testOneBadFile() throws IOException, URISyntaxException {
         String path = pathTo("bad.js");
-
-        List<String> expectedStdout = ImmutableList.of(
-                "jslint:" + path + ":1:1:'alert' was used before it was defined.",
-                "jslint:" + path + ":1:10:Expected ';' and instead saw '(end)'.");
         int exit = runLint(path);
-        assertLintOutput(exit, 1, expectedStdout, NO_OUTPUT);
+        assertLintOutput(exit, 1, expectedStdoutForBadJs(path), NO_OUTPUT);
+    }
+
+    /**
+     * Does the default report look OK? This should be the same as not specifying --report.
+     */
+    @Test
+    public void testReportDefault() throws IOException, URISyntaxException {
+        String path = pathTo("bad.js");
+        int exit = runLint("--report", "", path);
+        assertLintOutput(exit, 1, expectedStdoutForBadJs(path), NO_OUTPUT);
     }
 
     @Test
