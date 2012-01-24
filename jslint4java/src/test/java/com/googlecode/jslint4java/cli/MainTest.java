@@ -144,7 +144,14 @@ public class MainTest {
     }
 
     @Test
-    public void testOneBad() throws IOException, URISyntaxException {
+    public void testMaybeGoodFile() throws IOException, URISyntaxException {
+        // This test is mostly about interpreting flags correctly.
+        int exit = runLint("--evil", "--sloppy", pathTo("maybe-good.js"));
+        assertLintOutput(exit, 0, NO_OUTPUT, NO_OUTPUT);
+    }
+
+    @Test
+    public void testOneBadFile() throws IOException, URISyntaxException {
         String path = pathTo("bad.js");
 
         List<String> expectedStdout = ImmutableList.of(
