@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -35,6 +36,17 @@ public class MainTest {
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
     private final Main main = new Main();
+
+    private void assertDied(DieException e, int code, Matcher<String> message) {
+        assertThat(e.getCode(), is(code));
+        assertThat(e.getMessage(), message);
+    }
+
+    private void assertDiedHappily(DieException e) {
+        assertDied(e, 0, nullValue(String.class));
+        // If we exited happily, we shouldn't be putting anything on stderr.
+        assertThat(stdio.getStderr(), is(""));
+    }
 
     /** Check that the exit value, stdout and stderr are as expected. */
     private void assertLintOutput(int actualExit, int expectedExit, List<String> expectedStdout,
@@ -71,24 +83,23 @@ public class MainTest {
     }
 
     @Test
-    public void testBom() throws IOException, URISyntaxException {
-        String path = pathTo("bom.js");
-        int exit = runLint("--predef", "alert", path);
-        assertLintOutput(exit, 0, NO_OUTPUT, NO_OUTPUT);
-    }
-
-    @Test
     public void testBadFlag() throws Exception {
         try {
             runLint("--xyzzy");
             fail("should have thrown DieException");
         } catch (DieException e) {
-            // TODO: should be one not zero
-            assertThat(e.getCode(), is(0));
-            assertThat(e.getMessage(), nullValue());
+            // TODO: should exit with one not zero
+            assertDiedHappily(e);
             assertThat(stdio.getStderr(), is(""));
             assertThat(stdio.getStdout(), containsString("Unknown option: --xyzzy"));
         }
+    }
+
+    @Test
+    public void testBom() throws IOException, URISyntaxException {
+        String path = pathTo("bom.js");
+        int exit = runLint("--predef", "alert", path);
+        assertLintOutput(exit, 0, NO_OUTPUT, NO_OUTPUT);
     }
 
     @Test
@@ -100,8 +111,7 @@ public class MainTest {
             runLint(path);
             fail("should have thrown DieException");
         } catch (DieException e) {
-            assertThat(e.getCode(), is(1));
-            assertThat(e.getMessage(), is(path + ": No such file or directory."));
+            assertDied(e, 1, is(path + ": No such file or directory."));
         }
     }
 
@@ -111,9 +121,7 @@ public class MainTest {
             runLint("--help");
             fail("should have thrown DieException");
         } catch (DieException e) {
-            assertThat(e.getCode(), is(0));
-            assertThat(e.getMessage(), nullValue());
-            assertThat(stdio.getStderr(), is(""));
+            assertDiedHappily(e);
             String stdout = stdio.getStdout();
             assertThat(stdout, containsString("Usage: jslint4java [options] file.js ..."));
             assertThat(stdout, containsString("--help"));
@@ -127,8 +135,7 @@ public class MainTest {
             runLint();
             fail("should have thrown DieException");
         } catch (DieException e) {
-            assertThat(e.getCode(), is(0));
-            assertThat(e.getMessage(), nullValue());
+            assertDiedHappily(e);
             assertThat(stdio.getStderr(), is(""));
             String stdout = stdio.getStdout();
             assertThat(stdout, containsString("Usage: jslint4java [options] file.js ..."));
@@ -150,9 +157,10 @@ public class MainTest {
     public void testVersion() throws Exception {
         String edition = new JSLintBuilder().fromDefault().getEdition();
         try {
-          runLint("--version");
-          fail("should have thrown DieException");
+            runLint("--version");
+            fail("should have thrown DieException");
         } catch (DieException e) {
+            assertDiedHappily(e);
             List<String> expectedStdout = ImmutableList.of("using jslint version " + edition);
             assertLintOutput(e.getCode(), 0, expectedStdout, NO_OUTPUT);
         }
