@@ -67,8 +67,9 @@ class Main {
     /**
      * This is just to avoid calling {@link System#exit(int)} outside of main()…
      */
+    // @VisibleForTesting
     @SuppressWarnings("serial")
-    private static class DieException extends RuntimeException {
+    static class DieException extends RuntimeException {
         private final int code;
 
         public DieException(String message, int code) {

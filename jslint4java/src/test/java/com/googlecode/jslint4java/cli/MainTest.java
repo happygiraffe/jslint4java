@@ -2,6 +2,7 @@ package com.googlecode.jslint4java.cli;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +16,8 @@ import org.junit.Test;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.googlecode.jslint4java.JSLintBuilder;
+import com.googlecode.jslint4java.cli.Main.DieException;
 
 public class MainTest {
 
@@ -77,5 +80,17 @@ public class MainTest {
                 "jslint:" + path + ":1:10:Expected ';' and instead saw '(end)'.");
         int exit = runLint(path);
         assertLintOutput(exit, 1, expectedStdout, NO_OUTPUT);
+    }
+
+    @Test
+    public void testVersion() throws Exception {
+        String edition = new JSLintBuilder().fromDefault().getEdition();
+        try {
+          runLint("--version");
+          fail("should have thrown DieException");
+        } catch (DieException e) {
+            List<String> expectedStdout = ImmutableList.of("using jslint version " + edition);
+            assertLintOutput(e.getCode(), 0, expectedStdout, NO_OUTPUT);
+        }
     }
 }
