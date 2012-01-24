@@ -206,6 +206,21 @@ public class MainTest {
         }
     }
 
+    /** Does the xml report look OK? */
+    @Test
+    public void testReportXml() throws IOException, URISyntaxException {
+        String path = pathTo("bad.js");
+        int exit = runLint("--report", "xml", path);
+        List<String> expectedReport = ImmutableList.of(
+                "<jslint>",
+                "<file name='" + path + "'>",
+                "<issue line='1' char='1' reason='&apos;alert&apos; was used before it was defined.' evidence='alert(42)'/>",
+                "<issue line='1' char='10' reason='Expected &apos;;&apos; and instead saw &apos;(end)&apos;.' evidence='alert(42)'/>",
+                "</file>",
+                "</jslint>");
+        assertLintOutput(exit, 1, expectedReport, NO_OUTPUT);
+    }
+
     @Test
     public void testVersion() throws Exception {
         String edition = new JSLintBuilder().fromDefault().getEdition();
