@@ -63,7 +63,7 @@ public class MainTest {
     }
 
     /** The default errors from bad.js. */
-    private List<String> expectedStdoutForBadJs(String path) {
+    private List<String> expectedDefaultReportForBadJs(String path) {
         return ImmutableList.of(
                 "jslint:" + path + ":1:1:'alert' was used before it was defined.",
                 "jslint:" + path + ":1:10:Expected ';' and instead saw '(end)'.");
@@ -161,7 +161,7 @@ public class MainTest {
     public void testOneBadFile() throws IOException, URISyntaxException {
         String path = pathTo("bad.js");
         int exit = runLint(path);
-        assertLintOutput(exit, 1, expectedStdoutForBadJs(path), NO_OUTPUT);
+        assertLintOutput(exit, 1, expectedDefaultReportForBadJs(path), NO_OUTPUT);
     }
 
     /**
@@ -170,8 +170,40 @@ public class MainTest {
     @Test
     public void testReportDefault() throws IOException, URISyntaxException {
         String path = pathTo("bad.js");
-        int exit = runLint("--report", "", path);
-        assertLintOutput(exit, 1, expectedStdoutForBadJs(path), NO_OUTPUT);
+        // TODO(hdm): Should be able to use "" rather than " ".
+        int exit = runLint("--report", " ", path);
+        assertLintOutput(exit, 1, expectedDefaultReportForBadJs(path), NO_OUTPUT);
+    }
+
+    /**
+     * Does the plain report look OK?
+     */
+    @Test
+    public void testReportPlain() throws IOException, URISyntaxException {
+        String path = pathTo("bad.js");
+        int exit = runLint("--report", "plain", path);
+        List<String> expectedReport = ImmutableList.of(
+                path + ":1:1: 'alert' was used before it was defined.",
+                "alert(42)",
+                "^",
+                path + ":1:10: Expected ';' and instead saw '(end)'.",
+                "alert(42)",
+                "         ^",
+                "");
+        assertLintOutput(exit, 1, expectedReport, NO_OUTPUT);
+    }
+
+    /**
+     * Complain if we ask for an unknown report.
+     */
+    @Test
+    public void testReportUnknown() throws IOException, URISyntaxException {
+        String path = pathTo("bad.js");
+        try {
+            runLint("--report", "UNKNOWN", path);
+        } catch (DieException e) {
+            assertDied(e, 1, is("unknown report type 'UNKNOWN'"));
+        }
     }
 
     @Test
