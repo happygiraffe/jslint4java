@@ -206,6 +206,20 @@ public class MainTest {
         assertLintOutput(exit, 1, expectedReport, NO_OUTPUT);
     }
 
+    @Test
+    public void testReportReport() throws Exception {
+        String path = pathTo("bad.js");
+        int exit = runLint("--report", "report", path);
+        assertStdoutContains("<html>");
+        assertStdoutContains("<h1 id='" + path + "'>" + path + "</h1>");
+        assertStdoutContains("<p>Problem at line 1 character 1: 'alert' was used before it was defined.</p>");
+        assertStdoutContains("<p class=evidence>alert(42)</p>");
+        assertStdoutContains("<p>Problem at line 1 character 10: Expected ';' and instead saw '(end)'.</p>");
+        assertStdoutContains("<p class=evidence>alert(42)</p></div>");
+        assertStdoutContains("</html>");
+        assertThat(exit, is(1));
+    }
+
     /**
      * Complain if we ask for an unknown report.
      */
