@@ -94,6 +94,13 @@ public class MainTest {
     }
 
     @Test
+    public void testAlternateJslint() throws Exception {
+        // This version always returns true.
+        int exit = runLint("--jslint", pathTo("stubjslint.js"), pathTo("bad.js"));
+        assertLintOutput(exit, 0, NO_OUTPUT, NO_OUTPUT);
+    }
+
+    @Test
     public void testBadFlag() throws Exception {
         try {
             runLint("--xyzzy");
