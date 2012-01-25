@@ -164,6 +164,22 @@ public class MainTest {
         assertLintOutput(exit, 1, expectedDefaultReportForBadJs(path), NO_OUTPUT);
     }
 
+    /** Does the checkstyle report look OK? */
+    @Test
+    public void testReportCheckstyle() throws IOException, URISyntaxException {
+        String path = pathTo("bad.js");
+        int exit = runLint("--report", "checkstyle", path);
+        assertStdoutContains("<checkstyle>");
+        assertStdoutContains("<file name='" + path + "'>");
+        assertStdoutContains("<error line='1' column='1' severity='warning' "
+                + "message='&apos;alert&apos; was used before it was defined.' "
+                + "source='com.googlecode.jslint4java.JSLint'/>");
+        assertStdoutContains("<error line='1' column='10' severity='warning' "
+                + "message='Expected &apos;;&apos; and instead saw &apos;(end)&apos;.' "
+                + "source='com.googlecode.jslint4java.JSLint'/>");
+        assertThat(exit, is(1));
+    }
+
     /**
      * Does the default report look OK? This should be the same as not specifying --report.
      */
