@@ -110,25 +110,46 @@ $ mvn jslint4java:lint
       <tr>
         <td><code>&lt;encoding&gt;</code></td>
         <td>What encoding to read the source files in.</td>
-        <td>UTF-8</td>
+        <td>
+          <pre class="prettyify">
+&lt;encoding&gt;UTF-8&lt;/encoding&gt;
+          </pre>
+        </td>
       </tr>
       
       <tr>
         <td><code>&lt;excludes&gt;</code></td>
         <td>A comma separated list of patterns to exclude from linting.</td>
-        <td></td>
+        <td>
+          <pre class="prettyify">
+&lt;excludes&gt;
+  &lt;!-- no excludes by default --&gt;
+&lt;/excludes&gt;
+          </pre>
+        </td>
       </tr>
 
       <tr>
         <td><code>&lt;includes&gt;</code></td>
         <td>A comma separated list of filename patterns lint.</td>
-        <td><code>**/*.js</code></td>
+        <td>
+          <pre class="prettyify">
+&lt;includes&gt;
+  &lt;include&gt;**/*.js&lt;/include&gt;
+&lt;/includes&gt;
+          </pre>
+        </td>
       </tr>
 
       <tr>
         <td><code>&lt;jslintSource&gt;</code></td>
         <td>An alternative <code>jslint.js</code> to use, in case the builtin version is insufficient.</td>
-        <td>The builtin version.</td>
+        <td>
+          <pre class="prettyify">
+&lt;!-- The builtin version. --&gt;
+&lt;jslintSource&gt;&lt;/jslintSource&gt;
+          </pre>
+        </td>
       </tr>
 
       <tr>
@@ -145,7 +166,13 @@ $ mvn jslint4java:lint
           <a href="apidocs/com/googlecode/jslint4java/Option.html">Option</a>
           for the full list of Options that can be specified.
         </td>
-        <td></td>
+        <td>
+          <pre class="prettyify">
+&lt;options&gt;
+  &lt;!-- no options enabled by default --&gt;
+&lt;/options&gt;
+          </pre>
+        </td>
       </tr>
 
       <tr>
@@ -160,19 +187,34 @@ $ mvn jslint4java:lint
         <dt><code>report.txt</code><dd>A plain text report.
         </dl>
         </td>
-        <td><code>${project.build.directory}/jslint4java</code></td>
+        <td>
+          <pre class="prettyify">
+&lt;outputDirectory&gt;${project.build.directory}/jslint4java&lt;/outputDirectory&gt;
+          </pre>
+        </td>
       </tr>
 
       <tr>
         <td><code>&lt;sourceFolders&gt;</code></td>
         <td>One or more folders to find the JavaScript files to lint.</td>
-        <td><code>${basedir}/src/main/webapp</code></td>
+        <td>
+          <pre class="prettyify">
+&lt;sourceFolders&gt;
+  &lt;sourceFolder&gt;${basedir}/src/main/webapp&lt;/sourceFolder&gt;
+&lt;/sourceFolders&gt;
+          </pre>
+        </td>
       </tr>
 
       <tr>
         <td><code>&lt;timeout&gt;</code></td>
         <td>How many seconds JSLint is allowed to run for.</td>
-        <td>infinite</td>
+        <td>
+          <pre class="prettyify">
+&lt;!-- infinite --&gt;
+&lt;timeout&gt;0&lt;/timeout&gt;
+          </pre>
+        </td>
       </tr>
 
     </table>
