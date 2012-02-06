@@ -13,6 +13,9 @@
   <url>http://code.google.com/p/jslint4java/</url>
   <description>The parent POM for jslint4java.</description>
   <inceptionYear>2007</inceptionYear>
+  <prerequisites>
+    <maven>3.0.3</maven>
+  </prerequisites>
   <licenses>
     <license>
       <name>New BSD License</name>
