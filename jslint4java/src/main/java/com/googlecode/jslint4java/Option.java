@@ -12,6 +12,9 @@ import java.util.Locale;
  */
 public enum Option {
     // BEGIN-OPTIONS
+    /** If the space may be omitted in anonymous function declarations */
+    ANON("If the space may be omitted in anonymous function declarations", Boolean.class),
+
     /** If bitwise operators should be allowed */
     BITWISE("If bitwise operators should be allowed", Boolean.class),
 
@@ -20,9 +23,6 @@ public enum Option {
 
     /** If upper case html should be allowed */
     CAP("If upper case html should be allowed", Boolean.class),
-
-    /** If types can be used inconsistently */
-    CONFUSION("If types can be used inconsistently", Boolean.class),
 
     /** If the continuation statement should be tolerated */
     CONTINUE("If the continuation statement should be tolerated", Boolean.class),

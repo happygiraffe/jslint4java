@@ -7,6 +7,9 @@ import com.beust.jcommander.Parameter;
  */
 class JSLintFlags {
     // BEGIN-OPTIONS
+    @Parameter(names = "--anon", description = "If the space may be omitted in anonymous function declarations")
+    public Boolean ANON = null;
+
     @Parameter(names = "--bitwise", description = "If bitwise operators should be allowed")
     public Boolean BITWISE = null;
 
@@ -15,9 +18,6 @@ class JSLintFlags {
 
     @Parameter(names = "--cap", description = "If upper case html should be allowed")
     public Boolean CAP = null;
-
-    @Parameter(names = "--confusion", description = "If types can be used inconsistently")
-    public Boolean CONFUSION = null;
 
     @Parameter(names = "--continue", description = "If the continuation statement should be tolerated")
     public Boolean CONTINUE = null;
