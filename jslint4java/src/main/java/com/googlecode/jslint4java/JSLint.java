@@ -274,7 +274,7 @@ public class JSLint {
     }
 
     private Issue issueForUnusedVariable(VariableWarning u, String systemId) {
-        String reason = String.format("Unused variable: %s in %s.", u.getName(), u.getFunction());
+        String reason = String.format("Unused variable: '%s' in %s.", u.getName(), u.getFunction());
         return new IssueBuilder(systemId, u.getLine(), 0, reason).build();
     }
 
