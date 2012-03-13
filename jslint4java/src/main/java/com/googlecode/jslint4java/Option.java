@@ -105,6 +105,9 @@ public enum Option {
     /** If multiple var statements per function should be allowed */
     VARS("If multiple var statements per function should be allowed", Boolean.class),
 
+    /** Enable additional warnings (jslint4java) */
+    WARNINGS("Enable additional warnings (jslint4java)", Boolean.class),
+
     /** If sloppy whitespace is tolerated */
     WHITE("If sloppy whitespace is tolerated", Boolean.class),
 

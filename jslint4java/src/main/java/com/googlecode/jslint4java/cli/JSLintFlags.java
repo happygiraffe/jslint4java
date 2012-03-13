@@ -100,6 +100,9 @@ class JSLintFlags {
     @Parameter(names = "--vars", description = "If multiple var statements per function should be allowed")
     public Boolean VARS = null;
 
+    @Parameter(names = "--warnings", description = "Enable additional warnings (jslint4java)")
+    public Boolean WARNINGS = null;
+
     @Parameter(names = "--white", description = "If sloppy whitespace is tolerated")
     public Boolean WHITE = null;
 

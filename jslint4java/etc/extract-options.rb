@@ -6,6 +6,8 @@
 PREDEFINED_OPTS = {
   # Hard code, as not mentioned in the source list.
   'predef' => ['The names of predefined global variables', 'StringArray'],
+  # This is specific to jslint4java.
+  'warnings' => ['Enable additional warnings (jslint4java)', 'Boolean'],
 }
 
 opts = PREDEFINED_OPTS.clone
