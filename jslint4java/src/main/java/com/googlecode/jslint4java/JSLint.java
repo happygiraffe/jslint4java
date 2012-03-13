@@ -202,12 +202,14 @@ public class JSLint {
                         b.addFunction(f);
                     }
                     if (Boolean.TRUE.equals(options.get(Option.WARNINGS))) {
-                        // Pull out the list of undefined variables as issues. This doesn't appear
-                        // to be a supported API, unfortunately.
+                        // Pull out the list of unused variables as issues. This doesn't appear
+                        // to be a supported API, unfortunately, but it does work.
                         for (VariableWarning u : Util.listValue("unused", data,
                                 new VariableWarningConverter())) {
                             b.addIssue(issueForUnusedVariable(u, systemId));
                         }
+                        // There is also a list of undefined variables.  But… these are already
+                        // reported by JSLint.  So let's not repeat them.
                     }
                 }
                 return b.build();
