@@ -300,4 +300,15 @@ public class JSLintTest {
         List<Issue> issues = lint("\"").getIssues();
         assertIssues(issues, "Unclosed string.", "Stopping.  (100% scanned).");
     }
+
+    /**
+     * Normally, these only get reported as part of .data(), but JSLint treats them as errors.
+     */
+    @Test
+    public void testUnusedWarnings() {
+        lint.addOption(Option.WARNINGS);
+        String js = "function foo(a, b) {\n    return a;\n}";
+        List<Issue> issues = lint(js).getIssues();
+        assertIssues(issues, "Unused variable: b in foo.");
+    }
 }

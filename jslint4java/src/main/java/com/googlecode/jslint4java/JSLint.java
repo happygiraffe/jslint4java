@@ -21,6 +21,7 @@ import org.mozilla.javascript.UniqueTag;
 import com.googlecode.jslint4java.Issue.IssueBuilder;
 import com.googlecode.jslint4java.JSFunction.Builder;
 import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
+import com.googlecode.jslint4java.Util.Converter;
 
 /**
  * A utility class to check JavaScript source code for potential problems.
@@ -91,6 +92,19 @@ public class JSLint {
                 b.addLabel(label);
             }
             return b.build();
+        }
+    }
+
+    /**
+     * A helper class for looking up undefined variable objects.
+     */
+    private static class VariableWarningConverter implements Converter<VariableWarning> {
+        public VariableWarning convert(Object obj) {
+            Scriptable scope = (Scriptable) obj;
+            String name = Util.stringValue("name", scope);
+            int line = Util.intValue("line", scope);
+            String function = Util.stringValue("function", scope);
+            return new VariableWarning(name, line, function);
         }
     }
 
@@ -187,6 +201,14 @@ public class JSLint {
                     for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {
                         b.addFunction(f);
                     }
+                    if (Boolean.TRUE.equals(options.get(Option.WARNINGS))) {
+                        // Pull out the list of undefined variables as issues. This doesn't appear
+                        // to be a supported API, unfortunately.
+                        for (VariableWarning u : Util.listValue("unused", data,
+                                new VariableWarningConverter())) {
+                            b.addIssue(issueForUnusedVariable(u, systemId));
+                        }
+                    }
                 }
                 return b.build();
             }
@@ -249,6 +271,11 @@ public class JSLint {
     public String getEdition() {
         Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
         return (String) lintScope.get("edition", lintScope);
+    }
+
+    private Issue issueForUnusedVariable(VariableWarning u, String systemId) {
+        String reason = String.format("Unused variable: %s in %s.", u.getName(), u.getFunction());
+        return new IssueBuilder(systemId, u.getLine(), 0, reason).build();
     }
 
     /**
