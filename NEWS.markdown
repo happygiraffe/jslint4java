@@ -7,6 +7,9 @@ Revision history for jslint4java
  * Update to JSLint 2012-02-03.
    - This removes the `adsafe`, `confusion` and `safe` options.
    - This adds the `anon` option.
+ * issue 78: report unused variables.
+   - This adds a `warnings` option, as it's not _strictly_ an error
+     reported by JSLint.
 
 2.0.1 (2011-10-19)
 ------------------
