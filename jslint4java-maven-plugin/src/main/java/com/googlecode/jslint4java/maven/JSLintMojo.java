@@ -41,6 +41,7 @@ import com.googlecode.jslint4java.formatter.ReportFormatter;
  */
 // TODO Support alternate jslint
 // TODO Support HTML reports (site plugin mojo?)
+// TODO make sure files with issues are processed all the time when skipping untouched files
 public class JSLintMojo extends AbstractMojo {
 
     /** Where to write the HTML report. */
