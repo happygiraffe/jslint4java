@@ -153,6 +153,7 @@ public class JSLintMojo extends AbstractMojo {
      * Generate a timestamp file so unmodified files aren't checked on subsequent maven runs.
      * Unmodified files will be skipped and will <b>not</b> show up on report files.
      * (This includes files with issues that are left untouched.
+     * 
      * @parameter expression="${jslint.checkFileModificationTimes}" default-value="false"
      */
     private boolean checkFileModificationTimes = false;
