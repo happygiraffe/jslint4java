@@ -59,6 +59,14 @@ public class JSLintMojo extends AbstractMojo {
     /** Where to write the junit report. */
     private static final String JUNIT_XML = "junit.xml";
 
+    /** Where to find the timestamps */
+    private static final String REPORT_TIMESTAMPS = "timestamps.txt";
+    
+    /**
+     * @parameter default-value="${basedir}
+     */
+     private File baseDirectory;
+    
     /**
      * Specifies the the source files to be excluded for JSLint (relative to
      * {@link #defaultSourceFolder}). Maven applies its own defaults.
@@ -140,6 +148,13 @@ public class JSLintMojo extends AbstractMojo {
      */
     private long timeout;
 
+    /**
+     * Generate a timestamp file so unmodified files aren't checked twice
+     * 
+     * @parameter expression="${jslint.checkFileModificationTimes}" default-value="false"
+     */
+    private boolean checkFileModificationTimes = false;
+    
     /** Add a single option.  For testing only. */
     void addOption(Option sloppy, String value) {
         options.put(sloppy.name().toLowerCase(Locale.ENGLISH), value);
@@ -178,7 +193,11 @@ public class JSLintMojo extends AbstractMojo {
         JSLint jsLint = applyJSlintSource();
         applyDefaults();
         applyOptions(jsLint);
-        List<File> files = getFilesToProcess();
+        List<File> allFiles = getAllSourceFiles();
+        List<File> files = filesAfterRemovingNonModifiedFrom(allFiles);
+        if (checkFileModificationTimes && files.size()>0) {
+        	generateTimestampReport(allFiles);
+        }
         int failures = 0;
         ReportWriter reporter = makeReportWriter();
         try {
@@ -192,7 +211,7 @@ public class JSLintMojo extends AbstractMojo {
             reporter.close();
         }
         if (failures > 0) {
-            String message = "JSLint found " + failures + " problems in " + files.size() + " files";
+            String message = "JSLint found " + failures + " problems in " + allFiles.size() + " files";
             if (failOnError) {
                 throw new MojoFailureException(message);
             } else {
@@ -201,7 +220,7 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
-    private JSLint applyJSlintSource() throws MojoExecutionException {
+	private JSLint applyJSlintSource() throws MojoExecutionException {
         JSLintBuilder builder = new JSLintBuilder();
         if (timeout > 0) {
             builder.timeout(timeout);
@@ -228,11 +247,11 @@ public class JSLintMojo extends AbstractMojo {
      *
      * @return a {@link List} of {@link File}s.
      */
-    private List<File> getFilesToProcess() throws MojoExecutionException {
+    private List<File> getAllSourceFiles() throws MojoExecutionException {
         // Defaults.
         getLog().debug("includes=" + includes);
         getLog().debug("excludes=" + excludes);
-
+        
         List<File> files = new ArrayList<File>();
         for (File folder : sourceFolders) {
             getLog().debug("searching " + folder);
@@ -243,11 +262,53 @@ public class JSLintMojo extends AbstractMojo {
                 throw new MojoExecutionException("Error listing files", e);
             }
         }
-
+        
         return files;
     }
 
-    // Visible for testing only.
+	/** Return files to be excluded as they haven't been modified according to timestamp report
+	 * @param files to be checked
+	 * @return a {@link List} of {@link File}s to be excluded
+	 * @throws MojoExecutionException if timestamp file can't be read
+	 */
+	private List<File> filesNotModifiedAccordingToTimestampReport(List<File> files) throws MojoExecutionException {
+		List<File> notModifiedFiles = new ArrayList<File>();
+	    	File timestampsFile = new File(outputFolder, REPORT_TIMESTAMPS);
+	    	if (timestampsFile.exists()) {
+	    		FileTimestampExcludeLister excludeLister = new FileTimestampExcludeLister(files,timestampsFile);
+	    		try {
+	    			notModifiedFiles = excludeLister.files();
+				} catch (IOException e) {
+					throw new MojoExecutionException("Couldn't read timestamp exclude file",e);
+				}
+	    	}
+		return notModifiedFiles;
+	}
+
+	/** if we have set the option not to process untouched files we remove them from the list
+	 *  according to the timestamp report
+	 */
+	private List<File> filesAfterRemovingNonModifiedFrom(List<File> allFiles) throws MojoExecutionException {
+		List<File> fileList = new ArrayList<File>();
+		fileList.addAll(allFiles);
+		if (checkFileModificationTimes) {
+			List<File> unmodifiedFiles = filesNotModifiedAccordingToTimestampReport(allFiles);
+			if (unmodifiedFiles.size()>0) {
+				if (baseDirectory!=null) { // it's only null in testing
+					List<String> unmodifiedFileRelativePaths = new ArrayList<String>();
+					String baseDirectoryPath = baseDirectory.getPath()+"/";
+					for (File f : unmodifiedFiles) {
+						unmodifiedFileRelativePaths.add(f.getPath().replaceFirst(baseDirectoryPath, ""));
+					}
+					getLog().warn("Excluding non-modified files="+unmodifiedFileRelativePaths);
+				}
+				fileList.removeAll(unmodifiedFiles);
+			}
+		}
+		return fileList;
+	}
+
+	// Visible for testing only.
     Map<String, String> getOptions() {
         return options;
     }
@@ -292,7 +353,21 @@ public class JSLintMojo extends AbstractMojo {
         }
     }
 
-    private ReportWriter makeReportWriter() {
+    private void generateTimestampReport(List<File> files) {
+        ReportWriterImpl reporter = new ReportWriterImpl(new File(outputFolder, REPORT_TIMESTAMPS),
+        		new TimestampFormatter());
+        try {
+            reporter.open();
+            for (File file : files) {
+            	JSLintResult result = new JSLintResult.ResultBuilder(file.getPath()).build();
+            	reporter.report(result);
+            }
+        } finally {
+            reporter.close();
+        }
+	}
+
+	private ReportWriter makeReportWriter() {
         ReportWriterImpl f1 = new ReportWriterImpl(new File(outputFolder, JSLINT_XML),
                 new JSLintXmlFormatter());
         ReportWriterImpl f2 = new ReportWriterImpl(new File(outputFolder, JUNIT_XML),

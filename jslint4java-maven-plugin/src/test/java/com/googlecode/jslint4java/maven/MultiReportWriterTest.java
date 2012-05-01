@@ -23,7 +23,7 @@ public class MultiReportWriterTest {
         assertThat(file + " is not empty", file.length() > 0, is(true));
     }
 
-    private ReportWriter makeReportWriter(File aFile) {
+    private ReportWriter makeReportWriter(File aFile, boolean isAppending) {
         assertThat(aFile.exists(), is(false));
         return new ReportWriterImpl(aFile, new PlainFormatter());
     }
@@ -37,10 +37,10 @@ public class MultiReportWriterTest {
     @Test
     public void shouldWriteToMultipleFiles() throws Exception {
         File aFile = new File(tmpf.getRoot(), "a");
-        ReportWriter aWriter = makeReportWriter(aFile);
+        ReportWriter aWriter = makeReportWriter(aFile, false);
 
         File bFile = new File(tmpf.getRoot(), "b");
-        ReportWriter bWriter = makeReportWriter(bFile);
+        ReportWriter bWriter = makeReportWriter(bFile, false);
 
         ReportWriter multi = new MultiReportWriter(aWriter, bWriter);
         multi.open();

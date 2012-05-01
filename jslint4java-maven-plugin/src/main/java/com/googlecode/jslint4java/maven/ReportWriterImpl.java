@@ -80,4 +80,5 @@ public class ReportWriterImpl implements ReportWriter {
             throw new RuntimeException(e);
         }
     }
+
 }

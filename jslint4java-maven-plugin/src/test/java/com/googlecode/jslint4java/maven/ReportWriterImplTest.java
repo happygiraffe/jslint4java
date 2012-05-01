@@ -33,7 +33,26 @@ public class ReportWriterImplTest {
         return new ReportWriterImpl(new File(tmpf.getRoot(), filename), formatter);
     }
 
-    @Test
+    private String readFile(File reportFile) throws FileNotFoundException, IOException {
+	    InputStreamReader reader = null;
+	    try {
+	        reader = new InputStreamReader(new FileInputStream(reportFile),
+	                Charset.forName("UTF-8"));
+	        return IOUtil.toString(reader);
+	    } finally {
+	        IOUtil.close(reader);
+	    }
+    }
+
+	private void createReportWithoutProblems(ReportWriterImpl rw) {
+	
+		rw.open();
+	    // Create a result with no problems.
+	    rw.report(new ResultBuilder("foo.js").build());
+	    rw.close();
+	}
+
+	@Test
     public void createsNonEmptyFile() {
         ReportWriterImpl rw = createReportWriter(REPORT_XML);
         rw.open();
@@ -74,27 +93,14 @@ public class ReportWriterImplTest {
         }
     }
 
-    private String readFile(File reportFile) throws FileNotFoundException, IOException {
-        InputStreamReader reader = null;
-        try {
-            reader = new InputStreamReader(new FileInputStream(reportFile),
-                    Charset.forName("UTF-8"));
-            return IOUtil.toString(reader);
-        } finally {
-            IOUtil.close(reader);
-        }
-    }
-
     @Test
     public void reportContentsSanity() throws Exception {
         ReportWriterImpl rw = createReportWriter(REPORT_XML);
-        rw.open();
-        // Create a result with no problems.
-        rw.report(new ResultBuilder("foo.js").build());
-        rw.close();
+        createReportWithoutProblems(rw);
         String report = readFile(rw.getReportFile());
         assertThat(report, containsString("<jslint>"));
         assertThat(report, containsString("<file name='foo.js'>"));
         assertThat(report, containsString("</jslint>"));
     }
+    
 }
