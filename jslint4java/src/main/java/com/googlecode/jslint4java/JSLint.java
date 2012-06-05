@@ -223,7 +223,7 @@ public class JSLint {
             public Object run(Context cx) {
                 Object[] args = new Object[] { Boolean.valueOf(errorsOnly) };
                 Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
-                Object report = lintScope.get("report", lintScope);
+                Object report = lintScope.get("error_report", lintScope);
                 // Shouldn't happen ordinarily, but some of my tests don't have it.
                 if (report == UniqueTag.NOT_FOUND) {
                     return "";
