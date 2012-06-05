@@ -88,6 +88,9 @@ class JSLintFlags {
     @Parameter(names = "--sloppy", description = "If the 'use strict'; pragma is optional")
     public Boolean SLOPPY = null;
 
+    @Parameter(names = "--stupid", description = "If really stupid practices are tolerated")
+    public Boolean STUPID = null;
+
     @Parameter(names = "--sub", description = "If all forms of subscript notation are tolerated")
     public Boolean SUB = null;
 
@@ -105,9 +108,6 @@ class JSLintFlags {
 
     @Parameter(names = "--white", description = "If sloppy whitespace is tolerated")
     public Boolean WHITE = null;
-
-    @Parameter(names = "--widget", description = "If the yahoo widgets globals should be predefined")
-    public Boolean WIDGET = null;
 
     @Parameter(names = "--windows", description = "If ms windows-specific globals should be predefined")
     public Boolean WINDOWS = null;

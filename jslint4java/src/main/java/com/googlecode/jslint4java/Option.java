@@ -93,6 +93,9 @@ public enum Option {
     /** If the 'use strict'; pragma is optional */
     SLOPPY("If the 'use strict'; pragma is optional", Boolean.class),
 
+    /** If really stupid practices are tolerated */
+    STUPID("If really stupid practices are tolerated", Boolean.class),
+
     /** If all forms of subscript notation are tolerated */
     SUB("If all forms of subscript notation are tolerated", Boolean.class),
 
@@ -110,9 +113,6 @@ public enum Option {
 
     /** If sloppy whitespace is tolerated */
     WHITE("If sloppy whitespace is tolerated", Boolean.class),
-
-    /** If the yahoo widgets globals should be predefined */
-    WIDGET("If the yahoo widgets globals should be predefined", Boolean.class),
 
     /** If ms windows-specific globals should be predefined */
     WINDOWS("If ms windows-specific globals should be predefined", Boolean.class),
