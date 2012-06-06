@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -192,6 +193,16 @@ public class JSLintTest {
         lint.addOption(Option.UNDEF);
         List<Issue> issues = lint("foo(bar(42));").getIssues();
         assertIssues(issues);
+    }
+
+    @Test
+    public void testProperties() {
+        // issue 42: beware numeric keys…
+        JSLintResult result = lint("var obj = {\"a\": 1, \"b\": 42, 3: \"c\"};");
+        assertIssues(result.getIssues());
+        Set<String> properties = result.getProperties();
+        assertThat(properties.size(), is(3));
+        assertThat(properties, hasItems("a", "b", "3"));
     }
 
     @Test

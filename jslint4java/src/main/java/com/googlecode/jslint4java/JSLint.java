@@ -208,6 +208,16 @@ public class JSLint {
                         // reported by JSLint.  So let's not repeat them.
                     }
                 }
+
+                // Extract the list of properties. Note that we don't expose the counts, as it
+                // doesn't seem that useful.
+                Object properties = lintScope.get("property", lintScope);
+                if (properties != UniqueTag.NOT_FOUND) {
+                    for (Object id: ScriptableObject.getPropertyIds((Scriptable) properties)) {
+                        b.addProperty(id.toString());
+                    }
+                }
+
                 return b.build();
             }
         });

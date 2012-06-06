@@ -1,7 +1,9 @@
 package com.googlecode.jslint4java;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The result of a JSLint run.
@@ -25,6 +27,7 @@ public class JSLintResult {
         private final String name;
         private String report;
         private final List<String> urls = new ArrayList<String>();
+        private final Set<String> properties = new HashSet<String>();
 
         public ResultBuilder(String name) {
             this.name = name;
@@ -42,6 +45,11 @@ public class JSLintResult {
 
         public ResultBuilder addIssue(Issue issue) {
             issues.add(issue);
+            return this;
+        }
+
+        public ResultBuilder addProperty(String prop) {
+            properties.add(prop);
             return this;
         }
 
@@ -79,6 +87,7 @@ public class JSLintResult {
     private final String name;
     private final String report;
     private final List<String> urls = new ArrayList<String>();
+    private final Set<String> properties = new HashSet<String>();
 
     private JSLintResult(ResultBuilder b) {
         name = b.name;
@@ -89,6 +98,7 @@ public class JSLintResult {
         json = b.json;
         report = b.report;
         urls.addAll(b.urls);
+        properties.addAll(b.properties);
     }
 
     /** How long did JSLint take to run? (milliseconds)*/
@@ -116,6 +126,10 @@ public class JSLintResult {
     /** The name of the source file just validated. */
     public String getName() {
         return name;
+    }
+
+    public Set<String> getProperties() {
+        return properties;
     }
 
     /** An HTML report of the source file. */
