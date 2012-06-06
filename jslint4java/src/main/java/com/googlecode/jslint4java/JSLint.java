@@ -217,19 +217,53 @@ public class JSLint {
         });
     }
 
+    /**
+     * Construct a JSLint error report. This is in two parts: a list of errors, and an optional
+     * function report.
+     *
+     * @param errorsOnly
+     *            if the function report should be omitted.
+     * @return the report, an HTML string.
+     */
     @NeedsContext
     private String callReport(final boolean errorsOnly) {
         return (String) contextFactory.call(new ContextAction() {
+            // TODO: This would probably benefit from injecting an API to manage JSLint.
             public Object run(Context cx) {
-                Object[] args = new Object[] { Boolean.valueOf(errorsOnly) };
+                Function fn = null;
+                Object value = null;
+                StringBuilder sb = new StringBuilder();
                 Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
-                Object report = lintScope.get("error_report", lintScope);
-                // Shouldn't happen ordinarily, but some of my tests don't have it.
-                if (report == UniqueTag.NOT_FOUND) {
+
+                // Look up JSLINT.data.
+                value = lintScope.get("data", lintScope);
+                if (value == UniqueTag.NOT_FOUND) {
                     return "";
                 }
-                Function reportFunc = (Function) report;
-                return reportFunc.call(cx, scope, scope, args);
+                fn = (Function) value;
+                // Call JSLINT.data().  This returns a JS data structure that we need below.
+                Object data = fn.call(cx, scope, scope, new Object[] {});
+
+                // Look up JSLINT.error_report.
+                value = lintScope.get("error_report", lintScope);
+                // Shouldn't happen ordinarily, but some of my tests don't have it.
+                if (value != UniqueTag.NOT_FOUND) {
+                    fn = (Function) value;
+                    // Call JSLint.report().
+                    sb.append(fn.call(cx, scope, scope, new Object[] { data }));
+                }
+
+                if (!errorsOnly) {
+                    // Look up JSLINT.report.
+                    value = lintScope.get("report", lintScope);
+                    // Shouldn't happen ordinarily, but some of my tests don't have it.
+                    if (value != UniqueTag.NOT_FOUND) {
+                        fn = (Function) value;
+                        // Call JSLint.report().
+                        sb.append(fn.call(cx, scope, scope, new Object[] { data }));
+                    }
+                }
+                return sb.toString();
             }
         });
     }
