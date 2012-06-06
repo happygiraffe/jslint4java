@@ -212,23 +212,22 @@ public class JSLintTest {
     @Test
     public void testReportErrorsOnly() throws Exception {
         String html = lint.report("var foo = 42", true);
-        assertThat(html, containsString("<div id=errors"));
+        assertThat(html, containsString("<cite><address>"));
         assertThat(html, containsString(EXPECTED_SEMICOLON));
     }
 
     @Test
     public void testReportFull() throws Exception {
         String html = lint.report("var foo = 42;");
-        assertThat(html, containsString("<div>"));
+        assertThat(html, containsString("<dt>global</dt><dd>foo</dd>"));
     }
 
 
     @Test
     public void testReportInResult() throws Exception {
         String html = lint("var foo = 42").getReport();
-        assertThat(html, containsString("<div id=errors"));
+        assertThat(html, containsString("<cite><address>"));
         assertThat(html, containsString(EXPECTED_SEMICOLON));
-        assertThat(html, containsString("<div>"));
     }
 
     @Test

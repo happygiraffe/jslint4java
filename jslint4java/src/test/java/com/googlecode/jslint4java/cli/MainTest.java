@@ -1,10 +1,8 @@
 package com.googlecode.jslint4java.cli;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.matchers.JUnitMatchers.containsString;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.junit.matchers.JUnitMatchers.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -235,10 +233,10 @@ public class MainTest {
         int exit = runLint("--report", "report", path);
         assertStdoutContains("<html>");
         assertStdoutContains("<h1 id='" + path + "'>" + path + "</h1>");
-        assertStdoutContains("<p>Problem at line 1 character 1: 'alert' was used before it was defined.</p>");
-        assertStdoutContains("<p class=evidence>alert(42)</p>");
-        assertStdoutContains("<p>Problem at line 1 character 10: Expected ';' and instead saw '(end)'.</p>");
-        assertStdoutContains("<p class=evidence>alert(42)</p></div>");
+        assertStdoutContains("<cite><address>line 1 character 1</address>'alert' was used before it was defined.</cite>");
+        assertStdoutContains("<pre>alert(42)</pre>");
+        assertStdoutContains("<cite><address>line 1 character 10</address>Expected ';' and instead saw '(end)'.</cite>");
+        assertStdoutContains("<pre>alert(42)</pre>");
         assertStdoutContains("</html>");
         assertThat(exit, is(1));
     }
