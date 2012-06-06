@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -194,9 +193,6 @@ public class JSLint {
                     for (String url : Util.listValueOfType("urls", String.class, data)) {
                         b.addUrl(url);
                     }
-                    for (Entry<String, Integer> member : getDataMembers(data).entrySet()) {
-                        b.addMember(member.getKey(), member.getValue());
-                    }
                     b.json(Util.booleanValue("json", data));
                     for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {
                         b.addFunction(f);
@@ -281,24 +277,6 @@ public class JSLint {
                 return null;
             }
         });
-    }
-
-    /**
-     * Set the "member" field of the {@link JSLintResult}.
-     */
-    private Map<String,Integer> getDataMembers(Scriptable data) {
-        Object o1 = data.get("member", data);
-        if (o1 == UniqueTag.NOT_FOUND) {
-            return new HashMap<String, Integer>();
-        }
-        Scriptable member = (Scriptable) o1;
-        Object[] propertyIds = ScriptableObject.getPropertyIds(member);
-        Map<String, Integer> members = new HashMap<String, Integer>(propertyIds.length);
-        for (Object id : propertyIds) {
-            String k = id.toString();
-            members.put(k, Util.intValue(k, member));
-        }
-        return members;
     }
 
     /**

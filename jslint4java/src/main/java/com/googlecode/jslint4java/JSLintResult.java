@@ -1,9 +1,7 @@
 package com.googlecode.jslint4java;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The result of a JSLint run.
@@ -24,7 +22,6 @@ public class JSLintResult {
         private final List<String> globals = new ArrayList<String>();
         private final List<Issue> issues = new ArrayList<Issue>();
         private boolean json;
-        private final Map<String, Integer> member = new HashMap<String, Integer>();
         private final String name;
         private String report;
         private final List<String> urls = new ArrayList<String>();
@@ -45,11 +42,6 @@ public class JSLintResult {
 
         public ResultBuilder addIssue(Issue issue) {
             issues.add(issue);
-            return this;
-        }
-
-        public ResultBuilder addMember(String name, int count) {
-            member.put(name, count);
             return this;
         }
 
@@ -84,7 +76,6 @@ public class JSLintResult {
     private final List<String> globals = new ArrayList<String>();
     private final List<Issue> issues = new ArrayList<Issue>();
     private final boolean json;
-    private final Map<String, Integer> member = new HashMap<String, Integer>();
     private final String name;
     private final String report;
     private final List<String> urls = new ArrayList<String>();
@@ -96,7 +87,6 @@ public class JSLintResult {
         functions.addAll(b.functions);
         globals.addAll(b.globals);
         json = b.json;
-        member.putAll(b.member);
         report = b.report;
         urls.addAll(b.urls);
     }
@@ -121,11 +111,6 @@ public class JSLintResult {
      */
     public List<Issue> getIssues() {
         return issues;
-    }
-
-    /** A count of how many times each member name is defined. */
-    public Map<String, Integer> getMember() {
-        return member;
     }
 
     /** The name of the source file just validated. */
