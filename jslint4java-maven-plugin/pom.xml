@@ -54,6 +54,10 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <!-- Needed for Java 5 annotation based configuration, for some reason. -->
+          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+        </configuration>
       </plugin>
     </plugins>
   </build>
