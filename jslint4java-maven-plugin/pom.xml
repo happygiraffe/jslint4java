@@ -48,6 +48,15 @@
         <version>3.0</version>
         <executions>
           <execution>
+            <id>default-descriptor</id>
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
+            <!-- We have to run this _after_ we have generated the classes so that the annotations
+                 are available to be scanned. -->
+            <phase>process-classes</phase>
+          </execution>
+          <execution>
             <id>generated-helpmojo</id>
             <goals>
               <goal>helpmojo</goal>
