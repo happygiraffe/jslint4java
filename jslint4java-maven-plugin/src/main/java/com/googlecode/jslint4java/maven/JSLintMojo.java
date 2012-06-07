@@ -19,6 +19,9 @@ import java.util.Map.Entry;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
@@ -36,11 +39,10 @@ import com.googlecode.jslint4java.formatter.ReportFormatter;
  * Validates JavaScript using jslint4java.
  *
  * @author dom
- * @goal lint
- * @phase verify
  */
 // TODO Support alternate jslint
 // TODO Support HTML reports (site plugin mojo?)
+@Mojo(name = "lint", defaultPhase = LifecyclePhase.VERIFY)
 public class JSLintMojo extends AbstractMojo {
 
     /** Where to write the HTML report. */
@@ -62,82 +64,66 @@ public class JSLintMojo extends AbstractMojo {
     /**
      * Specifies the the source files to be excluded for JSLint (relative to
      * {@link #defaultSourceFolder}). Maven applies its own defaults.
-     *
-     * @parameter property="excludes"
      */
+    @Parameter(property = "excludes")
     private final List<String> excludes = new ArrayList<String>();
 
     /**
      * Specifies the the source files to be used for JSLint (relative to
-     * {@link #defaultSourceFolder}). If none are given, defaults to
-     * <code>**&#47;*.js</code>.
-     *
-     * @parameter property="includes"
+     * {@link #defaultSourceFolder}). If none are given, defaults to <code>**&#47;*.js</code>.
      */
+    @Parameter(property = "includes")
     private final List<String> includes = new ArrayList<String>();
 
     /**
-     * Specifies the location of the default source folder to be used for
-     * JSLint. Note that this is just used for filling in the default, as it
-     * resolves the default value correctly. Anything you specify will override
-     * it.
-     *
-     * @parameter default-value="${basedir}/src/main/webapp"
-     * @readonly
-     * @required
+     * Specifies the location of the default source folder to be used for JSLint. Note that this is
+     * just used for filling in the default, as it resolves the default value correctly. Anything
+     * you specify will override it.
      */
+    @Parameter(readonly = true, required = true, defaultValue = "${basedir}/src/main/webapp")
     private File defaultSourceFolder;
 
     /**
      * Which locations should JSLint look for JavaScript files in? Defaults to
      * ${basedir}/src/main/webapp.
-     *
-     * @parameter
      */
+    @Parameter
     private File[] sourceFolders = new File[] {};
 
     /**
      * Which JSLint {@link Option}s to set.
-     *
-     * @parameter
      */
+    @Parameter
     private final Map<String, String> options = new HashMap<String, String>();
 
     /**
-     * What encoding should we use to read the JavaScript files?  Defaults to UTF-8.
-     *
-     * @parameter property="encoding"
-     *            default-value="${project.build.sourceEncoding}"
+     * What encoding should we use to read the JavaScript files? Defaults to UTF-8.
      */
+    @Parameter(property = "encoding", defaultValue = "${project.build.sourceEncoding}")
     private String encoding = "UTF-8";
 
     /**
      * Base folder for report output.
-     *
-     * @parameter property="jslint.outputFolder"
-     *            default-value="${project.build.directory}/jslint4java"
      */
+    @Parameter(property = "jslint.outputFolder", defaultValue = "${project.build.directory}/jslint4java")
     private File outputFolder = new File("target");
 
     /**
      * Fail the build if JSLint detects any problems.
-     *
-     * @parameter property="jslint.failOnError" default-value="true"
      */
+    @Parameter(property = "jslint.failOnError", defaultValue = "true")
     private boolean failOnError = true;
 
     /**
      * An alternative JSLint to use.
-     *
-     * @parameter property="jslint.source"
      */
+    @Parameter(property = "jslint.source")
     private File jslintSource;
 
     /**
      * How many seconds JSLint is allowed to run.
-     *
-     * @parameter property="jslint.timeout"
      */
+    @Parameter(property = "jslint.timeout")
     private long timeout;
 
     /** Add a single option. For testing only. */
