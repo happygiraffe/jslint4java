@@ -106,7 +106,7 @@ public class JSLintMojo extends AbstractMojo {
     /**
      * What encoding should we use to read the JavaScript files?  Defaults to UTF-8.
      *
-     * @parameter expression="${encoding}"
+     * @parameter property="encoding"
      *            default-value="${project.build.sourceEncoding}"
      */
     private String encoding = "UTF-8";
@@ -114,7 +114,7 @@ public class JSLintMojo extends AbstractMojo {
     /**
      * Base folder for report output.
      *
-     * @parameter expression="${jslint.outputFolder}"
+     * @parameter property="jslint.outputFolder"
      *            default-value="${project.build.directory}/jslint4java"
      */
     private File outputFolder = new File("target");
@@ -122,21 +122,21 @@ public class JSLintMojo extends AbstractMojo {
     /**
      * Fail the build if JSLint detects any problems.
      *
-     * @parameter expression="${jslint.failOnError}" default-value="true"
+     * @parameter property="jslint.failOnError" default-value="true"
      */
     private boolean failOnError = true;
 
     /**
      * An alternative JSLint to use.
      *
-     * @parameter expression="${jslint.source}"
+     * @parameter property="jslint.source"
      */
     private File jslintSource;
 
     /**
      * How many seconds JSLint is allowed to run.
      *
-     * @parameter expression="${jslint.timeout}"
+     * @parameter property="jslint.timeout"
      */
     private long timeout;
 
