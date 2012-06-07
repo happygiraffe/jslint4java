@@ -140,7 +140,7 @@ public class JSLintMojo extends AbstractMojo {
      */
     private long timeout;
 
-    /** Add a single option.  For testing only. */
+    /** Add a single option. For testing only. */
     void addOption(Option sloppy, String value) {
         options.put(sloppy.name().toLowerCase(Locale.ENGLISH), value);
     }
@@ -221,8 +221,8 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     /**
-     * Process includes and excludes to work out which files we are interested
-     * in. Originally nicked from CheckstyleReport, now looks nothing like it.
+     * Process includes and excludes to work out which files we are interested in. Originally nicked
+     * from CheckstyleReport, now looks nothing like it.
      *
      * @return a {@link List} of {@link File}s.
      */
@@ -318,7 +318,7 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     public void setFailOnError(boolean b) {
-        failOnError  = b;
+        failOnError = b;
     }
 
     public void setIncludes(List<String> includes) {
