@@ -147,8 +147,6 @@ public class JSLintMojo extends AbstractMojo {
 
     /**
      * Set the default includes.
-     *
-     * @param includes
      */
     private void applyDefaults() {
         if (includes.isEmpty()) {
