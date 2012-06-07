@@ -25,9 +25,7 @@ public class FileLister {
         this.sourceDirectory = sourceDirectory;
         this.includes.addAll(includes);
         this.excludes.addAll(excludes);
-        @SuppressWarnings("unchecked")
-        List<String> defaultExcludes = FileUtils.getDefaultExcludesAsList();
-        this.excludes.addAll(defaultExcludes);
+        this.excludes.addAll(FileUtils.getDefaultExcludesAsList());
     }
 
     public List<File> files() throws IOException {
@@ -36,9 +34,7 @@ public class FileLister {
         }
         String includesStr = StringUtils.join(includes.iterator(), ",");
         String excludesStr = StringUtils.join(excludes.iterator(), ",");
-        @SuppressWarnings("unchecked")
-        List<File> files = FileUtils.getFiles(sourceDirectory, includesStr, excludesStr);
-        return files;
+        return FileUtils.getFiles(sourceDirectory, includesStr, excludesStr);
     }
 
 }
