@@ -18,19 +18,27 @@ public class UnicodeBomInputStreamTest {
         ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { (byte) 0xEF, (byte) 0xBB,
                 (byte) 0xBF, 0x31, 0x32, 0x33, 0x34, 0x35 });
         UnicodeBomInputStream in2 = new UnicodeBomInputStream(in);
-        in2.skipBOM();
-        assertThat(in2.read(), is(0x31));
+        try {
+            in2.skipBOM();
+            assertThat(in2.read(), is(0x31));
+        } finally {
+            in2.close();
+        }
     }
 
     @Test
     public void basicSanityFromResource() throws Exception {
         InputStream is = UnicodeBomInputStreamTest.class.getResourceAsStream("bom.js");
         UnicodeBomInputStream is2 = new UnicodeBomInputStream(is);
-        is2.skipBOM();
-        // Should start with a double slash then space.
-        assertThat(is2.read(), is(0x2f));
-        assertThat(is2.read(), is(0x2f));
-        assertThat(is2.read(), is(0x20));
+        try {
+            is2.skipBOM();
+            // Should start with a double slash then space.
+            assertThat(is2.read(), is(0x2f));
+            assertThat(is2.read(), is(0x2f));
+            assertThat(is2.read(), is(0x20));
+        } finally {
+            is2.close();
+        }
     }
 
     @Test
