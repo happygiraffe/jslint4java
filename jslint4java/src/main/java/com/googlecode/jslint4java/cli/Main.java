@@ -150,6 +150,8 @@ class Main {
         return errored;
     }
 
+    // Eclipse's static analysis thinks I never close the UnicodeBomInputStream below.
+    @SuppressWarnings("resource")
     private void lintFile(String file) throws IOException {
         BufferedReader reader = null;
         try {
