@@ -9,14 +9,14 @@
   </head>
   <body>
     <h1>jslint4java maven plugin</h1>
-    
+
     <p>
       If you are using maven to build an application which contains
       JavaScript, you can arrange for JSLint to run automatically.
     </p>
-    
+
     <p>Here's an example configuration.</p>
-    
+
     <pre class="prettyprint">
 &lt;project&gt;
   …
@@ -48,18 +48,18 @@
   &lt;/build&gt;
 &lt;/project&gt;
     </pre>
-    
+
     <p>
       This will arrange for the jslint4java-maven-plugin to execute before
       the rest of your build.  If you would prefer to execute it afterwards,
       choose <code>&lt;phase&gt;verify&lt;/phase&gt;</code> instead.
     </p>
-    
+
     <p>
       If you would prefer to run the linter on an ad-hoc basis, you can
       call the plugin from the command line.
     </p>
-    
+
     <pre class="prettyprint">
 $ mvn jslint4java:lint
     </pre>
@@ -68,7 +68,7 @@ $ mvn jslint4java:lint
       In order to support this, you should still configure the plugin as part
       of your project, but not bind it to the lifecycle.  e.g.
     </p>
-    
+
     <pre class="prettyprint">
 &lt;project&gt;
   &hellip;
@@ -91,22 +91,22 @@ $ mvn jslint4java:lint
   &lt;/build&gt;
 &lt;/project&gt;
     </pre>
-    
+
     <h3 id="configuration">Configuration</h3>
-    
+
     <p>
       The plugin is mainly controlled via the
       <code>&lt;configuration&gt;</code> element.
       It supports these children.
     </p>
-    
+
     <table>
       <tr>
         <th>Element</th>
         <th>Description</th>
         <th>Default</th>
       </tr>
-      
+
       <tr>
         <td><code>&lt;encoding&gt;</code></td>
         <td>What encoding to read the source files in.</td>
@@ -116,7 +116,7 @@ $ mvn jslint4java:lint
           </pre>
         </td>
       </tr>
-      
+
       <tr>
         <td><code>&lt;excludes&gt;</code></td>
         <td>A comma separated list of patterns to exclude from linting.</td>
@@ -176,7 +176,7 @@ $ mvn jslint4java:lint
       </tr>
 
       <tr>
-        <td><code>&lt;outputDirectory&gt;</code></td>
+        <td><code>&lt;outputFolder&gt;</code></td>
         <td>Where to write the report files.  JSLint generates the same report in several
         different formats.
         <dl>
@@ -189,7 +189,7 @@ $ mvn jslint4java:lint
         </td>
         <td>
           <pre class="prettyprint">
-&lt;outputDirectory&gt;\${project.build.directory}/jslint4java&lt;/outputDirectory&gt;
+&lt;outputFolder&gt;\${project.build.directory}/jslint4java&lt;/outputFolder&gt;
           </pre>
         </td>
       </tr>
@@ -218,7 +218,7 @@ $ mvn jslint4java:lint
       </tr>
 
     </table>
-    
+
     <script type="text/javascript">prettyPrint()</script>
   </body>
 </html>
