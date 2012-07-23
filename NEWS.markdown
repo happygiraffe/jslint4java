@@ -1,12 +1,13 @@
 Revision history for jslint4java
 ================================
 
-2.0.3 (2012-06-05)
+2.0.3 (2012-07-23)
 ------------------
 
- * Update to JSLint 2012-05-09.
+ * Update to JSLint 2012-07-23.
    - This removes the `widget` option.
    - This adds the `stupid` option (sigh).
+   - This adds the `todo` option.
  * issue 81: Does not work with jslint.js >= 2012-05-09
 
 2.0.2 (2012-01-05)
