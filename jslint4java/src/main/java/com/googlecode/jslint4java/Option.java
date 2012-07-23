@@ -99,6 +99,9 @@ public enum Option {
     /** If all forms of subscript notation are tolerated */
     SUB("If all forms of subscript notation are tolerated", Boolean.class),
 
+    /** If todo comments are tolerated */
+    TODO("If todo comments are tolerated", Boolean.class),
+
     /** If variables can be declared out of order */
     UNDEF("If variables can be declared out of order", Boolean.class),
 

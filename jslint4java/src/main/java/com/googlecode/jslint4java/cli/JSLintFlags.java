@@ -94,6 +94,9 @@ class JSLintFlags {
     @Parameter(names = "--sub", description = "If all forms of subscript notation are tolerated")
     public Boolean SUB = null;
 
+    @Parameter(names = "--todo", description = "If todo comments are tolerated")
+    public Boolean TODO = null;
+
     @Parameter(names = "--undef", description = "If variables can be declared out of order")
     public Boolean UNDEF = null;
 
