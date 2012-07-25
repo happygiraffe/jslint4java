@@ -13,6 +13,23 @@ public class PlainFormatterTest {
 
     private final PlainFormatter rf = new PlainFormatter();
 
+    /** We don't expect this to happen, but we shouldn't blow up either. @see issue 85 */
+    @Test
+    public void shouldCopeWithCharacterZero() throws Exception {
+        String nl = System.getProperty("line.separator");
+        String name = "foo/bar.js";
+        Issue issue = new IssueBuilder(name, 0, 0, "oops").evidence("BANG").build();
+        JSLintResult result = new JSLintResult.ResultBuilder(name).addIssue(issue).build();
+        StringBuilder sb = new StringBuilder(name);
+        sb.append(":0:0: oops");
+        sb.append(nl);
+        sb.append("BANG");
+        sb.append(nl);
+        sb.append("^");
+        sb.append(nl);
+        assertThat(rf.format(result), is(sb.toString()));
+    }
+
     @Test
     public void shouldEmitNullFooter() {
         assertThat(rf.footer(), is(nullValue()));

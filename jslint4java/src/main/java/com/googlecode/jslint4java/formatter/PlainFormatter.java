@@ -45,8 +45,10 @@ public class PlainFormatter implements JSLintResultFormatter {
         if (evidence != null && !"".equals(evidence)) {
             sb.append(evidence);
             sb.append(nl);
-            // character is now one-based.
-            sb.append(spaces(issue.getCharacter() - 1));
+            // character is now one-based.  But we want to be robust (issue 85).
+            if (issue.getCharacter() > 0) {
+                sb.append(spaces(issue.getCharacter() - 1));
+            }
             sb.append("^");
             sb.append(nl);
         }
