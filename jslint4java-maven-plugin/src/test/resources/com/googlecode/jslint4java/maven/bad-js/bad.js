@@ -1,1 +1,1 @@
-encodeURIComponent('a+b')
+﻿encodeURIComponent('a+b')

@@ -240,7 +240,8 @@ public class JSLintMojo extends AbstractMojo {
         getLog().debug("lint " + file);
         BufferedReader reader = null;
         try {
-            InputStream stream = new UnicodeBomInputStream(new FileInputStream(file));
+            UnicodeBomInputStream stream = new UnicodeBomInputStream(new FileInputStream(file));
+            stream.skipBOM();
             reader = new BufferedReader(new InputStreamReader(stream, getEncoding()));
             return jsLint.lint(file.toString(), reader);
         } catch (FileNotFoundException e) {
