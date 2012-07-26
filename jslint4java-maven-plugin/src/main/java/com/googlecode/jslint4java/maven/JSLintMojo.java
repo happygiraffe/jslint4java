@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -177,9 +176,9 @@ public class JSLintMojo extends AbstractMojo {
         }
         if (failures > 0) {
             String message = "JSLint found " + failures + " problems in " + files.size() + " files";
-            if (failOnError) {
+            if (failOnError)
                 throw new MojoFailureException(message);
-            } else {
+            else {
                 getLog().info(message);
             }
         }
@@ -196,9 +195,8 @@ public class JSLintMojo extends AbstractMojo {
             } catch (IOException e) {
                 throw new MojoExecutionException("Cant' load jslint.js", e);
             }
-        } else {
+        } else
             return builder.fromDefault();
-        }
     }
 
     // Visible for testing only.
@@ -263,9 +261,8 @@ public class JSLintMojo extends AbstractMojo {
 
     private void logIssues(JSLintResult result, ReportWriter reporter) {
         reporter.report(result);
-        if (result.getIssues().isEmpty()) {
+        if (result.getIssues().isEmpty())
             return;
-        }
         logIssuesToConsole(result);
     }
 
