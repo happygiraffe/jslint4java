@@ -36,7 +36,7 @@ public class ReportFormatterTest {
     @Test
     public void testEscaping() throws Exception {
         JSLintResult result = mockResult("'a<b&c>d\".js");
-        String expected = "<h1 id='&apos;a&lt;b&amp;c>d&quot;.js'>'a&lt;b&amp;c>d\".js</h1>";
+        String expected = "<h1 id='&apos;a&lt;b&amp;c&gt;d&quot;.js'>'a&lt;b&amp;c&gt;d\".js</h1>";
         assertThat(form.format(result).contains(expected), is(true));
     }
 

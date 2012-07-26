@@ -6,9 +6,8 @@ package com.googlecode.jslint4java.formatter;
 public abstract class XmlFormatter {
 
     protected String attr(String key, String value) {
-        if (key == null) {
+        if (key == null)
             throw new IllegalArgumentException("key cannot be null");
-        }
         if (value == null) {
             value = "";
         }
@@ -22,10 +21,9 @@ public abstract class XmlFormatter {
     }
 
     protected String escape(String str) {
-        if (str == null) {
+        if (str == null)
             return "";
-        }
-        return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
+        return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     }
 
     private String escapeAttr(String str) {

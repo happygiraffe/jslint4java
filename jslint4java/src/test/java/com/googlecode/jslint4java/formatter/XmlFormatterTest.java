@@ -39,7 +39,7 @@ public class XmlFormatterTest {
 
     @Test
     public void testEscape() throws Exception {
-        assertThat(xf.escape("echo '<usage>' 2>&1"), is("echo '&lt;usage>' 2>&amp;1"));
+        assertThat(xf.escape("echo '<usage>' 2>&1"), is("echo '&lt;usage&gt;' 2&gt;&amp;1"));
     }
 
     @Test
@@ -61,6 +61,6 @@ public class XmlFormatterTest {
 
     @Test
     public void testAttrEscape() throws Exception {
-        assertThat(xf.attr("foo", "\"'<&>"), is(" foo='&quot;&apos;&lt;&amp;>'"));
+        assertThat(xf.attr("foo", "\"'<&>"), is(" foo='&quot;&apos;&lt;&amp;&gt;'"));
     }
 }
