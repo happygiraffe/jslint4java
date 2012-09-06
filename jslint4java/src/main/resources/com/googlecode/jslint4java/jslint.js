@@ -1,5 +1,5 @@
 // jslint.js
-// 2012-07-23
+// 2012-08-23
 
 // Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -591,7 +591,8 @@ var JSLINT = (function () {
             unexpected_label_a: "Unexpected label '{a}'.",
             unexpected_property_a: "Unexpected /*property*/ '{a}'.",
             unexpected_space_a_b: "Unexpected space between '{a}' and '{b}'.",
-            unexpected_typeof_a: "Unexpected 'typeof'. Compare directly with '{a}'.",
+            unexpected_typeof_a: "Unexpected 'typeof'. " +
+                "Use '===' to compare directly with {a}.",
             unnecessary_initialize: "It is not necessary to initialize '{a}' " +
                 "to 'undefined'.",
             unnecessary_use: "Unnecessary 'use strict'.",
@@ -2545,7 +2546,7 @@ klass:              do {
         x.thru = 1;
         x.line = 0;
         x.edge = 'edge';
-        s.string = s;
+        x.string = s;
         return postscript(x);
     }
 
@@ -2590,13 +2591,26 @@ klass:              do {
                 }
                 this.first = expression(150);
                 this.arity = 'prefix';
-                if (this.id === '++' || this.id === '--') {
+                switch (this.id) {
+                case '++':
+                case '--':
                     if (!option.plusplus) {
                         warn('unexpected_a', this);
                     } else if ((!this.first.identifier || this.first.reserved) &&
                             this.first.id !== '.' && this.first.id !== '[') {
                         warn('bad_operand', this);
                     }
+                    break;
+                case '+':
+                case '-':
+                    switch (this.first.id) {
+                    case '[':
+                    case '{':
+                    case '!':
+                        warn('unexpected_a', this.first);
+                        break;
+                    }
+                    break;
                 }
                 return this;
             };
@@ -3579,7 +3593,7 @@ klass:              do {
                 edge();
                 e = expression(10);
                 if (left.string === 'Boolean' && (e.id === '!' || e.id === '~')) {
-                    warn('unexpected_a', e);
+                    warn('weird_condition', e);
                 }
                 p.push(e);
                 if (next_token.id !== ',') {
@@ -6267,6 +6281,9 @@ klass:              do {
     itself.error_report = function (data) {
         var evidence, i, output = [], snippets, warning;
         if (data.errors) {
+            if (data.json) {
+                output.push('<cite>JSON: bad.</cite><br>');
+            }
             for (i = 0; i < data.errors.length; i += 1) {
                 warning = data.errors[i];
                 if (warning) {
@@ -6312,20 +6329,17 @@ klass:              do {
             }
             output.push('</dl>');
         }
-        if (data.json) {
-            output.push('<p>JSON: bad.</p>');
-        }
         return output.join('');
     };
 
 
     itself.report = function (data) {
-        var dl, err, i, j, names, output = [], the_function;
+        var dl, i, j, names, output = [], the_function;
 
         function detail(h, value) {
             var comma_needed, singularity;
             if (Array.isArray(value)) {
-                output.push('<dt>' + h + '</dt><dd>');
+                output.push("<dt>" + h + "</dt><dd>");
                 value.sort().forEach(function (item) {
                     if (item !== singularity) {
                         singularity = item;
@@ -6333,54 +6347,58 @@ klass:              do {
                         comma_needed = true;
                     }
                 });
-                output.push('</dd>');
+                output.push("</dd>");
             } else if (value) {
-                output.push('<dt>' + h + '</dt><dd>', value, '</dd>');
+                output.push("<dt>" + h + "</dt><dd>", value, "</dd>");
             }
         }
 
         output.push('<dl>');
         if (data.urls) {
-            detail("url", data.urls);
+            detail('url', data.urls);
             dl = true;
         }
         if (data.globals) {
             detail('global', data.globals);
             dl = true;
         } else if (xmode === 'style') {
-            output.push('<p>CSS.</p>');
-        } else if (data.json && !err) {
-            output.push('<p>JSON: good.</p>');
+            output.push("<dt>CSS.</dt>");
+        } else if (data.json) {
+            if (!data.errors) {
+                output.push("<dt>JSON: good.</dt>");
+            }
         } else {
-            output.push('<div><i>No new global variables introduced.</i></div>');
+            output.push("<dt><i>No new global variables introduced.</i></dt>");
         }
         if (dl) {
-            output.push('</dl>');
+            output.push("</dl>");
         } else {
             output[0] = '';
         }
 
-        for (i = 0; i < data.functions.length; i += 1) {
-            the_function = data.functions[i];
-            names = [];
-            if (the_function.params) {
-                for (j = 0; j < the_function.params.length; j += 1) {
-                    names[j] = the_function.params[j].string;
+        if (data.functions) {
+            for (i = 0; i < data.functions.length; i += 1) {
+                the_function = data.functions[i];
+                names = [];
+                if (the_function.params) {
+                    for (j = 0; j < the_function.params.length; j += 1) {
+                        names[j] = the_function.params[j].string;
+                    }
                 }
+                output.push('<dl><address>line ' +
+                    String(the_function.line) + '</address>' +
+                    the_function.name.entityify() +
+                    '(' + names.join(', ') + ')');
+                detail('undefined', the_function['undefined']);
+                detail('unused', the_function.unused);
+                detail('closure', the_function.closure);
+                detail('variable', the_function['var']);
+                detail('exception', the_function.exception);
+                detail('outer', the_function.outer);
+                detail('global', the_function.global);
+                detail('label', the_function.label);
+                output.push('</dl>');
             }
-            output.push('<dl><address>line ' +
-                String(the_function.line) + '</address>' +
-                the_function.name.entityify() +
-                '(' + names.join(', ') + ')');
-            detail('undefined', the_function['undefined']);
-            detail('unused', the_function.unused);
-            detail('closure', the_function.closure);
-            detail('variable', the_function['var']);
-            detail('exception', the_function.exception);
-            detail('outer', the_function.outer);
-            detail('global', the_function.global);
-            detail('label', the_function.label);
-            output.push('</dl>');
         }
         return output.join('');
     };
@@ -6421,7 +6439,7 @@ klass:              do {
 
     itself.jslint = itself;
 
-    itself.edition = '2012-07-23';
+    itself.edition = '2012-08-23';
 
     return itself;
 }());
