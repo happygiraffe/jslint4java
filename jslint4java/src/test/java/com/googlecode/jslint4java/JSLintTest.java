@@ -3,7 +3,6 @@ package com.googlecode.jslint4java;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static org.junit.matchers.JUnitMatchers.*;
 
 import java.io.IOException;
 import java.io.Reader;

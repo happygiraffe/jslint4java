@@ -2,7 +2,6 @@ package com.googlecode.jslint4java.cli;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static org.junit.matchers.JUnitMatchers.*;
 
 import java.io.File;
 import java.io.IOException;
