@@ -12,20 +12,56 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 import org.codehaus.plexus.util.IOUtil;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import com.google.common.base.Throwables;
 import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
 
 public class ReportWriterImplTest {
 
+    /** An hamcrest matcher implementation. */
+    private static class RootCauseMatcher extends BaseMatcher<Class<? extends Exception>> {
+        private final Class<? extends Exception> expectedRootCause;
+
+        // TODO: should we take a Matcher instead?
+        private RootCauseMatcher(Class<? extends Exception> clazz) {
+            this.expectedRootCause = clazz;
+        }
+
+        public boolean matches(Object obj) {
+            if (!(obj instanceof Throwable)) {
+                // Not an exception
+                return false;
+            }
+            Throwable e = (Throwable) obj;
+            Throwable rootCause = Throwables.getRootCause(e);
+            return rootCause.getClass().equals(expectedRootCause);
+        }
+
+        public void describeTo(Description desc) {
+            desc.appendText("an exception with root cause " + expectedRootCause.getName());
+        }
+    }
+
+    private static Matcher<Class<? extends Exception>> rootCause(Class<? extends Exception> e) {
+        return new RootCauseMatcher(e);
+    }
+
     private static final String REPORT_XML = "report.xml";
 
     @Rule
     public TemporaryFolder tmpf = new TemporaryFolder();
+
+    @Rule
+    public ExpectedException kaboom = ExpectedException.none();
 
     private final JSLintResultFormatter formatter = new JSLintXmlFormatter();
 
@@ -60,14 +96,14 @@ public class ReportWriterImplTest {
      */
     @Test
     public void closeDoesntHideFileNotFoundExceptionWithNullPointerException() throws IOException {
+        kaboom.expect(RuntimeException.class);
+        kaboom.expect(rootCause(FileNotFoundException.class));
+
         // This is guaranteed to fail as it's a file not a directory.
         File f  = tmpf.newFile("bob");
         ReportWriter rw = new ReportWriterImpl(new File(f, REPORT_XML), formatter);
         try {
             rw.open();
-        } catch (RuntimeException e) {
-            // Check we've got the correctly wrapped exception.
-            assertThat(e.getCause(), is(FileNotFoundException.class));
         } finally {
             // This shouldn't blow up with an NPE.
             rw.close();
