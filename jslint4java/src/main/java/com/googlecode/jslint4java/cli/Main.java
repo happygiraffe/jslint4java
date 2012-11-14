@@ -6,13 +6,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.List;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
 import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.Parameterized;
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
@@ -213,20 +213,20 @@ class Main {
         lint = makeLint(flags);
         setResultFormatter(flags.report);
         for (ParameterDescription pd : jc.getParameters()) {
-            Field field = pd.getField();
+            Parameterized p = pd.getParameterized();
             // Is it declared on JSLintFlags?
-            if (!field.getDeclaringClass().isAssignableFrom(JSLintFlags.class)) {
+            if (!pd.getObject().getClass().isAssignableFrom(JSLintFlags.class)) {
                 continue;
             }
             try {
                 // Need to get Option.
-                Option o = getOption(field.getName());
+                Option o = getOption(p.getName());
                 // Need to get value.
-                Object val = field.get(jslintFlags);
+                Object val = p.get(jslintFlags);
                 if (val == null) {
                     continue;
                 }
-                Class<?> type = field.getType();
+                Class<?> type = p.getType();
                 if (type.isAssignableFrom(Boolean.class)) {
                     lint.addOption(o);
                 }
@@ -234,11 +234,9 @@ class Main {
                 else if (type.isAssignableFrom(String.class)) {
                     lint.addOption(o, (String) val);
                 } else {
-                    die("unknown type \"" + type + "\" (for " + field.getName() + ")");
+                    die("unknown type \"" + type + "\" (for " + p.getName() + ")");
                 }
             } catch (IllegalArgumentException e) {
-                die(e.getMessage());
-            } catch (IllegalAccessException e) {
                 die(e.getMessage());
             }
         }
