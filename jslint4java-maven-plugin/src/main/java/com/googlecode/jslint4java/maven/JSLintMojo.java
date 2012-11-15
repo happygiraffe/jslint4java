@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -22,6 +20,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.io.Closeables;
 import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
@@ -65,14 +67,14 @@ public class JSLintMojo extends AbstractMojo {
      * {@link #defaultSourceFolder}). Maven applies its own defaults.
      */
     @Parameter(property = "excludes")
-    private final List<String> excludes = new ArrayList<String>();
+    private final List<String> excludes = Lists.newArrayList();
 
     /**
      * Specifies the the source files to be used for JSLint (relative to
      * {@link #defaultSourceFolder}). If none are given, defaults to <code>**&#47;*.js</code>.
      */
     @Parameter(property = "includes")
-    private final List<String> includes = new ArrayList<String>();
+    private final List<String> includes = Lists.newArrayList();
 
     /**
      * Specifies the location of the default source folder to be used for JSLint. Note that this is
@@ -93,7 +95,7 @@ public class JSLintMojo extends AbstractMojo {
      * Which JSLint {@link Option}s to set.
      */
     @Parameter
-    private final Map<String, String> options = new HashMap<String, String>();
+    private final Map<String, String> options = Maps.newHashMap();
 
     /**
      * What encoding should we use to read the JavaScript files? Defaults to UTF-8.
@@ -176,9 +178,9 @@ public class JSLintMojo extends AbstractMojo {
         }
         if (failures > 0) {
             String message = "JSLint found " + failures + " problems in " + files.size() + " files";
-            if (failOnError)
+            if (failOnError) {
                 throw new MojoFailureException(message);
-            else {
+            } else {
                 getLog().info(message);
             }
         }
@@ -195,11 +197,12 @@ public class JSLintMojo extends AbstractMojo {
             } catch (IOException e) {
                 throw new MojoExecutionException("Cant' load jslint.js", e);
             }
-        } else
+        } else {
             return builder.fromDefault();
+        }
     }
 
-    // Visible for testing only.
+    @VisibleForTesting
     String getEncoding() {
         return encoding;
     }
@@ -215,7 +218,7 @@ public class JSLintMojo extends AbstractMojo {
         getLog().debug("includes=" + includes);
         getLog().debug("excludes=" + excludes);
 
-        List<File> files = new ArrayList<File>();
+        List<File> files = Lists.newArrayList();
         for (File folder : sourceFolders) {
             getLog().debug("searching " + folder);
             try {
@@ -229,7 +232,7 @@ public class JSLintMojo extends AbstractMojo {
         return files;
     }
 
-    // Visible for testing only.
+    @VisibleForTesting
     Map<String, String> getOptions() {
         return options;
     }
@@ -250,19 +253,15 @@ public class JSLintMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("problem whilst linting " + file, e);
         } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                }
-            }
+            Closeables.closeQuietly(reader);
         }
     }
 
     private void logIssues(JSLintResult result, ReportWriter reporter) {
         reporter.report(result);
-        if (result.getIssues().isEmpty())
+        if (result.getIssues().isEmpty()) {
             return;
+        }
         logIssuesToConsole(result);
     }
 

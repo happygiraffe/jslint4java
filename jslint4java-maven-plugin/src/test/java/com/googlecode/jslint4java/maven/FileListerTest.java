@@ -14,6 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import com.google.common.base.Throwables;
+
 public class FileListerTest {
 
     @Rule
@@ -62,7 +64,7 @@ public class FileListerTest {
             assertTrue("source exists", sourceDirectory.exists());
             assertTrue("source is a directory", sourceDirectory.isDirectory());
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw Throwables.propagate(e);
         }
     }
 

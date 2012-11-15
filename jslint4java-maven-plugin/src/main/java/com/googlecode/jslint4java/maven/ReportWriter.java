@@ -1,5 +1,7 @@
 package com.googlecode.jslint4java.maven;
 
+import java.io.Closeable;
+
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 
@@ -15,7 +17,7 @@ import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
  * <p>
  * If you don't call close(), you won't see any output.
  */
-public interface ReportWriter {
+public interface ReportWriter extends Closeable {
 
     /** End the report. */
     void close();

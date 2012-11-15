@@ -1,15 +1,11 @@
 package com.googlecode.jslint4java.maven;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +15,6 @@ import junit.framework.AssertionFailedError;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.codehaus.plexus.util.IOUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,6 +23,10 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import com.googlecode.jslint4java.Option;
 
 // NB: Even though this is being run with JUnit 4, the asserts are still largely JUnit 3.  Yay inheritance!
@@ -84,22 +83,14 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     }
 
     private File getResourceFile(String filename) throws URISyntaxException {
-        URL resource = JSLintMojoTest.class.getResource(filename);
-        assertNotNull("Can't find '" + filename + "' resource", resource);
+        URL resource = Resources.getResource(JSLintMojoTest.class, filename);
         File file = new File(resource.toURI());
         assertTrue(file + " doesn't exist?", file.exists());
         return file;
     }
 
     private String readFile(File reportFile) throws FileNotFoundException, IOException {
-        InputStreamReader reader = null;
-        try {
-            reader = new InputStreamReader(new FileInputStream(reportFile),
-                    Charset.forName("UTF-8"));
-            return IOUtil.toString(reader);
-        } finally {
-            IOUtil.close(reader);
-        }
+        return Files.toString(reportFile, Charsets.UTF_8);
     }
 
     @Before
@@ -204,9 +195,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     @Test
     public void testOptions() throws Exception {
         useGoodSource();
-        Map<String, String> options = new HashMap<String, String>();
-        options.put("sloppy", "false");
-        mojo.setOptions(options);
+        mojo.setOptions(ImmutableMap.of("sloppy", "false"));
         executeMojoExpectingFailure();
         assertTrue(true);
     }

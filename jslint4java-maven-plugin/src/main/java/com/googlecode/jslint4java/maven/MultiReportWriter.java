@@ -3,6 +3,7 @@ package com.googlecode.jslint4java.maven;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.io.Closeables;
 import com.googlecode.jslint4java.JSLintResult;
 
 /**
@@ -22,7 +23,7 @@ public class MultiReportWriter implements ReportWriter {
     /** Close all contained ReportWriters. */
     public void close() {
         for (ReportWriter reportWriter : reportWriters) {
-            reportWriter.close();
+            Closeables.closeQuietly(reportWriter);
         }
     }
 

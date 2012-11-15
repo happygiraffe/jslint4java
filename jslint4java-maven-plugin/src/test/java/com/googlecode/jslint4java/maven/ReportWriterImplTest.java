@@ -4,13 +4,8 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 
-import org.codehaus.plexus.util.IOUtil;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -19,7 +14,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
+import com.google.common.io.Files;
 import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
@@ -90,13 +87,13 @@ public class ReportWriterImplTest {
     /**
      * issue 65: If we configure an invalid report xml, we should blow up with a
      * {@link RuntimeException} (wrapping a
-     * {@link FileNotFoundException}). Instead, we're blowing up with an
+     * {@link IOException}). Instead, we're blowing up with an
      * {@link NullPointerException}when we try to close().
      */
     @Test
-    public void closeDoesntHideFileNotFoundExceptionWithNullPointerException() throws IOException {
+    public void closeDoesntHideIoExceptionWithNullPointerException() throws IOException {
         kaboom.expect(RuntimeException.class);
-        kaboom.expect(rootCause(FileNotFoundException.class));
+        kaboom.expect(rootCause(IOException.class));
 
         // This is guaranteed to fail as it's a file not a directory.
         File f  = tmpf.newFile("bob");
@@ -109,15 +106,8 @@ public class ReportWriterImplTest {
         }
     }
 
-    private String readFile(File reportFile) throws FileNotFoundException, IOException {
-        InputStreamReader reader = null;
-        try {
-            reader = new InputStreamReader(new FileInputStream(reportFile),
-                    Charset.forName("UTF-8"));
-            return IOUtil.toString(reader);
-        } finally {
-            IOUtil.close(reader);
-        }
+    private String readFile(File reportFile) throws IOException {
+        return Files.toString(reportFile, Charsets.UTF_8);
     }
 
     @Test

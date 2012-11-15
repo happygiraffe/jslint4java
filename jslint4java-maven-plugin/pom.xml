@@ -39,6 +39,16 @@
       <version>2.0</version>
       <scope>test</scope>
     </dependency>
+    <!--
+      I'd like to depend on the real guava directly. But sisu-guava is in the classpath ahead
+      of this.  And if I enable real guava, there is a failure to look up mojos in my tests.
+      Really, sisu-guava should be package-renamed.  Until then, I have to depend on it.
+    -->
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-guava</artifactId>
+      <version>0.9.9</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

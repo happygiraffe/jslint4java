@@ -7,8 +7,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
-import org.codehaus.plexus.util.IOUtil;
-
+import com.google.common.base.Throwables;
+import com.google.common.io.Closeables;
+import com.google.common.io.Files;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 
@@ -42,16 +43,9 @@ public class ReportWriterImpl implements ReportWriter {
                 writer.write(formatter.footer());
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Throwables.propagate(e);
         } finally {
-            IOUtil.close(writer);
-        }
-    }
-
-    private void ensureReportDirectoryExists() {
-        File parent = reportFile.getAbsoluteFile().getParentFile();
-        if (!parent.exists()) {
-            parent.mkdirs();
+            Closeables.closeQuietly(writer);
         }
     }
 
@@ -61,15 +55,15 @@ public class ReportWriterImpl implements ReportWriter {
     }
 
     public void open() {
-        ensureReportDirectoryExists();
         try {
+            Files.createParentDirs(reportFile);
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(reportFile),
                     Charset.forName("UTF-8")));
             if (formatter.header() != null) {
                 writer.write(formatter.header());
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Throwables.propagate(e);
         }
     }
 
@@ -77,7 +71,7 @@ public class ReportWriterImpl implements ReportWriter {
         try {
             writer.write(formatter.format(result));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Throwables.propagate(e);
         }
     }
 }

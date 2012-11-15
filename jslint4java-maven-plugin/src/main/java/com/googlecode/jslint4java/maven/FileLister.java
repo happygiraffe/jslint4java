@@ -2,11 +2,13 @@ package com.googlecode.jslint4java.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * Produce a list of files with includes and excludes.
@@ -17,8 +19,8 @@ import org.codehaus.plexus.util.StringUtils;
  */
 public class FileLister {
 
-    private final List<String> includes = new ArrayList<String>();
-    private final List<String> excludes = new ArrayList<String>();
+    private final List<String> includes = Lists.newArrayList();
+    private final List<String> excludes = Lists.newArrayList();
     private final File sourceDirectory;
 
     public FileLister(File sourceDirectory, List<String> includes, List<String> excludes) {
@@ -30,7 +32,7 @@ public class FileLister {
 
     public List<File> files() throws IOException {
         if (!sourceDirectory.exists()) {
-            return new ArrayList<File>();
+            return ImmutableList.of();
         }
         String includesStr = StringUtils.join(includes.iterator(), ",");
         String excludesStr = StringUtils.join(excludes.iterator(), ",");
