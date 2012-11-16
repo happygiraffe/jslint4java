@@ -1,55 +1,24 @@
 package com.googlecode.jslint4java.maven;
 
+import static com.googlecode.jslint4java.maven.RootCauseMatcher.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
 import com.googlecode.jslint4java.formatter.JSLintXmlFormatter;
 
 public class ReportWriterImplTest {
-
-    /** An hamcrest matcher implementation. */
-    private static class RootCauseMatcher extends BaseMatcher<Class<? extends Exception>> {
-        private final Class<? extends Exception> expectedRootCause;
-
-        // TODO: should we take a Matcher instead?
-        private RootCauseMatcher(Class<? extends Exception> clazz) {
-            this.expectedRootCause = clazz;
-        }
-
-        public boolean matches(Object obj) {
-            if (!(obj instanceof Throwable)) {
-                // Not an exception
-                return false;
-            }
-            Throwable e = (Throwable) obj;
-            Throwable rootCause = Throwables.getRootCause(e);
-            return rootCause.getClass().equals(expectedRootCause);
-        }
-
-        public void describeTo(Description desc) {
-            desc.appendText("an exception with root cause " + expectedRootCause.getName());
-        }
-    }
-
-    private static Matcher<Class<? extends Exception>> rootCause(Class<? extends Exception> e) {
-        return new RootCauseMatcher(e);
-    }
 
     private static final String REPORT_XML = "report.xml";
 
