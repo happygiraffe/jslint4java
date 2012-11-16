@@ -1,11 +1,7 @@
 package com.googlecode.jslint4java;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.StringReader;
 import java.util.List;
@@ -19,6 +15,7 @@ import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import com.google.common.io.CharStreams;
 import com.googlecode.jslint4java.Util.Converter;
 
 /**
@@ -165,7 +162,7 @@ public class UtilTest {
 
     @Test
     public void testReaderToString() throws Exception {
-        StringReader reader = new StringReader("foo bar");
+        StringReader reader = CharStreams.newReaderSupplier("foo bar").getInput();
         assertThat(Util.readerToString(reader), is("foo bar"));
     }
 

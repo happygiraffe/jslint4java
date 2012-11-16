@@ -4,11 +4,17 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import java.net.URL;
 
 import org.junit.Test;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
+import com.google.common.io.Closeables;
+import com.google.common.io.Resources;
 
 public class UnicodeBomInputStreamTest {
 
@@ -22,7 +28,7 @@ public class UnicodeBomInputStreamTest {
             in2.skipBOM();
             assertThat(in2.read(), is(0x31));
         } finally {
-            in2.close();
+            Closeables.closeQuietly(in2);
         }
     }
 
@@ -37,30 +43,32 @@ public class UnicodeBomInputStreamTest {
             assertThat(is2.read(), is(0x2f));
             assertThat(is2.read(), is(0x20));
         } finally {
-            is2.close();
+            Closeables.closeQuietly(is2);
         }
     }
 
     @Test
     public void basicSanityFromResourceReader() throws Exception {
-        InputStream is = UnicodeBomInputStreamTest.class.getResourceAsStream("bom.js");
-        UnicodeBomInputStream is2 = new UnicodeBomInputStream(is);
+        UnicodeBomInputStream is2 = new UnicodeBomInputStream(getBomJs());
         is2.skipBOM();
-        InputStreamReader isr = new InputStreamReader(is2, Charset.forName("UTF-8"));
-        String s = Util.readerToString(isr);
+        String s = CharStreams.toString(new InputStreamReader(is2, Charsets.UTF_8));
         String nl = System.getProperty("line.separator");
         assertThat(s, is("// This file starts with a UTF-8 BOM." + nl + "alert(\"Hello BOM\");" + nl));
     }
 
     @Test
     public void canLintWithBom() throws Exception {
-        InputStream is = UnicodeBomInputStreamTest.class.getResourceAsStream("bom.js");
-        UnicodeBomInputStream is2 = new UnicodeBomInputStream(is);
+        UnicodeBomInputStream is2 = new UnicodeBomInputStream(getBomJs());
         is2.skipBOM();
-        InputStreamReader isr = new InputStreamReader(is2, Charset.forName("UTF-8"));
+        InputStreamReader isr = new InputStreamReader(is2, Charsets.UTF_8);
         JSLint jsLint = new JSLintBuilder().fromDefault();
         jsLint.addOption(Option.UNDEF);
         JSLintResult result = jsLint.lint("bom.js", isr);
         assertThat(result.getIssues().size(), is(0));
+    }
+
+    private InputStream getBomJs() throws IOException {
+        URL url = Resources.getResource(UnicodeBomInputStreamTest.class, "bom.js");
+        return Resources.newInputStreamSupplier(url).getInput();
     }
 }

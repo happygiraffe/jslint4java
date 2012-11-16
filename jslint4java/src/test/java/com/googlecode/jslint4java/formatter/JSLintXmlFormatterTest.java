@@ -3,7 +3,6 @@ package com.googlecode.jslint4java.formatter;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import java.io.FileNotFoundException;
 import java.io.StringReader;
 import java.net.URL;
 
@@ -15,6 +14,7 @@ import org.junit.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.google.common.io.Resources;
 import com.googlecode.jslint4java.Issue;
 import com.googlecode.jslint4java.JSLintResult;
 
@@ -23,9 +23,8 @@ public class JSLintXmlFormatterTest {
 
     private final JSLintResultFormatter form = new JSLintXmlFormatter();
 
-    private Validator getValidatorFor(String xml) throws FileNotFoundException, SAXException {
-        URL dtd = getClass().getClassLoader().getResource(DTD_RESOURCE);
-        assertThat("resource " + DTD_RESOURCE + " exists", dtd, notNullValue());
+    private Validator getValidatorFor(String xml) throws SAXException {
+        URL dtd = Resources.getResource(DTD_RESOURCE);
         // Specify a validator as the documents don't have <!DOCTYPE file> in them.
         // NB: We produce a subset of the full DTD (no root jslint element), but it's enough to
         // validate.

@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import org.junit.rules.ExternalResource;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Throwables;
 
 /**
  * A JUnit @Rule to wrap stdio for testing.
@@ -52,7 +53,7 @@ public class StdioResource extends ExternalResource {
         try {
             return stderrStream.toString(UTF_8);
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e); // "should never happen"
+            throw Throwables.propagate(e); // "should never happen"
         }
     }
 
@@ -60,7 +61,7 @@ public class StdioResource extends ExternalResource {
         try {
             return stdoutStream.toString(UTF_8);
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e); // "should never happen"
+            throw Throwables.propagate(e); // "should never happen"
         }
     }
 

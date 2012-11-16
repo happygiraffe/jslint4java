@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.beust.jcommander.ParameterException;
+import com.google.common.base.Charsets;
 
 public class CharsetConverterTest {
 
@@ -22,7 +23,7 @@ public class CharsetConverterTest {
 
     @Test
     public void testConvert() throws Exception {
-        assertThat(cc.convert("UTF-8"), is(Charset.forName("UTF-8")));
+        assertThat(cc.convert("UTF-8"), is(Charsets.UTF_8));
     }
 
     @Test

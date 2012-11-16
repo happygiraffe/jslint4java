@@ -21,12 +21,9 @@ public class PlainFormatterTest {
         Issue issue = new IssueBuilder(name, 0, 0, "oops").evidence("BANG").build();
         JSLintResult result = new JSLintResult.ResultBuilder(name).addIssue(issue).build();
         StringBuilder sb = new StringBuilder(name);
-        sb.append(":0:0: oops");
-        sb.append(nl);
-        sb.append("BANG");
-        sb.append(nl);
-        sb.append("^");
-        sb.append(nl);
+        sb.append(":0:0: oops").append(nl);
+        sb.append("BANG").append(nl);
+        sb.append("^").append(nl);
         assertThat(rf.format(result), is(sb.toString()));
     }
 
@@ -54,12 +51,9 @@ public class PlainFormatterTest {
         Issue issue = new IssueBuilder(name, 1, 2, "no clucking").evidence("cluck()").build();
         JSLintResult result = new JSLintResult.ResultBuilder(name).addIssue(issue).build();
         StringBuilder sb = new StringBuilder(name);
-        sb.append(":1:2: no clucking");
-        sb.append(nl);
-        sb.append("cluck()");
-        sb.append(nl);
-        sb.append(" ^");
-        sb.append(nl);
+        sb.append(":1:2: no clucking").append(nl);
+        sb.append("cluck()").append(nl);
+        sb.append(" ^").append(nl);
         assertThat(rf.format(result), is(sb.toString()));
     }
 

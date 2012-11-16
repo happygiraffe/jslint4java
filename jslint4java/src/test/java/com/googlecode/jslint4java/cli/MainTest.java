@@ -17,6 +17,7 @@ import org.junit.rules.TemporaryFolder;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.io.Resources;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.cli.Main.DieException;
 
@@ -75,7 +76,7 @@ public class MainTest {
     }
 
     private String pathTo(String js) throws URISyntaxException {
-        URL resource = getClass().getClassLoader().getResource(RESOURCE_PREFIX + js);
+        URL resource = Resources.getResource(RESOURCE_PREFIX + js);
         return new File(resource.toURI()).getAbsolutePath();
     }
 

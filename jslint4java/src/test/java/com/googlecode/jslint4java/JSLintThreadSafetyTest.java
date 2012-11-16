@@ -1,10 +1,10 @@
 package com.googlecode.jslint4java;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
+
+import com.google.common.base.Throwables;
 
 /**
  * Check that JSLint can safely be used in multiple threads.
@@ -45,12 +45,12 @@ public class JSLintThreadSafetyTest {
      * Run <i>r</i> in a separate thread, and verify that it raises no exceptions.
      */
     private static void assertNoRaise(final Runnable r) throws InterruptedException {
-        final AtomicReference<Exception> kaboom = new AtomicReference<Exception>();
+        final AtomicReference<Throwable> kaboom = new AtomicReference<Throwable>();
         Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
                     r.run();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     kaboom.set(e);
                 }
             }
@@ -58,11 +58,9 @@ public class JSLintThreadSafetyTest {
         t.start();
         t.join();
 
-        if (kaboom.get() == null) {
-            assertTrue("LGTM", true);
-        } else {
+        if (kaboom.get() != null) {
             // Wrap for stack trace.
-            throw new RuntimeException(kaboom.get());
+            throw Throwables.propagate(kaboom.get());
         }
     }
 

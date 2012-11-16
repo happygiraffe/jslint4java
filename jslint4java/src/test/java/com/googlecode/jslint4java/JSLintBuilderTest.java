@@ -4,13 +4,17 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.StringReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 
 public class JSLintBuilderTest {
 
@@ -33,6 +37,11 @@ public class JSLintBuilderTest {
         assertThat(issues.isEmpty(), is(true));
     }
 
+    /** Return a stubbed out jslint.js from the classpath. */
+    private URL getStubJslint() {
+        return Resources.getResource(STUB_JSLINT);
+    }
+
     @Test
     public void testFromClasspathResource() throws Exception {
         assertJSLintOK(builder.fromClasspathResource(STUB_JSLINT));
@@ -45,16 +54,15 @@ public class JSLintBuilderTest {
 
     @Test
     public void testFromFile() throws Exception {
-        File f = new File(getClass().getClassLoader().getResource(STUB_JSLINT).toURI());
+        File f = new File(getStubJslint().toURI());
         assertJSLintOK(builder.fromFile(f));
     }
 
     @Test
     public void testFromReader() throws Exception {
-        // Same as stubjslint.js.
-        String jslint = "function JSLINT() {JSLINT.errors=[];return true}";
-        StringReader reader = new StringReader(jslint);
-        assertJSLintOK(builder.fromReader(reader, "stubjslint.js"));
+        InputStreamReader input = Resources.newReaderSupplier(getStubJslint(), Charsets.UTF_8)
+                .getInput();
+        assertJSLintOK(builder.fromReader(input, "stubjslint.js"));
     }
 
     @Test
