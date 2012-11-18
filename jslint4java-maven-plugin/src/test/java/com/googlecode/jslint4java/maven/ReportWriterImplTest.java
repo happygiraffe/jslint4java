@@ -1,12 +1,12 @@
 package com.googlecode.jslint4java.maven;
 
-import static com.googlecode.jslint4java.maven.RootCauseMatcher.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -62,7 +62,7 @@ public class ReportWriterImplTest {
     @Test
     public void closeDoesntHideIoExceptionWithNullPointerException() throws IOException {
         kaboom.expect(RuntimeException.class);
-        kaboom.expect(rootCause(IOException.class));
+        kaboom.expectCause(CoreMatchers.<Throwable>instanceOf(IOException.class));
 
         // This is guaranteed to fail as it's a file not a directory.
         File f  = tmpf.newFile("bob");
