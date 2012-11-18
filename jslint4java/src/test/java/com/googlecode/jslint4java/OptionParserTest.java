@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -28,7 +29,7 @@ public class OptionParserTest {
     @Test
     public void testNoSuchMethod() throws Exception {
         thrown.expect(RuntimeException.class);
-        // root cause: NoSuchMethodException
+        thrown.expectCause(CoreMatchers.<Throwable>instanceOf(NoSuchMethodException.class));
         thrown.expectMessage("System.valueOf");
         optionParser.parse(System.class, "foo");
     }
@@ -52,7 +53,7 @@ public class OptionParserTest {
     @Test
     public void testRuntimeExceptionWrapping() throws Exception {
         thrown.expect(RuntimeException.class);
-        // root cause: IOException
+        thrown.expectCause(CoreMatchers.<Throwable>instanceOf(IOException.class));
         thrown.expectMessage("IOException: burble");
         optionParser.parse(Foo.class, "foo");
     }
