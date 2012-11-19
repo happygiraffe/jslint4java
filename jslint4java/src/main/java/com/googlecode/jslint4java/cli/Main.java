@@ -69,7 +69,7 @@ class Main {
      */
     // @VisibleForTesting
     @SuppressWarnings("serial")
-    static class DieException extends RuntimeException {
+    public static class DieException extends RuntimeException {
         private final int code;
 
         public DieException(String message, int code) {

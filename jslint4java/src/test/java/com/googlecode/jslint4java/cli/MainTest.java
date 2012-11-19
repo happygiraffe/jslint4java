@@ -1,6 +1,6 @@
 package com.googlecode.jslint4java.cli;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -9,9 +9,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.common.base.Joiner;
@@ -33,18 +33,10 @@ public class MainTest {
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
+    @Rule
+    public ExpectedException kaboom = ExpectedException.none();
+
     private final Main main = new Main();
-
-    private void assertDied(DieException e, int code, Matcher<String> message) {
-        assertThat(e.getCode(), is(code));
-        assertThat(e.getMessage(), message);
-    }
-
-    private void assertDiedHappily(DieException e) {
-        assertDied(e, 0, nullValue(String.class));
-        // If we exited happily, we shouldn't be putting anything on stderr.
-        assertThat(stdio.getStderr(), is(""));
-    }
 
     /** Check that the exit value, stdout and stderr are as expected. */
     private void assertLintOutput(int actualExit, int expectedExit, List<String> expectedStdout,
@@ -100,12 +92,12 @@ public class MainTest {
 
     @Test
     public void testBadFlag() throws Exception {
+        kaboom.expect(DieException.class);
+        kaboom.expect(hasProperty("code", equalTo(0)));
         try {
             runLint("--xyzzy");
             fail("should have thrown DieException");
-        } catch (DieException e) {
-            // TODO: should exit with one not zero
-            assertDiedHappily(e);
+        } finally {
             assertThat(stdio.getStderr(), is(""));
             assertThat(stdio.getStdout(), containsString("Unknown option: --xyzzy"));
         }
@@ -120,24 +112,22 @@ public class MainTest {
 
     @Test
     public void testFileNotFound() throws Exception {
+        kaboom.expect(DieException.class);
+        kaboom.expect(hasProperty("code", equalTo(1)));
         File nonexistent = tempFolder.newFile("nonexistent.js");
         String path = nonexistent.getAbsolutePath();
-        try {
-            assertThat(nonexistent.delete(), is(true));
-            runLint(path);
-            fail("should have thrown DieException");
-        } catch (DieException e) {
-            assertDied(e, 1, is(path + ": No such file or directory."));
-        }
+        kaboom.expectMessage(is(path + ": No such file or directory."));
+        assertThat(nonexistent.delete(), is(true));
+        runLint(path);
     }
 
     @Test
     public void testHelp() throws Exception {
+        kaboom.expect(DieException.class);
+        kaboom.expect(hasProperty("code", equalTo(0)));
         try {
             runLint("--help");
-            fail("should have thrown DieException");
-        } catch (DieException e) {
-            assertDiedHappily(e);
+        } finally {
             assertStdoutContains("Usage: jslint4java [options] file.js ...");
             assertStdoutContains("--help");
             assertStdoutContains("using jslint version");
@@ -146,11 +136,12 @@ public class MainTest {
 
     @Test
     public void testHelpShownWhenNoFiles() throws Exception {
+        kaboom.expect(DieException.class);
+        kaboom.expect(hasProperty("code", equalTo(0)));
         try {
             runLint();
             fail("should have thrown DieException");
-        } catch (DieException e) {
-            assertDiedHappily(e);
+        } finally {
             assertStdoutContains("Usage: jslint4java [options] file.js ...");
         }
     }
@@ -246,12 +237,11 @@ public class MainTest {
      */
     @Test
     public void testReportUnknown() throws IOException, URISyntaxException {
+        kaboom.expect(DieException.class);
+        kaboom.expect(hasProperty("code", equalTo(1)));
+        kaboom.expectMessage("unknown report type 'UNKNOWN'");
         String path = pathTo("bad.js");
-        try {
-            runLint("--report", "UNKNOWN", path);
-        } catch (DieException e) {
-            assertDied(e, 1, is("unknown report type 'UNKNOWN'"));
-        }
+        runLint("--report", "UNKNOWN", path);
     }
 
     /** Does the xml report look OK? */
@@ -271,14 +261,16 @@ public class MainTest {
 
     @Test
     public void testVersion() throws Exception {
+        kaboom.expect(DieException.class);
+        kaboom.expect(hasProperty("code", equalTo(0)));
         String edition = new JSLintBuilder().fromDefault().getEdition();
         try {
             runLint("--version");
             fail("should have thrown DieException");
         } catch (DieException e) {
-            assertDiedHappily(e);
             List<String> expectedStdout = ImmutableList.of("using jslint version " + edition);
             assertLintOutput(e.getCode(), 0, expectedStdout, NO_OUTPUT);
+            throw e;
         }
     }
 }
