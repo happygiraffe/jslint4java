@@ -20,7 +20,7 @@ import java.io.PushbackInputStream;
  * <code>InputStream</code> object.
  * </p>
  *
- * @see {@code http://stackoverflow.com/questions/1835430/byte-order-mark-screws-up-file-reading-in-java/1835529#1835529}
+ * @see <a href="http://stackoverflow.com/a/1835529">the source</a>
  */
 public class UnicodeBomInputStream extends InputStream {
 
