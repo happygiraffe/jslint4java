@@ -16,9 +16,6 @@ class JSLintFlags {
     @Parameter(names = "--browser", description = "If the standard browser globals should be predefined")
     public Boolean BROWSER = null;
 
-    @Parameter(names = "--cap", description = "If upper case html should be allowed")
-    public Boolean CAP = null;
-
     @Parameter(names = "--continue", description = "If the continuation statement should be tolerated")
     public Boolean CONTINUE = null;
 

@@ -1,5 +1,5 @@
 // jslint.js
-// 2012-11-13
+// 2012-11-17
 
 // Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -172,7 +172,6 @@
 //     anon       true, if the space may be omitted in anonymous function declarations
 //     bitwise    true, if bitwise operators should be allowed
 //     browser    true, if the standard browser globals should be predefined
-//     cap        true, if upper case HTML should be allowed
 //     'continue' true, if the continuation statement should be tolerated
 //     css        true, if CSS workarounds should be tolerated
 //     debug      true, if debugger statements should be allowed
@@ -238,7 +237,7 @@
     'border-top', 'border-top-color', 'border-top-left-radius',
     'border-top-right-radius', 'border-top-style', 'border-top-width',
     'border-width', bottom, 'box-shadow', br, braille, browser, button, c, call,
-    canvas, cap, caption, 'caption-side', center, charAt, charCodeAt, character,
+    canvas, caption, 'caption-side', center, charAt, charCodeAt, character,
     cite, clear, clip, closure, cm, code, col, colgroup, color, combine_var,
     command, conditional_assignment, confusing_a, confusing_regexp,
     constructor_name_a, content, continue, control_a, 'counter-increment',
@@ -341,7 +340,6 @@ var JSLINT = (function () {
             anon      : true,
             bitwise   : true,
             browser   : true,
-            cap       : true,
             'continue': true,
             css       : true,
             debug     : true,
@@ -5429,9 +5427,8 @@ klass:              do {
 
     function style_selector() {
         if (next_token.identifier) {
-            if (!Object.prototype.hasOwnProperty.call(html_tag, option.cap
-                    ? next_token.string.toLowerCase()
-                    : next_token.string)) {
+            if (!Object.prototype.hasOwnProperty.call(html_tag,
+                    next_token.string)) {
                 warn('expected_tagname_a');
             }
             advance();
@@ -5701,18 +5698,9 @@ klass:              do {
         }
     }
 
-    function do_tag(name, attribute) {
-        var i, tag = html_tag[name], script, x;
+    function do_tag(tag, name, attribute) {
+        var i, script, x;
         src = false;
-        if (!tag) {
-            stop(
-                bundle.unrecognized_tag_a,
-                next_token,
-                name === name.toLowerCase()
-                    ? name
-                    : name + ' (capitalization error)'
-            );
-        }
         if (stack.length > 0) {
             if (name === 'html') {
                 stop('unexpected_a', token, name);
@@ -5722,7 +5710,7 @@ klass:              do {
                 if (x.indexOf(' ' + stack[stack.length - 1].name + ' ') < 0) {
                     stop('tag_a_in_b', token, name, x);
                 }
-            } else if (!option.adsafe && !option.fragment) {
+            } else if (x !== false && !option.adsafe && !option.fragment) {
                 i = stack.length;
                 do {
                     if (i <= 0) {
@@ -5859,7 +5847,7 @@ klass:              do {
 
     function html() {
         var attribute, attributes, is_empty, name, old_white = option.white,
-            quote, tag_name, tag, wmode;
+            quote, tag_name, tag, value, wmode;
         xmode = 'html';
         xquote = '';
         stack = null;
@@ -5872,9 +5860,6 @@ klass:              do {
                 tag_name = next_token;
                 name = tag_name.string;
                 advance_identifier(name);
-                if (option.cap) {
-                    name = name.toLowerCase();
-                }
                 tag_name.name = name;
                 if (!stack) {
                     stack = [];
@@ -5882,9 +5867,13 @@ klass:              do {
                 }
                 tag = html_tag[name];
                 if (typeof tag !== 'object') {
-                    stop('unrecognized_tag_a', tag_name, name);
+                    tag = {parent: false};
+                    warn('unrecognized_tag_a', tag_name, name === name.toLowerCase()
+                        ? name
+                        : name + ' (capitalization error)');
+                } else {
+                    is_empty = tag.empty;
                 }
-                is_empty = tag.empty;
                 tag_name.type = name;
                 for (;;) {
                     if (next_token.id === '/') {
@@ -5908,7 +5897,7 @@ klass:              do {
                     attribute = next_token.string;
                     option.white = old_white;
                     advance();
-                    if (!option.cap && attribute !== attribute.toLowerCase()) {
+                    if (attribute !== attribute.toLowerCase()) {
                         warn('attribute_case_a', token);
                     }
                     attribute = attribute.toLowerCase();
@@ -5939,7 +5928,7 @@ klass:              do {
                         xmode = 'html';
                         xquote = '';
                         advance(quote);
-                        tag = false;
+                        value = false;
                     } else if (attribute === 'style') {
                         xmode = 'scriptstring';
                         advance('=');
@@ -5954,11 +5943,11 @@ klass:              do {
                         xmode = 'html';
                         xquote = '';
                         advance(quote);
-                        tag = false;
+                        value = false;
                     } else {
                         if (next_token.id === '=') {
                             advance('=');
-                            tag = next_token.string;
+                            value = next_token.string;
                             if (!next_token.identifier &&
                                     next_token.id !== '"' &&
                                     next_token.id !== '\'' &&
@@ -5969,13 +5958,13 @@ klass:              do {
                             }
                             advance();
                         } else {
-                            tag = true;
+                            value = true;
                         }
                     }
-                    attributes[attribute] = tag;
-                    do_attribute(attribute, tag);
+                    attributes[attribute] = value;
+                    do_attribute(attribute, value);
                 }
-                do_tag(name, attributes);
+                do_tag(tag, name, attributes);
                 if (!is_empty) {
                     stack.push(tag_name);
                 }
@@ -5989,9 +5978,6 @@ klass:              do {
                     warn('bad_name_a');
                 }
                 name = next_token.string;
-                if (option.cap) {
-                    name = name.toLowerCase();
-                }
                 advance();
                 if (!stack) {
                     stop('unexpected_a', next_token, closetag(name));
@@ -6433,10 +6419,10 @@ klass:              do {
             key,
             keys = Object.keys(property).sort(),
             length,
-            output = ['/*properties'],
             mem = '    ',
             name,
-            not_first = false;
+            not_first = false,
+            output = ['/*properties'];
         for (i = 0; i < keys.length; i += 1) {
             key = keys[i];
             if (property[key] > 0) {
@@ -6461,7 +6447,7 @@ klass:              do {
 
     itself.jslint = itself;
 
-    itself.edition = '2012-11-13';
+    itself.edition = '2012-11-17';
 
     return itself;
 }());

@@ -21,9 +21,6 @@ public enum Option {
     /** If the standard browser globals should be predefined */
     BROWSER("If the standard browser globals should be predefined", Boolean.class),
 
-    /** If upper case html should be allowed */
-    CAP("If upper case html should be allowed", Boolean.class),
-
     /** If the continuation statement should be tolerated */
     CONTINUE("If the continuation statement should be tolerated", Boolean.class),
 
