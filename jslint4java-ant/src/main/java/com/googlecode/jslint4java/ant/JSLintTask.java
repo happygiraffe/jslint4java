@@ -198,8 +198,6 @@ public class JSLintTask extends Task {
 
     /**
      * Return a logging {@link OutputStream} that can be passed to formatters.
-     *
-     * @return
      */
     private OutputStream getDefaultOutput() {
         return new LogOutputStream(this, Project.MSG_INFO);
