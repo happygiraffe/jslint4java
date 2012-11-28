@@ -68,7 +68,7 @@ import com.googlecode.jslint4java.UnicodeBomInputStream;
  * </dl>
  *
  * @author dom
- * @see <a href="http://jslint.com/">jslint.com< /a>
+ * @see <a href="http://jslint.com/">jslint.com</a>
  * @see FormatterElement
  */
 public class JSLintTask extends Task {
