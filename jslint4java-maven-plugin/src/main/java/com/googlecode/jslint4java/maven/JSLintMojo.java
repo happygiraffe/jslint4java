@@ -127,6 +127,12 @@ public class JSLintMojo extends AbstractMojo {
     @Parameter(property = "jslint.timeout")
     private long timeout;
 
+    /**
+     * Skip linting files if true.
+     */
+    @Parameter(property = "jslint.skip", defaultValue = "false")
+    private boolean skip = false;
+
     /** Add a single option. For testing only. */
     void addOption(Option sloppy, String value) {
         options.put(sloppy.name().toLowerCase(Locale.ENGLISH), value);
@@ -160,6 +166,10 @@ public class JSLintMojo extends AbstractMojo {
     }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("skipping JSLint");
+            return;
+        }
         JSLint jsLint = applyJSlintSource();
         applyDefaults();
         applyOptions(jsLint);
@@ -321,6 +331,10 @@ public class JSLintMojo extends AbstractMojo {
 
     public void setOutputFolder(File outputFolder) {
         this.outputFolder = outputFolder;
+    }
+
+    public void setSkip(boolean skip) {
+        this.skip = skip;
     }
 
     public void setSourceFolders(List<File> sourceFolders) {

@@ -215,6 +215,13 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         assertEquals("true", options.get("sloppy"));
     }
 
+    @Test
+    public void testSkip() throws Exception {
+        mojo.setSkip(true);
+        mojo.execute();
+        assertLogContains("skipping");
+    }
+
     private void useBadSource() {
         mojo.setSourceFolders(Arrays.asList(baseRelative(BAD_JS)));
     }
