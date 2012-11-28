@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
@@ -50,11 +51,15 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     private void assertLogContains(String expected) {
         for (FakeLog.LogItem item : logger.loggedItems) {
             if (item.msg.toString().contains(expected)) {
-                assertTrue("Found expected log message", true);
                 return;
             }
         }
-        fail("Didn't find error text in logs: " + expected);
+        StringBuilder sb = new StringBuilder();
+        sb.append("Didn't find error text in logs: \"");
+        sb.append(expected);
+        sb.append("\"; log was:\n");
+        sb.append(Joiner.on("\n").join(logger.loggedItems));
+        fail(sb.toString());
     }
 
     /**
