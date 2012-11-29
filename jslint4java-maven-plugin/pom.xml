@@ -71,6 +71,9 @@
             <goals>
               <goal>helpmojo</goal>
             </goals>
+            <configuration>
+              <helpPackageName>com.googlecode.jslint4java.maven</helpPackageName>
+            </configuration>
           </execution>
         </executions>
         <configuration>
