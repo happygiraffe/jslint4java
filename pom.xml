@@ -277,11 +277,6 @@
         <version>2.8</version>
         <configuration>
           <quiet>true</quiet>
-          <links>
-            <!-- Why couldn't snoracle have left this link alone?  And what on
-                 earth is E17476_01? -->
-            <link>http://download.oracle.com/docs/cd/E17476_01/javase/1.5.0/docs/api</link>
-          </links>
         </configuration>
         <reportSets>
           <reportSet>
