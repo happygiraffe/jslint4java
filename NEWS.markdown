@@ -1,10 +1,10 @@
 Revision history for jslint4java
 ================================
 
-2.0.3 (2012-11-28)
+2.0.3 (2012-12-04)
 ------------------
 
- * Update to JSLint 2012-11-17.
+ * Update to JSLint 2012-12-04.
    - This removes the `cap` option.
    - This removes the `widget` option.
    - This adds the `stupid` option (sigh).
