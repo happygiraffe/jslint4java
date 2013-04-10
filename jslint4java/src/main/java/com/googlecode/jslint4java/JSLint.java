@@ -190,9 +190,6 @@ public class JSLint {
                     for (String global : Util.listValueOfType("globals", String.class, data)) {
                         b.addGlobal(global);
                     }
-                    for (String url : Util.listValueOfType("urls", String.class, data)) {
-                        b.addUrl(url);
-                    }
                     b.json(Util.booleanValue("json", data));
                     for (JSFunction f : Util.listValue("functions", data, new JSFunctionConverter())) {
                         b.addFunction(f);
