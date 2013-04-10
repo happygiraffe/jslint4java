@@ -7,20 +7,17 @@ import com.beust.jcommander.Parameter;
  */
 class JSLintFlags {
     // BEGIN-OPTIONS
-    @Parameter(names = "--anon", description = "If the space may be omitted in anonymous function declarations")
-    public Boolean ANON = null;
-
     @Parameter(names = "--bitwise", description = "If bitwise operators should be allowed")
     public Boolean BITWISE = null;
 
     @Parameter(names = "--browser", description = "If the standard browser globals should be predefined")
     public Boolean BROWSER = null;
 
+    @Parameter(names = "--closure", description = "If google closure idioms should be tolerated")
+    public Boolean CLOSURE = null;
+
     @Parameter(names = "--continue", description = "If the continuation statement should be tolerated")
     public Boolean CONTINUE = null;
-
-    @Parameter(names = "--css", description = "If css workarounds should be tolerated")
-    public Boolean CSS = null;
 
     @Parameter(names = "--debug", description = "If debugger statements should be allowed")
     public Boolean DEBUG = null;
@@ -40,9 +37,6 @@ class JSLintFlags {
     @Parameter(names = "--forin", description = "If for in statements need not filter")
     public Boolean FORIN = null;
 
-    @Parameter(names = "--fragment", description = "If html fragments should be allowed")
-    public Boolean FRAGMENT = null;
-
     @Parameter(names = "--indent", description = "The indentation factor")
     public String INDENT = null;
 
@@ -60,9 +54,6 @@ class JSLintFlags {
 
     @Parameter(names = "--nomen", description = "If names may have dangling _")
     public Boolean NOMEN = null;
-
-    @Parameter(names = "--on", description = "If html event handlers should be allowed")
-    public Boolean ON = null;
 
     @Parameter(names = "--passfail", description = "If the scan should stop on first error")
     public Boolean PASSFAIL = null;

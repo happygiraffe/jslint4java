@@ -12,20 +12,17 @@ import java.util.Locale;
  */
 public enum Option {
     // BEGIN-OPTIONS
-    /** If the space may be omitted in anonymous function declarations */
-    ANON("If the space may be omitted in anonymous function declarations", Boolean.class),
-
     /** If bitwise operators should be allowed */
     BITWISE("If bitwise operators should be allowed", Boolean.class),
 
     /** If the standard browser globals should be predefined */
     BROWSER("If the standard browser globals should be predefined", Boolean.class),
 
+    /** If google closure idioms should be tolerated */
+    CLOSURE("If google closure idioms should be tolerated", Boolean.class),
+
     /** If the continuation statement should be tolerated */
     CONTINUE("If the continuation statement should be tolerated", Boolean.class),
-
-    /** If css workarounds should be tolerated */
-    CSS("If css workarounds should be tolerated", Boolean.class),
 
     /** If debugger statements should be allowed */
     DEBUG("If debugger statements should be allowed", Boolean.class),
@@ -45,9 +42,6 @@ public enum Option {
     /** If for in statements need not filter */
     FORIN("If for in statements need not filter", Boolean.class),
 
-    /** If html fragments should be allowed */
-    FRAGMENT("If html fragments should be allowed", Boolean.class),
-
     /** The indentation factor */
     INDENT("The indentation factor", Integer.class),
 
@@ -65,9 +59,6 @@ public enum Option {
 
     /** If names may have dangling _ */
     NOMEN("If names may have dangling _", Boolean.class),
-
-    /** If html event handlers should be allowed */
-    ON("If html event handlers should be allowed", Boolean.class),
 
     /** If the scan should stop on first error */
     PASSFAIL("If the scan should stop on first error", Boolean.class),
