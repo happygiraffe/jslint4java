@@ -12,6 +12,9 @@ import java.util.Locale;
  */
 public enum Option {
     // BEGIN-OPTIONS
+    /** If assignment expressions should be allowed */
+    ASS("If assignment expressions should be allowed", Boolean.class),
+
     /** If bitwise operators should be allowed */
     BITWISE("If bitwise operators should be allowed", Boolean.class),
 
@@ -90,17 +93,14 @@ public enum Option {
     /** If todo comments are tolerated */
     TODO("If todo comments are tolerated", Boolean.class),
 
-    /** If variables can be declared out of order */
-    UNDEF("If variables can be declared out of order", Boolean.class),
-
     /** If unused parameters should be tolerated */
     UNPARAM("If unused parameters should be tolerated", Boolean.class),
 
     /** If multiple var statements per function should be allowed */
     VARS("If multiple var statements per function should be allowed", Boolean.class),
 
-    /** Enable additional warnings (jslint4java) */
-    WARNINGS("Enable additional warnings (jslint4java)", Boolean.class),
+    /** Unused */
+    WARNINGS("Unused", Boolean.class),
 
     /** If sloppy whitespace is tolerated */
     WHITE("If sloppy whitespace is tolerated", Boolean.class),

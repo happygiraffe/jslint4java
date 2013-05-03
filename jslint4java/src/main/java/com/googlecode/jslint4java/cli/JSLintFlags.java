@@ -7,6 +7,9 @@ import com.beust.jcommander.Parameter;
  */
 class JSLintFlags {
     // BEGIN-OPTIONS
+    @Parameter(names = "--ass", description = "If assignment expressions should be allowed")
+    public Boolean ASS = null;
+
     @Parameter(names = "--bitwise", description = "If bitwise operators should be allowed")
     public Boolean BITWISE = null;
 
@@ -85,16 +88,13 @@ class JSLintFlags {
     @Parameter(names = "--todo", description = "If todo comments are tolerated")
     public Boolean TODO = null;
 
-    @Parameter(names = "--undef", description = "If variables can be declared out of order")
-    public Boolean UNDEF = null;
-
     @Parameter(names = "--unparam", description = "If unused parameters should be tolerated")
     public Boolean UNPARAM = null;
 
     @Parameter(names = "--vars", description = "If multiple var statements per function should be allowed")
     public Boolean VARS = null;
 
-    @Parameter(names = "--warnings", description = "Enable additional warnings (jslint4java)")
+    @Parameter(names = "--warnings", description = "Unused")
     public Boolean WARNINGS = null;
 
     @Parameter(names = "--white", description = "If sloppy whitespace is tolerated")
