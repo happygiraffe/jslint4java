@@ -281,7 +281,7 @@ public class JSLintTest {
         // "can't continue" message.
         List<Issue> issues = lint("\"").getIssues();
         // This looks like a bug in JSLint…
-        assertIssues(issues, "Unclosed string.", "Stopping. (200% scanned).");
+        assertIssues(issues, "Unclosed string.", "Stopping. (100% scanned).");
     }
 
     /**
