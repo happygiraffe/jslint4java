@@ -293,6 +293,6 @@ public class JSLintTest {
         lint.addOption(Option.WARNINGS);
         String js = "function foo(a, b) {\n    return a;\n}";
         List<Issue> issues = lint(js).getIssues();
-        assertIssues(issues, "Unused variable: 'b' in foo.");
+        assertIssues(issues, "Unused 'b'.");
     }
 }
