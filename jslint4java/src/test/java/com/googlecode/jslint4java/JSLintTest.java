@@ -2,11 +2,11 @@
 package com.googlecode.jslint4java;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -84,11 +84,9 @@ public class JSLintTest {
         JSFunction f1 = functions.get(0);
         assertThat(f1.getName(), is("foo"));
         assertThat(f1.getLine(), is(1));
-        assertThat(f1.getParams().size(), is(1));
-        assertThat(f1.getParams().get(0), is("x"));
+        assertThat(f1.getParams(), contains("x"));
         // TODO: how to test getClosure()?
-        assertThat(f1.getVars().size(), is(1));
-        assertThat(f1.getVars().get(0), is("y"));
+        assertThat(f1.getVars(), contains("y"));
         // TODO: test getException()
         // TODO: test getOuter()
         // TODO: test getUnused()
@@ -99,20 +97,21 @@ public class JSLintTest {
     @Test
     public void testDataGlobals() throws Exception {
         JSLintResult result = lint("var foo = 12;");
-        assertTrue(result.getIssues().isEmpty());
-        assertThat(result.getGlobals(), hasItem("foo"));
+        assertThat(result.getIssues(), empty());
+        assertThat(result.getGlobals(), contains("foo"));
     }
 
     @Test
     public void testDataJsonness() throws Exception {
         JSLintResult result = lint("{\"a\":100}");
-        assertIssues(result.getIssues());
+        assertThat(result.getIssues(), empty());
         assertTrue(result.isJson());
     }
 
     @Test
     public void testEmptySource() throws Exception {
-        assertIssues(lint("").getIssues());
+        JSLintResult result = lint("");
+        assertThat(result.getIssues(), empty());
     }
 
     @Test
@@ -127,7 +126,8 @@ public class JSLintTest {
     @Test
     public void testGlobalName() throws Exception {
         String src = "/*global name: true */\nname = \"fred\";";
-        assertIssues(lint(src).getIssues());
+        JSLintResult result = lint(src);
+        assertThat(result.getIssues(), empty());
     }
 
     @Test
@@ -157,14 +157,14 @@ public class JSLintTest {
 
     @Test
     public void testNoProblems() throws IOException {
-        List<Issue> problems = lint("var foo = 1;").getIssues();
-        assertIssues(problems);
+        JSLintResult result = lint("var foo = 1;");
+        assertThat(result.getIssues(), empty());
     }
 
     @Test
     public void testNullSource() throws Exception {
-        List<Issue> issues = lint((String) null).getIssues();
-        assertIssues(issues);
+        JSLintResult result = lint((String) null);
+        assertThat(result.getIssues(), empty());
     }
 
     @Test
@@ -181,8 +181,8 @@ public class JSLintTest {
     @Test
     public void testPredefOption() throws Exception {
         lint.addOption(Option.PREDEF, "foo,bar");
-        List<Issue> issues = lint("foo(bar(42));").getIssues();
-        assertIssues(issues);
+        JSLintResult result = lint("foo(bar(42));");
+        assertThat(result.getIssues(), empty());
     }
 
     @Test
@@ -191,8 +191,7 @@ public class JSLintTest {
         JSLintResult result = lint("var obj = {\"a\": 1, \"b\": 42, 3: \"c\"};");
         assertIssues(result.getIssues());
         Set<String> properties = result.getProperties();
-        assertThat(properties.size(), is(3));
-        assertThat(properties, hasItems("a", "b", "3"));
+        assertThat(properties, containsInAnyOrder("a", "b", "3"));
     }
 
     @Test
@@ -221,8 +220,8 @@ public class JSLintTest {
         String eval_js = "eval('1');";
         lint.addOption(Option.EVIL);
         lint.resetOptions();
-        List<Issue> issues = lint(eval_js).getIssues();
-        assertIssues(issues, "eval is evil.");
+        JSLintResult result = lint(eval_js);
+        assertIssues(result.getIssues(), "eval is evil.");
 
     }
 
@@ -230,12 +229,12 @@ public class JSLintTest {
     public void testSetOption() throws Exception {
         String eval_js = "eval('1');";
         // should be disallowed by default.
-        List<Issue> issues = lint(eval_js).getIssues();
-        assertIssues(issues, "eval is evil.");
+        JSLintResult result = lint(eval_js);
+        assertIssues(result.getIssues(), "eval is evil.");
         // Now should be a problem.
         lint.addOption(Option.EVIL);
-        issues = lint(eval_js).getIssues();
-        assertIssues(issues);
+        result = lint(eval_js);
+        assertThat(result.getIssues(), empty());
     }
 
     @Test
@@ -244,8 +243,8 @@ public class JSLintTest {
         String js = "var x = 0;\nif (!x) {\n  x = 1;\n}";
         lint.addOption(Option.WHITE);
         lint.addOption(Option.INDENT, "2");
-        List<Issue> issues = lint(js).getIssues();
-        assertIssues(issues);
+        JSLintResult result = lint(js);
+        assertThat(result.getIssues(), empty());
     }
 
     /**
@@ -275,7 +274,7 @@ public class JSLintTest {
         // This is coming out as "vari"...
         String js = "var\ti = 0;\n";
         JSLintResult result = lint(js);
-        assertIssues(result.getIssues());
+        assertThat(result.getIssues(), empty());
     }
 
     // http://code.google.com/p/jslint4java/issues/detail?id=1
