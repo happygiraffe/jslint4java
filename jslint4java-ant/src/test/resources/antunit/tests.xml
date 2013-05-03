@@ -29,7 +29,7 @@ Tests for the JSLint ant task.
         <au:antunit failonerror="true">
             <file file="${ant.file}" />
             <!-- Add logLevel="info" attribute for debugging. -->
-            <au:plainlistener />
+            <au:plainlistener logLevel="info" />
             <!-- Record test results in the same places as JUnit. -->
             <!-- TODO: pass the location in from maven. -->
             <au:xmllistener logLevel="info" toDir="${test.report.dir}" />
@@ -73,7 +73,8 @@ Tests for the JSLint ant task.
 
     <!-- Check we can supply a value to an option. -->
     <target name="testOptionParams">
-        <jsl:jslint options="undef=true">
+        <jsl:jslint options="es5=true">
+        	<predef>x</predef>
             <formatter type="plain" />
             <fileset file="undef.js" />
         </jsl:jslint>
@@ -123,9 +124,9 @@ Tests for the JSLint ant task.
       </au:expectfailure>
     </target>
 
-    <!-- This will fail unless we can successfullly predefine the globals. -->
+    <!-- This will fail unless we can successfully predefine the globals. -->
     <target name="testPredef">
-        <jsl:jslint options="undef">
+        <jsl:jslint>
             <predef>foo,bar</predef>
             <formatter type="plain" />
             <fileset file="globals.js" />
@@ -183,7 +184,8 @@ Tests for the JSLint ant task.
 
     <!-- issue 57: should be able to parse BOMs. -->
     <target name="testBOM">
-        <jsl:jslint options="undef">
+        <jsl:jslint>
+          <predef>alert</predef>
           <formatter type="plain" />
           <fileset file="bom.js" />
         </jsl:jslint>

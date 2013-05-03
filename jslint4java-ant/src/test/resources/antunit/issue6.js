@@ -1,6 +1,6 @@
 function info(str) {
   // …log somehow…
-  str = 'unused';
+  str = 'unused:' + str;
 }
 
 var foo = '1';
