@@ -1,7 +1,11 @@
 package com.googlecode.jslint4java;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.junit.Assert.assertThat;
 
 import java.io.StringReader;
 import java.util.List;
@@ -15,6 +19,7 @@ import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import com.google.common.base.Objects;
 import com.google.common.io.CharStreams;
 import com.googlecode.jslint4java.Util.Converter;
 
@@ -28,6 +33,20 @@ public class UtilTest {
         final int a;
         Foo(int a) {
             this.a = a;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Foo)) {
+                return false;
+            }
+            Foo other = (Foo) obj;
+            return Objects.equal(this.a, other.a);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(this.a);
         }
     }
 
@@ -109,44 +128,35 @@ public class UtilTest {
             }
         };
         List<Foo> l = Util.listValue("l", scope, c);
-        assertThat(l.size(), is(2));
-        assertThat(l.get(0).a, is(1));
-        assertThat(l.get(1).a, is(2));
+        assertThat(l, contains(new Foo(1), new Foo(2)));
     }
 
     @Test
     public void testListValueOfTypeInteger() throws Exception {
         cx.evaluateString(scope, "var l = [9,8,7];", "-", 1, null);
         List<Integer> l = Util.listValueOfType("l", Integer.class, scope);
-        assertThat(l.size(), is(3));
-        assertThat(l.get(0), is(9));
-        assertThat(l.get(1), is(8));
-        assertThat(l.get(2), is(7));
+        assertThat(l, contains(9, 8, 7));
     }
 
     @Test
     public void testListValueOfTypeString() throws Exception {
         cx.evaluateString(scope, "var l = ['a','b','c'];", "-", 1, null);
         List<String> l = Util.listValueOfType("l", String.class, scope);
-        assertThat(l.size(), is(3));
-        assertThat(l.get(0), is("a"));
-        assertThat(l.get(1), is("b"));
-        assertThat(l.get(2), is("c"));
+        assertThat(l, contains("a", "b", "c"));
     }
 
     @Test
     public void testListValueOfNull() throws Exception {
         cx.evaluateString(scope, "var l = [null];", "-", 1, null);
         List<String> l = Util.listValueOfType("l", String.class, scope);
-        assertThat(l.size(), is(1));
-        assertThat(l.get(0), is(nullValue()));
+        assertThat(l, contains(nullValue()));
     }
 
     @Test
     public void testListValueOfUndefined() throws Exception {
         cx.evaluateString(scope, "var undef;", "-", 1, null);
         List<String> l = Util.listValueOfType("undef", String.class, scope);
-        assertThat(l.size(), is(0));
+        assertThat(l, empty());
     }
 
     @Test
@@ -156,8 +166,7 @@ public class UtilTest {
                 return null;
             }
         });
-        assertThat(l, notNullValue());
-        assertTrue(l.isEmpty());
+        assertThat(l, empty());
     }
 
     @Test

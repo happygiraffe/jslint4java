@@ -1,12 +1,13 @@
 package com.googlecode.jslint4java;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.empty;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Rule;
@@ -33,8 +34,8 @@ public class JSLintBuilderTest {
     private void assertJSLintOK(JSLint lint) {
         assertThat(lint, is(notNullValue()));
         // Check it can lint OK.
-        List<Issue> issues = lint.lint("-", "").getIssues();
-        assertThat(issues.isEmpty(), is(true));
+        JSLintResult result = lint.lint("-", "");
+        assertThat(result.getIssues(), empty());
     }
 
     /** Return a stubbed out jslint.js from the classpath. */

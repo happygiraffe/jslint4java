@@ -1,7 +1,8 @@
 package com.googlecode.jslint4java;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.empty;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class UnicodeBomInputStreamTest {
         JSLint jsLint = new JSLintBuilder().fromDefault();
         jsLint.addOption(Option.PREDEF, "alert");
         JSLintResult result = jsLint.lint("bom.js", isr);
-        assertThat(result.getIssues().size(), is(0));
+        assertThat(result.getIssues(), empty());
     }
 
     private InputStream getBomJs() throws IOException {
