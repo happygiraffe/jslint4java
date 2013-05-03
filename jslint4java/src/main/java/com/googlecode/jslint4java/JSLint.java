@@ -187,7 +187,7 @@ public class JSLint {
                     Function reportFunc = (Function) o;
                     Scriptable data = (Scriptable) reportFunc.call(cx, scope,
                             scope, new Object[] {});
-                    for (String global : Util.listValueOfType("globals", String.class, data)) {
+                    for (String global : Util.listValueOfType("global", String.class, data)) {
                         b.addGlobal(global);
                     }
                     b.json(Util.booleanValue("json", data));
