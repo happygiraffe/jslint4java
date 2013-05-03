@@ -1,8 +1,14 @@
 
 package com.googlecode.jslint4java;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -86,10 +92,7 @@ public class JSLintTest {
         // TODO: test getException()
         // TODO: test getOuter()
         // TODO: test getUnused()
-        assertThat(f1.getUndef().size(), is(1));
-        assertThat(f1.getUndef().get(0), is("alert"));
-        assertThat(f1.getGlobal().size(), is(1));
-        assertThat(f1.getGlobal().get(0), is("z"));
+        assertThat(f1.getGlobal(), contains("alert", "z"));
         // TODO: test getLabel()
     }
 
