@@ -62,7 +62,7 @@ public class UnicodeBomInputStreamTest {
         is2.skipBOM();
         InputStreamReader isr = new InputStreamReader(is2, Charsets.UTF_8);
         JSLint jsLint = new JSLintBuilder().fromDefault();
-        jsLint.addOption(Option.UNDEF);
+        jsLint.addOption(Option.PREDEF, "alert");
         JSLintResult result = jsLint.lint("bom.js", isr);
         assertThat(result.getIssues().size(), is(0));
     }
