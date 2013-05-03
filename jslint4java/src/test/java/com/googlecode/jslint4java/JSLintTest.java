@@ -69,7 +69,6 @@ public class JSLintTest {
      */
     @Test
     public void testDataFunctions() throws Exception {
-        lint.addOption(Option.UNDEF);
         lint.addOption(Option.WHITE);
         JSLintResult result = lint("var z = 5; function foo(x) {var y = x + z; alert(y); return y; }");
         assertIssues(result.getIssues());
@@ -137,7 +136,6 @@ public class JSLintTest {
     @Test
     public void testMaxErr() throws Exception {
         lint.addOption(Option.WHITE, "false");
-        lint.addOption(Option.UNDEF, "false");
         lint.addOption(Option.MAXERR, "2");
         // Just some nasty thing I threw together. :)
         JSLintResult result = lint("if (foo=42) {\n  println(\"bother\")\n}\n");
@@ -179,7 +177,6 @@ public class JSLintTest {
     @Test
     public void testPredefOption() throws Exception {
         lint.addOption(Option.PREDEF, "foo,bar");
-        lint.addOption(Option.UNDEF);
         List<Issue> issues = lint("foo(bar(42));").getIssues();
         assertIssues(issues);
     }
