@@ -42,18 +42,6 @@ public class JSLint {
     private static final String DEFAULT_MAXERR = "50";
 
     /**
-     * A helper class for interpreting function parameter names. Note that we
-     * use this to work around a change in JSLint's data structure, which
-     * changed from being a single string to an object.
-     */
-    private static final class JSFunctionParamConverter implements Util.Converter<String> {
-        public String convert(Object obj) {
-            Scriptable scope = (Scriptable) obj;
-            return Util.stringValue("string", scope);
-        }
-    }
-
-    /**
      * A helper class for interpreting the output of {@code JSLINT.data()}.
      */
     private static final class JSFunctionConverter implements Util.Converter<JSFunction> {
@@ -63,7 +51,7 @@ public class JSLint {
             int line = Util.intValue("line", scope);
             Builder b = new JSFunction.Builder(name, line);
             b.last(Util.intValue("last", scope));
-            for (String param : Util.listValue("params", scope, new JSFunctionParamConverter())) {
+            for (String param : Util.listValueOfType("parameter", String.class, scope)) {
                 b.addParam(param);
             }
             for (String closure : Util.listValueOfType("closure", String.class, scope)) {

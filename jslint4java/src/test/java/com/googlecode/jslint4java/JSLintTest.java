@@ -69,6 +69,7 @@ public class JSLintTest {
      */
     @Test
     public void testDataFunctions() throws Exception {
+        lint.addOption(Option.PREDEF, "alert");
         lint.addOption(Option.WHITE);
         JSLintResult result = lint("var z = 5; function foo(x) {var y = x + z; alert(y); return y; }");
         assertIssues(result.getIssues());
