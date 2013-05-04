@@ -4,9 +4,10 @@ Revision history for jslint4java
 2.0.4 (2013-04-10)
 ------------------
 
- * Update to JSLint 2013-04-06.
-   - This removes the `anon`, `css`, `fragment` and `on` options.
-   - This adds the `closure` option.
+ * Update to JSLint 2013-05-01.
+   - This removes the `anon`, `css`, `fragment`, `on` and `undef` options.
+   - This adds the `ass` and `closure` options.
+   - The warnings option is now a noop.
    - This removes the ability to parse HTML.
 
 2.0.3 (2012-12-04)
