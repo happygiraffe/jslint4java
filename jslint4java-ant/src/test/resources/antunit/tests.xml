@@ -74,7 +74,7 @@ Tests for the JSLint ant task.
     <!-- Check we can supply a value to an option. -->
     <target name="testOptionParams">
         <jsl:jslint options="es5=true">
-        	<predef>x</predef>
+            <predef>x</predef>
             <formatter type="plain" />
             <fileset file="undef.js" />
         </jsl:jslint>
