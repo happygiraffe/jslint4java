@@ -29,7 +29,7 @@ Tests for the JSLint ant task.
         <au:antunit failonerror="true">
             <file file="${ant.file}" />
             <!-- Add logLevel="info" attribute for debugging. -->
-            <au:plainlistener logLevel="info" />
+            <au:plainlistener />
             <!-- Record test results in the same places as JUnit. -->
             <!-- TODO: pass the location in from maven. -->
             <au:xmllistener logLevel="info" toDir="${test.report.dir}" />
