@@ -11,12 +11,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
 import com.beust.jcommander.internal.Lists;
-import com.google.common.base.Throwables;
 
 /**
  * Check that JSLint can safely be used in multiple threads.
@@ -35,10 +33,10 @@ public class JSLintThreadSafetyTest {
         // Check that the first one works.
         lint.lint("foo1", JS);
 
-        assertNoRaise(new Runnable() {
-            public void run() {
+        runInSeparateThread(new Callable<JSLintResult>() {
+            public JSLintResult call() throws Exception {
                 // Now check it still works in a different thread.
-                lint.lint("foo2", JS);
+                return lint.lint("foo2", JS);
             }
         });
     }
@@ -46,10 +44,10 @@ public class JSLintThreadSafetyTest {
     @Test
     public void canBuildInDifferentThread() throws Exception {
         final JSLintBuilder builder = new JSLintBuilder();
-        assertNoRaise(new Runnable() {
-            public void run() {
+        runInSeparateThread(new Callable<JSLintResult>() {
+            public JSLintResult call() {
                 JSLint lint = builder.fromDefault();
-                lint.lint("blort.js", JS);
+                return lint.lint("blort.js", JS);
             }
         });
     }
@@ -104,24 +102,9 @@ public class JSLintThreadSafetyTest {
     /**
      * Run <i>r</i> in a separate thread, and verify that it raises no exceptions.
      */
-    private static void assertNoRaise(final Runnable r) throws InterruptedException {
-        final AtomicReference<Throwable> kaboom = new AtomicReference<Throwable>();
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    r.run();
-                } catch (Throwable e) {
-                    kaboom.set(e);
-                }
-            }
-        });
-        t.start();
-        t.join();
-
-        if (kaboom.get() != null) {
-            // Wrap for stack trace.
-            throw Throwables.propagate(kaboom.get());
-        }
+    private static void runInSeparateThread(Callable<JSLintResult> r) throws InterruptedException,
+            ExecutionException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(r).get();
     }
-
 }
