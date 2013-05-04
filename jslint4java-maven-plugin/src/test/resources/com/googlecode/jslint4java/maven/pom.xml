@@ -12,7 +12,7 @@
         <version>1.5-SNAPSHOT</version>
         <configuration>
           <options>
-            <undef>true</undef>
+            <es5>true</es5>
           </options>
         </configuration>
       </plugin>

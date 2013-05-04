@@ -1,5 +1,9 @@
 package com.googlecode.jslint4java.maven;
 
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -209,10 +213,10 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
     @Test
     public void testOptionsFromPom() {
         Map<String, String> options = mojo.getOptions();
-        assertEquals(2, options.size());
-        assertEquals("true", options.get("undef"));
+        assertThat(options.size(), is(2));
+        assertThat(options, hasEntry("es5", "true"));
         // This actually comes from our setUp() call…
-        assertEquals("true", options.get("sloppy"));
+        assertThat(options, hasEntry("sloppy", "true"));
     }
 
     @Test
