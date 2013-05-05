@@ -307,10 +307,17 @@ public class JSLint {
      * @return a {@link JSLintResult}.
      */
     public JSLintResult lint(String systemId, String javaScript) {
-        long before = System.nanoTime();
-        doLint(javaScript);
-        long after = System.nanoTime();
-        return buildResults(systemId, before, after);
+        // This is synchronized, even though Rhino is thread safe, because we have multiple
+        // accesses to the scope, which store state in between them.  This synchronized block
+        // is slightly larger than I would like, but in practical terms, it doesn't make much
+        // difference.  The cost of running lint is larger than the cost of pulling out the
+        // results.
+        synchronized (this) {
+            long before = System.nanoTime();
+            doLint(javaScript);
+            long after = System.nanoTime();
+            return buildResults(systemId, before, after);
+        }
     }
 
     /**

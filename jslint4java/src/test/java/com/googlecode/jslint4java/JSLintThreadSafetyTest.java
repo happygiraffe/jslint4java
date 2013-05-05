@@ -53,13 +53,11 @@ public class JSLintThreadSafetyTest {
     }
 
     /**
-     * We should be able to run two different threads simultaneously. Unfortunately, because we
-     * store the scope inside {@link JSLint}, we can't do that. This does test that we can run
-     * different {@link JSLint} objects in parallel, which isn't quite as useful (but it does test
-     * that Rhino can be used in this manner).
+     * We should be able to run two different threads simultaneously.
      */
     @Test
     public void shouldRunInParallel() throws InterruptedException, ExecutionException {
+        JSLint lint = new JSLintBuilder().fromDefault();
         int nThreads = 3; // how many to run in parallel.
         CountDownLatch startGate = new CountDownLatch(1);
         CountDownLatch endGate = new CountDownLatch(nThreads);
@@ -67,8 +65,6 @@ public class JSLintThreadSafetyTest {
         List<Future<JSLintResult>> results = Lists.newArrayList(nThreads);
         for (int i = 0; i < nThreads; i++) {
             String name = "thread-" + i;
-            // TODO: make JSLint thread safe.  Move this out of the loop then.
-            JSLint lint = new JSLintBuilder().fromDefault();
             Callable<JSLintResult> callable = makeCallableLinter(lint, name, startGate, endGate);
             results.add(executorService.submit(callable));
         }
