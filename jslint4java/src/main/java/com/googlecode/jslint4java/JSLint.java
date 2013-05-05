@@ -7,7 +7,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextAction;
@@ -17,6 +16,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.UniqueTag;
 
+import com.google.common.base.Stopwatch;
 import com.googlecode.jslint4java.Issue.IssueBuilder;
 import com.googlecode.jslint4java.JSFunction.Builder;
 import com.googlecode.jslint4java.JSLintResult.ResultBuilder;
@@ -152,11 +152,11 @@ public class JSLint {
      * Assemble the {@link JSLintResult} object.
      */
     @NeedsContext
-    private JSLintResult buildResults(final String systemId, final long startNanos, final long endNanos) {
+    private JSLintResult buildResults(final String systemId, final Stopwatch stopwatch) {
         return (JSLintResult) contextFactory.call(new ContextAction() {
             public Object run(Context cx) {
                 ResultBuilder b = new JSLintResult.ResultBuilder(systemId);
-                b.duration(TimeUnit.NANOSECONDS.toMillis(endNanos - startNanos));
+                b.duration(stopwatch.elapsedMillis());
                 for (Issue issue : readErrors(systemId)) {
                     b.addIssue(issue);
                 }
@@ -313,10 +313,11 @@ public class JSLint {
         // difference.  The cost of running lint is larger than the cost of pulling out the
         // results.
         synchronized (this) {
-            long before = System.nanoTime();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.start();
             doLint(javaScript);
-            long after = System.nanoTime();
-            return buildResults(systemId, before, after);
+            stopwatch.stop();
+            return buildResults(systemId, stopwatch);
         }
     }
 
