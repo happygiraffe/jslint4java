@@ -80,20 +80,18 @@ public class JSLint {
 
     private final Map<Option, Object> options = new EnumMap<Option, Object>(Option.class);
 
-    private final ScriptableObject scope;
-
     private final ContextFactory contextFactory;
 
+    private final Function lintFunc;
+
     /**
-     * Create a new {@link JSLint} object. You must pass in a {@link Scriptable}
-     * which already has the {@code JSLINT} function defined. You are expected
-     * to use {@link JSLintBuilder} rather than calling this constructor.
+     * Create a new {@link JSLint} object. You must pass in a {@link Function}, which is the JSLINT
+     * function defined by jslint.js. You are expected to use {@link JSLintBuilder} rather than
+     * calling this constructor.
      */
-    JSLint(ContextFactory contextFactory, ScriptableObject scope) {
+    JSLint(ContextFactory contextFactory, Function lintFunc) {
         this.contextFactory = contextFactory;
-        this.scope = scope;
-        // We should no longer be updating this.
-        this.scope.sealObject();
+        this.lintFunc = lintFunc;
     }
 
     /**
@@ -151,13 +149,12 @@ public class JSLint {
                 b.report(callReport(false));
 
                 // Extract JSLINT.data() output and set it on the result.
-                Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
-                Object o = lintScope.get("data", lintScope);
+                Object o = lintFunc.get("data", lintFunc);
                 // Real JSLINT will always have this, but some of my test stubs don't.
                 if (o != UniqueTag.NOT_FOUND) {
                     Function reportFunc = (Function) o;
-                    Scriptable data = (Scriptable) reportFunc.call(cx, scope,
-                            scope, new Object[] {});
+                    Scriptable data = (Scriptable) reportFunc.call(cx, lintFunc, null,
+                            new Object[] {});
                     for (String global : Util.listValueOfType("global", String.class, data)) {
                         b.addGlobal(global);
                     }
@@ -169,7 +166,7 @@ public class JSLint {
 
                 // Extract the list of properties. Note that we don't expose the counts, as it
                 // doesn't seem that useful.
-                Object properties = lintScope.get("property", lintScope);
+                Object properties = lintFunc.get("property", lintFunc);
                 if (properties != UniqueTag.NOT_FOUND) {
                     for (Object id: ScriptableObject.getPropertyIds((Scriptable) properties)) {
                         b.addProperty(id.toString());
@@ -197,34 +194,33 @@ public class JSLint {
                 Function fn = null;
                 Object value = null;
                 StringBuilder sb = new StringBuilder();
-                Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
 
                 // Look up JSLINT.data.
-                value = lintScope.get("data", lintScope);
+                value = lintFunc.get("data", lintFunc);
                 if (value == UniqueTag.NOT_FOUND) {
                     return "";
                 }
                 fn = (Function) value;
                 // Call JSLINT.data().  This returns a JS data structure that we need below.
-                Object data = fn.call(cx, scope, scope, new Object[] {});
+                Object data = fn.call(cx, lintFunc, null, new Object[] {});
 
                 // Look up JSLINT.error_report.
-                value = lintScope.get("error_report", lintScope);
+                value = lintFunc.get("error_report", lintFunc);
                 // Shouldn't happen ordinarily, but some of my tests don't have it.
                 if (value != UniqueTag.NOT_FOUND) {
                     fn = (Function) value;
                     // Call JSLint.report().
-                    sb.append(fn.call(cx, scope, scope, new Object[] { data }));
+                    sb.append(fn.call(cx, lintFunc, null, new Object[] { data }));
                 }
 
                 if (!errorsOnly) {
                     // Look up JSLINT.report.
-                    value = lintScope.get("report", lintScope);
+                    value = lintFunc.get("report", lintFunc);
                     // Shouldn't happen ordinarily, but some of my tests don't have it.
                     if (value != UniqueTag.NOT_FOUND) {
                         fn = (Function) value;
                         // Call JSLint.report().
-                        sb.append(fn.call(cx, scope, scope, new Object[] { data }));
+                        sb.append(fn.call(cx, lintFunc, null, new Object[] { data }));
                     }
                 }
                 return sb.toString();
@@ -238,10 +234,9 @@ public class JSLint {
             public Object run(Context cx) {
                 String src = javaScript == null ? "" : javaScript;
                 Object[] args = new Object[] { src, optionsAsJavaScriptObject() };
-                Function lintFunc = (Function) scope.get("JSLINT", scope);
                 // JSLINT actually returns a boolean, but we ignore it as we always go
                 // and look at the errors in more detail.
-                lintFunc.call(cx, scope, scope, args);
+                lintFunc.call(cx, lintFunc, null, args);
                 return null;
             }
         });
@@ -251,8 +246,7 @@ public class JSLint {
      * Return the version of jslint in use.
      */
     public String getEdition() {
-        Scriptable lintScope = (Scriptable) scope.get("JSLINT", scope);
-        return (String) lintScope.get("edition", lintScope);
+        return (String) lintFunc.get("edition", lintFunc);
     }
 
     /**
@@ -302,7 +296,7 @@ public class JSLint {
         return (Scriptable) contextFactory.call(new ContextAction() {
             public Object run(Context cx) {
                 applyDefaultOptions();
-                Scriptable opts = cx.newObject(scope);
+                Scriptable opts = cx.newObject(lintFunc);
                 for (Entry<Option, Object> entry : options.entrySet()) {
                     String key = entry.getKey().getLowerName();
                     // Use our "custom" version in order to get native arrays.
@@ -316,8 +310,7 @@ public class JSLint {
 
     private List<Issue> readErrors(String systemId) {
         ArrayList<Issue> issues = new ArrayList<Issue>();
-        Scriptable JSLINT = (Scriptable) scope.get("JSLINT", scope);
-        Scriptable errors = (Scriptable) JSLINT.get("errors", JSLINT);
+        Scriptable errors = (Scriptable) lintFunc.get("errors", lintFunc);
         int count = Util.intValue("length", errors);
         for (int i = 0; i < count; i++) {
             Scriptable err = (Scriptable) errors.get(i, errors);

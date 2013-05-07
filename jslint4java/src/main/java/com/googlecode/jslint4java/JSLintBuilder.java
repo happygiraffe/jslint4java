@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 
 /**
@@ -120,7 +121,8 @@ public class JSLintBuilder {
             Context cx = contextFactory.enterContext();
             ScriptableObject scope = cx.initStandardObjects();
             cx.evaluateReader(scope, reader, name, 1, null);
-            return new JSLint(contextFactory, scope);
+            Function lintFunc = (Function) scope.get("JSLINT", scope);
+            return new JSLint(contextFactory, lintFunc);
         } finally {
             Context.exit();
         }
