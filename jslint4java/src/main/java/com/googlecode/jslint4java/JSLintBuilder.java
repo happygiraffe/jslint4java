@@ -119,7 +119,7 @@ public class JSLintBuilder {
     public JSLint fromReader(Reader reader, String name) throws IOException {
         try {
             Context cx = contextFactory.enterContext();
-            ScriptableObject scope = cx.initStandardObjects(null, true);
+            ScriptableObject scope = cx.initStandardObjects();
             cx.evaluateReader(scope, reader, name, 1, null);
             Function lintFunc = (Function) scope.get("JSLINT", scope);
             return new JSLint(contextFactory, lintFunc);
