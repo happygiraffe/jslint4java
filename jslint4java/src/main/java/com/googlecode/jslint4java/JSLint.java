@@ -154,7 +154,7 @@ public class JSLint {
                 if (o != UniqueTag.NOT_FOUND) {
                     Function reportFunc = (Function) o;
                     Scriptable data = (Scriptable) reportFunc.call(cx, lintFunc, null,
-                            new Object[] {});
+                            Context.emptyArgs);
                     for (String global : Util.listValueOfType("global", String.class, data)) {
                         b.addGlobal(global);
                     }
@@ -202,7 +202,7 @@ public class JSLint {
                 }
                 fn = (Function) value;
                 // Call JSLINT.data().  This returns a JS data structure that we need below.
-                Object data = fn.call(cx, lintFunc, null, new Object[] {});
+                Object data = fn.call(cx, lintFunc, null, Context.emptyArgs);
 
                 // Look up JSLINT.error_report.
                 value = lintFunc.get("error_report", lintFunc);
