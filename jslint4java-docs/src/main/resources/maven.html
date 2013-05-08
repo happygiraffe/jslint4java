@@ -119,7 +119,7 @@ $ mvn jslint4java:lint
 
       <tr>
         <td><code>&lt;excludes&gt;</code></td>
-        <td>A comma separated list of patterns to exclude from linting.</td>
+        <td>A list of patterns to exclude from linting.  Each pattern must be in a child <code>&lt;exclude&gt;</code> element.</td>
         <td>
           <pre class="prettyprint">
 &lt;excludes&gt;
@@ -131,7 +131,7 @@ $ mvn jslint4java:lint
 
       <tr>
         <td><code>&lt;includes&gt;</code></td>
-        <td>A comma separated list of filename patterns lint.</td>
+        <td>A list of filename patterns to lint.  Each pattern must be in a child <code>&lt;exclude&gt;</code> element.</td>
         <td>
           <pre class="prettyprint">
 &lt;includes&gt;
