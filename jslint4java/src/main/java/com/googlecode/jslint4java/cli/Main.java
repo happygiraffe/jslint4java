@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.beust.jcommander.JCommander;
@@ -32,6 +34,13 @@ import com.googlecode.jslint4java.formatter.ReportFormatter;
  * @author dom
  */
 class Main {
+
+    private static final class ParameterDescriptionComparator implements
+            Comparator<ParameterDescription> {
+        public int compare(ParameterDescription a, ParameterDescription b) {
+            return a.getLongestName().compareTo(b.getLongestName());
+        }
+    }
 
     /**
      * The default command line output.
@@ -81,6 +90,8 @@ class Main {
             return code;
         }
     }
+
+    private static final String FULL_PROGRAM_NAME = "jslint4java";
 
     private static final String PROGNAME = "jslint";
 
@@ -194,7 +205,7 @@ class Main {
         JSLintFlags jslintFlags = new JSLintFlags();
         Flags flags = new Flags();
         JCommander jc = new JCommander(new Object[] { flags , jslintFlags });
-        jc.setProgramName("jslint4java");
+        jc.setProgramName(FULL_PROGRAM_NAME);
         try {
             jc.parse(args);
         } catch (ParameterException e) {
@@ -273,8 +284,27 @@ class Main {
     }
 
     private void usage(JCommander jc) {
-        jc.usage();
+        info(String.format("Usage: %s [options] file.js ...", FULL_PROGRAM_NAME));
+        info("");
+        List<ParameterDescription> parameters = jc.getParameters();
+        String spec = " %-" + getLongestName(parameters) + "s %s";
+        Collections.sort(parameters, new ParameterDescriptionComparator());
+        for (ParameterDescription pd : parameters) {
+            info(String.format(spec, pd.getLongestName(), pd.getDescription()));
+        }
+        info("");
         version();
+    }
+
+    /** Return the length of the longest parameter name. */
+    private int getLongestName(List<ParameterDescription> parameters) {
+        int length = 0;
+        for (ParameterDescription pd : parameters) {
+            if (pd.getLongestName().length() > length) {
+                length = pd.getLongestName().length();
+            }
+        }
+        return length;
     }
 
     private void version() {
