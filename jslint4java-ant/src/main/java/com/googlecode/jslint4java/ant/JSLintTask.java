@@ -37,7 +37,7 @@ import com.googlecode.jslint4java.UnicodeBomInputStream;
  * <pre>
  * &lt;project name=&quot;build-test&quot; xmlns:jsl=&quot;antlib:com.googlecode.jslint4java&quot;&gt;
  *   &lt;target name=&quot;jslint&quot;&gt;
- *     &lt;jsl:jslint options=&quot;undef&quot;&gt;
+ *     &lt;jsl:jslint options=&quot;es5&quot;&gt;
  *       &lt;formatter type=&quot;plain&quot; /&gt;
  *       &lt;fileset dir=&quot;.&quot; includes=&quot;*.js&quot; excludes=&quot;*.pack.js&quot; /&gt;
  *     &lt;/jsl:jslint&gt;

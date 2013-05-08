@@ -111,10 +111,10 @@ $
 
     <pre class="prettyprint"><span class="nocode">$ cat globals.js
 foo(bar(42));
-$ java -jar jslint4java-${project.version}.jar --undef globals.js
+$ java -jar jslint4java-${project.version}.jar globals.js
 jslint:globals.js:1:1:'foo' is not defined.
 jslint:globals.js:1:5:'bar' is not defined.
-$ java -jar jslint4java-${project.version}.jar --undef --predef foo,bar globals.js
+$ java -jar jslint4java-${project.version}.jar --predef foo,bar globals.js
 $
 </span></pre>
 

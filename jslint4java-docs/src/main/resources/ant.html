@@ -240,15 +240,15 @@
   &lt;/jslint&gt;</pre>
 
     <p>
-      To check a directory of JavaScript files, whilst warning about whitespace
-      issues and undefined variables, as well as predefining a couple of
-      global variables we know we'll be using.
+      To check a directory of JavaScript files, tolerating ecmascript 5 syntax,
+      as well as predefining a couple of global variables we know we'll be
+      using.
 
       Send the errors to the console, and also emit JUnit XML reports to the build
       directory.
     </p>
 
-    <pre class="prettyprint" id="example-xml">  &lt;jslint options="undef,white"&gt;
+    <pre class="prettyprint" id="example-xml">  &lt;jslint options="es5"&gt;
     &lt;predef&gt;jQuery,$$&lt;/predef&gt;
     &lt;formatter type="plain" /&gt;
     &lt;formatter type="junit" destfile="${build.dir}/test-reports" /&gt;
