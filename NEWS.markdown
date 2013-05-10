@@ -1,6 +1,13 @@
 Revision history for jslint4java
 ================================
 
+2.0.5 (2013-05-10)
+------------------
+
+ * Update to JSLint 2013-05-06.
+ * Fixes issue 94 (thread safety).
+ * Clean up docs to remove references to `undef` option, which no longer exists.
+
 2.0.4 (2013-04-10)
 ------------------
 
