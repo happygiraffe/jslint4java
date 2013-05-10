@@ -7,6 +7,7 @@ Revision history for jslint4java
  * Update to JSLint 2013-05-06.
  * Fixes issue 94 (thread safety).
  * Clean up docs to remove references to `undef` option, which no longer exists.
+ * Allow reading stdin if "-" is passed as a filename.
 
 2.0.4 (2013-04-10)
 ------------------

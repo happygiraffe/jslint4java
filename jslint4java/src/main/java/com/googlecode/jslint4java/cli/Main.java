@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -162,12 +163,10 @@ class Main {
     }
 
     // Eclipse's static analysis thinks I never close the UnicodeBomInputStream below.
-    @SuppressWarnings("resource")
     private void lintFile(String file) throws IOException {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new UnicodeBomInputStream(
-                    new FileInputStream(file)).skipBOM(), encoding));
+            reader = readerForFile(file);
             JSLintResult result = lint.lint(file, reader);
             String msg = formatter.format(result);
             if (msg.length() > 0) {
@@ -183,6 +182,17 @@ class Main {
                 reader.close();
             }
         }
+    }
+
+    /**
+     * Return a {@link BufferedReader} for {@code file}. If {@code file} is "-" then stdin will be
+     * used instead.
+     */
+    @SuppressWarnings("resource")
+    private BufferedReader readerForFile(String file) throws IOException, FileNotFoundException {
+        InputStream inputStream = "-".equals(file) ? System.in : new FileInputStream(file);
+        return new BufferedReader(new InputStreamReader(
+                new UnicodeBomInputStream(inputStream).skipBOM(), encoding));
     }
 
     private JSLint makeLint(Flags flags) {

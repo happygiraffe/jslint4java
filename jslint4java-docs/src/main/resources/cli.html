@@ -65,7 +65,9 @@ using jslint version 2013-05-01
     <p>You must pass a number of javascript files on the command line.  For each one,
       jslint4java will produce a list of errors on stdout.  If any errors are found,
       an exit code of 1 will be returned.</p>
-
+      
+    <p>If <code>-</code> is specified as a filename, stdin will be read instead.</p>
+      
     <p>Sample error output:</p>
 
     <pre class="prettyprint"><span class="nocode">$ cat dodgy.js
