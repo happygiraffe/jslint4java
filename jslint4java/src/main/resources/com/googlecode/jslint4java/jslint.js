@@ -1,5 +1,5 @@
 // jslint.js
-// 2013-05-01
+// 2013-05-06
 
 // Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -82,7 +82,7 @@
 //             {
 //                 name: STRING,
 //                 line: NUMBER,
-//                 last: NUMBER,
+//                 level: NUMBER,
 //                 parameter: [
 //                     STRING
 //                 ],
@@ -551,9 +551,10 @@ var JSLINT = (function () {
         lines,
         lookahead,
         node = array_to_object([
-            'Buffer', 'clearInterval', 'clearTimeout', 'console', 'exports',
-            'global', 'module', 'process', 'querystring', 'require',
-            'setInterval', 'setTimeout', '__dirname', '__filename'
+            'Buffer', 'clearImmediate', 'clearInterval', 'clearTimeout',
+            'console', 'exports', 'global', 'module', 'process', 'querystring',
+            'require', 'setImmediate', 'setInterval', 'setTimeout',
+            '__dirname', '__filename'
         ], false),
         node_js,
         numbery = array_to_object(['indexOf', 'lastIndexOf', 'search'], true),
@@ -4095,7 +4096,7 @@ klass:              do {
 
     itself.error_report = function (data) {
         var evidence, i, output = [], warning;
-        if (data.errors) {
+        if (data.errors.length) {
             if (data.json) {
                 output.push('<cite>JSON: bad.</cite><br>');
             }
@@ -4141,7 +4142,7 @@ klass:              do {
             detail('global', data.global);
             dl = true;
         } else if (data.json) {
-            if (!data.errors) {
+            if (!data.errors.length) {
                 output.push("<dt>JSON: good.</dt>");
             }
         } else {
@@ -4242,7 +4243,7 @@ klass:              do {
 
     itself.jslint = itself;
 
-    itself.edition = '2013-05-01';
+    itself.edition = '2013-05-06';
 
     return itself;
 }());
