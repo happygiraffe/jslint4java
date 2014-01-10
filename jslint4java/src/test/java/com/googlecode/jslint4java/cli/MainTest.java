@@ -195,8 +195,8 @@ public class MainTest {
         assertStdoutContains("<testsuites>");
         assertStdoutContains("<testsuite ");
         assertStdoutContains("<testcase ");
-        assertStdoutContains(path + ":1:1:'alert' was used before it was defined.\n");
-        assertStdoutContains(path + ":1:10:Expected ';' and instead saw '(end)'.\n");
+        assertStdoutContains(path + ":1:1:'alert' was used before it was defined." + NEWLINE);
+        assertStdoutContains(path + ":1:10:Expected ';' and instead saw '(end)'." + NEWLINE);
         assertThat(exit, is(1));
     }
 

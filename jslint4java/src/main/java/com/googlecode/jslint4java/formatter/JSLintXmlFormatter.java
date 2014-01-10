@@ -19,10 +19,12 @@ import com.googlecode.jslint4java.JSLintResult;
  */
 public class JSLintXmlFormatter extends XmlFormatter implements JSLintResultFormatter {
 
+    private static final String NEWLINE = System.getProperty("line.separator");
+
     public String format(JSLintResult result) {
         StringBuilder sb = new StringBuilder("<file");
         sb.append(attr("name", result.getName()));
-        sb.append(">\n");
+        sb.append(">" + NEWLINE);
         List<Issue> issues = result.getIssues();
         for (Issue issue : issues) {
             sb.append("<issue");
@@ -30,7 +32,7 @@ public class JSLintXmlFormatter extends XmlFormatter implements JSLintResultForm
             sb.append(attr("char", Integer.toString(issue.getCharacter())));
             sb.append(attr("reason", issue.getReason()));
             sb.append(attr("evidence", issue.getEvidence()));
-            sb.append("/>\n");
+            sb.append("/>" + NEWLINE);
         }
         sb.append("</file>");
         return sb.toString();
