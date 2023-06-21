@@ -7,9 +7,10 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.List;
 
+import com.google.common.io.CharSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +21,6 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 import com.google.common.base.Objects;
-import com.google.common.io.CharStreams;
 import com.googlecode.jslint4java.Util.Converter;
 
 /**
@@ -171,7 +171,7 @@ public class UtilTest {
 
     @Test
     public void testReaderToString() throws Exception {
-        StringReader reader = CharStreams.newReaderSupplier("foo bar").getInput();
+        Reader reader = CharSource.wrap("foo bar").openStream();
         assertThat(Util.readerToString(reader), is("foo bar"));
     }
 

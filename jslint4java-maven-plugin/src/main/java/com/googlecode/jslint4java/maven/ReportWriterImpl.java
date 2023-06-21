@@ -8,10 +8,11 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
 import com.google.common.base.Throwables;
-import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 import com.googlecode.jslint4java.JSLintResult;
 import com.googlecode.jslint4java.formatter.JSLintResultFormatter;
+import org.apache.commons.io.IOUtils;
+
 
 /**
  * Write a report formatted by a {@link JSLintResultFormatter} to a file. You
@@ -45,7 +46,7 @@ public class ReportWriterImpl implements ReportWriter {
         } catch (IOException e) {
             throw Throwables.propagate(e);
         } finally {
-            Closeables.closeQuietly(writer);
+            IOUtils.closeQuietly(writer);
         }
     }
 

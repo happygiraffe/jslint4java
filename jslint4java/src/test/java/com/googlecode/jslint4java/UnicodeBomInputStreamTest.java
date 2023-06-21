@@ -10,11 +10,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
-import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
 
 public class UnicodeBomInputStreamTest {
@@ -29,7 +29,7 @@ public class UnicodeBomInputStreamTest {
             in2.skipBOM();
             assertThat(in2.read(), is(0x31));
         } finally {
-            Closeables.closeQuietly(in2);
+            IOUtils.closeQuietly(in2);
         }
     }
 
@@ -44,7 +44,7 @@ public class UnicodeBomInputStreamTest {
             assertThat(is2.read(), is(0x2f));
             assertThat(is2.read(), is(0x20));
         } finally {
-            Closeables.closeQuietly(is2);
+            IOUtils.closeQuietly(is2);
         }
     }
 
@@ -70,6 +70,6 @@ public class UnicodeBomInputStreamTest {
 
     private InputStream getBomJs() throws IOException {
         URL url = Resources.getResource(UnicodeBomInputStreamTest.class, "bom.js");
-        return Resources.newInputStreamSupplier(url).getInput();
+        return Resources.asCharSource(url, Charsets.UTF_8).asByteSource(Charsets.UTF_8).openStream();
     }
 }
