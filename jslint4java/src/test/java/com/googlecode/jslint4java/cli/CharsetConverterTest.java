@@ -1,7 +1,7 @@
 package com.googlecode.jslint4java.cli;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assume.*;
 
 import java.nio.charset.Charset;
