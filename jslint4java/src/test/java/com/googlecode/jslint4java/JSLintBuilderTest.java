@@ -2,11 +2,11 @@ package com.googlecode.jslint4java;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertThat;
 
 import java.io.File;
-import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
@@ -61,8 +61,7 @@ public class JSLintBuilderTest {
 
     @Test
     public void testFromReader() throws Exception {
-        InputStreamReader input = Resources.newReaderSupplier(getStubJslint(), Charsets.UTF_8)
-                .getInput();
+        Reader input = Resources.asCharSource(getStubJslint(), Charsets.UTF_8).openStream();
         assertJSLintOK(builder.fromReader(input, "stubjslint.js"));
     }
 

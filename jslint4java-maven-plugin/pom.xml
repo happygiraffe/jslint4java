@@ -10,18 +10,34 @@
   <name>jslint4java maven plugin</name>
   <description>A plugin for validating JavaScript files using jslint4java.</description>
   <prerequisites>
-    <maven>2.0.6</maven>
+    <maven>3.1.0</maven>
   </prerequisites>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>3.9.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.0.4</version>
+      <version>3.9.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-compat</artifactId>
+      <version>3.9.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-api</artifactId>
+      <version>1.9.12</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <version>3.2</version>
+      <version>3.9.0</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -31,27 +47,21 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>3.0.16</version>
+      <version>4.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
-      <version>2.0</version>
+      <version>4.0.0-alpha-1</version>
       <scope>test</scope>
     </dependency>
-    <!--
-      I'd like to depend on the real guava directly. But sisu-guava is in the classpath ahead
-      of this.  And if I enable real guava, there is a failure to look up mojos in my tests.
-      Really, sisu-guava should be package-renamed.  Until then, I have to depend on it.
-    -->
     <dependency>
-      <groupId>org.sonatype.sisu</groupId>
-      <artifactId>sisu-guava</artifactId>
-      <version>0.11.1</version>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
+      <artifactId>hamcrest-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -60,7 +70,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.0</version>
+        <version>3.9.0</version>
         <executions>
           <execution>
             <id>default-descriptor</id>
@@ -93,7 +103,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>2.5</version>
+        <version>3.9.0</version>
       </plugin>
     </plugins>
   </reporting>

@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -23,7 +24,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.io.Closeables;
 import com.googlecode.jslint4java.JSLint;
 import com.googlecode.jslint4java.JSLintBuilder;
 import com.googlecode.jslint4java.JSLintResult;
@@ -263,7 +263,7 @@ public class JSLintMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("problem whilst linting " + file, e);
         } finally {
-            Closeables.closeQuietly(reader);
+            IOUtils.closeQuietly(reader);
         }
     }
 

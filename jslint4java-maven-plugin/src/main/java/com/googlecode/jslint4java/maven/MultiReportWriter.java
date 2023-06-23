@@ -3,8 +3,9 @@ package com.googlecode.jslint4java.maven;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.io.Closeables;
 import com.googlecode.jslint4java.JSLintResult;
+import org.apache.commons.io.IOUtils;
+
 
 /**
  * Allow writing the same result to multiple places at once.
@@ -23,7 +24,7 @@ public class MultiReportWriter implements ReportWriter {
     /** Close all contained ReportWriters. */
     public void close() {
         for (ReportWriter reportWriter : reportWriters) {
-            Closeables.closeQuietly(reportWriter);
+            IOUtils.closeQuietly(reportWriter);
         }
     }
 

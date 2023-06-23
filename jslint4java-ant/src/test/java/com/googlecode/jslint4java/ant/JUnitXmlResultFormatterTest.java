@@ -1,6 +1,6 @@
 package com.googlecode.jslint4java.ant;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;

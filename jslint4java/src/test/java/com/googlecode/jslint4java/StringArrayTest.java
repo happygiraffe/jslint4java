@@ -1,7 +1,7 @@
 package com.googlecode.jslint4java;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
-import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 

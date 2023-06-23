@@ -1,8 +1,8 @@
 package com.googlecode.jslint4java.maven;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -108,7 +108,7 @@ public class JSLintMojoTest extends AbstractMojoTestCase {
         super.setUp();
         File pom = getResourceFile(POM_XML);
         baseDir = pom.getParentFile();
-        mojo = (JSLintMojo) lookupMojo(GOAL, pom);
+        mojo = lookupMojo(GOAL, pom);
         mojo.setLog(logger);
         // We don't care about "use strict" for these tests.
         mojo.addOption(Option.SLOPPY, "true");

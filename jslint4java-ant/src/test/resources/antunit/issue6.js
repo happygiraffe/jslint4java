@@ -1,5 +1,5 @@
 function info(str) {
-  // …log somehow…
+  // ...log somehow...
   str = 'unused:' + str;
 }
 
